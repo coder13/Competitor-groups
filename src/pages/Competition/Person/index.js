@@ -119,7 +119,7 @@ export default function Person() {
   );
 
   return (
-    <div className="flex flex-col w-full p-4">
+    <div className="flex flex-col p-4">
       <h3 className="text-4xl">{person.name}</h3>
       {person.wcaId && <p className="">{person.wcaId}</p>}
       <p className="text-lg">

@@ -67,11 +67,13 @@ export default function WCIFProvider({ competitionId, children }) {
       {loading && !error ? (
         <ReactLoading type="cubes" />
       ) : (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col w-full h-full">
           <div className="flex flex-row p-2 shadow-md">
             <Link to={`/competitions/${wcif.id}`}>{wcif.name}</Link>
           </div>
-          <div className="flex">{children}</div>
+          <div className="flex flex-col w-full items-center">
+            <div className="w-full md:w-1/2">{children}</div>
+          </div>
         </div>
       )}
     </WCIFContext.Provider>
