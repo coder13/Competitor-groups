@@ -19,8 +19,8 @@ function WCIFReducer(state, { type, payload }) {
   switch (type) {
     case 'SET':
       return {
-        ...payload
-      }
+        ...payload,
+      };
     default: {
       throw new Error(`Unhandled action type ${type}`);
     }
@@ -28,15 +28,15 @@ function WCIFReducer(state, { type, payload }) {
 }
 
 export default function WCIFProvider({ competitionId, children }) {
-  const [ wcif, dispatch ] = useReducer(WCIFReducer, INITIAL_STATE);
-  const [ error, setError ] = useState(null);
-  const [ fetching, setFetching ] = useState(true);
+  const [wcif, dispatch] = useReducer(WCIFReducer, INITIAL_STATE);
+  const [error, setError] = useState(null);
+  const [fetching, setFetching] = useState(true);
   const wcaApiFetch = useWCAFetch();
 
   const fetchCompetition = useCallback(async () => {
     setFetching(true);
     try {
-      const data = await wcaApiFetch(`/competitions/${competitionId}/wcif/public`)
+      const data = await wcaApiFetch(`/competitions/${competitionId}/wcif/public`);
       dispatch({
         type: 'SET',
         payload: data,
@@ -54,20 +54,28 @@ export default function WCIFProvider({ competitionId, children }) {
   }, [fetchCompetition]);
 
   console.log(50, fetching, error, wcif);
-  return <WCIFContext.Provider value={{ wcif, fetchCompetition, error, dispatch }}>{(fetching && !error) ? 'Loading...' : (
-    <Container>
-        <Item shrink row style={{
-          backgroundColor: '#CCC',
-          padding: '0.5em',
-          boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
-        }}>
-          <Link to={`/competitions/${wcif.id}`}>{wcif.name}</Link>
-        </Item>
-        <Item>
-          {children}
-        </Item>
-    </Container>
-  )}</WCIFContext.Provider>
+  return (
+    <WCIFContext.Provider value={{ wcif, fetchCompetition, error, dispatch }}>
+      {fetching && !error ? (
+        'Loading...'
+      ) : (
+        <Container>
+          <Item
+            shrink
+            row
+            style={{
+              backgroundColor: '#CCC',
+              padding: '0.5em',
+              boxShadow:
+                '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+            }}>
+            <Link to={`/competitions/${wcif.id}`}>{wcif.name}</Link>
+          </Item>
+          <Item>{children}</Item>
+        </Container>
+      )}
+    </WCIFContext.Provider>
+  );
 }
 
 export const useWCIF = () => useContext(WCIFContext);

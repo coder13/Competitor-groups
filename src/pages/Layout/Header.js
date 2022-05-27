@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   return (
@@ -7,7 +7,7 @@ export default function Header() {
       <Link to="/" className="text-blue-500">
         View Competitions
       </Link>
-      <div style={{ display: "flex", flex: 1 }} />
+      <div style={{ display: 'flex', flex: 1 }} />
     </header>
   );
 }

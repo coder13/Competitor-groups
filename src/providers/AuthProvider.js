@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { WCA_ORIGIN, WCA_OAUTH_CLIENT_ID } from '../lib/wca-env';
 import history from '../lib/history';
 
-const localStorageKey = key => `wca_gantt_chart.${WCA_OAUTH_CLIENT_ID}.${key}`;
+const localStorageKey = (key) => `wca_gantt_chart.${WCA_OAUTH_CLIENT_ID}.${key}`;
 
 const getLocalStorage = (key) => localStorage.getItem(localStorageKey(key));
 const setLocalStorage = (key, value) => localStorage.setItem(localStorageKey(key), value);
@@ -39,13 +39,13 @@ export default function AuthProvider({ children }) {
       response_type: 'token',
       redirect_uri: oauthRedirectUri(),
       scope: 'public manage_competitions email',
-      state: 'foobar'
+      state: 'foobar',
     });
     window.location = `${WCA_ORIGIN}/oauth/authorize?${params.toString()}`;
   };
 
   const signOut = () => {
-    console.log('signing out')
+    console.log('signing out');
     setAccessToken(null);
     setExpirationTime(null);
     localStorage.removeItem(localStorageKey('accessToken'));
@@ -57,12 +57,11 @@ export default function AuthProvider({ children }) {
       return;
     }
 
-
     if (signOutIfExpired()) {
       return;
     }
 
-    const expiresInMillis = (new Date(expirationTime) - Date.now()) + 1000;
+    const expiresInMillis = new Date(expirationTime) - Date.now() + 1000;
 
     const timeout = setTimeout(() => {
       signOutIfExpired();
@@ -70,7 +69,7 @@ export default function AuthProvider({ children }) {
 
     return () => {
       clearTimeout(timeout);
-    }
+    };
   }, [expirationTime, signOutIfExpired]);
 
   useEffect(() => {
@@ -86,9 +85,10 @@ export default function AuthProvider({ children }) {
       /* Expire the token 15 minutes before it actually does,
          this way it doesn't expire right after the user enters the page. */
       const expiresInSeconds = hashParams.get('expires_in') - 15 * 60;
-      setLocalStorage('expirationTime', (new Date(
-        new Date().getTime() + expiresInSeconds * 1000
-      )).toISOString());
+      setLocalStorage(
+        'expirationTime',
+        new Date(new Date().getTime() + expiresInSeconds * 1000).toISOString()
+      );
     }
 
     /* Clear the hash if there is a token. */
@@ -97,9 +97,12 @@ export default function AuthProvider({ children }) {
     }
   }, [location]);
 
-  useEffect(() => () => {
-    signOutIfExpired();
-  }, [signOutIfExpired])
+  useEffect(
+    () => () => {
+      signOutIfExpired();
+    },
+    [signOutIfExpired]
+  );
 
   const signedIn = useCallback(() => !!accessToken, [accessToken]);
 

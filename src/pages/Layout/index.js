@@ -2,7 +2,6 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from './Header';
-import Footer from './Footer';
 
 const RootDiv = styled('div')({
   display: 'flex',
@@ -21,7 +20,7 @@ const Main = styled('div')({
 export default function Layout() {
   return (
     <RootDiv>
-      <Header/>
+      <Header />
       <Main>
         <Outlet />
       </Main>

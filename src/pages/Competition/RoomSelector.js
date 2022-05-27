@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 import React from 'react';
 
 const Container = styled.div`
@@ -18,11 +18,17 @@ const Row = styled.div`
 const Button = styled.div`
   display: flex;
   flex: 1;
-  background-color: ${props => props.highlight ? '#ABB2B9' : 'white'};
+  background-color: ${(props) => (props.highlight ? '#ABB2B9' : 'white')};
   justify-content: center;
 `;
 
-export default function RoomSelector({ venues, currentVenue, currentRoom, onVenueChange, onRoomChange }) {
+export default function RoomSelector({
+  venues,
+  currentVenue,
+  currentRoom,
+  onVenueChange,
+  onRoomChange,
+}) {
   const rooms = venues.find(({ id }) => id === currentVenue).rooms;
 
   return (
@@ -32,8 +38,7 @@ export default function RoomSelector({ venues, currentVenue, currentRoom, onVenu
           <Button
             key={room.id}
             onClick={() => onRoomChange(room)}
-            highlight={room.id === currentRoom}
-          >
+            highlight={room.id === currentRoom}>
             {room.name}
           </Button>
         ))}
@@ -43,8 +48,7 @@ export default function RoomSelector({ venues, currentVenue, currentRoom, onVenu
           <Button
             key={venue.id}
             onClick={() => onVenueChange(venue)}
-            highlight={venue.id === currentVenue}
-          >
+            highlight={venue.id === currentVenue}>
             {venue.name}
           </Button>
         ))}

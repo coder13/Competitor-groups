@@ -4,14 +4,13 @@ import { useWCIF } from '../WCIFProvider';
 import { Container } from '../../../components/Grid';
 
 const flatMap = (arr, fn) => arr.reduce((xs, x) => xs.concat(fn(x)), []);
-const rooms = wcif =>
-  flatMap(wcif.schedule.venues, venue => venue.rooms);
-const allActivities = wcif => {
+const rooms = (wcif) => flatMap(wcif.schedule.venues, (venue) => venue.rooms);
+const allActivities = (wcif) => {
   const allChildActivities = ({ childActivities }) =>
     childActivities.length > 0
       ? [...childActivities, ...flatMap(childActivities, allChildActivities)]
       : childActivities;
-  const activities = flatMap(rooms(wcif), room => room.activities);
+  const activities = flatMap(rooms(wcif), (room) => room.activities);
   return [...activities, ...flatMap(activities, allChildActivities)];
 };
 
@@ -21,14 +20,12 @@ const Assignment = ({ assignment }) => {
 
   return (
     <tr>
-      <td>
-      {new Date(activity.startTime).toLocaleTimeString()}
-      </td>
+      <td>{new Date(activity.startTime).toLocaleTimeString()}</td>
       <td>{activity.name}</td>
       <td>({assignment.assignmentCode})</td>
     </tr>
-  )
-}
+  );
+};
 
 export default function Person() {
   const { wcif } = useWCIF();
@@ -53,7 +50,8 @@ export default function Person() {
               ...assignment,
               activity: _allActivities.find(({ id }) => id === assignment.activityId),
             }))
-            .sort((a,b) => new Date(a.activity.startTime) - new Date(b.activity.startTime)).map((assignment) => (
+            .sort((a, b) => new Date(a.activity.startTime) - new Date(b.activity.startTime))
+            .map((assignment) => (
               <Assignment key={assignment.activityId} assignment={assignment} />
             ))}
         </tbody>
