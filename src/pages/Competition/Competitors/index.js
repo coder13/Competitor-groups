@@ -1,20 +1,21 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { acceptedRegistration } from '../../../lib/utils';
-import { Container } from '../../../components/Grid';
+import { acceptedRegistration, byName } from '../../../lib/utils';
 
 export default function Competitors({ wcif }) {
   const acceptedPersons = useMemo(() => wcif.persons.filter(acceptedRegistration), [wcif]);
 
   return (
-    <Container style={{ overflowY: 'auto' }}>
+    <div className="w-full h-full flex flex-1 flex-col p-2">
       <ul>
-        {acceptedPersons.map((person) => (
-          <li>
-            <Link to={`persons/${person.registrantId}`}>{person.name}</Link>
-          </li>
+        {acceptedPersons.sort(byName).map((person) => (
+          <Link to={`persons/${person.registrantId}`}>
+            <li className="border bg-white list-none rounded-md px-1 py-1 flex cursor-pointer hover:bg-blue-200 group transition-colors my-1 flex-row">
+              {person.name}
+            </li>
+          </Link>
         ))}
       </ul>
-    </Container>
+    </div>
   );
 }

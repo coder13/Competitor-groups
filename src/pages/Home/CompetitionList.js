@@ -62,7 +62,7 @@ export default function CompetitionList() {
       {loading ? (
         <ReactLoading type="balls" />
       ) : (
-        <div className="w-1/2">
+        <div className="w-full sm:w-1/2">
           <h3 className="text-2xl mb-2">Upcoming Competitions</h3>
           <ul className="px-0">
             {upcomingCompetitions.map((comp) => (

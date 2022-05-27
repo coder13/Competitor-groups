@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useReducer, useCallback
 import { Link } from 'react-router-dom';
 import useWCAFetch from '../../hooks/useWCAFetch';
 import { Container, Item } from '../../components/Grid';
+import ReactLoading from 'react-loading';
 
 const INITIAL_STATE = {
   id: undefined,
@@ -30,22 +31,22 @@ function WCIFReducer(state, { type, payload }) {
 export default function WCIFProvider({ competitionId, children }) {
   const [wcif, dispatch] = useReducer(WCIFReducer, INITIAL_STATE);
   const [error, setError] = useState(null);
-  const [fetching, setFetching] = useState(true);
+  const [loading, setLoading] = useState(true);
   const wcaApiFetch = useWCAFetch();
 
   const fetchCompetition = useCallback(async () => {
-    setFetching(true);
+    setLoading(true);
     try {
       const data = await wcaApiFetch(`/competitions/${competitionId}/wcif/public`);
       dispatch({
         type: 'SET',
         payload: data,
       });
-      setFetching(false);
+      setLoading(false);
     } catch (e) {
       console.error(e);
       setError(e);
-      setFetching(false);
+      setLoading(false);
     }
   }, [competitionId, wcaApiFetch]);
 
@@ -53,26 +54,25 @@ export default function WCIFProvider({ competitionId, children }) {
     fetchCompetition();
   }, [fetchCompetition]);
 
-  console.log(50, fetching, error, wcif);
+  if (error) {
+    <div className="flex">
+      <p>Error loading competition: </p>
+      <p>{error.toString}</p>
+    </div>;
+  }
+
+  console.log(50, loading, error, wcif);
   return (
     <WCIFContext.Provider value={{ wcif, fetchCompetition, error, dispatch }}>
-      {fetching && !error ? (
-        'Loading...'
+      {loading && !error ? (
+        <ReactLoading type="cubes" />
       ) : (
-        <Container>
-          <Item
-            shrink
-            row
-            style={{
-              backgroundColor: '#CCC',
-              padding: '0.5em',
-              boxShadow:
-                '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
-            }}>
+        <div className="flex flex-col h-full">
+          <div className="flex flex-row p-2 shadow-md">
             <Link to={`/competitions/${wcif.id}`}>{wcif.name}</Link>
-          </Item>
-          <Item>{children}</Item>
-        </Container>
+          </div>
+          <div className="flex">{children}</div>
+        </div>
       )}
     </WCIFContext.Provider>
   );
