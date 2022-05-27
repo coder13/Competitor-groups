@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { Container } from '../../../components/Grid';
@@ -35,6 +36,8 @@ export default function Person() {
 
   const person = wcif.persons.find((p) => p.registrantId.toString() === registrantId);
 
+  const _allActivities = useMemo(() => allActivities(wcif), [wcif]);
+
   if (!person) {
     return 'Loading...';
   }
@@ -45,9 +48,14 @@ export default function Person() {
       <h4>Assignments</h4>
       <table>
         <tbody>
-          {person.assignments.map((assignment) => (
-            <Assignment key={assignment.activityId} assignment={assignment} />
-          ))}
+          {person.assignments
+            .map((assignment) => ({
+              ...assignment,
+              activity: _allActivities.find(({ id }) => id === assignment.activityId),
+            }))
+            .sort((a,b) => new Date(a.activity.startTime) - new Date(b.activity.startTime)).map((assignment) => (
+              <Assignment key={assignment.activityId} assignment={assignment} />
+            ))}
         </tbody>
       </table>
     </Container>
