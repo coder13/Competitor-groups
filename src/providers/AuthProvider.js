@@ -23,6 +23,7 @@ const AuthContext = createContext(null);
 export default function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(getLocalStorage('accessToken'));
   const [expirationTime, setExpirationTime] = useState(getLocalStorage('expirationTime')); // Time at which it expires
+  const [user, setUser] = useState(null);
 
   const location = useLocation();
 
@@ -104,9 +105,42 @@ export default function AuthProvider({ children }) {
     [signOutIfExpired]
   );
 
+  useEffect(() => {
+    if (!accessToken) {
+      return;
+    }
+
+    fetch(
+      `${WCA_ORIGIN}/api/v0/me`,
+      Object.assign(
+        {},
+        {
+          headers: new Headers({
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          }),
+        }
+      )
+    )
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw res.json();
+        }
+      })
+      .then((data) => {
+        console.log(data);
+        setUser(data.me);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [accessToken]);
+
   const signedIn = useCallback(() => !!accessToken, [accessToken]);
 
-  const value = { accessToken, signIn, signOut, signedIn };
+  const value = { accessToken, user, signIn, signOut, signedIn };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
