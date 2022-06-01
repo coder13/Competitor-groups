@@ -39,7 +39,7 @@ export default function AuthProvider({ children }) {
       client_id: WCA_OAUTH_CLIENT_ID,
       response_type: 'token',
       redirect_uri: oauthRedirectUri(),
-      scope: 'public manage_competitions email',
+      scope: 'public',
       state: 'foobar',
     });
     window.location = `${WCA_ORIGIN}/oauth/authorize?${params.toString()}`;
@@ -49,6 +49,7 @@ export default function AuthProvider({ children }) {
     console.log('signing out');
     setAccessToken(null);
     setExpirationTime(null);
+    setUser(null);
     localStorage.removeItem(localStorageKey('accessToken'));
     localStorage.removeItem(localStorageKey('expirationTime'));
   };

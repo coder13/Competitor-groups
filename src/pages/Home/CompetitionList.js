@@ -4,6 +4,8 @@ import ReactLoading from 'react-loading';
 import useWCAFetch from '../../hooks/useWCAFetch';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
+import { useAuth } from '../../providers/AuthProvider';
+import { toHaveErrorMessage } from '@testing-library/jest-dom/dist/matchers';
 
 const CompetitionLink = ({ id, name, start_date, country_iso2 }) => {
   return (
@@ -23,9 +25,18 @@ const CompetitionLink = ({ id, name, start_date, country_iso2 }) => {
 
 export default function CompetitionList() {
   const wcaApiFetch = useWCAFetch();
+  const { user } = useAuth();
   const [upcomingCompetitions, setUpcomingCompetitions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [upcomingCompetitionsForUser, setUpcomingCompetitionsForUser] = useState([]);
+  const [loadingUpcomingCompetitions, setLoadingUpcomingCompetitions] = useState(true);
+  const [loadingUpcomingCompetitionsForUser, setLoadingUpcomingCompetitionsForUser] =
+    useState(true);
+  const [errors, setErrors] = useState([]);
+
+  const getUpcomingCompetitionsForUser = useCallback(
+    () => wcaApiFetch(`/users/${user.id}?upcoming_competitions=true`),
+    [wcaApiFetch, user]
+  );
 
   const getUpcomingCompetitions = useCallback(() => {
     const oneWeekAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
@@ -45,21 +56,51 @@ export default function CompetitionList() {
           competitions.sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
         );
       })
-      .catch((error) => setError(error))
-      .finally(() => setLoading(false));
-  }, [getUpcomingCompetitions]);
+      .catch((err) => setErrors([...toHaveErrorMessage, err]))
+      .finally(() => setLoadingUpcomingCompetitions(false));
 
-  if (error) {
+    if (user) {
+      getUpcomingCompetitionsForUser()
+        .then(({ upcoming_competitions }) => {
+          setUpcomingCompetitionsForUser(
+            upcoming_competitions.sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
+          );
+        })
+        .catch((err) => setErrors([...toHaveErrorMessage, err]))
+        .finally(() => setLoadingUpcomingCompetitionsForUser(false));
+    }
+  }, [getUpcomingCompetitions, user, getUpcomingCompetitionsForUser]);
+
+  if (errors.length) {
     return (
       <div className="flex flex-col p-2 items-center">
-        <div className="w-1/2 border rounded-md border-red-400 m-2 p-2">{error.toString()}</div>
+        <div className="w-1/2 border rounded-md border-red-400 m-2 p-2">
+          {errors.map((error) => error.toString())}
+        </div>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col p-2 items-center">
-      {loading ? (
+      {user && (
+        <>
+          {loadingUpcomingCompetitionsForUser ? (
+            <ReactLoading type="balls" />
+          ) : (
+            <div className="w-full md:w-1/2">
+              <h3 className="text-2xl mb-2">Your Upcoming Competitions</h3>
+              <ul className="px-0">
+                {upcomingCompetitionsForUser.map((comp) => (
+                  <CompetitionLink key={comp.id} {...comp} />
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )}
+      <br />
+      {loadingUpcomingCompetitions ? (
         <ReactLoading type="balls" />
       ) : (
         <div className="w-full md:w-1/2">
