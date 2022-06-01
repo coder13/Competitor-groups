@@ -1,19 +1,3 @@
-export const acceptedRegistration = ({ registration }) => registration?.status === 'accepted';
-export const sortByDate = (a, b) => new Date(a.startTime) - new Date(b.startTime);
-export const byWorldRanking = (eventId) => (a, b) => {
-  if (!eventId) {
-    return 1;
-  }
-
-  const aPR = a.personalBests.find((i) => i.eventId.toString() === eventId.toString())?.best;
-  const bPR = b.personalBests.find((i) => i.eventId.toString() === eventId.toString())?.best;
-  if (aPR && bPR) {
-    return aPR - bPR;
-  } else {
-    return (aPR ? 1 : 0) - (aPR ? 1 : 0);
-  }
-};
-
 export const byName = (a, b) => a.name.localeCompare(b.name);
 
 export const unique = (v, i, arr) => {
@@ -21,11 +5,6 @@ export const unique = (v, i, arr) => {
   return i === arr.indexOf(v);
 };
 
-export const parseActivityCode = (activityCode) => {
-  const split = activityCode.split('-');
-  return {
-    eventId: split[0],
-    roundNumber: +split.find((i) => i.startsWith('r'))?.substring(1, 2),
-    groupNumber: +split.find((i) => i.startsWith('g'))?.substring(1, 2),
-  };
-};
+export const flatten = (arr) => arr.reduce((xs, x) => xs.concat(x), []);
+
+export const flatMap = (arr, fn) => arr.reduce((xs, x) => xs.concat(fn(x)), []);

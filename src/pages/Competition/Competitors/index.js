@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { acceptedRegistration, byName } from '../../../lib/utils';
+import { acceptedRegistration, byName } from '../../../lib/activities';
 
 export default function Competitors({ wcif }) {
   const acceptedPersons = useMemo(() => wcif.persons.filter(acceptedRegistration), [wcif]);

@@ -1,41 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
-import { parseActivityCode } from '../../../lib/utils';
-
-const flatMap = (arr, fn) => arr.reduce((xs, x) => xs.concat(fn(x)), []);
-const rooms = (wcif) => flatMap(wcif.schedule.venues, (venue) => venue.rooms);
-const allActivities = (wcif) => {
-  // get group activities b round
-  const allChildActivities = (activity) =>
-    activity.childActivities.length > 0
-      ? [
-          ...activity.childActivities.map((a) => ({
-            ...a,
-            parent: activity,
-          })),
-          ...flatMap(
-            activity.childActivities.map((a) => ({
-              ...a,
-              parent: activity,
-            })),
-            allChildActivities
-          ),
-        ]
-      : activity.childActivities.map((a) => ({
-          ...a,
-          parent: activity,
-        }));
-
-  // Rounds
-  const activities = flatMap(rooms(wcif), (room) =>
-    room.activities.map((a) => ({
-      ...a,
-      room,
-    }))
-  );
-  return [...activities, ...flatMap(activities, allChildActivities)];
-};
+import { allActivities, parseActivityCode } from '../../../lib/activities';
 
 const AssignmentCodesToText = {
   competitor: 'Competitor',
