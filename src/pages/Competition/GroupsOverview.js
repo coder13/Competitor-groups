@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   acceptedRegistration,
   groupActivitiesByRound,
@@ -45,12 +45,12 @@ const GroupsOverview = () => {
           ({ assignmentCode }) => assignmentCode.indexOf('staff') > -1
         );
 
-        obj.competing[event.id.toString()] = competingAssignment
-          ? competingAssignmentToText(competingAssignment.activity)
-          : '-';
+        obj.competing[event.id.toString()] =
+          competingAssignment && competingAssignmentToText(competingAssignment.activity);
 
-        obj.staffing[event.id.toString() + '_staff'] =
-          staffingAssignments.map(staffingAssignmentToText).join(',') || '-';
+        obj.staffing[event.id.toString() + '_staff'] = staffingAssignments
+          .map(staffingAssignmentToText)
+          .join(',');
       });
       return obj;
     },
@@ -80,6 +80,11 @@ const GroupsOverview = () => {
                 {event.id}
               </td>
             ))}
+            {wcif.events.map((event) => (
+              <td key={event.id} className="p-2">
+                {event.id}
+              </td>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -90,6 +95,11 @@ const GroupsOverview = () => {
               {wcif.events.map((event) => (
                 <td key={event.id}>
                   {person.assignmentsData.competing[event.id.toString()] || '-'}
+                </td>
+              ))}
+              {wcif.events.map((event) => (
+                <td key={event.id}>
+                  {person.assignmentsData.staffing[event.id.toString() + '_staff'] || '-'}
                 </td>
               ))}
             </tr>
