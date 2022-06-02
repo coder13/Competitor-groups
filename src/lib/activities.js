@@ -1,3 +1,4 @@
+import { eventNameById } from './events';
 import { flatMap } from './utils';
 
 export const parseActivityCode = (activityCode) => {
@@ -8,6 +9,18 @@ export const parseActivityCode = (activityCode) => {
     groupNumber: g && parseInt(g, 10),
     attemptNumber: a && parseInt(a, 10),
   };
+};
+
+export const activityCodeToName = (activityCode) => {
+  const { eventId, roundNumber, groupNumber, attemptNumber } = parseActivityCode(activityCode);
+  return [
+    eventId && eventNameById(eventId),
+    roundNumber && `Round ${roundNumber}`,
+    groupNumber && `Group ${groupNumber}`,
+    attemptNumber && `Attempt ${attemptNumber}`,
+  ]
+    .filter((x) => x)
+    .join(', ');
 };
 
 export const rooms = (wcif) => flatMap(wcif.schedule.venues, (venue) => venue.rooms);

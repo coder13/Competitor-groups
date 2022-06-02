@@ -68,8 +68,17 @@ export default function WCIFProvider({ competitionId, children }) {
         <ReactLoading type="cubes" />
       ) : (
         <div className="flex flex-col w-full h-full">
-          <div className="flex flex-row p-2 shadow-md">
-            <Link to={`/competitions/${wcif.id}`}>{wcif.name}</Link>
+          <div className="flex flex-row shadow-md pl-2">
+            <Link
+              to={`/competitions/${wcif.id}`}
+              className="p-2 hover:bg-gray-100 hover:text-blue-700">
+              {wcif.name}
+            </Link>
+            <Link
+              to={`/competitions/${wcif.id}/events`}
+              className="p-2 hover:bg-gray-100 hover:text-blue-700">
+              Events
+            </Link>
           </div>
           <div className="flex flex-col w-full items-center">
             <div className="w-full md:w-1/2">{children}</div>

@@ -6,6 +6,8 @@ import Competition from './pages/Competition';
 import CompetitionHome from './pages/Competition/Home';
 import CompetitionPerson from './pages/Competition/Person';
 import CompetitionGroupsOverview from './pages/Competition/GroupsOverview';
+import CompetitionEvents from './pages/Competition/Events';
+import CompetitionRound from './pages/Competition/Round';
 import Home from './pages/Home';
 import history from './lib/history';
 import AuthProvider from './providers/AuthProvider';
@@ -20,6 +22,8 @@ const App = () => (
             <Route index element={<CompetitionHome />} />
             <Route path="persons/:registrantId" element={<CompetitionPerson />} />
             <Route path="overview" element={<CompetitionGroupsOverview />} />
+            <Route path="events/:eventId-r:roundNumber" element={<CompetitionRound />} />
+            <Route path="events" element={<CompetitionEvents />} />
           </Route>
         </Route>
       </Routes>
