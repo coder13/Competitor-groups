@@ -36,8 +36,8 @@ const Events = () => {
           <thead className="bg-slate-200">
             <tr>
               <th className="px-6 py-3">Event</th>
-              <th className="px-6 py-3">Round</th>
-              <th className="px-6 py-3">Groups</th>
+              <th className="px-6 py-3 text-center">Round</th>
+              <th className="px-6 py-3 text-center">Groups</th>
               <th className="px-6 py-3">
                 <span class="sr-only">View</span>
               </th>
@@ -48,10 +48,15 @@ const Events = () => {
               event.rounds.map((round, index) => {
                 const url = `/competitions/${wcif.id}/events/${round.id}`;
                 return (
-                  <Link key={round.id} className="table-row hover:bg-slate-100" to={url}>
+                  <Link
+                    key={round.id}
+                    className="table-row hover:bg-blue-100 border even:bg-slate-50"
+                    to={url}>
                     <td className="px-5 py-3">{index === 0 ? eventNameById(event.id) : ''}</td>
-                    <td className="px-5 py-3">{parseActivityCode(round.id).roundNumber}</td>
-                    <td className="px-5 py-3">{uniqueGroupCountForRound(round.id)}</td>
+                    <td className="px-5 py-3 text-center">
+                      {parseActivityCode(round.id).roundNumber}
+                    </td>
+                    <td className="px-5 py-3 text-center">{uniqueGroupCountForRound(round.id)}</td>
                     <td className="px-5 py-3 text-right">View</td>
                   </Link>
                 );

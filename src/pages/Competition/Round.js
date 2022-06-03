@@ -5,6 +5,7 @@ import {
   groupActivitiesByRound,
   parseActivityCode,
 } from '../../lib/activities';
+import { byName } from '../../lib/utils';
 import { useWCIF } from './WCIFProvider';
 
 export default function Round() {
@@ -18,7 +19,7 @@ export default function Round() {
     [event?.rounds, activityCode]
   );
 
-  const groups = useMemo(() => groupActivitiesByRound(wcif, round.id));
+  const groups = useMemo(() => groupActivitiesByRound(wcif, round.id), [round.id, wcif]);
 
   const personAssignments = useMemo(() => {
     return wcif.persons
@@ -50,7 +51,7 @@ export default function Round() {
           !!person?.assignments?.competingActivity ||
           !!person?.assignments?.staffingActivities?.length > 0
       );
-  });
+  }, [groups, wcif.persons]);
 
   return (
     <div className="p-2">
@@ -59,13 +60,13 @@ export default function Round() {
         <thead>
           <tr>
             <th className="px-6 py-3">Name</th>
-            <th className="px-6 py-3">Competing</th>
-            <th className="px-6 py-3">Judging</th>
-            <th className="px-6 py-3">Scrambling</th>
+            <th className="px-6 py-3">Compete</th>
+            <th className="px-6 py-3">Judge</th>
+            <th className="px-6 py-3">Scramble</th>
           </tr>
         </thead>
         <tbody>
-          {personAssignments.map((person) => (
+          {personAssignments.sort(byName).map((person) => (
             <Link
               key={person.registrantId}
               className="table-row hover:bg-slate-100"
@@ -73,14 +74,21 @@ export default function Round() {
               <td className="px-6 py-3">{person.name}</td>
               <td
                 className="px-6 py-3 text-white"
-                style={{ backgroundColor: person.assignments.competingActivity.parent.room.color }}>
-                {parseActivityCode(person.assignments.competingActivity.activityCode).groupNumber}
+                style={{
+                  backgroundColor:
+                    person.assignments.competingActivity?.parent.room.color || 'inherit',
+                }}>
+                {person.assignments.competingActivity
+                  ? parseActivityCode(person.assignments.competingActivity.activityCode).groupNumber
+                  : '-'}
               </td>
               <td className="px-6 py-3 text-white">
                 {person.assignments.staffingActivities
                   .filter((s) => s.assignment.assignmentCode === 'staff-judge')
                   .map((s) => (
-                    <span className="p-3" style={{ backgroundColor: s.activity.parent.room.color }}>
+                    <span
+                      className="p-3"
+                      style={{ backgroundColor: s.activity?.parent.room.color || 'inherit' }}>
                       {parseActivityCode(s.activity.activityCode).groupNumber}
                     </span>
                   ))}
@@ -89,7 +97,9 @@ export default function Round() {
                 {person.assignments.staffingActivities
                   .filter((s) => s.assignment.assignmentCode === 'staff-scrambler')
                   .map((s) => (
-                    <span className="p-3" style={{ backgroundColor: s.activity.parent.room.color }}>
+                    <span
+                      className="p-3"
+                      style={{ backgroundColor: s.activity?.parent.room.color || 'inherit' }}>
                       {parseActivityCode(s.activity.activityCode).groupNumber}
                     </span>
                   ))}
