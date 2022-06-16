@@ -1,6 +1,6 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { allActivities, parseActivityCode } from '../../lib/activities';
+import { groupActivitiesByRound, parseActivityCode } from '../../lib/activities';
 import { eventNameById } from '../../lib/events';
 import { useWCIF } from './WCIFProvider';
 
@@ -11,21 +11,12 @@ function onlyUnique(value, index, self) {
 const Events = () => {
   const { wcif } = useWCIF();
 
-  const groups = useMemo(() => allActivities(wcif), [wcif]);
   const uniqueGroupCountForRound = useCallback(
     (roundId) =>
-      groups
-        .filter((groupActivity) => {
-          const groupActivityCode = parseActivityCode(groupActivity.activityCode);
-          const roundActivityCode = parseActivityCode(roundId);
-          return (
-            groupActivityCode.eventId === roundActivityCode.eventId &&
-            groupActivityCode.roundNumber === roundActivityCode.roundNumber
-          );
-        })
+      groupActivitiesByRound(wcif, roundId)
         .map(({ activityCode }) => activityCode)
         .filter(onlyUnique).length,
-    [groups]
+    [wcif]
   );
 
   return (
