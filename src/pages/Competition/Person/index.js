@@ -1,15 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { allActivities, parseActivityCode } from '../../../lib/activities';
+import { byDate, groupBy } from '../../../lib/utils';
 
 const DaysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-const groupBy = (xs, key) =>
-  xs.reduce((rv, x) => {
-    (rv[x[key]] = rv[x[key]] || []).push(x);
-    return rv;
-  }, {});
 
 const AssignmentCodesToText = {
   competitor: 'Competitor',
@@ -37,7 +32,7 @@ export default function Person() {
           ...assignment,
           activity: _allActivities.find(({ id }) => id === assignment.activityId),
         }))
-        .sort((a, b) => new Date(a.activity.startTime) - new Date(b.activity.startTime)),
+        .sort(byDate),
     [_allActivities, person.assignments]
   );
 
@@ -52,78 +47,83 @@ export default function Person() {
       ...a,
       date: DaysOfWeek[new Date(a.activity.startTime).getDay()],
     })),
-    'date'
+    (x) => x.date
   );
 
   const renderAssignments = () => (
     <>
-      <h4 className="text-xl mb-2">Assignments</h4>
-      <table className="text-xs sm:text-sm">
-        <thead>
-          <tr>
-            <td className="text-center">Time</td>
-            <td className="text-center">Event</td>
-            <td className="text-center">Round</td>
-            <td className="text-center">Group</td>
-            <td className="text-center">Stage</td>
-            <td className="text-center">Assignment</td>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(assignmentsSplitAcrossDates).map((dayOfWeek) => (
-            <>
-              <tr>
-                <td colspan={6} className="font-bold text-lg text-center p-2">
-                  {dayOfWeek}
-                </td>
-              </tr>
-              {assignmentsSplitAcrossDates[dayOfWeek].map((assignment) => {
-                const activity = getActivity(assignment);
-                const { eventId, roundNumber, groupNumber } = parseActivityCode(
-                  activity.activityCode
-                );
-                const roomName = activity?.room?.name || activity?.parent?.room?.name;
+      <h4 className="text-xl mb-2 text-center">Assignments</h4>
+      <div className="shadow-md">
+        <table className="w-full text-xs sm:text-sm">
+          <thead>
+            <tr className="bg-slate-100 shadow-sm">
+              <th className="py-2 text-center">Time</th>
+              <th className="py-2 text-center">Event</th>
+              <th className="py-2 text-center">Round</th>
+              <th className="py-2 text-center">Group</th>
+              <th className="py-2 text-center">Stage</th>
+              <th className="py-2 text-center">Assignment</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.keys(assignmentsSplitAcrossDates).map((dayOfWeek) => (
+              <>
+                <tr>
+                  <td colSpan={6} className="font-bold text-lg text-center py-2">
+                    {dayOfWeek}
+                  </td>
+                </tr>
+                {assignmentsSplitAcrossDates[dayOfWeek].map((assignment) => {
+                  const activity = getActivity(assignment);
+                  const { eventId, roundNumber, groupNumber } = parseActivityCode(
+                    activity.activityCode
+                  );
+                  const roomName = activity?.room?.name || activity?.parent?.room?.name;
 
-                return (
-                  <tr
-                    key={`${assignment.activityId}-${assignment.assignmentCode}`}
-                    className="text-xs">
-                    <td className="py-2 text-center">
-                      {new Date(activity.startTime).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </td>
-                    <td className="py-2 text-center">
-                      <span className={`cubing-icon event-${eventId} mx-1`} />
-                    </td>
-                    <td className="py-2 text-center">{roundNumber}</td>
-                    <td className="py-2 text-center">{groupNumber || '*'}</td>
-                    <td className="py-2 text-center">{roomName}</td>
-                    <td className="py-2 text-center">
-                      {AssignmentCodesToText[assignment.assignmentCode] ||
-                        assignment.assignmentCode}
-                    </td>
-                  </tr>
-                );
-              })}
-            </>
-          ))}
-        </tbody>
-      </table>
+                  return (
+                    <Link
+                      key={`${assignment.activityId}-${assignment.assignmentCode}`}
+                      className="table-row text-xs even:bg-slate-50 hover:bg-slate-100"
+                      to={`/competitions/${wcif.id}/activities/${assignment.activityId}`}>
+                      <td className="py-2 text-center">
+                        {new Date(activity.startTime).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </td>
+                      <td className="py-2 text-center">
+                        <span className={`cubing-icon event-${eventId} mx-1`} />
+                      </td>
+                      <td className="py-2 text-center">{roundNumber}</td>
+                      <td className="py-2 text-center">{groupNumber || '*'}</td>
+                      <td className="py-2 text-center">{roomName}</td>
+                      <td className="py-2 text-center">
+                        {AssignmentCodesToText[assignment.assignmentCode] ||
+                          assignment.assignmentCode}
+                      </td>
+                    </Link>
+                  );
+                })}
+              </>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 
   return (
-    <div className="flex flex-col p-4">
-      <h3 className="text-2xl">{person.name}</h3>
-      {person.wcaId && <p className="text-sm">{person.wcaId}</p>}
-      <p className="text-md">
-        <span>Registered Events:</span>
-        {person.registration.eventIds.map((eventId) => (
-          <span key={eventId} className={`cubing-icon event-${eventId} mx-1`} />
-        ))}
-      </p>
+    <div className="flex flex-col p-1">
+      <div className="p-1">
+        <h3 className="text-2xl">{person.name}</h3>
+        {person.wcaId && <p className="text-sm">{person.wcaId}</p>}
+        <p className="text-md">
+          <span>Registered Events:</span>
+          {person.registration.eventIds.map((eventId) => (
+            <span key={eventId} className={`cubing-icon event-${eventId} mx-1`} />
+          ))}
+        </p>
+      </div>
       <hr className="my-2" />
 
       {person.assignments.length > 0 ? renderAssignments() : <div>No Assignments</div>}

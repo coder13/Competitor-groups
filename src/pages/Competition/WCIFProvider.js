@@ -79,6 +79,11 @@ export default function WCIFProvider({ competitionId, children }) {
               className="p-3 text-blue-500 hover:bg-gray-100 hover:text-blue-700">
               Events
             </Link>
+            <Link
+              to={`/competitions/${wcif.id}/activities`}
+              className="p-3 text-blue-500 hover:bg-gray-100 hover:text-blue-700">
+              Schedule
+            </Link>
           </div>
           <div className="flex flex-col w-full items-center">
             <div className="w-full md:w-1/2">{children}</div>

@@ -8,6 +8,8 @@ import CompetitionPerson from './pages/Competition/Person';
 import CompetitionGroupsOverview from './pages/Competition/GroupsOverview';
 import CompetitionEvents from './pages/Competition/Events';
 import CompetitionRound from './pages/Competition/Round';
+import CompetitionGroup from './pages/Competition/Group';
+import CompetitionSchedule from './pages/Competition/Schedule';
 import Home from './pages/Home';
 import history from './lib/history';
 import AuthProvider from './providers/AuthProvider';
@@ -24,6 +26,8 @@ const App = () => (
             <Route path="overview" element={<CompetitionGroupsOverview />} />
             <Route path="events/:eventId-r:roundNumber" element={<CompetitionRound />} />
             <Route path="events" element={<CompetitionEvents />} />
+            <Route path="activities" element={<CompetitionSchedule />} />
+            <Route path="activities/:activityId" element={<CompetitionGroup />} />
           </Route>
         </Route>
       </Routes>

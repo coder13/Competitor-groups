@@ -1,4 +1,5 @@
 export const byName = (a, b) => a.name.localeCompare(b.name);
+export const byDate = (a, b) => new Date(a.startTime) - new Date(b.startTime);
 
 export const unique = (v, i, arr) => {
   // compare index with first element index
@@ -8,3 +9,16 @@ export const unique = (v, i, arr) => {
 export const flatten = (arr) => arr.reduce((xs, x) => xs.concat(x), []);
 
 export const flatMap = (arr, fn) => arr.reduce((xs, x) => xs.concat(fn(x)), []);
+
+export const groupBy = (xs, getKey) =>
+  xs.reduce((rv, x) => {
+    (rv[getKey(x)] ||= []).push(x);
+    return rv;
+  }, {});
+
+export const shortTime = (isoString, timeZone = 'UTC') =>
+  new Date(isoString).toLocaleTimeString('en-US', {
+    timeZone,
+    hour: 'numeric',
+    minute: 'numeric',
+  });
