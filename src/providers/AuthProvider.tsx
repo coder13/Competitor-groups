@@ -1,12 +1,20 @@
-import { useState, useEffect, createContext, useContext, useCallback } from 'react';
+import {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  useCallback,
+  PropsWithChildren,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import { WCA_ORIGIN, WCA_OAUTH_CLIENT_ID } from '../lib/wca-env';
 import history from '../lib/history';
 
-const localStorageKey = (key) => `wca_gantt_chart.${WCA_OAUTH_CLIENT_ID}.${key}`;
+const localStorageKey = (key: string) => `wca_gantt_chart.${WCA_OAUTH_CLIENT_ID}.${key}`;
 
-const getLocalStorage = (key) => localStorage.getItem(localStorageKey(key));
-const setLocalStorage = (key, value) => localStorage.setItem(localStorageKey(key), value);
+const getLocalStorage = (key: string) => localStorage.getItem(localStorageKey(key));
+const setLocalStorage = (key: string, value: string) =>
+  localStorage.setItem(localStorageKey(key), value);
 
 /**
  * Allows for use of staging api in production
@@ -18,12 +26,35 @@ const oauthRedirectUri = () => {
   return stagingParam ? `${appUri}?staging=true` : appUri;
 };
 
-const AuthContext = createContext(null);
+type User = {
+  id: number;
+  name: string;
+};
 
-export default function AuthProvider({ children }) {
-  const [accessToken, setAccessToken] = useState(getLocalStorage('accessToken'));
-  const [expirationTime, setExpirationTime] = useState(getLocalStorage('expirationTime')); // Time at which it expires
-  const [user, setUser] = useState(null);
+type AuthProviderContext = {
+  accessToken: string | null;
+  user: User | null;
+  signIn: () => void;
+  signOut: () => void;
+  signedIn: () => boolean;
+};
+
+const AuthContext = createContext<AuthProviderContext>({
+  accessToken: null,
+  user: null,
+  signIn: () => null,
+  signOut: () => null,
+  signedIn: () => false,
+});
+
+type AuthProviderProps = PropsWithChildren;
+
+export default function AuthProvider({ children }: AuthProviderProps) {
+  const [accessToken, setAccessToken] = useState<string | null>(getLocalStorage('accessToken'));
+  const [expirationTime] = useState<Date | null>(
+    getLocalStorage('expirationTime') ? new Date(getLocalStorage('expirationTime') as string) : null
+  ); // Time at which it expires
+  const [user, setUser] = useState<User | null>(null);
 
   const location = useLocation();
 
@@ -42,13 +73,12 @@ export default function AuthProvider({ children }) {
       scope: 'public',
       state: 'foobar',
     });
-    window.location = `${WCA_ORIGIN}/oauth/authorize?${params.toString()}`;
+    window.location.href = `${WCA_ORIGIN}/oauth/authorize?${params.toString()}`;
   };
 
   const signOut = () => {
     console.log('signing out');
     setAccessToken(null);
-    setExpirationTime(null);
     setUser(null);
     localStorage.removeItem(localStorageKey('accessToken'));
     localStorage.removeItem(localStorageKey('expirationTime'));
@@ -59,11 +89,7 @@ export default function AuthProvider({ children }) {
       return;
     }
 
-    if (signOutIfExpired()) {
-      return;
-    }
-
-    const expiresInMillis = new Date(expirationTime) - Date.now() + 1000;
+    const expiresInMillis = new Date(expirationTime).getTime() - Date.now() + 1000;
 
     const timeout = setTimeout(() => {
       signOutIfExpired();
@@ -80,13 +106,13 @@ export default function AuthProvider({ children }) {
 
     if (hashParams.has('access_token')) {
       setAccessToken(hashParams.get('access_token'));
-      setLocalStorage('accessToken', hashParams.get('access_token'));
+      setLocalStorage('accessToken', hashParams.get('access_token') as string);
     }
 
     if (hashParams.has('expires_in')) {
       /* Expire the token 15 minutes before it actually does,
          this way it doesn't expire right after the user enters the page. */
-      const expiresInSeconds = hashParams.get('expires_in') - 15 * 60;
+      const expiresInSeconds = parseInt(hashParams.get('expires_in') as string) - 15 * 60;
       setLocalStorage(
         'expirationTime',
         new Date(new Date().getTime() + expiresInSeconds * 1000).toISOString()

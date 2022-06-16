@@ -6,9 +6,6 @@
   "singleQuote": true,
   "bracketSpacing": true,
   "bracketSameLine": true,
-  "importOrder": [
-    "^react/(.*)$",
-    "^@mui/(.*)$",
-    "^[./]"
-  ]
+  "endOfLine": "lf",
+  "importOrder": ["^react/(.*)$", "^@mui/(.*)$", "^[./]"]
 }

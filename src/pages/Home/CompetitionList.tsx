@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import ReactLoading from 'react-loading';
-import useWCAFetch from '../../hooks/useWCAFetch';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
+import useWCAFetch from '../../hooks/useWCAFetch';
 import { useAuth } from '../../providers/AuthProvider';
-import { toHaveErrorMessage } from '@testing-library/jest-dom/dist/matchers';
+import { APICompetition } from '../../types';
 
-const CompetitionLink = ({ id, name, start_date, country_iso2 }) => {
+const CompetitionLink = ({ id, name, start_date, country_iso2 }: APICompetition) => {
   return (
     <Link to={`/competitions/${id}`}>
       <li className="border bg-white list-none rounded-md px-1 py-1 flex cursor-pointer hover:bg-blue-200 group transition-colors my-1 flex-row">
@@ -26,15 +26,17 @@ const CompetitionLink = ({ id, name, start_date, country_iso2 }) => {
 export default function CompetitionList() {
   const wcaApiFetch = useWCAFetch();
   const { user } = useAuth();
-  const [upcomingCompetitions, setUpcomingCompetitions] = useState([]);
-  const [upcomingCompetitionsForUser, setUpcomingCompetitionsForUser] = useState([]);
-  const [loadingUpcomingCompetitions, setLoadingUpcomingCompetitions] = useState(true);
+  const [upcomingCompetitions, setUpcomingCompetitions] = useState<APICompetition[]>([]);
+  const [upcomingCompetitionsForUser, setUpcomingCompetitionsForUser] = useState<APICompetition[]>(
+    []
+  );
+  const [loadingUpcomingCompetitions, setLoadingUpcomingCompetitions] = useState<boolean>(true);
   const [loadingUpcomingCompetitionsForUser, setLoadingUpcomingCompetitionsForUser] =
-    useState(true);
-  const [errors, setErrors] = useState([]);
+    useState<boolean>(true);
+  const [errors, setErrors] = useState<any>([]);
 
   const getUpcomingCompetitionsForUser = useCallback(
-    () => wcaApiFetch(`/users/${user.id}?upcoming_competitions=true`),
+    () => wcaApiFetch(`/users/${user?.id}?upcoming_competitions=true`),
     [wcaApiFetch, user]
   );
 
@@ -51,22 +53,28 @@ export default function CompetitionList() {
 
   useEffect(() => {
     getUpcomingCompetitions()
-      .then((competitions) => {
-        setUpcomingCompetitions(
-          competitions.sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
-        );
+      .then((competitions: APICompetition[]) => {
+        if (competitions) {
+          setUpcomingCompetitions(
+            competitions.sort(
+              (a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
+            )
+          );
+        }
       })
-      .catch((err) => setErrors([...toHaveErrorMessage, err]))
+      .catch((err: any) => setErrors([...errors, err]))
       .finally(() => setLoadingUpcomingCompetitions(false));
 
     if (user) {
       getUpcomingCompetitionsForUser()
-        .then(({ upcoming_competitions }) => {
+        .then(({ upcoming_competitions }: { upcoming_competitions: APICompetition[] }) => {
           setUpcomingCompetitionsForUser(
-            upcoming_competitions.sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
+            upcoming_competitions.sort(
+              (a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
+            )
           );
         })
-        .catch((err) => setErrors([...toHaveErrorMessage, err]))
+        .catch((err: any) => setErrors([...errors, err]))
         .finally(() => setLoadingUpcomingCompetitionsForUser(false));
     }
   }, [getUpcomingCompetitions, user, getUpcomingCompetitionsForUser]);
@@ -75,7 +83,7 @@ export default function CompetitionList() {
     return (
       <div className="flex flex-col p-2 items-center">
         <div className="w-1/2 border rounded-md border-red-400 m-2 p-2">
-          {errors.map((error) => error.toString())}
+          {errors.map((error: any) => error.toString())}
         </div>
       </div>
     );

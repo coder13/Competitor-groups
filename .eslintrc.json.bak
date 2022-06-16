@@ -1,0 +1,36 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:import/recommended",
+    "plugin:prettier/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "overrides": [{
+    "files": ["**/*.ts", "**/*.tsx"],
+    "plugins": [
+      "@typescript-eslint"
+    ]
+  }],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-filename-extension": [0, { "extensions": [".ts"] }]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    },
+    "react": {
+      "version": "detect"
+    }
+  },
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  }
+}

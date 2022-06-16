@@ -7,6 +7,16 @@
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+<<<<<<< Updated upstream
+=======
+    "@types/jest": "^28.1.1",
+    "@types/node": "^17.0.40",
+    "@types/react": "^18.0.12",
+    "@types/react-dom": "^18.0.5",
+    "@types/react-router-dom": "^5.3.3",
+    "@wca/helpers": "^1.1.1",
+    "clsx": "^1.1.1",
+>>>>>>> Stashed changes
     "country-flag-icons": "^1.5.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -14,6 +24,7 @@
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "styled-components": "^5.3.3",
+    "typescript": "^4.7.3",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
@@ -42,9 +53,15 @@
     ]
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.27.1",
+    "@typescript-eslint/parser": "^5.27.1",
     "autoprefixer": "^10.4.7",
-    "eslint": "^8.16.0",
+    "eslint": "^8.17.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-eslint-plugin": "^4.2.0",
+    "eslint-plugin-jest": "^26.5.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react-hooks": "^4.5.0",
     "postcss": "^8.4.14",
     "prettier": "^2.6.2",
     "surge": "^0.23.1",
