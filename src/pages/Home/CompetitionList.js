@@ -6,6 +6,7 @@ import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { useAuth } from '../../providers/AuthProvider';
 import { toHaveErrorMessage } from '@testing-library/jest-dom/dist/matchers';
+import { byDate } from '../../lib/utils';
 
 const CompetitionLink = ({ id, name, start_date, country_iso2 }) => {
   return (
@@ -23,15 +24,39 @@ const CompetitionLink = ({ id, name, start_date, country_iso2 }) => {
   );
 };
 
+const CompetitionListFragment = ({ title, competitions }) => {
+  return (
+    <div className="w-full md:w-1/2">
+      <h3 className="text-2xl mb-2">{title}</h3>
+      {competitions.length ? (
+        <ul className="px-0">
+          {competitions.sort(byDate).map((comp) => (
+            <CompetitionLink key={comp.id} {...comp} />
+          ))}
+        </ul>
+      ) : (
+        <div>No Competitions</div>
+      )}
+    </div>
+  );
+};
+
 export default function CompetitionList() {
   const wcaApiFetch = useWCAFetch();
   const { user } = useAuth();
   const [upcomingCompetitions, setUpcomingCompetitions] = useState([]);
+  const [ongoingCompetitionsForUser, setOngoingCompetitionsForUser] = useState([]);
   const [upcomingCompetitionsForUser, setUpcomingCompetitionsForUser] = useState([]);
   const [loadingUpcomingCompetitions, setLoadingUpcomingCompetitions] = useState(true);
+  const [loadingOngoingCompetitionsForUser, setLoadingOngoingCompetitionsForUser] = useState(true);
   const [loadingUpcomingCompetitionsForUser, setLoadingUpcomingCompetitionsForUser] =
     useState(true);
   const [errors, setErrors] = useState([]);
+
+  const getOngoingCompetitionsForUser = useCallback(
+    () => wcaApiFetch(`/users/${user.id}?ongoing_competitions=true`),
+    [wcaApiFetch, user]
+  );
 
   const getUpcomingCompetitionsForUser = useCallback(
     () => wcaApiFetch(`/users/${user.id}?upcoming_competitions=true`),
@@ -52,24 +77,32 @@ export default function CompetitionList() {
   useEffect(() => {
     getUpcomingCompetitions()
       .then((competitions) => {
-        setUpcomingCompetitions(
-          competitions.sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
-        );
+        setUpcomingCompetitions(competitions);
       })
       .catch((err) => setErrors([...toHaveErrorMessage, err]))
       .finally(() => setLoadingUpcomingCompetitions(false));
 
     if (user) {
+      getOngoingCompetitionsForUser()
+        .then(({ ongoing_competitions }) => {
+          setOngoingCompetitionsForUser(ongoing_competitions);
+        })
+        .catch((err) => setErrors([...toHaveErrorMessage, err]))
+        .finally(() => setLoadingOngoingCompetitionsForUser(false));
+
       getUpcomingCompetitionsForUser()
         .then(({ upcoming_competitions }) => {
-          setUpcomingCompetitionsForUser(
-            upcoming_competitions.sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
-          );
+          setUpcomingCompetitionsForUser(upcoming_competitions);
         })
         .catch((err) => setErrors([...toHaveErrorMessage, err]))
         .finally(() => setLoadingUpcomingCompetitionsForUser(false));
     }
-  }, [getUpcomingCompetitions, user, getUpcomingCompetitionsForUser]);
+  }, [
+    getUpcomingCompetitions,
+    user,
+    getUpcomingCompetitionsForUser,
+    getOngoingCompetitionsForUser,
+  ]);
 
   if (errors.length) {
     return (
@@ -85,17 +118,15 @@ export default function CompetitionList() {
     <div className="flex flex-col p-2 items-center">
       {user && (
         <>
-          {loadingUpcomingCompetitionsForUser ? (
+          {loadingUpcomingCompetitionsForUser && loadingOngoingCompetitionsForUser ? (
             <ReactLoading type="balls" />
           ) : (
-            <div className="w-full md:w-1/2">
-              <h3 className="text-2xl mb-2">Your Upcoming Competitions</h3>
-              <ul className="px-0">
-                {upcomingCompetitionsForUser.map((comp) => (
-                  <CompetitionLink key={comp.id} {...comp} />
-                ))}
-              </ul>
-            </div>
+            <CompetitionListFragment
+              title="Your Upcoming Competitions"
+              competitions={(ongoingCompetitionsForUser || []).concat(
+                upcomingCompetitionsForUser || []
+              )}
+            />
           )}
         </>
       )}
@@ -103,14 +134,10 @@ export default function CompetitionList() {
       {loadingUpcomingCompetitions ? (
         <ReactLoading type="balls" />
       ) : (
-        <div className="w-full md:w-1/2">
-          <h3 className="text-2xl mb-2">Upcoming Competitions</h3>
-          <ul className="px-0">
-            {upcomingCompetitions.map((comp) => (
-              <CompetitionLink key={comp.id} {...comp} />
-            ))}
-          </ul>
-        </div>
+        <CompetitionListFragment
+          title="Upcoming Competitions"
+          competitions={upcomingCompetitions}
+        />
       )}
     </div>
   );
