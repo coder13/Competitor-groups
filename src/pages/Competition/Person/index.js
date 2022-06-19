@@ -40,8 +40,6 @@ export default function Person() {
     return 'Loading...';
   }
 
-  console.log(69, assignments);
-
   const assignmentsSplitAcrossDates = groupBy(
     assignments.map((a) => ({
       ...a,

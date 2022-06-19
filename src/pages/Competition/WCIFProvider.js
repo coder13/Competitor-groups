@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect, useReducer, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import useWCAFetch from '../../hooks/useWCAFetch';
-import { Container, Item } from '../../components/Grid';
 import ReactLoading from 'react-loading';
 
 const INITIAL_STATE = {
@@ -61,7 +60,6 @@ export default function WCIFProvider({ competitionId, children }) {
     </div>;
   }
 
-  console.log(50, loading, error, wcif);
   return (
     <WCIFContext.Provider value={{ wcif, fetchCompetition, error, dispatch }}>
       {loading && !error ? (
@@ -83,6 +81,11 @@ export default function WCIFProvider({ competitionId, children }) {
               to={`/competitions/${wcif.id}/activities`}
               className="p-3 text-blue-500 hover:bg-gray-100 hover:text-blue-700">
               Schedule
+            </Link>
+            <Link
+              to={`/competitions/${wcif.id}/scramblers`}
+              className="p-3 text-blue-500 hover:bg-gray-100 hover:text-blue-700">
+              Scramblers
             </Link>
           </div>
           <div className="flex flex-col w-full items-center">

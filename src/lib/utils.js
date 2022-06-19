@@ -16,6 +16,14 @@ export const groupBy = (xs, getKey) =>
     return rv;
   }, {});
 
+export const groupByMap = (xs, getKey, fn) => {
+  const grouped = groupBy(xs, getKey);
+  Object.keys(grouped).forEach((key) => {
+    grouped[key] = fn(grouped[key]);
+  });
+  return grouped;
+};
+
 export const shortTime = (isoString, timeZone = 'UTC') =>
   new Date(isoString).toLocaleTimeString('en-US', {
     timeZone,
