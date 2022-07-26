@@ -57,29 +57,34 @@ export default function ScramblerSchedule() {
 
   return (
     <div>
-      <p>Scrambler Schedule</p>
-      <div className="flex items-center flex-col">
-        <p className="text-xl">Rooms</p>
-        <div className="flex flex-row w-full justify-evenly p-4">
-          {_rooms.map((room) => (
-            <div class="form-check" onClick={() => setRoomSelector(room.name)}>
-              <input
-                className="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2"
-                type="radio"
-                name={`room-selector-${room.name}`}
-                id={`room-selector-${room.name}`}
-                checked={roomSelector === room.name}
-              />
-              <label
-                className="form-check-label inline-block text-gray-800 cursor-pointer"
-                for={`room-selector-${room.name}`}>
-                {room.name}
-              </label>
-            </div>
-          ))}
+      <div className="print:hidden">
+        <p>Scrambler Schedule</p>
+        <div className="flex items-center flex-col">
+          <p className="text-xl">Rooms</p>
+          <div className="flex flex-row w-full justify-evenly p-4">
+            {_rooms.map((room) => (
+              <div class="form-check" onClick={() => setRoomSelector(room.name)}>
+                <input
+                  className="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2"
+                  type="radio"
+                  name={`room-selector-${room.name}`}
+                  id={`room-selector-${room.name}`}
+                  checked={roomSelector === room.name}
+                />
+                <label
+                  className="form-check-label inline-block text-gray-800 cursor-pointer"
+                  for={`room-selector-${room.name}`}>
+                  {room.name}
+                </label>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-      <div className="shadow-md">
+      <div className="hidden print:flex">
+        Stage: {roomSelector}
+      </div>
+      <div className="shadow-md print:shadow-none">
         <table className="w-full text-xs sm:text-sm">
           <thead>
             <tr>
