@@ -18,6 +18,7 @@ export default function Round() {
     <div className="flex w-full flex-col text-sm sm:text-base">
       {activities.map((activity) => (
         <Link
+          key={activity.id}
           className="flex flex-col w-full p-2 even:bg-slate-50 hover:bg-slate-100 even:hover:bg-slate-200"
           to={`/competitions/${wcif.id}/activities/${activity.id}`}>
           <span>{activity.name}</span>

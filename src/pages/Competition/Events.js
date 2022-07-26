@@ -30,7 +30,7 @@ const Events = () => {
               <th className="px-6 py-3 text-center">Round</th>
               <th className="px-6 py-3 text-center">Groups</th>
               <th className="px-6 py-3">
-                <span class="sr-only">View</span>
+                <span className="sr-only">View</span>
               </th>
             </tr>
           </thead>
@@ -40,6 +40,7 @@ const Events = () => {
                 const url = `/competitions/${wcif.id}/events/${round.id}`;
                 return (
                   <Link
+                    component="tr"
                     key={round.id}
                     className="table-row hover:bg-blue-100 border even:bg-slate-50"
                     to={url}>

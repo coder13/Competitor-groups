@@ -13,8 +13,8 @@ export default function Header() {
       {user ? (
         <>
           {user.avatar?.thumb_url && (
-            <div class="m-1 mr-2 w-8 h-8 relative flex justify-center items-center rounded-full bg-gray-500 text-xl text-white">
-              <img src={user.avatar?.thumb_url} alt={user.name} class="rounded-full" />
+            <div className="m-1 mr-2 w-8 h-8 relative flex justify-center items-center rounded-full bg-gray-500 text-xl text-white">
+              <img src={user.avatar?.thumb_url} alt={user.name} className="rounded-full" />
             </div>
           )}
           <button onClick={signOut} className="text-blue-500 mx-2">
