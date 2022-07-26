@@ -3,14 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { allActivities, parseActivityCode } from '../../../lib/activities';
 import { byDate, groupBy } from '../../../lib/utils';
+import AssignmentLabel from './AssignmentLabel';
 
 const DaysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-const AssignmentCodesToText = {
-  competitor: 'Competitor',
-  'staff-scrambler': 'Scrambler',
-  'staff-judge': 'Judge',
-};
 
 export default function Person() {
   const { wcif } = useWCIF();
@@ -96,8 +91,7 @@ export default function Person() {
                       <td className="py-2 text-center">{groupNumber || '*'}</td>
                       <td className="py-2 text-center">{roomName}</td>
                       <td className="py-2 text-center">
-                        {AssignmentCodesToText[assignment.assignmentCode] ||
-                          assignment.assignmentCode}
+                        <AssignmentLabel assignmentCode={assignment.assignmentCode} />
                       </td>
                     </Link>
                   );
