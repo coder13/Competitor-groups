@@ -66,36 +66,38 @@ export default function Person() {
                     {dayOfWeek}
                   </td>
                 </tr>
-                {assignmentsSplitAcrossDates[dayOfWeek].map((assignment) => {
-                  const activity = getActivity(assignment);
-                  const { eventId, roundNumber, groupNumber } = parseActivityCode(
-                    activity.activityCode
-                  );
-                  const roomName = activity?.room?.name || activity?.parent?.room?.name;
+                {assignmentsSplitAcrossDates[dayOfWeek].map((assignment) =>
+                  ({ assignment, activity: getActivity(assignment) }))
+                  .sort((a, b) => new Date(a.activity.startTime) - new Date(b.activity.startTime))
+                  .map(({ assignment, activity }) => {
+                    const { eventId, roundNumber, groupNumber } = parseActivityCode(
+                      activity.activityCode
+                    );
+                    const roomName = activity?.room?.name || activity?.parent?.room?.name;
 
-                  return (
-                    <Link
-                      key={`${assignment.activityId}-${assignment.assignmentCode}`}
-                      className="table-row text-xs even:bg-slate-50 hover:bg-slate-100"
-                      to={`/competitions/${wcif.id}/activities/${assignment.activityId}`}>
-                      <td className="py-2 text-center">
-                        {new Date(activity.startTime).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </td>
-                      <td className="py-2 text-center">
-                        <span className={`cubing-icon event-${eventId} mx-1`} />
-                      </td>
-                      <td className="py-2 text-center">{roundNumber}</td>
-                      <td className="py-2 text-center">{groupNumber || '*'}</td>
-                      <td className="py-2 text-center">{roomName}</td>
-                      <td className="py-2 text-center">
-                        <AssignmentLabel assignmentCode={assignment.assignmentCode} />
-                      </td>
-                    </Link>
-                  );
-                })}
+                    return (
+                      <Link
+                        key={`${assignment.activityId}-${assignment.assignmentCode}`}
+                        className="table-row text-xs even:bg-slate-50 hover:bg-slate-100"
+                        to={`/competitions/${wcif.id}/activities/${assignment.activityId}`}>
+                        <td className="py-2 text-center">
+                          {new Date(activity.startTime).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </td>
+                        <td className="py-2 text-center">
+                          <span className={`cubing-icon event-${eventId} mx-1`} />
+                        </td>
+                        <td className="py-2 text-center">{roundNumber}</td>
+                        <td className="py-2 text-center">{groupNumber || '*'}</td>
+                        <td className="py-2 text-center">{roomName}</td>
+                        <td className="py-2 text-center">
+                          <AssignmentLabel assignmentCode={assignment.assignmentCode} />
+                        </td>
+                      </Link>
+                    );
+                  })}
               </>
             ))}
           </tbody>
