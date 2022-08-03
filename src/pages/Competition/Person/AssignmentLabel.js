@@ -24,7 +24,7 @@ export default function AssignmentLabel({assignmentCode}) {
     case 'staff-judge':
       return (
         <Container className="bg-blue-200">
-          Scrambler
+          Judge
         </Container>
       );
     case 'staff-runner':
