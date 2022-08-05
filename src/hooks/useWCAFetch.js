@@ -4,12 +4,10 @@ import { useAuth } from '../providers/AuthProvider';
 
 export default function useWCAFetch() {
   const { accessToken } = useAuth();
-  console.log(accessToken);
+
   return useCallback(
     async (path, fetchOptions = {}) => {
       const baseApiUrl = `${WCA_ORIGIN}/api/v0`;
-
-      console.log('fetching', path, accessToken);
 
       return await fetch(
         `${baseApiUrl}${path}`,

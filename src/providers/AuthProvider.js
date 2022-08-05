@@ -130,13 +130,8 @@ export default function AuthProvider({ children }) {
           throw res.json();
         }
       })
-      .then((data) => {
-        console.log(data);
-        setUser(data.me);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      .then((data) => setUser(data.me))
+      .catch((err) => console.error(err));
   }, [accessToken]);
 
   const signedIn = useCallback(() => !!accessToken, [accessToken]);
