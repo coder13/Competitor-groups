@@ -31,6 +31,11 @@ export default function Person() {
     [_allActivities, person.assignments]
   );
 
+  const anyAssignmentsHasStationNumber = useMemo(
+    () => assignments.some((a) => !!a.stationNumber),
+    [assignments]
+  );
+
   if (!person) {
     return 'Loading...';
   }
@@ -56,6 +61,7 @@ export default function Person() {
               <th className="py-2 text-center">Group</th>
               <th className="py-2 text-center">Stage</th>
               <th className="py-2 text-center">Assignment</th>
+              {anyAssignmentsHasStationNumber && <th className="py-2 text-center">Station</th>}
             </tr>
           </thead>
           <tbody>
@@ -66,8 +72,8 @@ export default function Person() {
                     {dayOfWeek}
                   </td>
                 </tr>
-                {assignmentsSplitAcrossDates[dayOfWeek].map((assignment) =>
-                  ({ assignment, activity: getActivity(assignment) }))
+                {assignmentsSplitAcrossDates[dayOfWeek]
+                  .map((assignment) => ({ assignment, activity: getActivity(assignment) }))
                   .sort((a, b) => new Date(a.activity.startTime) - new Date(b.activity.startTime))
                   .map(({ assignment, activity }) => {
                     const { eventId, roundNumber, groupNumber } = parseActivityCode(
@@ -95,6 +101,9 @@ export default function Person() {
                         <td className="py-2 text-center">
                           <AssignmentLabel assignmentCode={assignment.assignmentCode} />
                         </td>
+                        {anyAssignmentsHasStationNumber && (
+                          <td className="py-2 text-center">{assignment.stationNumber}</td>
+                        )}
                       </Link>
                     );
                   })}
