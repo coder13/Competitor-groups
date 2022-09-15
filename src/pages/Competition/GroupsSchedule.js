@@ -1,7 +1,7 @@
-import { useWCIF } from './WCIFProvider';
+// import { useWCIF } from './WCIFProvider';
 
 const Events = () => {
-  const { wcif } = useWCIF();
+  // const { wcif } = useWCIF();
 
   // allChildActivities
 
