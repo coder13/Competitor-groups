@@ -1,12 +1,4 @@
-import { useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { allChildActivities, groupActivitiesByRound, parseActivityCode } from '../../lib/activities';
-import { eventNameById } from '../../lib/events';
 import { useWCIF } from './WCIFProvider';
-
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
 
 const Events = () => {
   const { wcif } = useWCIF();
