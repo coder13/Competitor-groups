@@ -123,9 +123,10 @@ export default function CompetitionList() {
           ) : (
             <CompetitionListFragment
               title="Your Upcoming Competitions"
-              competitions={(ongoingCompetitionsForUser || []).concat(
-                upcomingCompetitionsForUser || []
-              )}
+              competitions={[
+                ...(ongoingCompetitionsForUser || []),
+                ...(upcomingCompetitionsForUser || [])
+              ].sort(byDate)}
             />
           )}
         </>
