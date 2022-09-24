@@ -15,7 +15,7 @@ export default function Competitors({ wcif }) {
       {me && (
         <>
           <Link
-            className="border bg-blue-200 rounded-md px-1 py-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row"
+            className="border bg-blue-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row"
             to={`persons/${me.registrantId}`}
             >
             My Assignments
