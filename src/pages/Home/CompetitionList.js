@@ -18,8 +18,8 @@ const CompetitionLink = ({ id, name, start_date, country_iso2 }) => {
         <div className="flex-1">
           <p className="font-normal leading-1"> {name} </p>{' '}
           <p className="text-gray-600 text-sm leading-1"> {start_date} </p>{' '}
-        </div>{' '}
-      </li>{' '}
+        </div>
+      </li>
     </Link>
   );
 };
