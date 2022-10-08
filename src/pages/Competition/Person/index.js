@@ -2,10 +2,15 @@ import { useCallback, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { allActivities, parseActivityCode } from '../../../lib/activities';
-import { byDate, groupBy } from '../../../lib/utils';
+import { byDate } from '../../../lib/utils';
 import AssignmentLabel from './AssignmentLabel';
 
-const DaysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const DateTimeFormatter = new Intl.DateTimeFormat(navigator.language, {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+});
 
 export default function Person() {
   const { wcif } = useWCIF();
@@ -36,17 +41,35 @@ export default function Person() {
     [assignments]
   );
 
+  const assignmentsWithParsedDate = assignments
+    .map((a) => ({
+      ...a,
+      date: DateTimeFormatter.format(new Date(a.activity.startTime)),
+    }))
+    .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+
+  const getAssignmentsByDate = useCallback(
+    (date) => {
+      return assignmentsWithParsedDate.filter((a) => a.date === date);
+    },
+    [assignmentsWithParsedDate]
+  );
+
+  const scheduleDays = assignments
+    .map((a) => {
+      const dateTime = new Date(a.activity.startTime);
+      return {
+        approxDateTime: dateTime.getTime(),
+        date: DateTimeFormatter.format(dateTime) || 'foo',
+        dateParts: DateTimeFormatter.formatToParts(dateTime),
+      };
+    })
+    .filter((v, i, arr) => arr.findIndex(({ date }) => date === v.date) === i)
+    .sort((a, b) => a.approxDateTime - b.approxDateTime);
+
   if (!person) {
     return 'Loading...';
   }
-
-  const assignmentsSplitAcrossDates = groupBy(
-    assignments.map((a) => ({
-      ...a,
-      date: DaysOfWeek[new Date(a.activity.startTime).getDay()],
-    })),
-    (x) => x.date
-  );
 
   const renderAssignments = () => (
     <>
@@ -65,14 +88,14 @@ export default function Person() {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(assignmentsSplitAcrossDates).map((dayOfWeek) => (
+            {scheduleDays.map(({ date, dateParts }) => (
               <>
                 <tr>
                   <td colSpan={6} className="font-bold text-lg text-center py-2">
-                    {dayOfWeek}
+                    {dateParts.find((i) => i.type === 'weekday')?.value || date}
                   </td>
                 </tr>
-                {assignmentsSplitAcrossDates[dayOfWeek]
+                {getAssignmentsByDate(date)
                   .map((assignment) => ({ assignment, activity: getActivity(assignment) }))
                   .sort((a, b) => new Date(a.activity.startTime) - new Date(b.activity.startTime))
                   .map(({ assignment, activity }) => {

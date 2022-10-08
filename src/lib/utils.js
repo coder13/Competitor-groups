@@ -1,6 +1,13 @@
 export const byName = (a, b) => a.name.localeCompare(b.name);
 export const byDate = (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
 
+/**
+ * Use with filter
+ * @param {*} v
+ * @param {*} i
+ * @param {*} arr
+ * @returns
+ */
 export const unique = (v, i, arr) => {
   // compare index with first element index
   return i === arr.indexOf(v);
