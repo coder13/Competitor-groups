@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from './Header';
 import '@cubing/icons';
+import Footer from './Footer';
 
 const RootDiv = styled('div')({
   display: 'flex',
@@ -22,10 +23,11 @@ export default function Layout() {
   return (
     <RootDiv>
       <Header />
-      <Main>
+      <Main className="flex flex-1">
         <Outlet />
       </Main>
-      {/* <Footer/> */}
+      <br />
+      <Footer />
     </RootDiv>
   );
 }

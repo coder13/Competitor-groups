@@ -69,35 +69,39 @@ export default function WCIFProvider({ competitionId, children }) {
         <ReactLoading type="cubes" />
       ) : (
         <div className="flex flex-col w-full h-full">
-          <div className="flex flex-row shadow-md pl-2 print:hidden">
-            <Link
-              to={`/competitions/${wcif.id}`}
-              className={clsx(`p-3 text-blue-500 hover:bg-gray-100 hover:text-blue-700`, {
-                'bg-gray-100 text-blue-700 shadow-lg': page === wcif.id,
-              })}>
-              {wcif.name}
-            </Link>
-            <Link
-              to={`/competitions/${wcif.id}/events`}
-              className={clsx(`p-3 text-blue-500 hover:bg-gray-100 hover:text-blue-700`, {
-                'bg-gray-100 text-blue-700 shadow-lg': page === 'events',
-              })}>
-              Events
-            </Link>
-            <Link
-              to={`/competitions/${wcif.id}/activities`}
-              className={clsx(`p-3 text-blue-500 hover:bg-gray-100 hover:text-blue-700`, {
-                'bg-gray-100 text-blue-700 shadow-lg': page === 'activities',
-              })}>
-              Schedule
-            </Link>
-            <Link
-              to={`/competitions/${wcif.id}/scramblers`}
-              className={clsx(`p-3 text-blue-500 hover:bg-gray-100 hover:text-blue-700`, {
-                'bg-gray-100 text-blue-700 shadow-lg': page === 'scramblers',
-              })}>
-              Scramblers
-            </Link>
+          <div className="flex shadow-md print:hidden flex-col sm:flex-row sm:justify-center">
+            <div className="flex w-full sm:w-fit">
+              <Link
+                to={`/competitions/${wcif.id}`}
+                className={clsx(`p-2 text-blue-500 hover:bg-gray-50 hover:text-blue-700 w-full`, {
+                  'bg-gray-50 text-blue-700 shadow-lg': page === wcif.id,
+                })}>
+                {wcif.shortName}
+              </Link>
+            </div>
+            <div className="flex">
+              <Link
+                to={`/competitions/${wcif.id}/events`}
+                className={clsx(`p-2 text-blue-500 hover:bg-gray-100 hover:text-blue-700`, {
+                  'bg-gray-100 text-blue-700 shadow-lg': page === 'events',
+                })}>
+                Events
+              </Link>
+              <Link
+                to={`/competitions/${wcif.id}/activities`}
+                className={clsx(`p-2 text-blue-500 hover:bg-gray-100 hover:text-blue-700`, {
+                  'bg-gray-100 text-blue-700 shadow-lg': page === 'activities',
+                })}>
+                Schedule
+              </Link>
+              <Link
+                to={`/competitions/${wcif.id}/scramblers`}
+                className={clsx(`p-2 text-blue-500 hover:bg-gray-100 hover:text-blue-700`, {
+                  'bg-gray-100 text-blue-700 shadow-lg': page === 'scramblers',
+                })}>
+                Scramblers
+              </Link>
+            </div>
           </div>
           <div className="flex flex-col w-full items-center">
             <div className="w-full md:w-1/2">{children}</div>
