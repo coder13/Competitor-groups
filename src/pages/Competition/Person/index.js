@@ -68,7 +68,7 @@ export default function Person() {
     .sort((a, b) => a.approxDateTime - b.approxDateTime);
 
   if (!person) {
-    return 'Loading...';
+    return <p>Loading...</p>;
   }
 
   const renderAssignments = () => (

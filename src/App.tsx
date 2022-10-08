@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './pages/Layout';
 import Competition from './pages/Competition';
@@ -13,7 +12,6 @@ import CompetitionSchedule from './pages/Competition/Schedule';
 import CompetitionScramblerSchedule from './pages/Competition/ScramblerSchedule';
 import CompetitionGroupsSchedule from './pages/Competition/GroupsSchedule';
 import Home from './pages/Home';
-import history from './lib/history';
 import AuthProvider from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
 
@@ -37,11 +35,11 @@ const Navigation = () => {
         </Route>
       </Route>
     </Routes>
-  )
-}
+  );
+};
 
 const App = () => (
-  <BrowserRouter history={history}>
+  <BrowserRouter>
     <AuthProvider>
       <Navigation />
     </AuthProvider>
