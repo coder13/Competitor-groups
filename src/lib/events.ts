@@ -1,4 +1,10 @@
-export const events = [
+import { EventId } from '@wca/helpers';
+
+export const events: {
+  id: EventId;
+  name: string;
+  shortName: string;
+}[] = [
   { id: '333', name: '3x3x3 Cube', shortName: '3x3' },
   { id: '222', name: '2x2x2 Cube', shortName: '2x2' },
   { id: '444', name: '4x4x4 Cube', shortName: '4x4' },
@@ -18,8 +24,9 @@ export const events = [
   { id: '333mbf', name: '3x3x3 Multi-Blind', shortName: 'MBLD' },
 ];
 
-export const eventNameById = (eventId) => propertyById('name', eventId);
+export const eventNameById = (eventId: EventId) => propertyById('name', eventId);
 
-export const shortEventNameById = (eventId) => propertyById('shortName', eventId);
+export const shortEventNameById = (eventId: EventId) => propertyById('shortName', eventId);
 
-const propertyById = (property, eventId) => events.find((event) => event.id === eventId)[property];
+const propertyById = (property: string, eventId: EventId) =>
+  events.find((event) => event.id === eventId)?.[property];
