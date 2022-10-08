@@ -3,10 +3,11 @@ import { useLocation } from 'react-router-dom';
 import { WCA_ORIGIN, WCA_OAUTH_CLIENT_ID } from '../lib/wca-env';
 import history from '../lib/history';
 
-const localStorageKey = (key) => `wca_gantt_chart.${WCA_OAUTH_CLIENT_ID}.${key}`;
+const localStorageKey = (key: string) => `wca_gantt_chart.${WCA_OAUTH_CLIENT_ID}.${key}`;
 
-const getLocalStorage = (key) => localStorage.getItem(localStorageKey(key));
-const setLocalStorage = (key, value) => localStorage.setItem(localStorageKey(key), value);
+const getLocalStorage = (key: string) => localStorage.getItem(localStorageKey(key));
+const setLocalStorage = (key: string, value: string) =>
+  localStorage.setItem(localStorageKey(key), value);
 
 /**
  * Allows for use of staging api in production
@@ -18,12 +19,26 @@ const oauthRedirectUri = () => {
   return stagingParam ? `${appUri}?staging=true` : appUri;
 };
 
-const AuthContext = createContext(null);
+interface IAuthContext {
+  accessToken: string | null;
+  signIn: () => void;
+  signOut: () => void;
+  signedIn: () => boolean;
+  user: User | null;
+}
+
+const AuthContext = createContext<IAuthContext>({
+  accessToken: null,
+  signIn: () => {},
+  signOut: () => {},
+  signedIn: () => false,
+  user: null,
+});
 
 export default function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(getLocalStorage('accessToken'));
   const [expirationTime, setExpirationTime] = useState(getLocalStorage('expirationTime')); // Time at which it expires
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const location = useLocation();
 
@@ -42,7 +57,8 @@ export default function AuthProvider({ children }) {
       scope: 'public',
       state: 'foobar',
     });
-    window.location = `${WCA_ORIGIN}/oauth/authorize?${params.toString()}`;
+
+    window.location.href = `${WCA_ORIGIN}/oauth/authorize?${params.toString()}`;
   };
 
   const signOut = () => {
@@ -63,7 +79,7 @@ export default function AuthProvider({ children }) {
       return;
     }
 
-    const expiresInMillis = new Date(expirationTime) - Date.now() + 1000;
+    const expiresInMillis = new Date(expirationTime).getTime() - Date.now() + 1000;
 
     const timeout = setTimeout(() => {
       signOutIfExpired();
@@ -78,15 +94,17 @@ export default function AuthProvider({ children }) {
     const hash = location.hash.replace(/^#/, '');
     const hashParams = new URLSearchParams(hash);
 
-    if (hashParams.has('access_token')) {
-      setAccessToken(hashParams.get('access_token'));
-      setLocalStorage('accessToken', hashParams.get('access_token'));
+    const hashParamAccessToken = hashParams.get('access_token');
+    if (hashParamAccessToken) {
+      setAccessToken(hashParamAccessToken);
+      setLocalStorage('accessToken', hashParamAccessToken);
     }
 
-    if (hashParams.has('expires_in')) {
+    const hashParamExpiresIn = hashParams.get('expires_in');
+    if (hashParamExpiresIn && !isNaN(parseInt(hashParamExpiresIn, 10))) {
       /* Expire the token 15 minutes before it actually does,
          this way it doesn't expire right after the user enters the page. */
-      const expiresInSeconds = hashParams.get('expires_in') - 15 * 60;
+      const expiresInSeconds = parseInt(hashParamExpiresIn, 10) - 15 * 60;
       setLocalStorage(
         'expirationTime',
         new Date(new Date().getTime() + expiresInSeconds * 1000).toISOString()
@@ -94,8 +112,8 @@ export default function AuthProvider({ children }) {
     }
 
     /* Clear the hash if there is a token. */
-    if (hashParams.has('access_token')) {
-      history.replace({ ...history.location, hash: null });
+    if (hashParamAccessToken) {
+      history.replace({ ...history.location, hash: undefined });
     }
   }, [location]);
 

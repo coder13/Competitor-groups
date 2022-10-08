@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import React from 'react';
 
 const Container = styled.div`
   display: flex;
@@ -34,7 +33,7 @@ export default function RoomSelector({
   return (
     <Container>
       <Row>
-        {rooms.map((room, index) => (
+        {rooms.map((room) => (
           <Button
             key={room.id}
             onClick={() => onRoomChange(room)}

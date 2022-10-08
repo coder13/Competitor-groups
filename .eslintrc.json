@@ -1,7 +1,16 @@
 {
   "extends": ["react-app", "prettier"],
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "import/first": 0,
     "no-restricted-globals": 0
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+        "paths": ["src"]
+      }
+    }
   }
 }

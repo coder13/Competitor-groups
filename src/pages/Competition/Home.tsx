@@ -1,4 +1,3 @@
-import React from 'react';
 import { useWCIF } from './WCIFProvider';
 import Competitors from './Competitors';
 

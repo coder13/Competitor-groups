@@ -14,10 +14,10 @@ export const unique = <T>(v: T, i: number, arr: T[]): boolean => {
   return i === arr.indexOf(v);
 };
 
-export const flatten = <T>(arr: T[][]): T[] => arr.reduce((xs, x) => xs.concat(x), []);
+// export const flatten = <T>(arr: T[][]): T[] => arr.reduce((xs, x) => xs.concat(x), []);
 
-export const flatMap = <T>(arr: T[][], fn: (x: T[]) => T[]): T[] =>
-  arr.reduce((xs, x) => xs.concat(fn(x)), []);
+// export const flatMap = <T, S>(arr: T[], fn: (x: T) => S): S[] =>
+//   arr.reduce((xs: S[], x: T) => xs.concat(fn(x)), []);
 
 export const groupBy = <T>(xs: T[], getKey: (x: T) => string): Record<string, T> =>
   xs.reduce((rv, x) => {

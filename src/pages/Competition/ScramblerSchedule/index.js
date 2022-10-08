@@ -1,12 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import flatMap from 'lodash.flatmap';
 import {
   activityCodeToName,
   allActivities,
   allRoundActivities,
   rooms,
 } from '../../../lib/activities';
-import { flatMap, groupBy } from '../../../lib/utils';
+import { groupBy } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
 
 const DaysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -81,9 +82,7 @@ export default function ScramblerSchedule() {
           </div>
         </div>
       </div>
-      <div className="hidden print:flex">
-        Stage: {roomSelector}
-      </div>
+      <div className="hidden print:flex">Stage: {roomSelector}</div>
       <div className="shadow-md print:shadow-none">
         <table className="w-full text-xs sm:text-sm">
           <thead>
