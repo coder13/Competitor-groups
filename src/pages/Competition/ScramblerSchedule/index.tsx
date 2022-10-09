@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import flatMap from 'lodash.flatmap';
 import {
@@ -11,7 +11,11 @@ import { formatToWeekDay, groupBy } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
 
 export default function ScramblerSchedule() {
-  const { wcif } = useWCIF();
+  const { wcif, setTitle } = useWCIF();
+
+  useEffect(() => {
+    setTitle('Scramblers');
+  }, [setTitle]);
 
   const _rooms = rooms(wcif);
 

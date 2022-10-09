@@ -6,11 +6,12 @@ import {
   formatMultiResult,
   Person,
 } from '@wca/helpers';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import tw from 'tailwind-styled-components/dist/tailwind';
 import { activityCodeToName, byWorldRanking, parseActivityCode } from '../../../lib/activities';
 import { byName } from '../../../lib/utils';
+import { useWCIF } from '../WCIFProvider';
 
 const isAssignment = (assignment) => (a) =>
   a.assignments.some(({ assignmentCode }) => assignmentCode === assignment);
@@ -26,8 +27,15 @@ interface EventGroupProps {
 }
 
 export default function EventGroup({ competitionId, activity, persons }: EventGroupProps) {
+  const { setTitle } = useWCIF();
   console.log(activity);
   const { eventId } = parseActivityCode(activity?.activityCode || '');
+
+  useEffect(() => {
+    if (activity) {
+      setTitle(activityCodeToName(activity.activityCode));
+    }
+  }, [activity, setTitle]);
 
   const everyoneInActivity = useMemo(
     () =>

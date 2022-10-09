@@ -1,10 +1,14 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { allActivities } from '../../lib/activities';
 import { useWCIF } from './WCIFProvider';
 
 export default function Round() {
-  const { wcif } = useWCIF();
+  const { wcif, setTitle } = useWCIF();
+
+  useEffect(() => {
+    setTitle('Schedule');
+  }, [setTitle]);
 
   const activities = useMemo(
     () =>
@@ -15,7 +19,7 @@ export default function Round() {
   );
 
   return (
-    <div className="flex w-full flex-col text-sm sm:text-base">
+    <div className="flex w-full flex-col text-sm sm:text-base py-2">
       {activities.map((activity) => (
         <Link
           key={activity.id}

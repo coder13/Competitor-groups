@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   activityCodeToName,
@@ -9,11 +9,15 @@ import { byName } from '../../lib/utils';
 import { useWCIF } from './WCIFProvider';
 
 export default function Round() {
-  const { wcif } = useWCIF();
+  const { wcif, setTitle } = useWCIF();
   const { eventId, roundNumber } = useParams();
   const activityCode = `${eventId}-r${roundNumber}`;
 
   const groups = useMemo(() => groupActivitiesByRound(wcif, activityCode), [activityCode, wcif]);
+
+  useEffect(() => {
+    setTitle(activityCodeToName(activityCode));
+  }, [activityCode, setTitle]);
 
   const personAssignments = useMemo(() => {
     return wcif.persons

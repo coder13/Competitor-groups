@@ -1,5 +1,7 @@
 import { Activity, Person } from '@wca/helpers';
+import { useEffect } from 'react';
 import { activityDurationString } from '../../../lib/activities';
+import { useWCIF } from '../WCIFProvider';
 
 interface OtherGroupProps {
   activity: Activity;
@@ -7,6 +9,14 @@ interface OtherGroupProps {
 }
 
 export default function OtherGroup({ activity, persons }: OtherGroupProps) {
+  const { setTitle } = useWCIF();
+
+  useEffect(() => {
+    if (activity) {
+      setTitle(activity.activityCode);
+    }
+  }, [activity, setTitle]);
+
   return (
     <>
       <div className="p-2">

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { groupActivitiesByRound, parseActivityCode } from '../../lib/activities';
 import { eventNameById } from '../../lib/events';
@@ -9,7 +9,7 @@ function onlyUnique(value, index, self) {
 }
 
 const Events = () => {
-  const { wcif } = useWCIF();
+  const { wcif, setTitle } = useWCIF();
   const navigate = useNavigate();
 
   const uniqueGroupCountForRound = useCallback(
@@ -19,6 +19,10 @@ const Events = () => {
         .filter(onlyUnique).length,
     [wcif]
   );
+
+  useEffect(() => {
+    setTitle('Events');
+  }, [setTitle]);
 
   return (
     <div className="flex flex-col w-full">

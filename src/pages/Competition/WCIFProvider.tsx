@@ -20,6 +20,7 @@ const StyledNavLink = ({ to, text }) => (
 
 interface IWCIFContextType {
   wcif: Competition;
+  setTitle: (title: string) => void;
 }
 
 const WCIFContext = createContext<IWCIFContextType>({
@@ -36,6 +37,7 @@ const WCIFContext = createContext<IWCIFContextType>({
       venues: [],
     },
   },
+  setTitle: () => {},
 });
 
 function WCIFReducer(_: Competition, { type, payload }) {
@@ -54,7 +56,16 @@ export default function WCIFProvider({ competitionId, children }) {
   const [wcif, dispatch] = useReducer(WCIFReducer, null);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
+  const [title, setTitle] = useState('');
   const wcaApiFetch = useWCAFetch();
+
+  useEffect(() => {
+    if (wcif) {
+      document.title = title
+        ? `${title} - ${wcif.shortName} - Competition Groups`
+        : `${wcif.shortName} - Competition Groups`;
+    }
+  }, [wcif, title]);
 
   const fetchCompetition = useCallback(async () => {
     setLoading(true);
@@ -89,7 +100,7 @@ export default function WCIFProvider({ competitionId, children }) {
   }
 
   return (
-    <WCIFContext.Provider value={{ wcif }}>
+    <WCIFContext.Provider value={{ wcif, setTitle }}>
       <div className="flex flex-col w-full h-full">
         <nav className="flex shadow-md print:hidden w-full justify-center">
           <div className="lg:w-1/2 w-full flex flex-col md:flex-row justify-between">

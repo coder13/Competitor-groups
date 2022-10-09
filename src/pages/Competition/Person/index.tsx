@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { allActivities, parseActivityCode } from '../../../lib/activities';
@@ -15,10 +15,16 @@ export const byDate = (
 };
 
 export default function Person() {
-  const { wcif } = useWCIF();
+  const { wcif, setTitle } = useWCIF();
   const { registrantId } = useParams();
 
   const person = wcif.persons.find((p) => p.registrantId.toString() === registrantId);
+
+  useEffect(() => {
+    if (person) {
+      setTitle(person.name);
+    }
+  }, [person, setTitle]);
 
   const _allActivities = useMemo(() => allActivities(wcif), [wcif]);
 
