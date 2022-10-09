@@ -1,3 +1,4 @@
+import { AssignmentCode } from '@wca/helpers';
 import tw from 'tailwind-styled-components';
 
 const Container = tw.span`
@@ -7,7 +8,11 @@ const Container = tw.span`
   bg-blue-100
 `;
 
-export default function AssignmentLabel({ assignmentCode }) {
+interface AssignmentLabelProps {
+  assignmentCode: AssignmentCode;
+}
+
+export default function AssignmentLabel({ assignmentCode }: AssignmentLabelProps) {
   switch (assignmentCode) {
     case 'competitor':
       return <Container className="bg-green-200">Competitor</Container>;

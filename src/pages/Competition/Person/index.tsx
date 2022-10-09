@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { allActivities, parseActivityCode } from '../../../lib/activities';
-import AssignmentLabel from './AssignmentLabel';
+import AssignmentLabel from '../../../components/AssignmentLabel/AssignmentLabel';
 import { formatDate, formatToParts } from '../../../lib/utils';
 
 export const byDate = (

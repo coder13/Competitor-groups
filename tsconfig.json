@@ -5,7 +5,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "lib": ["es6", "dom"],
     "module": "esnext",
     "moduleResolution": "node",
