@@ -2,15 +2,17 @@ import { useCallback, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { allActivities, parseActivityCode } from '../../../lib/activities';
-import { byDate } from '../../../lib/utils';
 import AssignmentLabel from './AssignmentLabel';
+import { formatDate, formatToParts } from '../../../lib/utils';
 
-const DateTimeFormatter = new Intl.DateTimeFormat(navigator.language, {
-  weekday: 'long',
-  year: 'numeric',
-  month: 'numeric',
-  day: 'numeric',
-});
+export const byDate = (
+  a: { startTime: string } | undefined,
+  b: { startTime: string } | undefined
+) => {
+  const aDate = a ? new Date(a.startTime).getTime() : Number.MAX_SAFE_INTEGER;
+  const bDate = b ? new Date(b.startTime).getTime() : Number.MAX_SAFE_INTEGER;
+  return aDate - bDate;
+};
 
 export default function Person() {
   const { wcif } = useWCIF();
@@ -27,13 +29,15 @@ export default function Person() {
 
   const assignments = useMemo(
     () =>
-      person.assignments
-        .map((assignment) => ({
-          ...assignment,
-          activity: _allActivities.find(({ id }) => id === assignment.activityId),
-        }))
-        .sort(byDate),
-    [_allActivities, person.assignments]
+      person?.assignments
+        ? person?.assignments
+            ?.map((assignment) => ({
+              ...assignment,
+              activity: _allActivities.find(({ id }) => id === parseInt(assignment.activityId, 10)),
+            }))
+            .sort((a, b) => byDate(a.activity, b.activity))
+        : [],
+    [_allActivities, person?.assignments]
   );
 
   const anyAssignmentsHasStationNumber = useMemo(
@@ -44,9 +48,9 @@ export default function Person() {
   const assignmentsWithParsedDate = assignments
     .map((a) => ({
       ...a,
-      date: DateTimeFormatter.format(new Date(a.activity.startTime)),
+      date: a.activity ? formatDate(new Date(a.activity.startTime)) : '???',
     }))
-    .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+    .sort((a, b) => byDate(a.activity, b.activity));
 
   const getAssignmentsByDate = useCallback(
     (date) => {
@@ -57,11 +61,11 @@ export default function Person() {
 
   const scheduleDays = assignments
     .map((a) => {
-      const dateTime = new Date(a.activity.startTime);
+      const dateTime = a.activity ? new Date(a.activity.startTime) : new Date(0);
       return {
         approxDateTime: dateTime.getTime(),
-        date: DateTimeFormatter.format(dateTime) || 'foo',
-        dateParts: DateTimeFormatter.formatToParts(dateTime),
+        date: formatDate(dateTime) || 'foo',
+        dateParts: formatToParts(dateTime),
       };
     })
     .filter((v, i, arr) => arr.findIndex(({ date }) => date === v.date) === i)
@@ -97,26 +101,25 @@ export default function Person() {
                 </tr>
                 {getAssignmentsByDate(date)
                   .map((assignment) => ({ assignment, activity: getActivity(assignment) }))
-                  .sort((a, b) => new Date(a.activity.startTime) - new Date(b.activity.startTime))
+                  .sort((a, b) => byDate(a.activity, b.activity))
                   .map(({ assignment, activity }) => {
                     const { eventId, roundNumber, groupNumber } = parseActivityCode(
-                      activity.activityCode
+                      activity?.activityCode || ''
                     );
                     const roomName = activity?.room?.name || activity?.parent?.room?.name;
+                    const startTime = new Date(activity?.startTime || 0).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    });
 
                     return (
                       <Link
                         key={`${assignment.activityId}-${assignment.assignmentCode}`}
                         className="table-row text-xs even:bg-slate-50 hover:bg-slate-100"
                         to={`/competitions/${wcif.id}/activities/${assignment.activityId}`}>
+                        <td className="py-2 text-center">{startTime}</td>
                         <td className="py-2 text-center">
-                          {new Date(activity.startTime).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </td>
-                        <td className="py-2 text-center">
-                          <span className={`cubing-icon event-${eventId} mx-1`} />
+                          <span className={`cubing-icon event-${eventId} mx-1 text-lg`} />
                         </td>
                         <td className="py-2 text-center">{roundNumber}</td>
                         <td className="py-2 text-center">{groupNumber || '*'}</td>
@@ -145,14 +148,18 @@ export default function Person() {
         {person.wcaId && <p className="text-sm">{person.wcaId}</p>}
         <p className="text-md">
           <span>Registered Events:</span>
-          {person.registration.eventIds.map((eventId) => (
-            <span key={eventId} className={`cubing-icon event-${eventId} mx-1`} />
+          {person.registration?.eventIds.map((eventId) => (
+            <span key={eventId} className={`cubing-icon event-${eventId} mx-1 text-lg`} />
           ))}
         </p>
       </div>
       <hr className="my-2" />
 
-      {person.assignments.length > 0 ? renderAssignments() : <div>No Assignments</div>}
+      {person?.assignments && person.assignments.length > 0 ? (
+        renderAssignments()
+      ) : (
+        <div>No Assignments</div>
+      )}
     </div>
   );
 }

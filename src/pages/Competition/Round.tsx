@@ -13,35 +13,33 @@ export default function Round() {
   const { eventId, roundNumber } = useParams();
   const activityCode = `${eventId}-r${roundNumber}`;
 
-  const event = useMemo(() => wcif?.events?.find((e) => e.id === eventId), [wcif, eventId]);
-  const round = useMemo(
-    () => event?.rounds?.find((r) => r.id === activityCode),
-    [event?.rounds, activityCode]
-  );
-
-  const groups = useMemo(() => groupActivitiesByRound(wcif, round.id), [round.id, wcif]);
+  const groups = useMemo(() => groupActivitiesByRound(wcif, activityCode), [activityCode, wcif]);
 
   const personAssignments = useMemo(() => {
     return wcif.persons
       .map((person) => {
-        const competingActivityId = person.assignments.find(
+        const competingActivityId = person?.assignments?.find(
           (a) =>
             a.assignmentCode === 'competitor' &&
-            groups.some((groupActivity) => groupActivity.id === a.activityId)
+            groups.some((groupActivity) => groupActivity?.id === parseInt(a.activityId, 10))
         )?.activityId;
-        const staffingAssignments = person.assignments.filter(
-          (a) =>
-            a.assignmentCode.indexOf('staff') > -1 &&
-            groups.some((groupActivity) => groupActivity.id === a.activityId)
-        );
+
+        const staffingAssignments =
+          person?.assignments?.filter(
+            (a) =>
+              a.assignmentCode.indexOf('staff') > -1 &&
+              groups.some((groupActivity) => groupActivity.id === parseInt(a.activityId, 10))
+          ) || [];
 
         return {
           ...person,
           assignments: {
-            competingActivity: groups.find((g) => g.id === competingActivityId),
+            competingActivity: groups.find(
+              (g) => competingActivityId && g.id === parseInt(competingActivityId, 10)
+            ),
             staffingActivities: staffingAssignments.map((s) => ({
               assignment: s,
-              activity: groups.find((g) => g.id === s.activityId),
+              activity: groups.find((g) => g.id === parseInt(s.activityId, 10)),
             })),
           },
         };
@@ -49,13 +47,13 @@ export default function Round() {
       .filter(
         (person) =>
           !!person?.assignments?.competingActivity ||
-          !!person?.assignments?.staffingActivities?.length > 0
+          person?.assignments?.staffingActivities?.length > 0
       );
   }, [groups, wcif.persons]);
 
   return (
     <div className="p-2">
-      <h3 className="text-2xl">Groups for {activityCodeToName(round.id)}</h3>
+      <h3 className="text-2xl">Groups for {activityCodeToName(activityCode)}</h3>
       <table className="text-left">
         <thead>
           <tr>
@@ -76,7 +74,7 @@ export default function Round() {
                 className="px-6 py-3 text-white"
                 style={{
                   backgroundColor:
-                    person.assignments.competingActivity?.parent.room.color || 'inherit',
+                    person.assignments.competingActivity?.parent?.room?.color || 'inherit',
                 }}>
                 {person.assignments.competingActivity
                   ? parseActivityCode(person.assignments.competingActivity.activityCode).groupNumber
@@ -88,8 +86,8 @@ export default function Round() {
                   .map((s) => (
                     <span
                       className="p-3"
-                      style={{ backgroundColor: s.activity?.parent.room.color || 'inherit' }}>
-                      {parseActivityCode(s.activity.activityCode).groupNumber}
+                      style={{ backgroundColor: s.activity?.parent?.room?.color || 'inherit' }}>
+                      {s.activity ? parseActivityCode(s.activity.activityCode).groupNumber : '-'}
                     </span>
                   ))}
               </td>
@@ -99,8 +97,8 @@ export default function Round() {
                   .map((s) => (
                     <span
                       className="p-3"
-                      style={{ backgroundColor: s.activity?.parent.room.color || 'inherit' }}>
-                      {parseActivityCode(s.activity.activityCode).groupNumber}
+                      style={{ backgroundColor: s.activity?.parent?.room?.color || 'inherit' }}>
+                      {s.activity ? parseActivityCode(s.activity.activityCode).groupNumber : '-'}
                     </span>
                   ))}
               </td>

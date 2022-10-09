@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './pages/Layout';
+import Layout from './layout';
 import Competition from './pages/Competition';
 import CompetitionHome from './pages/Competition/Home';
 import CompetitionPerson from './pages/Competition/Person';

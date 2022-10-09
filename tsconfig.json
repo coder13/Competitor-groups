@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es6",
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noEmit": true,
     "jsx": "react-jsx",
     "lib": ["es6", "dom"],
-    "module": "commonjs",
+    "module": "esnext",
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "allowJs": true
+    "allowJs": false
   },
-  "include": ["./src"]
+  "include": ["./src/**/*"]
 }

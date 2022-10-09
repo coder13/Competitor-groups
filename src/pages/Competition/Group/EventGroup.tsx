@@ -1,4 +1,11 @@
-import { decodeMultiResult, formatCentiseconds, formatMultiResult } from '@wca/helpers';
+import {
+  Activity,
+  decodeMultiResult,
+  EventId,
+  formatCentiseconds,
+  formatMultiResult,
+  Person,
+} from '@wca/helpers';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import tw from 'tailwind-styled-components/dist/tailwind';
@@ -12,16 +19,24 @@ const AssignmentCategoryHeader = tw.h4`
 text-lg font-bold text-center shadow-md py-3 px-6
 `;
 
-export default function EventGroup({ competitionId, activity, persons }) {
+interface EventGroupProps {
+  competitionId: string;
+  activity: Activity;
+  persons: Person[];
+}
+
+export default function EventGroup({ competitionId, activity, persons }: EventGroupProps) {
   console.log(activity);
-  const { eventId } = activity ? parseActivityCode(activity?.activityCode) : {};
+  const { eventId } = parseActivityCode(activity?.activityCode || '');
 
   const everyoneInActivity = useMemo(
     () =>
       persons.map((person) => ({
         ...person,
-        prSingle: person.personalBests.find((pb) => pb.eventId === eventId && pb.type === 'single'),
-        prAverage: person.personalBests.find(
+        prSingle: person.personalBests?.find(
+          (pb) => pb.eventId === eventId && pb.type === 'single'
+        ),
+        prAverage: person.personalBests?.find(
           (pb) => pb.eventId === eventId && pb.type === 'average'
         ),
       })),
@@ -30,7 +45,8 @@ export default function EventGroup({ competitionId, activity, persons }) {
 
   const competitors = everyoneInActivity
     .filter(isAssignment('competitor'))
-    .sort(byWorldRanking(eventId));
+    .sort(byWorldRanking(eventId as EventId));
+
   const scramblers = everyoneInActivity.filter(isAssignment('staff-scrambler')).sort(byName);
   const runners = everyoneInActivity.filter(isAssignment('staff-runner')).sort(byName);
   const judges = everyoneInActivity.filter(isAssignment('staff-judge')).sort(byName);

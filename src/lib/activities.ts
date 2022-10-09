@@ -39,17 +39,15 @@ export const activityCodeToName = (activityCode) => {
 export const rooms = (wcif: Competition): Room[] =>
   flatten((wcif.schedule.venues || []).map((venue) => venue?.rooms || []));
 
-interface ActivityWithRoom extends Activity {
-  room: Room;
-}
-
-interface ActivityWithParent extends Activity {
-  parent: Activity;
+interface ActivityWithRoomOrParent extends Activity {
+  room?: Room;
+  parent?: ActivityWithRoomOrParent;
+  childActivities: ActivityWithRoomOrParent[];
 }
 
 // get all child activities by round
 // extends activity to include the activity's parent
-export const allChildActivities = (activity: Activity): ActivityWithParent[] => {
+export const allChildActivities = (activity: Activity): ActivityWithRoomOrParent[] => {
   if (!activity.childActivities || activity.childActivities.length === 0) {
     return [];
   }
@@ -62,7 +60,7 @@ export const allChildActivities = (activity: Activity): ActivityWithParent[] => 
   return [...childActivities, ...flatMap(childActivities, allChildActivities)];
 };
 
-export const allActivities = (wcif: Competition) => {
+export const allActivities = (wcif: Competition): ActivityWithRoomOrParent[] => {
   // Rounds
   const activities = allRoundActivities(wcif);
   return [...activities, ...flatMap(activities, allChildActivities)];
@@ -73,7 +71,7 @@ export const allActivities = (wcif: Competition) => {
  * @param wcif
  * @returns
  */
-export const allRoundActivities = (wcif: Competition): ActivityWithRoom[] => {
+export const allRoundActivities = (wcif: Competition): ActivityWithRoomOrParent[] => {
   return flatten(
     rooms(wcif).map((room) =>
       room.activities.map((a) => ({
@@ -93,7 +91,10 @@ export const allRoundActivities = (wcif: Competition): ActivityWithRoom[] => {
 export const roundActivitiesForRoundId = (wcif: Competition, roundId: string) =>
   allRoundActivities(wcif).filter((a) => a.activityCode === roundId);
 
-export const groupActivitiesByRound = (wcif: Competition, roundId: string): ActivityWithParent[] =>
+export const groupActivitiesByRound = (
+  wcif: Competition,
+  roundId: string
+): ActivityWithRoomOrParent[] =>
   flatMap(roundActivitiesForRoundId(wcif, roundId), (roundActivity) =>
     hasDistributedAttempts(roundId)
       ? [roundActivity]

@@ -1,4 +1,5 @@
 import { createRoot } from 'react-dom/client';
+import '@cubing/icons';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 import './index.css';

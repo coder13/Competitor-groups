@@ -1,32 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
 import ReactLoading from 'react-loading';
-import useWCAFetch from '../../hooks/useWCAFetch';
-import { hasFlag } from 'country-flag-icons';
-import getUnicodeFlagIcon from 'country-flag-icons/unicode';
-import { useAuth } from '../../providers/AuthProvider';
-import { toHaveErrorMessage } from '@testing-library/jest-dom/dist/matchers';
-import { byDate } from '../../lib/utils';
-
-const CompetitionLink = ({ id, name, start_date, country_iso2 }) => {
-  return (
-    <Link to={`/competitions/${id}`}>
-      <li className="border bg-white list-none rounded-md px-1 py-1 flex cursor-pointer hover:bg-blue-200 group transition-colors my-1 flex-row">
-        {hasFlag(country_iso2) && (
-          <div className="flex flex-shrink mr-2 text-2xl"> {getUnicodeFlagIcon(country_iso2)} </div>
-        )}{' '}
-        <div className="flex-1">
-          <p className="font-normal leading-1"> {name} </p>{' '}
-          <p className="text-gray-600 text-sm leading-1"> {start_date} </p>{' '}
-        </div>
-      </li>
-    </Link>
-  );
-};
+import useWCAFetch from '../hooks/useWCAFetch';
+import { useAuth } from '../providers/AuthProvider';
+import { byDate } from '../lib/utils';
+import CompetitionLink from './CompetitionLink';
 
 const CompetitionListFragment = ({ title, competitions }) => {
   return (
-    <div className="w-full md:w-1/2">
+    <div className="w-full">
       <h3 className="text-2xl mb-2">{title}</h3>
       {competitions.length ? (
         <ul className="px-0">
@@ -44,22 +25,26 @@ const CompetitionListFragment = ({ title, competitions }) => {
 export default function CompetitionList() {
   const wcaApiFetch = useWCAFetch();
   const { user } = useAuth();
-  const [upcomingCompetitions, setUpcomingCompetitions] = useState([]);
-  const [ongoingCompetitionsForUser, setOngoingCompetitionsForUser] = useState([]);
-  const [upcomingCompetitionsForUser, setUpcomingCompetitionsForUser] = useState([]);
+  const [upcomingCompetitions, setUpcomingCompetitions] = useState<ApiCompetition[]>([]);
+  const [ongoingCompetitionsForUser, setOngoingCompetitionsForUser] = useState<ApiCompetition[]>(
+    []
+  );
+  const [upcomingCompetitionsForUser, setUpcomingCompetitionsForUser] = useState<ApiCompetition[]>(
+    []
+  );
   const [loadingUpcomingCompetitions, setLoadingUpcomingCompetitions] = useState(true);
   const [loadingOngoingCompetitionsForUser, setLoadingOngoingCompetitionsForUser] = useState(true);
   const [loadingUpcomingCompetitionsForUser, setLoadingUpcomingCompetitionsForUser] =
     useState(true);
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState<any[]>([]);
 
   const getOngoingCompetitionsForUser = useCallback(
-    () => wcaApiFetch(`/users/${user.id}?ongoing_competitions=true`),
+    () => wcaApiFetch(`/users/${user?.id}?ongoing_competitions=true`),
     [wcaApiFetch, user]
   );
 
   const getUpcomingCompetitionsForUser = useCallback(
-    () => wcaApiFetch(`/users/${user.id}?upcoming_competitions=true`),
+    () => wcaApiFetch(`/users/${user?.id}?upcoming_competitions=true`),
     [wcaApiFetch, user]
   );
 
@@ -79,7 +64,7 @@ export default function CompetitionList() {
       .then((competitions) => {
         setUpcomingCompetitions(competitions);
       })
-      .catch((err) => setErrors([...toHaveErrorMessage, err]))
+      .catch((err) => setErrors([...errors, err]))
       .finally(() => setLoadingUpcomingCompetitions(false));
 
     if (user) {
@@ -87,14 +72,14 @@ export default function CompetitionList() {
         .then(({ ongoing_competitions }) => {
           setOngoingCompetitionsForUser(ongoing_competitions);
         })
-        .catch((err) => setErrors([...toHaveErrorMessage, err]))
+        .catch((err) => setErrors([...errors, err]))
         .finally(() => setLoadingOngoingCompetitionsForUser(false));
 
       getUpcomingCompetitionsForUser()
         .then(({ upcoming_competitions }) => {
           setUpcomingCompetitionsForUser(upcoming_competitions);
         })
-        .catch((err) => setErrors([...toHaveErrorMessage, err]))
+        .catch((err) => setErrors([...errors, err]))
         .finally(() => setLoadingUpcomingCompetitionsForUser(false));
     }
   }, [
@@ -102,6 +87,7 @@ export default function CompetitionList() {
     user,
     getUpcomingCompetitionsForUser,
     getOngoingCompetitionsForUser,
+    errors,
   ]);
 
   if (errors.length) {
@@ -125,8 +111,8 @@ export default function CompetitionList() {
               title="Your Upcoming Competitions"
               competitions={[
                 ...(ongoingCompetitionsForUser || []),
-                ...(upcomingCompetitionsForUser || [])
-              ].sort(byDate)}
+                ...(upcomingCompetitionsForUser || []),
+              ].sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())}
             />
           )}
         </>

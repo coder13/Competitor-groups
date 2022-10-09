@@ -1,6 +1,12 @@
+import { Activity, Person } from '@wca/helpers';
 import { activityDurationString } from '../../../lib/activities';
 
-export default function EventGroup({ activity, persons }) {
+interface OtherGroupProps {
+  activity: Activity;
+  persons: Person[];
+}
+
+export default function OtherGroup({ activity, persons }: OtherGroupProps) {
   return (
     <>
       <div className="p-2">

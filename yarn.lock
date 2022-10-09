@@ -2313,7 +2313,7 @@
 
 "@wca/helpers@^1.1.1":
   version "1.1.1"
-  resolved "https://registry.npmjs.org/@wca/helpers/-/helpers-1.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/@wca/helpers/-/helpers-1.1.1.tgz#9cf9b46f5b6fb20d3cd153d03a7780c3f936d8bd"
   integrity sha512-BeGfPfTmWVQ6/fPZP7eq6c0azceqodLQ/ipK1gzSBUvlg3ir1wa4C9BEe1DlGA+MtnXu6iEV02Z0O3qOLgEI2A==
 
 "@webassemblyjs/ast@1.11.1":

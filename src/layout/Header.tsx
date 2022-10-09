@@ -1,11 +1,10 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../providers/AuthProvider';
 
 export default function Header() {
   const { user, signIn, signOut } = useAuth();
   return (
-    <header className="flex shadow-md p-2 h-12 items-center print:hidden z-10 sticky top-0 bg-white">
+    <header className="flex w-full shadow-md p-2 h-12 items-center print:hidden z-10 sticky top-0 bg-white">
       <Link to="/" className="text-blue-500">
         View Competitions
       </Link>

@@ -7,10 +7,8 @@ import {
   allRoundActivities,
   rooms,
 } from '../../../lib/activities';
-import { groupBy } from '../../../lib/utils';
+import { formatToWeekDay, groupBy } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
-
-const DaysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export default function ScramblerSchedule() {
   const { wcif } = useWCIF();
@@ -24,7 +22,7 @@ export default function ScramblerSchedule() {
       allRoundActivities(wcif)
         .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
         .filter((activity) => activity.childActivities.length !== 0)
-        .filter((activity) => activity.room.name === roomSelector),
+        .filter((activity) => activity.room?.name === roomSelector),
     [roomSelector, wcif]
   );
   const _allActivities = useMemo(() => allActivities(wcif), [wcif]);
@@ -51,7 +49,7 @@ export default function ScramblerSchedule() {
   const activitiesSplitAcrossDates = groupBy(
     _allRoundActivities.map((activity) => ({
       ...activity,
-      date: DaysOfWeek[new Date(activity.startTime).getDay()],
+      date: formatToWeekDay(new Date(activity.startTime)) || '???',
     })),
     (x) => x.date
   );
@@ -64,7 +62,7 @@ export default function ScramblerSchedule() {
           <p className="text-xl">Rooms</p>
           <div className="flex flex-row w-full justify-evenly p-4">
             {_rooms.map((room) => (
-              <div class="form-check" onClick={() => setRoomSelector(room.name)}>
+              <div className="form-check" onClick={() => setRoomSelector(room.name)}>
                 <input
                   className="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2"
                   type="radio"
@@ -74,7 +72,7 @@ export default function ScramblerSchedule() {
                 />
                 <label
                   className="form-check-label inline-block text-gray-800 cursor-pointer"
-                  for={`room-selector-${room.name}`}>
+                  htmlFor={`room-selector-${room.name}`}>
                   {room.name}
                 </label>
               </div>

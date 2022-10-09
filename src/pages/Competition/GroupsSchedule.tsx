@@ -16,8 +16,7 @@ const Events = () => {
               <th className="px-6 py-3 text-center">Activity</th>
             </tr>
           </thead>
-          <tbody>
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
     </div>

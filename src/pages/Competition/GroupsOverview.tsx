@@ -89,7 +89,7 @@ const GroupsOverview = () => {
         </thead>
         <tbody>
           {assignments.map((person) => (
-            <tr key={person.id}>
+            <tr key={person.registrantId}>
               <td className="p-2">{person.name}</td>
               <td className="p-2">{person.wcaId}</td>
               {wcif.events.map((event) => (

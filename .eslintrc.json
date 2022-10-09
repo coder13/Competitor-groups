@@ -1,6 +1,5 @@
 {
   "extends": ["react-app", "prettier"],
-  "plugins": ["@typescript-eslint"],
   "rules": {
     "import/first": 0,
     "no-restricted-globals": 0

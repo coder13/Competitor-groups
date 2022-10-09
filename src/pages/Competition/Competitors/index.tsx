@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { acceptedRegistration } from '../../../lib/activities';
 import { byName } from '../../../lib/utils';
@@ -7,7 +7,7 @@ import { useAuth } from '../../../providers/AuthProvider';
 export default function Competitors({ wcif }) {
   const { user } = useAuth();
   const acceptedPersons = useMemo(() => wcif.persons.filter(acceptedRegistration), [wcif]);
-  
+
   const me = acceptedPersons.find((person) => person.wcaUserId === user?.id);
 
   return (
@@ -16,13 +16,12 @@ export default function Competitors({ wcif }) {
         <>
           <Link
             className="border bg-blue-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row"
-            to={`persons/${me.registrantId}`}
-            >
+            to={`persons/${me.registrantId}`}>
             My Assignments
           </Link>
-          <br/>
-          <hr/>
-          <br/>
+          <br />
+          <hr />
+          <br />
         </>
       )}
       <ul>

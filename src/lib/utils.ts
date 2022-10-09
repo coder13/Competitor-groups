@@ -19,7 +19,7 @@ export const unique = <T>(v: T, i: number, arr: T[]): boolean => {
 // export const flatMap = <T, S>(arr: T[], fn: (x: T) => S): S[] =>
 //   arr.reduce((xs: S[], x: T) => xs.concat(fn(x)), []);
 
-export const groupBy = <T>(xs: T[], getKey: (x: T) => string): Record<string, T> =>
+export const groupBy = <T>(xs: T[], getKey: (x: T) => string): Record<string, T[]> =>
   xs.reduce((rv, x) => {
     (rv[getKey(x)] ||= []).push(x);
     return rv;
@@ -28,7 +28,7 @@ export const groupBy = <T>(xs: T[], getKey: (x: T) => string): Record<string, T>
 export const groupByMap = <T, S>(
   xs: T[],
   getKey: (x: T) => string,
-  fn: (x: T) => S
+  fn: (x: T[]) => S
 ): Record<string, S> => {
   const grouped = groupBy(xs, getKey);
   const newGrouped = {};
@@ -44,3 +44,16 @@ export const shortTime = (isoString: string, timeZone = 'UTC') =>
     hour: 'numeric',
     minute: 'numeric',
   });
+
+export const DateTimeFormatter = new Intl.DateTimeFormat(navigator.language, {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+});
+
+export const formatDate = (date: Date) => DateTimeFormatter.format(date);
+export const formatToParts = (date: Date) => DateTimeFormatter.formatToParts(date);
+
+export const formatToWeekDay = (date: Date) =>
+  formatToParts(date).find((p) => p.type === 'weekday')?.value;
