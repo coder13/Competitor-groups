@@ -1,3 +1,5 @@
+import { hasFlag } from 'country-flag-icons';
+import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
@@ -150,7 +152,17 @@ export default function Person() {
   return (
     <div className="flex flex-col p-1">
       <div className="p-1">
-        <h3 className="text-2xl">{person.name}</h3>
+        <div className="flex justify-between items-center">
+          <div className="flex flex-shrink items-center">
+            <h3 className="text-2xl">{person.name}</h3>
+            {hasFlag(person.countryIso2) && (
+              <div className="flex flex-shrink ml-2 text-xl">
+                {getUnicodeFlagIcon(person.countryIso2)}
+              </div>
+            )}
+          </div>
+          <span className="text-2xl">{person.registrantId}</span>
+        </div>
         {person.wcaId && <p className="text-sm">{person.wcaId}</p>}
         <p className="text-md">
           <span>Registered Events:</span>

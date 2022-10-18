@@ -9,7 +9,7 @@ export default function useWCAFetch() {
     async (path, fetchOptions = {}) => {
       const baseApiUrl = `${WCA_ORIGIN}/api/v0`;
 
-      return await fetch(
+      const res = await fetch(
         `${baseApiUrl}${path}`,
         Object.assign({}, fetchOptions, {
           headers: new Headers({
@@ -17,12 +17,14 @@ export default function useWCAFetch() {
             'Content-Type': 'application/json',
           }),
         })
-      )
-        .then((response) => {
-          if (!response.ok) throw new Error(response.statusText);
-          return response;
-        })
-        .then((response) => response.json());
+      );
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error?.error || res.statusText);
+      }
+
+      return await res.json();
     },
     [accessToken]
   );

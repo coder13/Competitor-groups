@@ -77,7 +77,7 @@ export default function WCIFProvider({ competitionId, children }) {
       });
       setLoading(false);
     } catch (e) {
-      console.error(e);
+      console.error(80, e.message);
       setError(e);
       setLoading(false);
     }
@@ -105,7 +105,7 @@ export default function WCIFProvider({ competitionId, children }) {
         <nav className="flex shadow-md print:hidden w-full justify-center">
           <div className="lg:w-1/2 w-full flex flex-col md:flex-row justify-between">
             <div className="flex">
-              <StyledNavLink to={`/competitions/${competitionId}`} text={wcif.shortName} />
+              <StyledNavLink to={`/competitions/${competitionId}`} text={wcif?.shortName} />
             </div>
             <div className="flex">
               <StyledNavLink to={`/competitions/${competitionId}/events`} text="Events" />
@@ -115,7 +115,8 @@ export default function WCIFProvider({ competitionId, children }) {
           </div>
         </nav>
         <div className="flex flex-col w-full items-center">
-          <div className="w-full md:w-1/2">{children}</div>
+          {error && <p>{error.message}</p>}
+          {wcif?.id && <div className="w-full md:w-1/2">{children}</div>}
         </div>
       </div>
     </WCIFContext.Provider>
