@@ -1,11 +1,13 @@
 import {
   Activity,
+  AssignmentCode,
   decodeMultiResult,
   EventId,
   formatCentiseconds,
   formatMultiResult,
   Person,
 } from '@wca/helpers';
+import classNames from 'classnames';
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import tw from 'tailwind-styled-components/dist/tailwind';
@@ -16,9 +18,25 @@ import { useWCIF } from '../WCIFProvider';
 const isAssignment = (assignment) => (a) =>
   a.assignments.some(({ assignmentCode }) => assignmentCode === assignment);
 
+const AssignmentCodeRank: AssignmentCode[] = [
+  'staff-scrambler',
+  'staff-runner',
+  'staff-judge',
+  'staff-dataentry',
+  'staff-announcer',
+];
+
 const AssignmentCategoryHeader = tw.h4`
 text-lg font-bold text-center shadow-md py-3 px-6
 `;
+
+const AssignmentCodeTitles = {
+  'staff-scrambler': 'Scramblers',
+  'staff-runner': 'Runners',
+  'staff-judge': 'Judges',
+  'staff-dataentry': 'Data Entry',
+  'staff-announcer': 'Announcers',
+};
 
 interface EventGroupProps {
   competitionId: string;
@@ -55,9 +73,20 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
     .filter(isAssignment('competitor'))
     .sort(byWorldRanking(eventId as EventId));
 
-  const scramblers = everyoneInActivity.filter(isAssignment('staff-scrambler')).sort(byName);
-  const runners = everyoneInActivity.filter(isAssignment('staff-runner')).sort(byName);
-  const judges = everyoneInActivity.filter(isAssignment('staff-judge')).sort(byName);
+  const assignments = new Set(
+    everyoneInActivity.map((person) => person.assignments?.map((a) => a.assignmentCode)).flat()
+  );
+
+  const peopleByAssignmentCode = (Array.from(assignments.values()) as AssignmentCode[])
+    .filter((assignmentCode) => assignmentCode !== 'competitor')
+    .reduce((acc, assignmentCode) => {
+      acc[assignmentCode] = everyoneInActivity.filter(isAssignment(assignmentCode));
+      return acc;
+    }, {});
+
+  // const scramblers = everyoneInActivity.filter(isAssignment('staff-scrambler')).sort(byName);
+  // const runners = everyoneInActivity.filter(isAssignment('staff-runner')).sort(byName);
+  // const judges = everyoneInActivity.filter(isAssignment('staff-judge')).sort(byName);
 
   // TODO: Calculate seed result from previous round results when available.
   const seedResult = (person) => {
@@ -115,64 +144,46 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
           </tbody>
         </table>
       </div>
-      {scramblers.length > 0 && (
-        <>
-          <hr className="mb-2" />
-          <div>
-            <h4 className="text-lg font-bold text-center bg-yellow-100 shadow-md py-3 px-6">
-              Scramblers
-            </h4>
-            <div className="hover:opacity-80">
-              {scramblers.map((person) => (
-                <Link
-                  className="p-2 block even:bg-yellow-50"
-                  to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
-                  {person.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
+      {Object.keys(peopleByAssignmentCode)
+        .sort((a, b) => AssignmentCodeRank.indexOf(a) - AssignmentCodeRank.indexOf(b))
+        .map((assignmentCode) => {
+          const people = peopleByAssignmentCode[assignmentCode].sort(byName);
 
-      {runners.length > 0 && (
-        <>
-          <hr className="mb-2" />
-          <div>
-            <h4 className="text-lg font-bold text-center bg-red-100 shadow-md py-3 px-6">
-              Runners
-            </h4>
-            <div className="hover:opacity-80">
-              {runners.map((person) => (
-                <Link
-                  className="p-2 block even:bg-red-50"
-                  to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
-                  {person.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-
-      {judges.length > 0 && (
-        <>
-          <hr className="mb-2" />
-          <div>
-            <AssignmentCategoryHeader className="bg-blue-200">Judges</AssignmentCategoryHeader>
-
-            <div className="">
-              {judges.map((person) => (
-                <Link
-                  className="p-4 block even:bg-blue-50 hover:opacity-80"
-                  to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
-                  {person.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
+          return (
+            <>
+              <hr className="mb-2" />
+              <div>
+                <h4
+                  className={classNames(`text-lg font-bold text-center shadow-md py-3 px-6`, {
+                    'bg-yellow-100': assignmentCode === 'staff-scrambler',
+                    'bg-red-200': assignmentCode === 'staff-runner',
+                    'bg-blue-200': assignmentCode === 'staff-judge',
+                    'bg-cyan-200': assignmentCode === 'staff-dataentry',
+                    'bg-violet-200': assignmentCode === 'staff-announcer',
+                    'bg-slate-200': !AssignmentCodeRank.includes(assignmentCode),
+                  })}>
+                  {AssignmentCodeTitles[assignmentCode] || assignmentCode.replace('staff-', '')}
+                </h4>
+                <div className="hover:opacity-80">
+                  {people.map((person) => (
+                    <Link
+                      className={classNames(`p-2 block`, {
+                        'even:bg-yellow-50': assignmentCode === 'staff-scrambler',
+                        'even:bg-red-50': assignmentCode === 'staff-runner',
+                        'even:bg-blue-50': assignmentCode === 'staff-judge',
+                        'even:bg-cyan-50': assignmentCode === 'staff-dataentry',
+                        'even:bg-violet-50': assignmentCode === 'staff-announcer',
+                        'even:bg-slate-50': !AssignmentCodeRank.includes(assignmentCode),
+                      })}
+                      to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
+                      {person.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </>
+          );
+        })}
     </>
   );
 }
