@@ -14,7 +14,11 @@ interface AssignmentLabelProps {
 
 export default function AssignmentLabel({ assignmentCode }: AssignmentLabelProps) {
   if (assignmentCode.match(/judge/i)) {
-    return <Container className="bg-blue-200">Judge</Container>;
+    return (
+      <Container className="bg-blue-200">
+        {assignmentCode === 'staff-judge' ? 'Judge' : assignmentCode.replace('staff-', '')}
+      </Container>
+    );
   }
 
   switch (assignmentCode) {
