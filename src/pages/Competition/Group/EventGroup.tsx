@@ -84,10 +84,6 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
       return acc;
     }, {});
 
-  // const scramblers = everyoneInActivity.filter(isAssignment('staff-scrambler')).sort(byName);
-  // const runners = everyoneInActivity.filter(isAssignment('staff-runner')).sort(byName);
-  // const judges = everyoneInActivity.filter(isAssignment('staff-judge')).sort(byName);
-
   // TODO: Calculate seed result from previous round results when available.
   const seedResult = (person) => {
     const result = person.prAverage?.best || person.bPRSingle?.best;
@@ -157,7 +153,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
                   className={classNames(`text-lg font-bold text-center shadow-md py-3 px-6`, {
                     'bg-yellow-100': assignmentCode === 'staff-scrambler',
                     'bg-red-200': assignmentCode === 'staff-runner',
-                    'bg-blue-200': assignmentCode === 'staff-judge',
+                    'bg-blue-200': assignmentCode.match(/judge/i),
                     'bg-cyan-200': assignmentCode === 'staff-dataentry',
                     'bg-violet-200': assignmentCode === 'staff-announcer',
                     'bg-slate-200': !AssignmentCodeRank.includes(assignmentCode),
@@ -170,7 +166,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
                       className={classNames(`p-2 block`, {
                         'even:bg-yellow-50': assignmentCode === 'staff-scrambler',
                         'even:bg-red-50': assignmentCode === 'staff-runner',
-                        'even:bg-blue-50': assignmentCode === 'staff-judge',
+                        'even:bg-blue-50': assignmentCode.match(/judge/i),
                         'even:bg-cyan-50': assignmentCode === 'staff-dataentry',
                         'even:bg-violet-50': assignmentCode === 'staff-announcer',
                         'even:bg-slate-50': !AssignmentCodeRank.includes(assignmentCode),
