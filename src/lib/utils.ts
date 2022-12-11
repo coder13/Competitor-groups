@@ -49,7 +49,7 @@ const FormatTimeSettings: Intl.DateTimeFormatOptions = {
 };
 
 const FormatDateSettings: Intl.DateTimeFormatOptions = {
-  weekday: 'narrow',
+  weekday: 'short',
   year: 'numeric',
   month: 'numeric',
   day: 'numeric',
@@ -58,13 +58,16 @@ const FormatDateSettings: Intl.DateTimeFormatOptions = {
 };
 
 export const formatTime = (isoString: string, minutes: number = 5) =>
-  roundTime(new Date(isoString), minutes).toLocaleTimeString([], FormatTimeSettings);
+  roundTime(new Date(isoString), minutes).toLocaleTimeString(
+    [...navigator.languages],
+    FormatTimeSettings
+  );
 
 export const formmatDate = (isoString: string, minutes: number = 5) =>
-  roundTime(new Date(isoString), minutes).toLocaleDateString();
+  roundTime(new Date(isoString), minutes).toLocaleDateString([...navigator.languages]);
 
 export const formatDateTime = (isoString: string, minutes: number = 5) =>
-  roundTime(new Date(isoString), minutes).toLocaleTimeString([], {
+  roundTime(new Date(isoString), minutes).toLocaleTimeString([...navigator.languages], {
     ...FormatDateSettings,
     ...FormatTimeSettings,
   });
