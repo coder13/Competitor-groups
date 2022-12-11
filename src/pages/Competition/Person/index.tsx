@@ -5,7 +5,8 @@ import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { allActivities, parseActivityCode } from '../../../lib/activities';
 import AssignmentLabel from '../../../components/AssignmentLabel/AssignmentLabel';
-import { formatDate, formatToParts } from '../../../lib/utils';
+import { formatDate, formatToParts, roundTime } from '../../../lib/utils';
+import DisclaimerText from '../../../components/DisclaimerText';
 
 export const byDate = (
   a: { startTime: string } | undefined,
@@ -115,7 +116,10 @@ export default function Person() {
                       activity?.activityCode || ''
                     );
                     const roomName = activity?.room?.name || activity?.parent?.room?.name;
-                    const startTime = new Date(activity?.startTime || 0).toLocaleTimeString([], {
+                    const startTime = roundTime(
+                      new Date(activity?.startTime || 0),
+                      5
+                    ).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
                     });
@@ -127,7 +131,7 @@ export default function Person() {
                         to={`/competitions/${wcif.id}/activities/${assignment.activityId}`}>
                         <td className="py-2 text-center">{startTime}</td>
                         <td className="py-2 text-center">
-                          <span className={`cubing-icon event-${eventId} mx-1 text-lg`} />
+                          <span className={`cubing-icon event-${eventId} mx-1 text-xl`} />
                         </td>
                         <td className="py-2 text-center">{roundNumber}</td>
                         <td className="py-2 text-center">{groupNumber || '*'}</td>
@@ -171,6 +175,8 @@ export default function Person() {
           ))}
         </p>
       </div>
+      <hr className="my-2" />
+      <DisclaimerText />
       <hr className="my-2" />
 
       {person?.assignments && person.assignments.length > 0 ? (

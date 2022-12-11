@@ -1,6 +1,8 @@
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import DisclaimerText from '../../components/DisclaimerText';
 import { allActivities } from '../../lib/activities';
+import { formatDateTimeRange } from '../../lib/utils';
 import { useWCIF } from './WCIFProvider';
 
 export default function Round() {
@@ -20,6 +22,8 @@ export default function Round() {
 
   return (
     <div className="flex w-full flex-col text-sm sm:text-base py-2">
+      <DisclaimerText />
+      <hr className="my-2" />
       {activities.map((activity) => (
         <Link
           key={activity.id}
@@ -28,7 +32,7 @@ export default function Round() {
           <span>{activity.name}</span>
           <span className="text-xs sm:text-sm">
             {(activity?.parent?.parent?.room || activity?.parent?.room || activity?.room)?.name}:{' '}
-            {new Date(activity.startTime).toLocaleString()}
+            {formatDateTimeRange(activity.startTime, activity.endTime)}
           </span>
         </Link>
       ))}

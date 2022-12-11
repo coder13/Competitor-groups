@@ -38,12 +38,50 @@ export const groupByMap = <T, S>(
   return newGrouped;
 };
 
-export const shortTime = (isoString: string, timeZone = 'UTC') =>
-  new Date(isoString).toLocaleTimeString('en-US', {
-    timeZone,
-    hour: 'numeric',
-    minute: 'numeric',
+export const roundTime = (date: Date, minutes: number = 5) => {
+  const ms = 1000 * 60 * minutes;
+  return new Date(Math.round(date.getTime() / ms) * ms);
+};
+
+const FormatTimeSettings: Intl.DateTimeFormatOptions = {
+  hour: '2-digit',
+  minute: '2-digit',
+};
+
+const FormatDateSettings: Intl.DateTimeFormatOptions = {
+  weekday: 'narrow',
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+};
+
+export const formatTime = (isoString: string, minutes: number = 5) =>
+  roundTime(new Date(isoString), minutes).toLocaleTimeString([], FormatTimeSettings);
+
+export const formmatDate = (isoString: string, minutes: number = 5) =>
+  roundTime(new Date(isoString), minutes).toLocaleDateString();
+
+export const formatDateTime = (isoString: string, minutes: number = 5) =>
+  roundTime(new Date(isoString), minutes).toLocaleTimeString([], {
+    ...FormatDateSettings,
+    ...FormatTimeSettings,
   });
+
+export const formatTimeRange = (start: string, end: string, minutes: number = 5) =>
+  `${formatTime(start, minutes)} - ${formatTime(end, minutes)}`;
+
+export const formatDateTimeRange = (start: string, end: string, minutes: number = 5) => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  if (startDate.toLocaleDateString() === endDate.toLocaleDateString()) {
+    return `${formmatDate(start)} ${formatTimeRange(start, end, minutes)}`;
+  }
+
+  return `${formatDateTime(start)} - ${formatDateTime(end)}`;
+};
 
 export const DateTimeFormatter = new Intl.DateTimeFormat(navigator.language, {
   weekday: 'long',

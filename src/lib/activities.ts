@@ -10,7 +10,7 @@ import {
 import flatten from 'lodash.flatten';
 import flatMap from 'lodash.flatmap';
 import { eventNameById } from './events';
-import { shortTime } from './utils';
+import { formatTime } from './utils';
 
 const ActivityCodeRegExp = /(\w+)(?:-r(\d+))?(?:-g(\d+))?(?:-a(\d+))?/;
 
@@ -150,7 +150,5 @@ export const byWorldRanking = (eventId: EventId): ((a: Person, b: Person) => num
   };
 };
 
-export const activityDurationString = (
-  { startTime, endTime }: Activity,
-  timezone = 'UTC'
-): string => `${shortTime(startTime, timezone)} - ${shortTime(endTime, timezone)}`;
+export const activityDurationString = ({ startTime, endTime }: Activity): string =>
+  `${formatTime(startTime, 5)} - ${formatTime(endTime, 5)}`;

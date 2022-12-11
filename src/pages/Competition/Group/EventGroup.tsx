@@ -12,7 +12,7 @@ import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import tw from 'tailwind-styled-components/dist/tailwind';
 import { activityCodeToName, byWorldRanking, parseActivityCode } from '../../../lib/activities';
-import { byName } from '../../../lib/utils';
+import { byName, formatDateTimeRange } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
 
 const isAssignment = (assignment) => (a) =>
@@ -113,6 +113,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
     <>
       <div className="p-2">
         <h3 className="font-bold">{activityCodeToName(activity?.activityCode)}</h3>
+        <p>{formatDateTimeRange(activity.startTime, activity.endTime)}</p>
       </div>
       <hr className="mb-2" />
       <div>
