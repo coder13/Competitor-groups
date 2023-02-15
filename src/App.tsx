@@ -14,6 +14,13 @@ import Home from './pages/Home';
 import AuthProvider from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createContext, useEffect, useState } from 'react';
+
+export const GlobalStateContext = createContext<{
+  online: boolean;
+}>({
+  online: true,
+});
 
 const Navigation = () => {
   usePageTracking(process.env.REACT_APP_GA_MEASUREMENT_ID);
@@ -40,14 +47,43 @@ const Navigation = () => {
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <AuthProvider>
-        <Navigation />
-      </AuthProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+const App = () => {
+  const [online, setOnline] = useState(navigator.onLine);
+
+  const handleOnline = () => {
+    setOnline(true);
+  };
+
+  const handleOffline = () => {
+    setOnline(false);
+  };
+
+  console.log(61, online);
+
+  useEffect(() => {
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  return (
+    <GlobalStateContext.Provider
+      value={{
+        online,
+      }}>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AuthProvider>
+            <Navigation />
+          </AuthProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </GlobalStateContext.Provider>
+  );
+};
 
 export default App;
