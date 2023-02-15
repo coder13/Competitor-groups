@@ -104,7 +104,9 @@ export default function ScramblerSchedule() {
                 {activities.map((activity) => (
                   <>
                     <tr key={activity.id}>
-                      <td className="py-2 px-3">{activityCodeToName(activity.activityCode)}</td>
+                      <td colSpan={2} className="py-2 px-3">
+                        {activityCodeToName(activity.activityCode)}
+                      </td>
                     </tr>
                     {activity.childActivities.map((childActivity) => (
                       <Link
