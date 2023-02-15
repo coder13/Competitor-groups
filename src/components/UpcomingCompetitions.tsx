@@ -33,9 +33,7 @@ export default function UpcomingCompetitions() {
         page: pageParam.toString(),
       });
 
-      const [comps] = await wcaApiFetch(`/competitions?${params.toString()}`);
-
-      return comps;
+      return wcaApiFetch<ApiCompetition[]>(`/competitions?${params.toString()}`);
     },
     getNextPageParam: (lastPage, pages) => {
       // If we have more pages, keep going

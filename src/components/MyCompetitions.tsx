@@ -3,30 +3,21 @@ import useWCAFetch from '../hooks/useWCAFetch';
 import { useAuth } from '../providers/AuthProvider';
 import CompetitionListFragment from './CompetitionList';
 
+interface UserCompsResponse {
+  upcoming_competitions: ApiCompetition[];
+  ongoing_competitions: ApiCompetition[];
+}
+
 export default function MyCompetitions() {
   const { user } = useAuth();
   const wcaApiFetch = useWCAFetch();
 
-  const { data, isFetching } = useQuery<{
-    upcoming_competitions: ApiCompetition[];
-    ongoing_competitions: ApiCompetition[];
-  }>(
+  const { data, isFetching } = useQuery<UserCompsResponse>(
     ['userCompetitions'],
     async () =>
-      new Promise<{
-        upcoming_competitions: ApiCompetition[];
-        ongoing_competitions: ApiCompetition[];
-      }>((resolve) => {
-        setTimeout(async () => {
-          resolve(
-            (
-              await wcaApiFetch(
-                `/users/${user?.id}?upcoming_competitions=true&ongoing_competitions=true`
-              )
-            )[0]
-          );
-        }, 2000);
-      })
+      await wcaApiFetch<UserCompsResponse>(
+        `/users/${user?.id}?upcoming_competitions=true&ongoing_competitions=true`
+      )
   );
 
   const competitions = [

@@ -10,6 +10,8 @@ export default function Competitors({ wcif }) {
 
   const me = acceptedPersons.find((person) => person.wcaUserId === user?.id);
 
+  console.log(acceptedPersons);
+
   return (
     <div className="w-full h-full flex flex-1 flex-col p-2">
       {me && (

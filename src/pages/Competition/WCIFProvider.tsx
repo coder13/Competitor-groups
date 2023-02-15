@@ -1,9 +1,10 @@
-import { createContext, useContext, useState, useEffect, useReducer, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import ReactLoading from 'react-loading';
 import clsx from 'clsx';
 import { Competition } from '@wca/helpers';
 import useWCAFetch from '../../hooks/useWCAFetch';
+import { BarLoader } from 'react-spinners';
+import { useQuery } from '@tanstack/react-query';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
@@ -40,24 +41,17 @@ const WCIFContext = createContext<IWCIFContextType>({
   setTitle: () => {},
 });
 
-function WCIFReducer(_: Competition, { type, payload }) {
-  switch (type) {
-    case 'SET':
-      return {
-        ...payload,
-      };
-    default: {
-      throw new Error(`Unhandled action type ${type}`);
-    }
-  }
-}
-
 export default function WCIFProvider({ competitionId, children }) {
-  const [wcif, dispatch] = useReducer(WCIFReducer, null);
-  const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState('');
   const wcaApiFetch = useWCAFetch();
+  const {
+    data: wcif,
+    error,
+    isFetching,
+  } = useQuery<Competition>({
+    queryKey: ['wcif', competitionId],
+    queryFn: () => wcaApiFetch(`/competitions/${competitionId}/wcif/public`),
+  });
 
   useEffect(() => {
     if (wcif) {
@@ -67,26 +61,6 @@ export default function WCIFProvider({ competitionId, children }) {
     }
   }, [wcif, title]);
 
-  const fetchCompetition = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await wcaApiFetch(`/competitions/${competitionId}/wcif/public`);
-      dispatch({
-        type: 'SET',
-        payload: data,
-      });
-      setLoading(false);
-    } catch (e) {
-      console.error(80, e.message);
-      setError(e);
-      setLoading(false);
-    }
-  }, [competitionId, wcaApiFetch]);
-
-  useEffect(() => {
-    fetchCompetition();
-  }, [fetchCompetition]);
-
   if (error) {
     <div className="flex">
       <p>Error loading competition: </p>
@@ -94,13 +68,10 @@ export default function WCIFProvider({ competitionId, children }) {
     </div>;
   }
 
-  if (loading && !error) {
-    // TODO Fix this
-    return <ReactLoading type="cubes" />;
-  }
+  console.log(97, wcif);
 
   return (
-    <WCIFContext.Provider value={{ wcif, setTitle }}>
+    <WCIFContext.Provider value={{ wcif: wcif as Competition, setTitle }}>
       <div className="flex flex-col w-full h-full">
         <nav className="flex shadow-md print:hidden w-full justify-center">
           <div className="lg:w-1/2 w-full flex flex-col md:flex-row justify-between">
@@ -115,7 +86,7 @@ export default function WCIFProvider({ competitionId, children }) {
           </div>
         </nav>
         <div className="flex flex-col w-full items-center">
-          {error && <p>{error.message}</p>}
+          {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
           {wcif?.id && <div className="w-full md:w-1/2">{children}</div>}
         </div>
       </div>
