@@ -5,6 +5,8 @@ import { Competition } from '@wca/helpers';
 import useWCAFetch from '../../hooks/useWCAFetch';
 import { BarLoader } from 'react-spinners';
 import { useQuery } from '@tanstack/react-query';
+import { GlobalStateContext } from '../../App';
+import NoteBox from '../../components/Notebox';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
@@ -42,6 +44,7 @@ const WCIFContext = createContext<IWCIFContextType>({
 });
 
 export default function WCIFProvider({ competitionId, children }) {
+  const { online } = useContext(GlobalStateContext);
   const [title, setTitle] = useState('');
   const wcaApiFetch = useWCAFetch();
   const {
@@ -73,6 +76,12 @@ export default function WCIFProvider({ competitionId, children }) {
 
   return (
     <WCIFContext.Provider value={{ wcif: wcif as Competition, setTitle }}>
+      {!online && (
+        <NoteBox
+          text="This app is operating in offline mode. Some data may be outdated."
+          prefix=""
+        />
+      )}
       <div className="flex flex-col w-full h-full">
         <nav className="flex shadow-md print:hidden w-full justify-center">
           <div className="lg:w-1/2 w-full flex flex-col md:flex-row justify-between">
