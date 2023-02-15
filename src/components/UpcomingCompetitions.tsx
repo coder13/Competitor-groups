@@ -8,7 +8,7 @@ import { BarLoader } from 'react-spinners';
 // This is a magic number constant that comes from the WCA API.
 const DEFAULT_WCA_PAGINATION = 25;
 
-const oneWeekAgo = new Date(Date.now() - 4 * 7 * 24 * 60 * 60 * 1000);
+const oneWeekAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
 const oneWeekFuture = new Date(Date.now() + 2 * 7 * 24 * 60 * 60 * 1000);
 export default function UpcomingCompetitions() {
   const { ref, inView } = useInView();
