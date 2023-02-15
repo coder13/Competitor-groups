@@ -30,7 +30,7 @@ export default function Round() {
           className="flex flex-col w-full p-2 even:bg-slate-50 hover:bg-slate-100 even:hover:bg-slate-200"
           to={`/competitions/${wcif.id}/activities/${activity.id}`}>
           <span>{activity.name}</span>
-          <span className="text-xs sm:text-sm">
+          <span className="text-xs sm:text-sm font-light">
             {(activity?.parent?.parent?.room || activity?.parent?.room || activity?.room)?.name}:{' '}
             {formatDateTimeRange(activity.startTime, activity.endTime)}
           </span>
