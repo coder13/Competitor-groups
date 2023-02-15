@@ -61,7 +61,6 @@ export default function ScramblerSchedule() {
   return (
     <div>
       <div className="print:hidden">
-        <p>Scrambler Schedule</p>
         <div className="flex items-center flex-col">
           <p className="text-xl">Rooms</p>
           <div className="flex flex-row w-full justify-evenly p-4">
