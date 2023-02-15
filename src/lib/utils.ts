@@ -1,5 +1,5 @@
 export const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
-export const byDate = (a: { startTime: string }, b: { startTime: string }) =>
+export const byDate = <T>(a: T & { startTime: string }, b: T & { startTime: string }) =>
   new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
 
 /**
@@ -13,11 +13,6 @@ export const unique = <T>(v: T, i: number, arr: T[]): boolean => {
   // compare index with first element index
   return i === arr.indexOf(v);
 };
-
-// export const flatten = <T>(arr: T[][]): T[] => arr.reduce((xs, x) => xs.concat(x), []);
-
-// export const flatMap = <T, S>(arr: T[], fn: (x: T) => S): S[] =>
-//   arr.reduce((xs: S[], x: T) => xs.concat(fn(x)), []);
 
 export const groupBy = <T>(xs: T[], getKey: (x: T) => string): Record<string, T[]> =>
   xs.reduce((rv, x) => {

@@ -24,7 +24,7 @@ export default function useWCAFetch() {
         throw new Error(error?.error || res.statusText);
       }
 
-      return await res.json();
+      return [await res.json(), res];
     },
     [accessToken]
   );

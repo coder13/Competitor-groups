@@ -13,6 +13,7 @@ import CompetitionGroupsSchedule from './pages/Competition/GroupsSchedule';
 import Home from './pages/Home';
 import AuthProvider from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const Navigation = () => {
   usePageTracking(process.env.REACT_APP_GA_MEASUREMENT_ID);
@@ -37,12 +38,16 @@ const Navigation = () => {
   );
 };
 
+const queryClient = new QueryClient();
+
 const App = () => (
-  <BrowserRouter>
-    <AuthProvider>
-      <Navigation />
-    </AuthProvider>
-  </BrowserRouter>
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <AuthProvider>
+        <Navigation />
+      </AuthProvider>
+    </BrowserRouter>
+  </QueryClientProvider>
 );
 
 export default App;
