@@ -12,8 +12,8 @@ import { clientsClaim } from 'workbox-core';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
-import { StaleWhileRevalidate, CacheFirst } from 'workbox-strategies';
-import { CacheableResponsePlugin } from 'workbox-cacheable-response';
+import { StaleWhileRevalidate } from 'workbox-strategies';
+// import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -81,25 +81,25 @@ self.addEventListener('message', (event) => {
 // Any other custom service worker logic can go here.
 
 // caches wca requests
-registerRoute(
-  ({ url }) => {
-    if (url.origin !== 'https://www.worldcubeassociation.org') {
-      return false;
-    }
+// registerRoute(
+//   ({ url }) => {
+//     if (url.origin !== 'https://www.worldcubeassociation.org') {
+//       return false;
+//     }
 
-    console.log(87, url.origin, url.pathname);
-    if (!url.pathname.startsWith('/api/v0/competitions')) {
-      return false;
-    }
+//     console.log(87, url.origin, url.pathname);
+//     if (!url.pathname.startsWith('/api/v0/competitions')) {
+//       return false;
+//     }
 
-    return true;
-  },
-  new CacheFirst({
-    cacheName: 'wca',
-    plugins: [
-      new CacheableResponsePlugin({
-        statuses: [0, 200],
-      }),
-    ],
-  })
-);
+//     return true;
+//   },
+//   new CacheFirst({
+//     cacheName: 'wca',
+//     plugins: [
+//       new CacheableResponsePlugin({
+//         statuses: [0, 200],
+//       }),
+//     ],
+//   })
+// );
