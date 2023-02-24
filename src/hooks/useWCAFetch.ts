@@ -20,8 +20,8 @@ export default function useWCAFetch() {
       );
 
       if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error?.error || res.statusText);
+        const error = await res.text();
+        throw new Error(error);
       }
 
       return (await res.json()) as T;

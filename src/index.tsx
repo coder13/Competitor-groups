@@ -4,6 +4,7 @@ import reportWebVitals from './reportWebVitals';
 import App from './App';
 import './index.css';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import '@total-typescript/ts-reset';
 
 const container = document.getElementById('root');
 if (!container) throw new Error('Failed to find the root element');

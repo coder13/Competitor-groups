@@ -54,6 +54,7 @@ export default function WCIFProvider({ competitionId, children }) {
   } = useQuery<Competition>({
     queryKey: ['wcif', competitionId],
     queryFn: () => wcaApiFetch(`/competitions/${competitionId}/wcif/public`),
+    networkMode: 'online',
   });
 
   useEffect(() => {

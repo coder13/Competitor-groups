@@ -143,7 +143,9 @@ export default function AuthProvider({ children }) {
     )
       .then((res) => {
         if (res.ok) {
-          return res.json();
+          return res.json() as Promise<{
+            me: User;
+          }>;
         } else {
           throw res.json();
         }

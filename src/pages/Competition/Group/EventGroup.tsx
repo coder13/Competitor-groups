@@ -11,7 +11,12 @@ import classNames from 'classnames';
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import tw from 'tailwind-styled-components/dist/tailwind';
-import { activityCodeToName, byWorldRanking, parseActivityCode } from '../../../lib/activities';
+import {
+  activityCodeToName,
+  byWorldRanking,
+  parseActivityCode,
+  rooms,
+} from '../../../lib/activities';
 import { byName, formatDateTimeRange } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
 
@@ -45,7 +50,7 @@ interface EventGroupProps {
 }
 
 export default function EventGroup({ competitionId, activity, persons }: EventGroupProps) {
-  const { setTitle } = useWCIF();
+  const { setTitle, wcif } = useWCIF();
   console.log(activity);
   const { eventId } = parseActivityCode(activity?.activityCode || '');
 
@@ -54,6 +59,12 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
       setTitle(activityCodeToName(activity.activityCode));
     }
   }, [activity, setTitle]);
+
+  const room = rooms(wcif).find((r) =>
+    r.activities.some(
+      (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id)
+    )
+  );
 
   const everyoneInActivity = useMemo(
     () =>
@@ -112,7 +123,9 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
   return (
     <>
       <div className="p-2">
-        <h3 className="font-bold">{activityCodeToName(activity?.activityCode)}</h3>
+        <h3 className="font-bold">
+          {room?.name}: {activityCodeToName(activity?.activityCode)}
+        </h3>
         <p>{formatDateTimeRange(activity.startTime, activity.endTime)}</p>
       </div>
       <hr className="mb-2" />
