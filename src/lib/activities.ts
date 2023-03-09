@@ -110,6 +110,10 @@ export const hasDistributedAttempts = (activityCode: string): boolean =>
 export const acceptedRegistration = ({ registration }: Person): boolean =>
   registration?.status === 'accepted';
 
+export const queryMatch = (person: Person, query: string): boolean => {
+  return query === '' || person.name.toLocaleLowerCase().includes(query.toLocaleLowerCase());
+};
+
 const findPR = (eventId: EventId) => (personalBests: PersonalBest[], type: RankingType) =>
   personalBests.find((pr) => pr.eventId.toString() === eventId.toString() && pr.type === type);
 
