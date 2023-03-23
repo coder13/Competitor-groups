@@ -97,9 +97,16 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
 
   // TODO: Calculate seed result from previous round results when available.
   const seedResult = (person) => {
-    const result = person.prAverage?.best || person.bPRSingle?.best;
+    const averagePr = person.prAverage?.best;
+    const singlePr = person.prSingle?.best;
+    const result = averagePr || singlePr;
     if (!result) {
       return '';
+    }
+
+    // single events
+    if (eventId === '333bf' || eventId === '444bf' || eventId === '555bf') {
+      return formatCentiseconds(singlePr);
     }
 
     if (eventId === '333mbf') {
