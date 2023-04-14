@@ -4,8 +4,10 @@ import {
   decodeMultiResult,
   EventId,
   formatCentiseconds,
-  formatMultiResult,
   Person,
+  RankingType,
+  AttemptResult,
+  formatMultiResult,
 } from '@wca/helpers';
 import classNames from 'classnames';
 import { useEffect, useMemo } from 'react';
@@ -43,6 +45,22 @@ const AssignmentCodeTitles = {
   'staff-announcer': 'Announcers',
 };
 
+const renderResultByEventId = (
+  eventId: EventId,
+  rankingType: RankingType,
+  result: AttemptResult
+) => {
+  if (eventId === '333fm') {
+    return rankingType === 'average' ? ((result as number) / 100).toFixed(2).toString() : result;
+  }
+
+  if (eventId === '333mbf') {
+    return formatMultiResult(decodeMultiResult('0' + result));
+  }
+
+  return formatCentiseconds(result as number);
+};
+
 interface EventGroupProps {
   competitionId: string;
   activity: Activity;
@@ -51,8 +69,10 @@ interface EventGroupProps {
 
 export default function EventGroup({ competitionId, activity, persons }: EventGroupProps) {
   const { setTitle, wcif } = useWCIF();
-  console.log(activity);
-  const { eventId } = parseActivityCode(activity?.activityCode || '');
+  const { eventId, roundNumber } = parseActivityCode(activity?.activityCode || '');
+  const event = wcif.events.find((e) => e.id === eventId);
+  const prevRound =
+    roundNumber && event?.rounds?.find((r) => r.id === `${eventId},r${roundNumber - 1}`);
 
   useEffect(() => {
     if (activity) {
@@ -65,6 +85,9 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
       (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id)
     )
   );
+
+  const venue = wcif.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id));
+  const timeZone = venue?.timezone;
 
   const everyoneInActivity = useMemo(
     () =>
@@ -97,27 +120,33 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
 
   // TODO: Calculate seed result from previous round results when available.
   const seedResult = (person) => {
+    if (prevRound) {
+      const prevRoundResults = prevRound.results?.find((r) => r.personId === person.registrantId);
+      if (!prevRoundResults) {
+        return '';
+      }
+
+      if (prevRound.format === 'a' || 'm') {
+        return renderResultByEventId(eventId, 'average', prevRoundResults.average);
+      }
+
+      return renderResultByEventId(eventId, 'single', prevRoundResults.average);
+    }
+
     const averagePr = person.prAverage?.best;
     const singlePr = person.prSingle?.best;
-    const result = averagePr || singlePr;
-    if (!result) {
+    if (!averagePr && !singlePr) {
       return '';
     }
 
-    // single events
-    if (eventId === '333bf' || eventId === '444bf' || eventId === '555bf') {
-      return formatCentiseconds(singlePr);
-    }
+    const shouldShowAveragePr =
+      averagePr && !['333bf', '444bf', '555bf', '333mbf'].includes(eventId);
 
-    if (eventId === '333mbf') {
-      return formatMultiResult(decodeMultiResult(result));
-    }
-
-    if (eventId === '333fm') {
-      return (result / 100).toFixed(2).toString();
-    }
-
-    return formatCentiseconds(result);
+    return renderResultByEventId(
+      eventId,
+      shouldShowAveragePr ? 'average' : 'single',
+      shouldShowAveragePr ? averagePr : singlePr
+    );
   };
 
   const stationNumber = (person) => {
@@ -133,7 +162,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
         <h3 className="font-bold">
           {room?.name}: {activityCodeToName(activity?.activityCode)}
         </h3>
-        <p>{formatDateTimeRange(activity.startTime, activity.endTime)}</p>
+        <p>{formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}</p>
       </div>
       <hr className="mb-2" />
       <div>

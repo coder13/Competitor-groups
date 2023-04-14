@@ -115,6 +115,12 @@ export default function Person() {
                     const { eventId, roundNumber, groupNumber } = parseActivityCode(
                       activity?.activityCode || ''
                     );
+
+                    const venue = wcif.schedule.venues?.find((v) =>
+                      v.rooms.some((r) => r.id === activity?.parent?.room?.id)
+                    );
+                    const timeZone = venue?.timezone;
+
                     const roomName = activity?.room?.name || activity?.parent?.room?.name;
                     const startTime = roundTime(
                       new Date(activity?.startTime || 0),
@@ -122,6 +128,7 @@ export default function Person() {
                     ).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
+                      timeZone,
                     });
 
                     return (

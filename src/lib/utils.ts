@@ -52,33 +52,47 @@ const FormatDateSettings: Intl.DateTimeFormatOptions = {
   minute: '2-digit',
 };
 
-export const formatTime = (isoString: string, minutes: number = 5) =>
-  roundTime(new Date(isoString), minutes).toLocaleTimeString(
-    [...navigator.languages],
-    FormatTimeSettings
-  );
+export const formatTime = (isoString: string, minutes: number = 5, timeZone?: string) =>
+  roundTime(new Date(isoString), minutes).toLocaleTimeString([...navigator.languages], {
+    ...FormatTimeSettings,
+    ...(timeZone && {
+      timeZone,
+    }),
+  });
 
 export const formmatDate = (isoString: string, minutes: number = 5) =>
   roundTime(new Date(isoString), minutes).toLocaleDateString([...navigator.languages]);
 
-export const formatDateTime = (isoString: string, minutes: number = 5) =>
+export const formatDateTime = (isoString: string, minutes: number = 5, timeZone?: string) =>
   roundTime(new Date(isoString), minutes).toLocaleTimeString([...navigator.languages], {
     ...FormatDateSettings,
     ...FormatTimeSettings,
+    ...(timeZone && {
+      timeZone,
+    }),
   });
 
-export const formatTimeRange = (start: string, end: string, minutes: number = 5) =>
-  `${formatTime(start, minutes)} - ${formatTime(end, minutes)}`;
+export const formatTimeRange = (
+  start: string,
+  end: string,
+  minutes: number = 5,
+  timeZone?: string
+) => `${formatTime(start, minutes, timeZone)} - ${formatTime(end, minutes, timeZone)}`;
 
-export const formatDateTimeRange = (start: string, end: string, minutes: number = 5) => {
+export const formatDateTimeRange = (
+  start: string,
+  end: string,
+  minutes: number = 5,
+  timeZone?: string
+) => {
   const startDate = new Date(start);
   const endDate = new Date(end);
 
   if (startDate.toLocaleDateString() === endDate.toLocaleDateString()) {
-    return `${formmatDate(start)} ${formatTimeRange(start, end, minutes)}`;
+    return `${formmatDate(start)} ${formatTimeRange(start, end, minutes, timeZone)}`;
   }
 
-  return `${formatDateTime(start)} - ${formatDateTime(end)}`;
+  return `${formatDateTime(start, minutes, timeZone)} - ${formatDateTime(end, minutes, timeZone)}`;
 };
 
 export const DateTimeFormatter = new Intl.DateTimeFormat(navigator.language, {

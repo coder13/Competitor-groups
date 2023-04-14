@@ -21,6 +21,11 @@ export const parseActivityCode = (activityCode: string) => {
     roundNumber: r ? parseInt(r, 10) : undefined,
     groupNumber: g ? parseInt(g, 10) : undefined,
     attemptNumber: a ? parseInt(a, 10) : undefined,
+  } as {
+    eventId: EventId;
+    roundNumber?: number;
+    groupNumber?: number;
+    attemptNumber?: number;
   };
 };
 
@@ -150,5 +155,7 @@ export const byWorldRanking = (eventId: EventId): ((a: Person, b: Person) => num
   };
 };
 
-export const activityDurationString = ({ startTime, endTime }: Activity): string =>
-  `${formatTime(startTime, 5)} - ${formatTime(endTime, 5)}`;
+export const activityDurationString = (
+  { startTime, endTime }: Activity,
+  timeZone?: string
+): string => `${formatTime(startTime, 5, timeZone)} - ${formatTime(endTime, 5, timeZone)}`;
