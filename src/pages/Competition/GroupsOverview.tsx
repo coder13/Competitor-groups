@@ -63,7 +63,6 @@ const GroupsOverview = () => {
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((person) => {
         const a = assignmentsToObj(person);
-        console.log(person, a);
         return { ...person, assignmentsData: a };
       });
   }, [assignmentsToObj, wcif.persons]);

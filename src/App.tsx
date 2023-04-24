@@ -58,8 +58,6 @@ const App = () => {
     setOnline(false);
   };
 
-  console.log(61, online);
-
   useEffect(() => {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
