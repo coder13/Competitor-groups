@@ -1,6 +1,8 @@
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
-import { useCallback, useEffect, useMemo } from 'react';
+import tw from 'tailwind-styled-components';
+import styled from 'styled-components';
+import { useCallback, useEffect, useMemo, Fragment } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { allActivities, parseActivityCode } from '../../../lib/activities';
@@ -16,6 +18,17 @@ export const byDate = (
   const bDate = b ? new Date(b.startTime).getTime() : Number.MAX_SAFE_INTEGER;
   return aDate - bDate;
 };
+
+
+const RoundedBg = tw.span`
+  px-[6px]
+  py-[4px]
+  rounded-md
+`;
+
+const RoomColored = styled(RoundedBg)`
+  background-color: ${p => p.$color ? `${p.$color}70` : 'inherit'};
+`;
 
 export default function Person() {
   const { wcif, setTitle } = useWCIF();
@@ -102,7 +115,7 @@ export default function Person() {
           </thead>
           <tbody>
             {scheduleDays.map(({ date, dateParts }) => (
-              <>
+              <Fragment key={date}>
                 <tr>
                   <td colSpan={6} className="font-bold text-lg text-center py-2">
                     {dateParts.find((i) => i.type === 'weekday')?.value || date}
@@ -122,6 +135,7 @@ export default function Person() {
                     const timeZone = venue?.timezone;
 
                     const roomName = activity?.room?.name || activity?.parent?.room?.name;
+                    const roomColor = activity?.room?.color || activity?.parent?.room?.color;
                     const startTime = roundTime(
                       new Date(activity?.startTime || 0),
                       5
@@ -142,7 +156,9 @@ export default function Person() {
                         </td>
                         <td className="py-2 text-center">{roundNumber}</td>
                         <td className="py-2 text-center">{groupNumber || '*'}</td>
-                        <td className="py-2 text-center">{roomName}</td>
+                        <td className="py-2 text-center">
+                          <RoomColored $color={roomColor}>{roomName}</RoomColored>
+                        </td>
                         <td className="py-2 text-center">
                           <AssignmentLabel assignmentCode={assignment.assignmentCode} />
                         </td>
@@ -152,7 +168,7 @@ export default function Person() {
                       </Link>
                     );
                   })}
-              </>
+              </Fragment>
             ))}
           </tbody>
         </table>
