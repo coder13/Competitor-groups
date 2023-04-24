@@ -72,8 +72,6 @@ export default function WCIFProvider({ competitionId, children }) {
     </div>;
   }
 
-  console.log(97, wcif);
-
   return (
     <WCIFContext.Provider value={{ wcif: wcif as Competition, setTitle }}>
       {!online && (
