@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useCallback, useEffect, useMemo, Fragment } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
-import { allActivities, parseActivityCode } from '../../../lib/activities';
+import { parseActivityCode, rooms } from '../../../lib/activities';
 import AssignmentLabel from '../../../components/AssignmentLabel/AssignmentLabel';
 import { formatDate, formatToParts, roundTime } from '../../../lib/utils';
 import DisclaimerText from '../../../components/DisclaimerText';
@@ -19,7 +19,6 @@ export const byDate = (
   return aDate - bDate;
 };
 
-
 const RoundedBg = tw.span`
   px-[6px]
   py-[4px]
@@ -27,7 +26,7 @@ const RoundedBg = tw.span`
 `;
 
 const RoomColored = styled(RoundedBg)`
-  background-color: ${p => p.$color ? `${p.$color}70` : 'inherit'};
+  background-color: ${(p) => (p.$color ? `${p.$color}70` : 'inherit')};
 `;
 
 export default function Person() {
@@ -42,7 +41,24 @@ export default function Person() {
     }
   }, [person, setTitle]);
 
-  const _allActivities = useMemo(() => allActivities(wcif), [wcif]);
+  // Get only group activities (children of round Activities)
+  const _allActivities = useMemo(
+    () =>
+      rooms(wcif)
+        .flatMap((room) =>
+          room.activities.flatMap((ra) =>
+            ra.childActivities?.map((ca) => ({
+              ...ca,
+              parent: {
+                ...ra,
+                room,
+              },
+            }))
+          )
+        )
+        .filter(Boolean),
+    [wcif]
+  );
 
   const getActivity = useCallback(
     (assignment) => _allActivities.find(({ id }) => id === assignment.activityId),
@@ -134,8 +150,8 @@ export default function Person() {
                     );
                     const timeZone = venue?.timezone;
 
-                    const roomName = activity?.room?.name || activity?.parent?.room?.name;
-                    const roomColor = activity?.room?.color || activity?.parent?.room?.color;
+                    const roomName = activity?.parent?.room?.name;
+                    const roomColor = activity?.parent?.room?.color;
                     const startTime = roundTime(
                       new Date(activity?.startTime || 0),
                       5
