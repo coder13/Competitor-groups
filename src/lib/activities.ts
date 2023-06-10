@@ -159,3 +159,12 @@ export const activityDurationString = (
   { startTime, endTime }: Activity,
   timeZone?: string
 ): string => `${formatTime(startTime, 5, timeZone)} - ${formatTime(endTime, 5, timeZone)}`;
+
+export const streamPersonIds = (activity: ActivityWithRoomOrParent): number[] => {
+  return activity.extensions.find((ext) => ext.id ===
+    'groupifier.ActivityConfig')?.data['featuredCompetitorWcaUserIds'] || [];
+}
+
+export const streamActivities = (wcif: Competition): ActivityWithRoomOrParent[] => {
+  return allActivities(wcif).filter((activity) => streamPersonIds(activity).length > 0);
+};
