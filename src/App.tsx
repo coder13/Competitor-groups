@@ -9,6 +9,7 @@ import CompetitionRound from './pages/Competition/Round';
 import CompetitionGroup from './pages/Competition/Group';
 import CompetitionSchedule from './pages/Competition/Schedule';
 import CompetitionScramblerSchedule from './pages/Competition/ScramblerSchedule';
+import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
 import CompetitionGroupsSchedule from './pages/Competition/GroupsSchedule';
 import Home from './pages/Home';
 import AuthProvider from './providers/AuthProvider';
@@ -39,6 +40,7 @@ const Navigation = () => {
           <Route path="activities/:activityId" element={<CompetitionGroup />} />
           <Route path="scramblers" element={<CompetitionScramblerSchedule />} />
           <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />
+          <Route path="stream" element={<CompetitionStreamSchedule />} />
         </Route>
       </Route>
     </Routes>
