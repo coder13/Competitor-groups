@@ -2,13 +2,15 @@ import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import tw from 'tailwind-styled-components';
 import styled from 'styled-components';
-import { useCallback, useEffect, useMemo, Fragment } from 'react';
+import { useCallback, useEffect, useMemo, Fragment, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { parseActivityCode, rooms } from '../../../lib/activities';
 import AssignmentLabel from '../../../components/AssignmentLabel/AssignmentLabel';
 import { formatDate, formatToParts, roundTime } from '../../../lib/utils';
 import DisclaimerText from '../../../components/DisclaimerText';
+import { shortEventNameById } from '../../../lib/events';
+import classNames from 'classnames';
 
 export const byDate = (
   a: { startTime: string } | undefined,
@@ -32,6 +34,15 @@ const RoomColored = styled(RoundedBg)`
 export default function Person() {
   const { wcif, setTitle } = useWCIF();
   const { registrantId } = useParams();
+  const [now, setNow] = useState(new Date());
+
+  // TODO: fetch from
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(new Date());
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const person = wcif.persons.find((p) => p.registrantId.toString() === registrantId);
 
@@ -121,11 +132,10 @@ export default function Person() {
           <thead>
             <tr className="bg-slate-100 shadow-sm">
               <th className="py-2 text-center">Time</th>
-              <th className="py-2 text-center">Event</th>
-              <th className="py-2 text-center">Round</th>
+              <th className="py-2 text-center">Activity</th>
+              <th className="py-2 text-center">Assignment</th>
               <th className="py-2 text-center">Group</th>
               <th className="py-2 text-center">Stage</th>
-              <th className="py-2 text-center">Assignment</th>
               {anyAssignmentsHasStationNumber && <th className="py-2 text-center">Station</th>}
             </tr>
           </thead>
@@ -140,7 +150,7 @@ export default function Person() {
                 {getAssignmentsByDate(date)
                   .map((assignment) => ({ assignment, activity: getActivity(assignment) }))
                   .sort((a, b) => byDate(a.activity, b.activity))
-                  .map(({ assignment, activity }) => {
+                  .map(({ assignment, activity }, index, sortedAssignments) => {
                     const { eventId, roundNumber, groupNumber } = parseActivityCode(
                       activity?.activityCode || ''
                     );
@@ -152,31 +162,66 @@ export default function Person() {
 
                     const roomName = activity?.parent?.room?.name;
                     const roomColor = activity?.parent?.room?.color;
-                    const startTime = roundTime(
-                      new Date(activity?.startTime || 0),
-                      5
-                    ).toLocaleTimeString([], {
+                    const roundedStartTime = roundTime(new Date(activity?.endTime || 0), 5);
+                    const roundedEndTime = roundTime(new Date(activity?.startTime || 0), 5);
+
+                    const formattedStartTime = roundedStartTime.toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
                       timeZone,
                     });
 
+                    const isOver = now > roundedStartTime;
+                    const isCurrent = now > roundedStartTime && now < roundedEndTime;
+
+                    let howManyNextAssignmentsAreSameEvent = 0;
+                    for (let i = index + 1; i < sortedAssignments.length; i++) {
+                      const nextAssignment = sortedAssignments[i];
+                      if (!nextAssignment?.activity) {
+                        break;
+                      }
+
+                      const { eventId: nextAssignmentEventId } = parseActivityCode(
+                        nextAssignment.activity.activityCode
+                      );
+                      if (eventId === nextAssignmentEventId) {
+                                                                                                                                                                                                   ++;
+                      } else {
+                        break;
+                      }
+                    }
+
+                    const previousAssignment = sortedAssignments[index - 1];
+                    const previousAssignmentEventId = previousAssignment?.activity && parseActivityCode(
+                      previousAssignment?.activity?.activityCode);
+
                     return (
                       <Link
                         key={`${assignment.activityId}-${assignment.assignmentCode}`}
-                        className="table-row text-xs even:bg-slate-50 hover:bg-slate-100"
+                        style={{
+                          ...(isCurrent && {
+                            backgroundColor: roomColor,
+                          }),
+                        }}
+                        className={classNames(
+                          'table-row text-xs even:bg-slate-50 hover:bg-slate-100',
+                          {
+                            'opacity-40': isOver,
+                            'bg-op': isCurrent,
+                          }
+                        )}
                         to={`/competitions/${wcif.id}/activities/${assignment.activityId}`}>
-                        <td className="py-2 text-center">{startTime}</td>
-                        <td className="py-2 text-center">
-                          <span className={`cubing-icon event-${eventId} mx-1 text-xl`} />
+                        <td className="py-2 text-center justify-center">
+                          {shortEventNameById(eventId)}{' '}
+                          {roundNumber && roundNumber > 1 ? `r${roundNumber}` : ''}
                         </td>
-                        <td className="py-2 text-center">{roundNumber}</td>
-                        <td className="py-2 text-center">{groupNumber || '*'}</td>
-                        <td className="py-2 text-center">
-                          <RoomColored $color={roomColor}>{roomName}</RoomColored>
-                        </td>
+                        <td className="py-2 text-center">{formattedStartTime}</td>
                         <td className="py-2 text-center">
                           <AssignmentLabel assignmentCode={assignment.assignmentCode} />
+                        </td>
+                        <td className="py-2 text-center text-lg">{groupNumber}</td>
+                        <td className="py-2 text-center">
+                          <RoomColored $color={roomColor}>{roomName}</RoomColored>
                         </td>
                         {anyAssignmentsHasStationNumber && (
                           <td className="py-2 text-center">{assignment.stationNumber}</td>
