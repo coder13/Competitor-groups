@@ -7,6 +7,7 @@ import { BarLoader } from 'react-spinners';
 import { useQuery } from '@tanstack/react-query';
 import { GlobalStateContext } from '../../App';
 import NoteBox from '../../components/Notebox';
+import { streamActivities } from './../../lib/activities';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
@@ -65,6 +66,8 @@ export default function WCIFProvider({ competitionId, children }) {
     }
   }, [wcif, title]);
 
+  const hasStream = wcif && streamActivities(wcif).length > 0;
+
   if (error) {
     <div className="flex">
       <p>Error loading competition: </p>
@@ -90,6 +93,8 @@ export default function WCIFProvider({ competitionId, children }) {
               <StyledNavLink to={`/competitions/${competitionId}/events`} text="Events" />
               <StyledNavLink to={`/competitions/${competitionId}/activities`} text="Schedule" />
               <StyledNavLink to={`/competitions/${competitionId}/scramblers`} text="Scramblers" />
+              { hasStream && <StyledNavLink to={`/competitions/${competitionId}/stream`}
+                text="Stream" /> }
             </div>
           </div>
         </nav>
