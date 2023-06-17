@@ -166,8 +166,8 @@ export default function Person() {
 
                       const roomName = activity?.parent?.room?.name;
                       const roomColor = activity?.parent?.room?.color;
-                      const roundedStartTime = roundTime(new Date(activity?.endTime || 0), 5);
-                      const roundedEndTime = roundTime(new Date(activity?.startTime || 0), 5);
+                      const roundedStartTime = roundTime(new Date(activity?.startTime || 0), 5);
+                      const roundedEndTime = roundTime(new Date(activity?.endTime || 0), 5);
 
                       const formattedStartTime = roundedStartTime.toLocaleTimeString([], {
                         hour: '2-digit',
