@@ -175,7 +175,7 @@ export default function Person() {
                         timeZone,
                       });
 
-                      const isOver = now > roundedStartTime;
+                      const isOver = now > roundedEndTime;
                       const isCurrent = now > roundedStartTime && now < roundedEndTime;
 
                       let howManyNextAssignmentsAreSameEvent = 0;
@@ -209,7 +209,7 @@ export default function Person() {
                           key={`${assignment.activityId}-${assignment.assignmentCode}`}
                           style={{
                             ...(isCurrent && {
-                              backgroundColor: roomColor,
+                              backgroundColor: `${roomColor}25`,
                             }),
                           }}
                           className={classNames('table-row text-xs  hover:bg-slate-100', {
