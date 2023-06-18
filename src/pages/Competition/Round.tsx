@@ -75,16 +75,17 @@ export default function Round() {
               to={`/competitions/${wcif.id}/persons/${person.registrantId}`}>
               <td className="px-6 py-3">{person.name}</td>
               <td
-                className="px-6 py-3 text-white"
+                className="px-6 py-3"
                 style={{
-                  backgroundColor:
-                    person.assignments.competingActivity?.parent?.room?.color || 'inherit',
+                  backgroundColor: person.assignments.competingActivity?.parent?.room?.color
+                    ? `${person.assignments.competingActivity?.parent?.room?.color}70`
+                    : 'inherit',
                 }}>
                 {person.assignments.competingActivity
                   ? parseActivityCode(person.assignments.competingActivity.activityCode).groupNumber
                   : '-'}
               </td>
-              <td className="px-6 py-3 text-white">
+              <td className="px-6 py-3">
                 {person.assignments.staffingActivities
                   .filter((s) => s.assignment.assignmentCode === 'staff-judge')
                   .map((s) => (
