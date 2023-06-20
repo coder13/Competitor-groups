@@ -28,7 +28,9 @@ export default function UpcomingCompetitions() {
     isFetchingNextPage,
     error,
     status,
-  } = useInfiniteQuery<Pick<ApiCompetition, 'name' | 'id' | 'start_date' | 'country_iso2'>[]>({
+  } = useInfiniteQuery<
+    Pick<ApiCompetition, 'name' | 'id' | 'start_date' | 'end_date' | 'city' | 'country_iso2'>[]
+  >({
     queryKey: ['upcomingCompetitions'],
     queryFn: async ({ pageParam = 1 }) => {
       if (!online) {
@@ -37,7 +39,7 @@ export default function UpcomingCompetitions() {
         const comps = responses.filter((request) => request.url.includes('wcif/public'));
 
         const fetchedComps = (
-          await Promise.all<Competition | undefined>(
+          await Promise.all<(Competition & { endDate: Date }) | undefined>(
             comps.map(async (request) => {
               const response = await wcaCache.match(request);
               const c = (await response?.json()) as Competition;
@@ -52,7 +54,7 @@ export default function UpcomingCompetitions() {
               if (endDate < oneWeekAgo) {
                 return;
               }
-              return c;
+              return { ...c, endDate };
             })
           )
         ).filter(Boolean);
@@ -64,7 +66,8 @@ export default function UpcomingCompetitions() {
               name: c.name,
               country_iso2: c.schedule.venues?.[0].countryIso2 || '',
               start_date: c.schedule.startDate,
-              city_name: '',
+              end_date: c.endDate.toISOString().split('T')[0],
+              city: '',
             };
           })
           .sort((a, b) => a.start_date.localeCompare(b.start_date));

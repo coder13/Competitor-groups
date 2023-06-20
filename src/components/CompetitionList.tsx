@@ -7,7 +7,10 @@ export default function CompetitionListFragment({
   loading,
 }: {
   title: string;
-  competitions: Pick<ApiCompetition, 'id' | 'name' | 'start_date' | 'country_iso2'>[];
+  competitions: Pick<
+    ApiCompetition,
+    'id' | 'name' | 'start_date' | 'end_date' | 'city' | 'country_iso2'
+  >[];
   loading: boolean;
 }) {
   return (

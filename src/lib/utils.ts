@@ -1,3 +1,5 @@
+import { format, parseISO } from 'date-fns';
+
 export const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
 export const byDate = <T>(a: T & { startTime: string }, b: T & { startTime: string }) =>
   new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
@@ -95,6 +97,21 @@ export const formatDateTimeRange = (
   return `${formatDateTime(start, minutes, timeZone)} - ${formatDateTime(end, minutes, timeZone)}`;
 };
 
+// https://github.com/thewca/wca-live/blob/8884f8dc5bb2efcc3874f9fff4f6f3c098efbd6a/client/src/lib/date.js#L10
+export const formatDateRange = (startString: string, endString: string) => {
+  const [startDay, startMonth, startYear] = format(parseISO(startString), 'd MMM yyyy').split(' ');
+  const [endDay, endMonth, endYear] = format(parseISO(endString), 'd MMM yyyy').split(' ');
+  if (startString === endString) {
+    return `${startMonth} ${startDay}, ${startYear}`;
+  }
+  if (startMonth === endMonth && startYear === endYear) {
+    return `${startMonth} ${startDay} - ${endDay}, ${endYear}`;
+  }
+  if (startYear === endYear) {
+    return `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${startYear}`;
+  }
+  return `${startMonth} ${startDay}, ${startYear} - ${endMonth} ${endDay}, ${endYear}`;
+};
 export const DateTimeFormatter = new Intl.DateTimeFormat(navigator.language, {
   weekday: 'long',
   year: 'numeric',
