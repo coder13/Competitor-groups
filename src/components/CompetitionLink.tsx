@@ -34,7 +34,7 @@ const CompetitionLink = ({
         )}>
         {hasFlag(country_iso2) && (
           <div className="flex flex-shrink mr-2 text-2xl"> {getUnicodeFlagIcon(country_iso2)} </div>
-        )}{' '}
+        )}
         <div className="flex-1">
           <p className="font-normal leading-1"> {name} </p>{' '}
           <p className="text-gray-600 text-sm leading-1">
