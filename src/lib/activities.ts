@@ -29,13 +29,15 @@ export const parseActivityCode = (activityCode: string) => {
   };
 };
 
+const isValidNumber = (n?: number) => typeof n === 'number' && !isNaN(n);
+
 export const activityCodeToName = (activityCode) => {
   const { eventId, roundNumber, groupNumber, attemptNumber } = parseActivityCode(activityCode);
   return [
     eventId && eventNameById(eventId as EventId),
-    roundNumber && `Round ${roundNumber}`,
-    groupNumber && `Group ${groupNumber}`,
-    attemptNumber && `Attempt ${attemptNumber}`,
+    isValidNumber(roundNumber) && `Round ${roundNumber}`,
+    isValidNumber(groupNumber) && `Group ${groupNumber}`,
+    isValidNumber(attemptNumber) && `Attempt ${attemptNumber}`,
   ]
     .filter((x) => x)
     .join(', ');
@@ -161,9 +163,12 @@ export const activityDurationString = (
 ): string => `${formatTime(startTime, 5, timeZone)} - ${formatTime(endTime, 5, timeZone)}`;
 
 export const streamPersonIds = (activity: ActivityWithRoomOrParent): number[] => {
-  return activity.extensions.find((ext) => ext.id ===
-    'groupifier.ActivityConfig')?.data['featuredCompetitorWcaUserIds'] || [];
-}
+  return (
+    activity.extensions.find((ext) => ext.id === 'groupifier.ActivityConfig')?.data[
+      'featuredCompetitorWcaUserIds'
+    ] || []
+  );
+};
 
 export const streamActivities = (wcif: Competition): ActivityWithRoomOrParent[] => {
   return allActivities(wcif).filter((activity) => streamPersonIds(activity).length > 0);
