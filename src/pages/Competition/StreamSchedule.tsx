@@ -16,7 +16,6 @@ export const byDate = (
   return aDate - bDate;
 };
 
-
 const RoundedBg = tw.span`
   px-[6px]
   py-[4px]
@@ -24,7 +23,7 @@ const RoundedBg = tw.span`
 `;
 
 const RoomColored = styled(RoundedBg)`
-  background-color: ${p => p.$color ? `${p.$color}70` : 'inherit'};
+  background-color: ${(p) => (p.$color ? `${p.$color}70` : 'inherit')};
 `;
 
 export default function CompetitionStreamSchedule() {
@@ -36,25 +35,28 @@ export default function CompetitionStreamSchedule() {
     }
   }, [wcif, setTitle]);
 
-  const activities = streamActivities(wcif)
+  const activities = streamActivities(wcif);
 
   const getPersonById = useCallback(
     (personId) => {
-      return wcif.persons.find(({ wcaUserId }) => wcaUserId === personId)
+      return wcif.persons.find(({ wcaUserId }) => wcaUserId === personId);
     },
-    [wcif]);
+    [wcif]
+  );
 
   const activitiesWithParsedDate = activities
     .map((a) => ({
       ...a,
       date: formatDate(new Date(a.startTime)),
     }))
-  .sort(byDate);
+    .sort(byDate);
 
   const getActivitiesByDate = useCallback(
     (date) => {
       return activitiesWithParsedDate.filter((a) => a.date === date);
-    }, [activitiesWithParsedDate]);
+    },
+    [activitiesWithParsedDate]
+  );
 
   const scheduleDays = activities
     .map((a) => {
@@ -76,7 +78,7 @@ export default function CompetitionStreamSchedule() {
     <>
       <h4 className="text-xl mb-2 text-center">Live Stream</h4>
       <div className="shadow-md">
-        <table className="w-full text-xs sm:text-sm">
+        <table className="w-full text-xs md:text-sm">
           <thead>
             <tr className="bg-slate-100 shadow-sm">
               <th className="py-2 text-center">Time</th>
@@ -133,9 +135,12 @@ export default function CompetitionStreamSchedule() {
                           <RoomColored $color={roomColor}>{roomName}</RoomColored>
                         </td>
                         <td className="py-2 text-center">
-                          {streamPersonIds(activity).map(getPersonById)
+                          {streamPersonIds(activity)
+                            .map(getPersonById)
                             .filter((person) => !!person)
-                            .map((person) => (<p>{person!.name}</p>))}
+                            .map((person) => (
+                              <p>{person!.name}</p>
+                            ))}
                         </td>
                       </Link>
                     );
@@ -153,11 +158,7 @@ export default function CompetitionStreamSchedule() {
       <DisclaimerText />
       <hr className="my-2" />
 
-      { activities.length > 0 ? (
-        renderActivities()
-      ) : (
-        <div>No Live Stream information</div>
-      )}
+      {activities.length > 0 ? renderActivities() : <div>No Live Stream information</div>}
     </div>
   );
 }

@@ -147,7 +147,9 @@ export default function Person() {
                 <Fragment key={date}>
                   {scheduleDays.length > 1 && (
                     <tr>
-                      <td colSpan={6} className="font-bold text-lg text-center py-2 bg-slate-50">
+                      <td
+                        colSpan={6}
+                        className="font-bold text-base md:text-lg text-center py-2 bg-slate-50">
                         Assignments for {dateParts.find((i) => i.type === 'weekday')?.value || date}
                       </td>
                     </tr>
@@ -216,7 +218,7 @@ export default function Person() {
                               backgroundColor: `${roomColor}25`,
                             }),
                           }}
-                          className={classNames('table-row text-xs  hover:bg-slate-100', {
+                          className={classNames('table-row text-xs sm:text-sm hover:bg-slate-100', {
                             'opacity-40': isOver,
                             'bg-op': isCurrent,
                             'border-t':
@@ -242,9 +244,13 @@ export default function Person() {
                           <td className="py-2 text-center">
                             <AssignmentLabel assignmentCode={assignment.assignmentCode} />
                           </td>
-                          <td className="py-2 text-center text-lg">{groupNumber}</td>
+                          <td className="py-2 text-center text-base sm:text-lg">{groupNumber}</td>
                           {showRoom && (
-                            <td className="py-2 text-center">
+                            <td
+                              className="py-2 text-center"
+                              style={{
+                                lineHeight: 2,
+                              }}>
                               <RoomColored $color={roomColor}>{roomName}</RoomColored>
                             </td>
                           )}
@@ -267,17 +273,17 @@ export default function Person() {
       <div className="p-1">
         <div className="flex justify-between items-center">
           <div className="flex flex-shrink items-center">
-            <h3 className="text-2xl">{person.name}</h3>
+            <h3 className="text-xl sm:text-2xl">{person.name}</h3>
             {hasFlag(person.countryIso2) && (
-              <div className="flex flex-shrink ml-2 text-xl">
+              <div className="flex flex-shrink ml-2 text-lg sm:text-xl">
                 {getUnicodeFlagIcon(person.countryIso2)}
               </div>
             )}
           </div>
-          <span className="text-2xl">{person.registrantId}</span>
+          <span className="text-xl sm:text-2xl">{person.registrantId}</span>
         </div>
-        {person.wcaId && <p className="text-sm">{person.wcaId}</p>}
-        <p className="text-md">
+        {person.wcaId && <p className="text-xs sm:text-sm">{person.wcaId}</p>}
+        <p className="text-sm sm:text-md">
           <span>Registered Events:</span>
           {person.registration?.eventIds.map((eventId) => (
             <span key={eventId} className={`cubing-icon event-${eventId} mx-1 text-lg`} />

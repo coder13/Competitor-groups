@@ -11,6 +11,8 @@ import CompetitionSchedule from './pages/Competition/Schedule';
 import CompetitionScramblerSchedule from './pages/Competition/ScramblerSchedule';
 import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
 import CompetitionGroupsSchedule from './pages/Competition/GroupsSchedule';
+import CompetitionRooms from './pages/Competition/Rooms';
+import CompetitionRoom from './pages/Competition/Room';
 import Home from './pages/Home';
 import AuthProvider from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
@@ -41,6 +43,8 @@ const Navigation = () => {
           <Route path="scramblers" element={<CompetitionScramblerSchedule />} />
           <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />
           <Route path="stream" element={<CompetitionStreamSchedule />} />
+          <Route path="rooms" element={<CompetitionRooms />} />
+          <Route path="rooms/:roomId" element={<CompetitionRoom />} />
         </Route>
       </Route>
     </Routes>

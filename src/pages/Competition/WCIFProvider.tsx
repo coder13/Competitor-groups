@@ -85,7 +85,7 @@ export default function WCIFProvider({ competitionId, children }) {
       )}
       <div className="flex flex-col w-full h-full">
         <nav className="flex shadow-md print:hidden w-full justify-center">
-          <div className="lg:w-1/2 w-full flex flex-col md:flex-row justify-between">
+          <div className="lg:w-1/2 md:w-2/3 w-full flex flex-col md:flex-row justify-between">
             <div className="flex">
               <StyledNavLink to={`/competitions/${competitionId}`} text={wcif?.shortName} />
             </div>
@@ -93,14 +93,15 @@ export default function WCIFProvider({ competitionId, children }) {
               <StyledNavLink to={`/competitions/${competitionId}/events`} text="Events" />
               <StyledNavLink to={`/competitions/${competitionId}/activities`} text="Schedule" />
               <StyledNavLink to={`/competitions/${competitionId}/scramblers`} text="Scramblers" />
-              { hasStream && <StyledNavLink to={`/competitions/${competitionId}/stream`}
-                text="Stream" /> }
+              {hasStream && (
+                <StyledNavLink to={`/competitions/${competitionId}/stream`} text="Stream" />
+              )}
             </div>
           </div>
         </nav>
         <div className="flex flex-col w-full items-center">
           {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
-          {wcif?.id && <div className="w-full md:w-1/2">{children}</div>}
+          {wcif?.id && <div className="w-full lg:w-1/2 md:w-2/3">{children}</div>}
         </div>
       </div>
     </WCIFContext.Provider>

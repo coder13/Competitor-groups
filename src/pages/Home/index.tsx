@@ -12,8 +12,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="md:w-1/2 w-full pt-2">
-        <div className="flex flex-col w-full text-xs sm:text-base p-2 sm:p-0">
+      <div className="lg:w-1/2 md:w-2/3  w-full pt-2">
+        <div className="flex flex-col w-full text-xs md:text-base p-2 md:p-0">
           <p>Learn all you need about your WCA competition assignments!</p>
           <p>
             Note: This website exists as a convenience tool for organizers, delegates, and

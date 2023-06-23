@@ -85,7 +85,7 @@ export default function ScramblerSchedule() {
       </div>
       <div className="hidden print:flex">Stage: {roomSelector}</div>
       <div className="shadow-md print:shadow-none">
-        <table className="w-full text-xs sm:text-sm">
+        <table className="w-full text-xs md:text-sm">
           <thead>
             <tr>
               <th className="py-2 px-3 text-center w-60">Event</th>

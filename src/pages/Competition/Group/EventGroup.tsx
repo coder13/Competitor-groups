@@ -159,7 +159,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
   return (
     <>
       <div className="p-2">
-        <h3 className="font-bold">
+        <h3 className="font-bold" style={{ lineHeight: 2 }}>
           <span
             className="px-3 py-2 rounded mr-2"
             style={{
@@ -167,7 +167,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
             }}>
             {room?.name}
           </span>
-          {activityCodeToName(activity?.activityCode)}
+          <span>{activityCodeToName(activity?.activityCode)}</span>
         </h3>
         <p className="p-2">
           {formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}
