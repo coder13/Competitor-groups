@@ -48,7 +48,7 @@ export default function Round() {
   );
 
   return (
-    <div className="flex w-full flex-col text-sm md:text-base py-2">
+    <div className="flex w-full flex-col text-sm md:text-base py-2 p-2 sm:p-0">
       <DisclaimerText />
       <hr className="my-2" />
       <div className="flex flex-row justify-between">
