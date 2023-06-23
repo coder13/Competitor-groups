@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useCallback, useEffect, useMemo, Fragment, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
-import { parseActivityCode, rooms } from '../../../lib/activities';
+import { ActivityWithRoomOrParent, parseActivityCode, rooms } from '../../../lib/activities';
 import AssignmentLabel from '../../../components/AssignmentLabel/AssignmentLabel';
 import { formatDate, formatToParts, roundTime } from '../../../lib/utils';
 import DisclaimerText from '../../../components/DisclaimerText';
@@ -57,8 +57,9 @@ export default function Person() {
   const _allActivities = useMemo(
     () =>
       rooms(wcif)
-        .flatMap((room) =>
-          room.activities.flatMap((ra) =>
+        .flatMap((room) => [
+          ...room.activities.map((a) => ({ ...a, room })),
+          ...room.activities.flatMap((ra) =>
             ra.childActivities?.map((ca) => ({
               ...ca,
               parent: {
@@ -66,9 +67,9 @@ export default function Person() {
                 room,
               },
             }))
-          )
-        )
-        .filter(Boolean),
+          ),
+        ])
+        .filter(Boolean) as ActivityWithRoomOrParent[],
     [wcif]
   );
 
@@ -160,12 +161,15 @@ export default function Person() {
                       );
 
                       const venue = wcif.schedule.venues?.find((v) =>
-                        v.rooms.some((r) => r.id === activity?.parent?.room?.id)
+                        v.rooms.some(
+                          (r) => r.id === activity?.room?.id || activity?.parent?.room?.id
+                        )
                       );
                       const timeZone = venue?.timezone;
 
-                      const roomName = activity?.parent?.room?.name;
-                      const roomColor = activity?.parent?.room?.color;
+                      const room = activity?.room || activity?.parent?.room;
+                      const roomName = room?.name;
+                      const roomColor = room?.color;
                       const roundedStartTime = roundTime(new Date(activity?.startTime || 0), 5);
                       const roundedEndTime = roundTime(new Date(activity?.endTime || 0), 5);
 
@@ -215,16 +219,23 @@ export default function Person() {
                           className={classNames('table-row text-xs  hover:bg-slate-100', {
                             'opacity-40': isOver,
                             'bg-op': isCurrent,
-                            'border-t': previousAssignmentEventId?.eventId !== eventId,
-                            'border-b': nextAssignmentEventId?.eventId !== eventId,
+                            'border-t':
+                              previousAssignmentEventId?.eventId !== eventId ||
+                              eventId.toString() === 'other',
+                            'border-b':
+                              nextAssignmentEventId?.eventId !== eventId ||
+                              eventId.toString() === 'other',
                           })}
                           to={`/competitions/${wcif.id}/activities/${assignment.activityId}`}>
                           {previousAssignmentEventId?.eventId !== eventId && (
                             <td
                               className="py-2 text-center justify-center"
                               rowSpan={howManyNextAssignmentsAreSameEvent + 1}>
-                              {shortEventNameById(eventId)}{' '}
-                              {roundNumber && roundNumber > 1 ? `r${roundNumber}` : ''}
+                              {eventId.toString() === 'other'
+                                ? activity?.name
+                                : `${shortEventNameById(eventId)} ${
+                                    roundNumber && roundNumber > 1 ? `r${roundNumber}` : ''
+                                  }`}
                             </td>
                           )}
                           <td className="py-2 text-center">{formattedStartTime}</td>

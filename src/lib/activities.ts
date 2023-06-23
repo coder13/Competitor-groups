@@ -46,7 +46,7 @@ export const activityCodeToName = (activityCode) => {
 export const rooms = (wcif: Competition): Room[] =>
   flatten((wcif.schedule.venues || []).map((venue) => venue?.rooms || []));
 
-interface ActivityWithRoomOrParent extends Activity {
+export interface ActivityWithRoomOrParent extends Activity {
   room?: Room;
   parent?: ActivityWithRoomOrParent;
   childActivities: ActivityWithRoomOrParent[];
