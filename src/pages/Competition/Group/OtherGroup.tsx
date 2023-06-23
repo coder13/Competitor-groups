@@ -1,8 +1,8 @@
 import { Activity, AssignmentCode, Person } from '@wca/helpers';
 import { useEffect, useMemo } from 'react';
-import { activityDurationString, rooms } from '../../../lib/activities';
+import { rooms } from '../../../lib/activities';
 import { useWCIF } from '../WCIFProvider';
-import { byName } from '../../../lib/utils';
+import { byName, formatDateTimeRange } from '../../../lib/utils';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
@@ -66,10 +66,18 @@ export default function OtherGroup({ competitionId, activity, persons }: OtherGr
   return (
     <>
       <div className="p-2">
-        <h3 className="font-bold">{activity.name || activity.activityCode}</h3>
-        <p>
-          Time: {new Date(activity.startTime).toLocaleDateString()}{' '}
-          {activityDurationString(activity, timeZone)}
+        <h3 className="font-bold">
+          <span
+            className="px-3 py-2 rounded mr-2"
+            style={{
+              backgroundColor: `${room?.color}70`,
+            }}>
+            {room?.name}
+          </span>
+          {activity.name || activity.activityCode}
+        </h3>{' '}
+        <p className="p-2">
+          {formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}
         </p>
       </div>
       {Object.keys(peopleByAssignmentCode)

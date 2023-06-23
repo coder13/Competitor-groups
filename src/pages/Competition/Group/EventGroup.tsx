@@ -160,9 +160,18 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
     <>
       <div className="p-2">
         <h3 className="font-bold">
-          {room?.name}: {activityCodeToName(activity?.activityCode)}
+          <span
+            className="px-3 py-2 rounded mr-2"
+            style={{
+              backgroundColor: `${room?.color}70`,
+            }}>
+            {room?.name}
+          </span>
+          {activityCodeToName(activity?.activityCode)}
         </h3>
-        <p>{formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}</p>
+        <p className="p-2">
+          {formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}
+        </p>
       </div>
       <hr className="mb-2" />
       <div>
