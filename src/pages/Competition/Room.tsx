@@ -18,7 +18,7 @@ export default function Round() {
   );
   const room = venue?.rooms?.find((room) => room.id.toString() === roomId);
 
-  const timeZone = venue?.timezone ?? wcif.schedule.venues?.[0]?.timezone ?? '';
+  const timeZone = venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';
 
   const activities = useMemo(
     () =>

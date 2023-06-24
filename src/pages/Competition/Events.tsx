@@ -13,10 +13,12 @@ const Events = () => {
   const navigate = useNavigate();
 
   const uniqueGroupCountForRound = useCallback(
-    (roundId) =>
-      groupActivitiesByRound(wcif, roundId)
-        .map(({ activityCode }) => activityCode)
-        .filter(onlyUnique).length,
+    (roundId: string) =>
+      wcif
+        ? groupActivitiesByRound(wcif, roundId)
+            .map(({ activityCode }) => activityCode)
+            .filter(onlyUnique).length
+        : 0,
     [wcif]
   );
 
@@ -40,7 +42,7 @@ const Events = () => {
             </tr>
           </thead>
           <tbody>
-            {wcif.events.map((event) =>
+            {wcif?.events.map((event) =>
               event.rounds?.map((round, index) => {
                 const url = `/competitions/${wcif.id}/events/${round.id}`;
 

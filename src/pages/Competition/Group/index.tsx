@@ -10,7 +10,7 @@ export default function Group() {
   const { activityId } = useParams();
 
   const activity = useMemo(
-    () => allActivities(wcif).find((a) => activityId && a.id === parseInt(activityId, 10)),
+    () => wcif && allActivities(wcif).find((a) => activityId && a.id === parseInt(activityId, 10)),
     [wcif, activityId]
   );
 
@@ -18,23 +18,25 @@ export default function Group() {
 
   const everyoneInActivity = useMemo(
     () =>
-      wcif.persons
-        .map((person) => ({
-          ...person,
-          assignments: person.assignments?.filter(
-            (a) => activityId && parseInt(a.activityId, 10) === parseInt(activityId, 10) // TODO this is a hack because types aren't fixed yet for @wca/helpers
-          ),
-        }))
-        .filter(({ assignments }) => assignments && assignments.length > 0) || [],
-    [wcif.persons, activityId]
+      wcif
+        ? wcif.persons
+            .map((person) => ({
+              ...person,
+              assignments: person.assignments?.filter(
+                (a) => activityId && parseInt(a.activityId, 10) === parseInt(activityId, 10) // TODO this is a hack because types aren't fixed yet for @wca/helpers
+              ),
+            }))
+            .filter(({ assignments }) => assignments && assignments.length > 0)
+        : [],
+    [wcif, activityId]
   );
 
-  const isEventGroup = !eventId.startsWith('other');
+  const isEventGroup = !eventId?.startsWith('other');
   const GroupComponent = isEventGroup ? EventGroup : OtherGroup;
 
   return (
     <div>
-      {wcif.id && activity && everyoneInActivity && (
+      {wcif?.id && activity && everyoneInActivity && (
         <GroupComponent competitionId={wcif.id} activity={activity} persons={everyoneInActivity} />
       )}
     </div>

@@ -70,7 +70,7 @@ interface EventGroupProps {
 export default function EventGroup({ competitionId, activity, persons }: EventGroupProps) {
   const { setTitle, wcif } = useWCIF();
   const { eventId, roundNumber } = parseActivityCode(activity?.activityCode || '');
-  const event = wcif.events.find((e) => e.id === eventId);
+  const event = wcif?.events.find((e) => e.id === eventId);
   const prevRound =
     roundNumber && event?.rounds?.find((r) => r.id === `${eventId},r${roundNumber - 1}`);
 
@@ -80,13 +80,18 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
     }
   }, [activity, setTitle]);
 
-  const room = rooms(wcif).find((r) =>
-    r.activities.some(
-      (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id)
-    )
+  const room = useMemo(
+    () =>
+      wcif &&
+      rooms(wcif).find((r) =>
+        r.activities.some(
+          (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id)
+        )
+      ),
+    [activity.id, wcif]
   );
 
-  const venue = wcif.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id));
+  const venue = wcif?.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id));
   const timeZone = venue?.timezone;
 
   const everyoneInActivity = useMemo(

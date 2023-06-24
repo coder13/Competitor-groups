@@ -43,7 +43,7 @@ export default function Person() {
     return () => clearInterval(interval);
   }, []);
 
-  const person = wcif.persons.find((p) => p.registrantId.toString() === registrantId);
+  const person = wcif?.persons?.find((p) => p.registrantId.toString() === registrantId);
 
   useEffect(() => {
     if (person) {
@@ -51,25 +51,27 @@ export default function Person() {
     }
   }, [person, setTitle]);
 
-  const showRoom = rooms(wcif).length > 1;
+  const showRoom = wcif ? rooms(wcif).length > 1 : false;
 
   // Get only group activities (children of round Activities)
   const _allActivities = useMemo(
     () =>
-      rooms(wcif)
-        .flatMap((room) => [
-          ...room.activities.map((a) => ({ ...a, room })),
-          ...room.activities.flatMap((ra) =>
-            ra.childActivities?.map((ca) => ({
-              ...ca,
-              parent: {
-                ...ra,
-                room,
-              },
-            }))
-          ),
-        ])
-        .filter(Boolean) as ActivityWithRoomOrParent[],
+      (wcif
+        ? rooms(wcif)
+            .flatMap((room) => [
+              ...room.activities.map((a) => ({ ...a, room })),
+              ...room.activities.flatMap((ra) =>
+                ra.childActivities?.map((ca) => ({
+                  ...ca,
+                  parent: {
+                    ...ra,
+                    room,
+                  },
+                }))
+              ),
+            ])
+            .filter(Boolean)
+        : []) as ActivityWithRoomOrParent[],
     [wcif]
   );
 
@@ -162,7 +164,7 @@ export default function Person() {
                         activity?.activityCode || ''
                       );
 
-                      const venue = wcif.schedule.venues?.find((v) =>
+                      const venue = wcif?.schedule.venues?.find((v) =>
                         v.rooms.some(
                           (r) => r.id === activity?.room?.id || activity?.parent?.room?.id
                         )
@@ -228,7 +230,7 @@ export default function Person() {
                               nextAssignmentEventId?.eventId !== eventId ||
                               eventId.toString() === 'other',
                           })}
-                          to={`/competitions/${wcif.id}/activities/${assignment.activityId}`}>
+                          to={`/competitions/${wcif?.id}/activities/${assignment.activityId}`}>
                           {previousAssignmentEventId?.eventId !== eventId && (
                             <td
                               className="py-2 text-center justify-center"

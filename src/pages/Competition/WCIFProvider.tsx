@@ -23,7 +23,7 @@ const StyledNavLink = ({ to, text }) => (
 );
 
 interface IWCIFContextType {
-  wcif: Competition;
+  wcif?: Competition;
   setTitle: (title: string) => void;
 }
 
@@ -101,7 +101,7 @@ export default function WCIFProvider({ competitionId, children }) {
         </nav>
         <div className="flex flex-col w-full items-center">
           {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
-          {wcif?.id && <div className="w-full lg:w-1/2 md:w-2/3">{children}</div>}
+          {<div className="w-full lg:w-1/2 md:w-2/3">{children}</div>}
         </div>
       </div>
     </WCIFContext.Provider>

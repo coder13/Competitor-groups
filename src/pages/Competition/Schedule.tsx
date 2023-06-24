@@ -15,9 +15,11 @@ export default function Round() {
 
   const activities = useMemo(
     () =>
-      allActivities(wcif)
-        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
-        .filter((activity) => activity.childActivities.length === 0),
+      wcif
+        ? allActivities(wcif)
+            .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+            .filter((activity) => activity.childActivities.length === 0)
+        : [],
     [wcif]
   );
 
@@ -53,7 +55,7 @@ export default function Round() {
       <hr className="my-2" />
       <div className="flex flex-row justify-between">
         <Link
-          to={`/competitions/${wcif.id}/rooms`}
+          to={`/competitions/${wcif?.id}/rooms`}
           className="w-full border bg-blue-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row">
           View by Room
         </Link>
@@ -64,7 +66,7 @@ export default function Round() {
           <p className="w-full text-center bg-slate-50 font-bold text-lg mb-1">{day.date}</p>
           <div className="flex flex-col">
             {getActivitiesByDate(day.date).map((activity) => {
-              const venue = wcif.schedule.venues?.find((v) =>
+              const venue = wcif?.schedule?.venues?.find((v) =>
                 v.rooms.some(
                   (r) =>
                     r.id === activity.parent?.parent?.room?.id ||
@@ -72,7 +74,7 @@ export default function Round() {
                     activity?.room?.id
                 )
               );
-              const timeZone = venue?.timezone ?? wcif.schedule.venues?.[0]?.timezone ?? '';
+              const timeZone = venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';
 
               return (
                 <ActivityRow

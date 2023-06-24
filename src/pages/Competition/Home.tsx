@@ -19,7 +19,7 @@ export default function CompetitionHome() {
       </Link>
       <br />
       <hr />
-      <Competitors wcif={wcif} />;
+      <Competitors wcif={wcif} />
     </>
   );
 }

@@ -31,15 +31,15 @@ export default function CompetitionStreamSchedule() {
 
   useEffect(() => {
     if (wcif) {
-      setTitle(wcif.name + ' Stream Schedule');
+      setTitle(wcif?.name + ' Stream Schedule');
     }
   }, [wcif, setTitle]);
 
-  const activities = streamActivities(wcif);
+  const activities = wcif ? streamActivities(wcif) : [];
 
   const getPersonById = useCallback(
     (personId) => {
-      return wcif.persons.find(({ wcaUserId }) => wcaUserId === personId);
+      return wcif?.persons.find(({ wcaUserId }) => wcaUserId === personId);
     },
     [wcif]
   );

@@ -30,7 +30,7 @@ export default function ActivityRow({
           'opacity-50': isOver,
         }
       )}
-      to={`/competitions/${wcif.id}/activities/${activity.id}`}>
+      to={`/competitions/${wcif?.id}/activities/${activity.id}`}>
       <span>{activity.name}</span>
       <span className="text-xs md:text-sm font-light flex justify-between">
         {showRoom && (

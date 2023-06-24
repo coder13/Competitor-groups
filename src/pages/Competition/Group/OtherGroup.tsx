@@ -40,13 +40,18 @@ export default function OtherGroup({ competitionId, activity, persons }: OtherGr
     }
   }, [activity, setTitle]);
 
-  const room = rooms(wcif).find((r) =>
-    r.activities.some(
-      (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id)
-    )
+  const room = useMemo(
+    () =>
+      wcif &&
+      rooms(wcif).find((r) =>
+        r.activities.some(
+          (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id)
+        )
+      ),
+    [activity.id, wcif]
   );
 
-  const venue = wcif.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id));
+  const venue = wcif?.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id));
   const timeZone = venue?.timezone;
 
   const assignments = useMemo(

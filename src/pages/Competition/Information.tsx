@@ -35,13 +35,13 @@ export default function Information() {
         target="_blank"
         rel="noreferrer"
         className="flex align-center justify-between w-full bg-blue-200 p-2 rounded hover:opacity-80">
-        View WCA Competition webpage
+        View WCA competition webpage
         <i className="m-0 fa fa-solid fa-arrow-up-right-from-square" />
       </a>
       <div className="flex flex-col w-full border border-slate-100 p-2 rounded">
         <h2 className="text-2xl font-bold">Venue</h2>
         <a
-          className="flex align-center justify-between w-full p-2 rounded hover:opacity-80 text-blue-600 hover:underline"
+          className="flex align-center justify-between w-full rounded hover:opacity-80 text-blue-600 hover:underline"
           href={`https://maps.google.com/maps?q=${wcif?.schedule?.venues?.[0]?.name},${data?.venue_address},${data?.city}`}
           target="_blank"
           rel="noreferrer">

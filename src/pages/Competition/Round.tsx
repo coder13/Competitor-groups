@@ -13,47 +13,52 @@ export default function Round() {
   const { eventId, roundNumber } = useParams();
   const activityCode = `${eventId}-r${roundNumber}`;
 
-  const groups = useMemo(() => groupActivitiesByRound(wcif, activityCode), [activityCode, wcif]);
+  const groups = useMemo(
+    () => (wcif ? groupActivitiesByRound(wcif, activityCode) : []),
+    [activityCode, wcif]
+  );
 
   useEffect(() => {
     setTitle(activityCodeToName(activityCode));
   }, [activityCode, setTitle]);
 
   const personAssignments = useMemo(() => {
-    return wcif.persons
-      .map((person) => {
-        const competingActivityId = person?.assignments?.find(
-          (a) =>
-            a.assignmentCode === 'competitor' &&
-            groups.some((groupActivity) => groupActivity?.id === parseInt(a.activityId, 10))
-        )?.activityId;
+    return wcif
+      ? wcif.persons
+          .map((person) => {
+            const competingActivityId = person?.assignments?.find(
+              (a) =>
+                a.assignmentCode === 'competitor' &&
+                groups.some((groupActivity) => groupActivity?.id === parseInt(a.activityId, 10))
+            )?.activityId;
 
-        const staffingAssignments =
-          person?.assignments?.filter(
-            (a) =>
-              a.assignmentCode.indexOf('staff') > -1 &&
-              groups.some((groupActivity) => groupActivity.id === parseInt(a.activityId, 10))
-          ) || [];
+            const staffingAssignments =
+              person?.assignments?.filter(
+                (a) =>
+                  a.assignmentCode.indexOf('staff') > -1 &&
+                  groups.some((groupActivity) => groupActivity.id === parseInt(a.activityId, 10))
+              ) || [];
 
-        return {
-          ...person,
-          assignments: {
-            competingActivity: groups.find(
-              (g) => competingActivityId && g.id === parseInt(competingActivityId, 10)
-            ),
-            staffingActivities: staffingAssignments.map((s) => ({
-              assignment: s,
-              activity: groups.find((g) => g.id === parseInt(s.activityId, 10)),
-            })),
-          },
-        };
-      })
-      .filter(
-        (person) =>
-          !!person?.assignments?.competingActivity ||
-          person?.assignments?.staffingActivities?.length > 0
-      );
-  }, [groups, wcif.persons]);
+            return {
+              ...person,
+              assignments: {
+                competingActivity: groups.find(
+                  (g) => competingActivityId && g.id === parseInt(competingActivityId, 10)
+                ),
+                staffingActivities: staffingAssignments.map((s) => ({
+                  assignment: s,
+                  activity: groups.find((g) => g.id === parseInt(s.activityId, 10)),
+                })),
+              },
+            };
+          })
+          .filter(
+            (person) =>
+              !!person?.assignments?.competingActivity ||
+              person?.assignments?.staffingActivities?.length > 0
+          )
+      : [];
+  }, [groups, wcif]);
 
   return (
     <div className="p-2">
@@ -72,7 +77,7 @@ export default function Round() {
             <Link
               key={person.registrantId}
               className="table-row hover:bg-slate-100"
-              to={`/competitions/${wcif.id}/persons/${person.registrantId}`}>
+              to={`/competitions/${wcif?.id}/persons/${person.registrantId}`}>
               <td className="px-6 py-3">{person.name}</td>
               <td
                 className="px-6 py-3"

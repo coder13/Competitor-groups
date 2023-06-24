@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import flatMap from 'lodash.flatmap';
 import {
@@ -17,19 +17,21 @@ export default function ScramblerSchedule() {
     setTitle('Scramblers');
   }, [setTitle]);
 
-  const _rooms = rooms(wcif);
+  const _rooms = wcif ? rooms(wcif) : [];
 
-  const [roomSelector, setRoomSelector] = useState(_rooms[0].name);
+  const [roomSelector, setRoomSelector] = useState(_rooms?.[0]?.name);
 
   const _allRoundActivities = useMemo(
     () =>
-      allRoundActivities(wcif)
-        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
-        .filter((activity) => activity.childActivities.length !== 0)
-        .filter((activity) => activity.room?.name === roomSelector),
+      wcif
+        ? allRoundActivities(wcif)
+            .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+            .filter((activity) => activity.childActivities.length !== 0)
+            .filter((activity) => activity.room?.name === roomSelector)
+        : [],
     [roomSelector, wcif]
   );
-  const _allActivities = useMemo(() => allActivities(wcif), [wcif]);
+  const _allActivities = useMemo(() => (wcif ? allActivities(wcif) : []), [wcif]);
 
   const getActivity = useCallback(
     (assignment) => _allActivities.find(({ id }) => id === assignment.activityId),
@@ -38,7 +40,7 @@ export default function ScramblerSchedule() {
 
   const assignments = useMemo(
     () =>
-      flatMap(wcif.persons, (person) =>
+      flatMap(wcif?.persons, (person) =>
         person.assignments
           .filter((assignment) => assignment.assignmentCode === 'staff-scrambler')
           .map((assignment) => ({
@@ -47,7 +49,7 @@ export default function ScramblerSchedule() {
             activity: getActivity(assignment),
           }))
       ),
-    [getActivity, wcif.persons]
+    [getActivity, wcif?.persons]
   );
 
   const activitiesSplitAcrossDates = groupBy(
@@ -65,13 +67,14 @@ export default function ScramblerSchedule() {
           <p className="text-xl">Rooms</p>
           <div className="flex flex-row w-full justify-evenly p-4">
             {_rooms.map((room) => (
-              <div className="form-check" onClick={() => setRoomSelector(room.name)}>
+              <div key={room.id} className="form-check" onClick={() => setRoomSelector(room.name)}>
                 <input
                   className="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2"
                   type="radio"
                   name={`room-selector-${room.name}`}
                   id={`room-selector-${room.name}`}
                   checked={roomSelector === room.name}
+                  onChange={() => {}}
                 />
                 <label
                   className="form-check-label inline-block text-gray-800 cursor-pointer"
@@ -94,8 +97,8 @@ export default function ScramblerSchedule() {
           </thead>
           <tbody>
             {Object.entries(activitiesSplitAcrossDates).map(([date, activities]) => (
-              <>
-                <tr key={date}>
+              <Fragment key={date}>
+                <tr>
                   <td colSpan={6} className="font-bold text-lg text-center py-2 px-3">
                     {date}
                   </td>
@@ -110,7 +113,7 @@ export default function ScramblerSchedule() {
                     {activity.childActivities.map((childActivity) => (
                       <Link
                         key={childActivity.id}
-                        to={`/competitions/${wcif.id}/activities/${childActivity.id}`}
+                        to={`/competitions/${wcif?.id}/activities/${childActivity.id}`}
                         className="table-row hover:bg-slate-100">
                         <td className="py-2 px-3">
                           {activityCodeToName(childActivity.activityCode).split(', ')[2]}
@@ -125,7 +128,7 @@ export default function ScramblerSchedule() {
                     ))}
                   </>
                 ))}
-              </>
+              </Fragment>
             ))}
           </tbody>
         </table>

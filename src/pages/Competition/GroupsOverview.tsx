@@ -18,7 +18,7 @@ const GroupsOverview = () => {
   const { wcif } = useWCIF();
 
   const memodGroupActivitiesForRound = useCallback(
-    (activityCode) => groupActivitiesByRound(wcif, activityCode),
+    (activityCode) => (wcif ? groupActivitiesByRound(wcif, activityCode) : []),
     [wcif]
   );
 
@@ -28,7 +28,7 @@ const GroupsOverview = () => {
         competing: {},
         staffing: {},
       };
-      wcif.events.forEach((event) => {
+      wcif?.events.forEach((event) => {
         // get first round activities
         const activitiesForEvent = memodGroupActivitiesForRound(`${event.id}-r1`);
         const assignmentsForEvent = person.assignments
@@ -54,18 +54,18 @@ const GroupsOverview = () => {
       });
       return obj;
     },
-    [memodGroupActivitiesForRound, wcif.events]
+    [memodGroupActivitiesForRound, wcif?.events]
   );
 
   const assignments = useMemo(() => {
-    return wcif.persons
+    return wcif?.persons
       .filter(acceptedRegistration)
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((person) => {
         const a = assignmentsToObj(person);
         return { ...person, assignmentsData: a };
       });
-  }, [assignmentsToObj, wcif.persons]);
+  }, [assignmentsToObj, wcif?.persons]);
 
   return (
     <div>
@@ -74,12 +74,12 @@ const GroupsOverview = () => {
           <tr>
             <td className="p-2">Name</td>
             <td className="p-2">WCA ID</td>
-            {wcif.events.map((event) => (
+            {wcif?.events.map((event) => (
               <td key={event.id} className="p-2">
                 {event.id}
               </td>
             ))}
-            {wcif.events.map((event) => (
+            {wcif?.events.map((event) => (
               <td key={event.id} className="p-2">
                 {event.id}
               </td>
@@ -87,16 +87,16 @@ const GroupsOverview = () => {
           </tr>
         </thead>
         <tbody>
-          {assignments.map((person) => (
+          {assignments?.map((person) => (
             <tr key={person.registrantId}>
               <td className="p-2">{person.name}</td>
               <td className="p-2">{person.wcaId}</td>
-              {wcif.events.map((event) => (
+              {wcif?.events.map((event) => (
                 <td key={event.id}>
                   {person.assignmentsData.competing[event.id.toString()] || '-'}
                 </td>
               ))}
-              {wcif.events.map((event) => (
+              {wcif?.events.map((event) => (
                 <td key={event.id}>
                   {person.assignmentsData.staffing[event.id.toString() + '_staff'] || '-'}
                 </td>
