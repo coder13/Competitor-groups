@@ -17,7 +17,8 @@ export default function MyCompetitions() {
     async () =>
       await wcaApiFetch<UserCompsResponse>(
         `/users/${user?.id}?upcoming_competitions=true&ongoing_competitions=true`
-      )
+      ),
+    { cacheTime: 1000 * 60 * 5 }
   );
 
   const competitions = [

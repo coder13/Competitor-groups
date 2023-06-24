@@ -92,6 +92,7 @@ export default function UpcomingCompetitions() {
       return undefined;
     },
     networkMode: 'offlineFirst',
+    cacheTime: 1000 * 60 * 5,
   });
 
   useEffect(() => {

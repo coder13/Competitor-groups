@@ -160,9 +160,8 @@ export default function Person() {
                     .map((assignment) => ({ assignment, activity: getActivity(assignment) }))
                     .sort((a, b) => byDate(a.activity, b.activity))
                     .map(({ assignment, activity }, index, sortedAssignments) => {
-                      const { eventId, roundNumber, groupNumber } = parseActivityCode(
-                        activity?.activityCode || ''
-                      );
+                      const { eventId, roundNumber, groupNumber, attemptNumber } =
+                        parseActivityCode(activity?.activityCode || '');
 
                       const venue = wcif?.schedule.venues?.find((v) =>
                         v.rooms.some(
@@ -186,18 +185,24 @@ export default function Person() {
                       const isOver = now > roundedEndTime;
                       const isCurrent = now > roundedStartTime && now < roundedEndTime;
 
-                      let howManyNextAssignmentsAreSameEvent = 0;
+                      let howManyNextAssignmentsAreSameRoundAttempt = 0;
                       for (let i = index + 1; i < sortedAssignments.length; i++) {
                         const nextAssignment = sortedAssignments[i];
                         if (!nextAssignment?.activity) {
                           break;
                         }
 
-                        const { eventId: nextAssignmentEventId } = parseActivityCode(
-                          nextAssignment.activity.activityCode
-                        );
-                        if (eventId === nextAssignmentEventId) {
-                          howManyNextAssignmentsAreSameEvent++;
+                        const {
+                          eventId: nextAssignmentEventId,
+                          roundNumber: nextAssignmentRoundNumber,
+                          attemptNumber: nextAssignmentAttemptNumber,
+                        } = parseActivityCode(nextAssignment.activity.activityCode);
+                        if (
+                          eventId === nextAssignmentEventId &&
+                          roundNumber === nextAssignmentRoundNumber &&
+                          attemptNumber === nextAssignmentAttemptNumber
+                        ) {
+                          howManyNextAssignmentsAreSameRoundAttempt++;
                         } else {
                           break;
                         }
@@ -205,12 +210,22 @@ export default function Person() {
 
                       const previousAssignment = sortedAssignments[index - 1];
                       const nextAssignment = sortedAssignments[index + 1];
-                      const previousAssignmentEventId =
+                      const previousAssignmentActivityCode =
                         previousAssignment?.activity &&
                         parseActivityCode(previousAssignment?.activity?.activityCode);
-                      const nextAssignmentEventId =
+                      const nextAssignmentActivityCode =
                         nextAssignment?.activity &&
                         parseActivityCode(nextAssignment?.activity?.activityCode);
+
+                      const previousActivityIsSameRoundAttempt =
+                        previousAssignmentActivityCode?.eventId === eventId &&
+                        previousAssignmentActivityCode?.roundNumber === roundNumber &&
+                        previousAssignmentActivityCode?.attemptNumber === attemptNumber;
+
+                      const nextActivityIsSameRoundAttempt =
+                        nextAssignmentActivityCode?.eventId === eventId &&
+                        nextAssignmentActivityCode?.roundNumber === roundNumber &&
+                        nextAssignmentActivityCode?.attemptNumber === attemptNumber;
 
                       return (
                         <Link
@@ -224,22 +239,24 @@ export default function Person() {
                             'opacity-40': isOver,
                             'bg-op': isCurrent,
                             'border-t':
-                              previousAssignmentEventId?.eventId !== eventId ||
-                              eventId.toString() === 'other',
+                              !previousActivityIsSameRoundAttempt || eventId.toString() === 'other',
                             'border-b':
-                              nextAssignmentEventId?.eventId !== eventId ||
-                              eventId.toString() === 'other',
+                              !nextActivityIsSameRoundAttempt || eventId.toString() === 'other',
                           })}
                           to={`/competitions/${wcif?.id}/activities/${assignment.activityId}`}>
-                          {previousAssignmentEventId?.eventId !== eventId && (
+                          {!previousActivityIsSameRoundAttempt && (
                             <td
                               className="py-2 text-center justify-center"
-                              rowSpan={howManyNextAssignmentsAreSameEvent + 1}>
+                              rowSpan={howManyNextAssignmentsAreSameRoundAttempt + 1}>
                               {eventId.toString() === 'other'
                                 ? activity?.name
-                                : `${shortEventNameById(eventId)} ${
-                                    roundNumber && roundNumber > 1 ? `r${roundNumber}` : ''
-                                  }`}
+                                : [
+                                    `${shortEventNameById(eventId)}`,
+                                    `${roundNumber && roundNumber > 1 ? `R${roundNumber}` : ''}`,
+                                    `${attemptNumber ? `A${attemptNumber}` : ''}`,
+                                  ]
+                                    .filter(Boolean)
+                                    .join(' ')}
                             </td>
                           )}
                           <td className="py-2 text-center">{formattedStartTime}</td>
