@@ -13,12 +13,13 @@ import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
 import CompetitionGroupsSchedule from './pages/Competition/GroupsSchedule';
 import CompetitionRooms from './pages/Competition/Rooms';
 import CompetitionRoom from './pages/Competition/Room';
+import CompetitionInformation from './pages/Competition/Information';
+import CompetitionPersonalBests from './pages/Competition/PersonalBests';
 import Home from './pages/Home';
 import AuthProvider from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createContext, useEffect, useState } from 'react';
-import CompetitionInformation from './pages/Competition/Information';
 
 export const GlobalStateContext = createContext<{
   online: boolean;
@@ -36,6 +37,7 @@ const Navigation = () => {
         <Route path="/competitions/:competitionId" element={<Competition />}>
           <Route index element={<CompetitionHome />} />
           <Route path="persons/:registrantId" element={<CompetitionPerson />} />
+          <Route path="personal-bests/:wcaId" element={<CompetitionPersonalBests />} />
           <Route path="overview" element={<CompetitionGroupsOverview />} />
           <Route path="events/:eventId-r:roundNumber" element={<CompetitionRound />} />
           <Route path="events" element={<CompetitionEvents />} />

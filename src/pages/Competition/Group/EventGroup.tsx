@@ -1,14 +1,4 @@
-import {
-  Activity,
-  AssignmentCode,
-  decodeMultiResult,
-  EventId,
-  formatCentiseconds,
-  Person,
-  RankingType,
-  AttemptResult,
-  formatMultiResult,
-} from '@wca/helpers';
+import { Activity, AssignmentCode, EventId, Person } from '@wca/helpers';
 import classNames from 'classnames';
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -19,7 +9,7 @@ import {
   parseActivityCode,
   rooms,
 } from '../../../lib/activities';
-import { byName, formatDateTimeRange } from '../../../lib/utils';
+import { byName, formatDateTimeRange, renderResultByEventId } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
 
 const isAssignment = (assignment) => (a) =>
@@ -43,22 +33,6 @@ const AssignmentCodeTitles = {
   'staff-judge': 'Judges',
   'staff-dataentry': 'Data Entry',
   'staff-announcer': 'Announcers',
-};
-
-const renderResultByEventId = (
-  eventId: EventId,
-  rankingType: RankingType,
-  result: AttemptResult
-) => {
-  if (eventId === '333fm') {
-    return rankingType === 'average' ? ((result as number) / 100).toFixed(2).toString() : result;
-  }
-
-  if (eventId === '333mbf') {
-    return formatMultiResult(decodeMultiResult('0' + result));
-  }
-
-  return formatCentiseconds(result as number);
 };
 
 interface EventGroupProps {

@@ -284,7 +284,13 @@ export default function Person() {
           </div>
           <span className="text-xl sm:text-2xl">{person.registrantId}</span>
         </div>
-        {person.wcaId && <p className="text-xs sm:text-sm">{person.wcaId}</p>}
+        {person.wcaId && (
+          <Link
+            to={`/competitions/${wcif?.id}/personal-bests/${person.wcaId}`}
+            className="text-sm sm:text-base text-blue-800 hover:underline">
+            {person.wcaId}
+          </Link>
+        )}
         <p className="text-sm sm:text-md">
           <span>Registered Events:</span>
           {person.registration?.eventIds.map((eventId) => (

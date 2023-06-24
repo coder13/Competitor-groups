@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useWCIF } from './WCIFProvider';
 import useWCAFetch from '../../hooks/useWCAFetch';
+import ExternalLink from '../../components/ExternalLink';
 
 export default function Information() {
   const { setTitle, wcif } = useWCIF();
@@ -30,14 +31,7 @@ export default function Information() {
 
   return (
     <div className="flex flex-col w-full p-2 space-y-2 text-slate-800">
-      <a
-        href={data?.website || ''}
-        target="_blank"
-        rel="noreferrer"
-        className="flex align-center justify-between w-full bg-blue-200 p-2 rounded hover:opacity-80">
-        View WCA competition webpage
-        <i className="m-0 fa fa-solid fa-arrow-up-right-from-square" />
-      </a>
+      <ExternalLink href={data?.website || ''}>View WCA competition webpage</ExternalLink>
       <div className="flex flex-col w-full border border-slate-100 p-2 rounded">
         <h2 className="text-2xl font-bold">Venue</h2>
         <a

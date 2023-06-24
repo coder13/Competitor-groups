@@ -1,3 +1,11 @@
+import {
+  AttemptResult,
+  EventId,
+  RankingType,
+  decodeMultiResult,
+  formatCentiseconds,
+  formatMultiResult,
+} from '@wca/helpers';
 import { format, parseISO } from 'date-fns';
 
 export const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
@@ -124,3 +132,19 @@ export const formatToParts = (date: Date) => DateTimeFormatter.formatToParts(dat
 
 export const formatToWeekDay = (date: Date) =>
   formatToParts(date).find((p) => p.type === 'weekday')?.value;
+
+export const renderResultByEventId = (
+  eventId: EventId,
+  rankingType: RankingType,
+  result: AttemptResult
+) => {
+  if (eventId === '333fm') {
+    return rankingType === 'average' ? ((result as number) / 100).toFixed(2).toString() : result;
+  }
+
+  if (eventId === '333mbf') {
+    return formatMultiResult(decodeMultiResult('0' + result));
+  }
+
+  return formatCentiseconds(result as number);
+};
