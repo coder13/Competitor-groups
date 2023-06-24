@@ -1,9 +1,9 @@
-import { useState, useEffect, createContext, useContext, useCallback } from 'react';
+import { useState, useEffect, createContext, useContext, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { WCA_ORIGIN, WCA_OAUTH_CLIENT_ID } from '../lib/wca-env';
 import history from '../lib/history';
 
-const localStorageKey = (key: string) => `wca_gantt_chart.${WCA_OAUTH_CLIENT_ID}.${key}`;
+const localStorageKey = (key: string) => `competition-groups.${WCA_OAUTH_CLIENT_ID}.${key}`;
 
 const getLocalStorage = (key: string) => localStorage.getItem(localStorageKey(key));
 const setLocalStorage = (key: string, value: string) =>
@@ -25,6 +25,7 @@ interface IAuthContext {
   signOut: () => void;
   signedIn: () => boolean;
   user: User | null;
+  expired: boolean;
 }
 
 const AuthContext = createContext<IAuthContext>({
@@ -33,22 +34,21 @@ const AuthContext = createContext<IAuthContext>({
   signOut: () => {},
   signedIn: () => false,
   user: null,
+  expired: true,
 });
 
 export default function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(getLocalStorage('accessToken'));
-  const [expirationTime, setExpirationTime] = useState(getLocalStorage('expirationTime')); // Time at which it expires
-  const [user, setUser] = useState<User | null>(null);
+  const [expirationTime, setExpirationTime] = useState<string | null>(
+    getLocalStorage('expirationTime')
+  ); // Time at which it expires
+  const [user, setUser] = useState<User | null>(() => {
+    const rawUserData = getLocalStorage('user');
+    return rawUserData ? (JSON.parse(rawUserData) as User) : null;
+  });
 
   const location = useLocation();
   const navigate = useNavigate();
-
-  const signOutIfExpired = useCallback(() => {
-    if (expirationTime && new Date() >= new Date(expirationTime)) {
-      signOut();
-      return true;
-    }
-  }, [expirationTime]);
 
   const signIn = () => {
     window.localStorage.setItem('redirect', window.location.pathname);
@@ -74,26 +74,6 @@ export default function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    if (!expirationTime) {
-      return;
-    }
-
-    if (signOutIfExpired()) {
-      return;
-    }
-
-    const expiresInMillis = new Date(expirationTime).getTime() - Date.now() + 1000;
-
-    const timeout = setTimeout(() => {
-      signOutIfExpired();
-    }, expiresInMillis);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [expirationTime, signOutIfExpired]);
-
-  useEffect(() => {
     const hash = location.hash.replace(/^#/, '');
     const hashParams = new URLSearchParams(hash);
 
@@ -108,10 +88,9 @@ export default function AuthProvider({ children }) {
       /* Expire the token 15 minutes before it actually does,
          this way it doesn't expire right after the user enters the page. */
       const expiresInSeconds = parseInt(hashParamExpiresIn, 10) - 15 * 60;
-      setLocalStorage(
-        'expirationTime',
-        new Date(new Date().getTime() + expiresInSeconds * 1000).toISOString()
-      );
+      const expTime = new Date(new Date().getTime() + expiresInSeconds * 1000).toISOString();
+      setLocalStorage('expirationTime', expTime);
+      setExpirationTime(expTime);
     }
 
     /* Clear the hash if there is a token. */
@@ -120,13 +99,6 @@ export default function AuthProvider({ children }) {
       navigate(window.localStorage.getItem('redirect') || '/');
     }
   }, [location, navigate]);
-
-  useEffect(
-    () => () => {
-      signOutIfExpired();
-    },
-    [signOutIfExpired]
-  );
 
   useEffect(() => {
     if (!accessToken) {
@@ -154,13 +126,42 @@ export default function AuthProvider({ children }) {
           throw res.json();
         }
       })
-      .then((data) => setUser(data.me))
+      .then((data) => {
+        setLocalStorage('user', JSON.stringify(data.me));
+        setUser(data.me);
+      })
       .catch((err) => console.error(err));
   }, [accessToken]);
 
   const signedIn = useCallback(() => !!accessToken, [accessToken]);
 
-  const value = { accessToken, user, signIn, signOut, signedIn };
+  const expired = useMemo(() => {
+    if (!user) {
+      return false;
+    }
+    if (!expirationTime) {
+      return true;
+    }
+
+    console.log(
+      181,
+      expirationTime,
+      new Date(expirationTime).getTime(),
+      Date.now(),
+      Date.now() >= new Date(expirationTime).getTime()
+    );
+
+    return Date.now() >= new Date(expirationTime).getTime();
+  }, [user, expirationTime]);
+
+  const value = {
+    accessToken,
+    user,
+    signIn,
+    signOut,
+    signedIn,
+    expired,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
