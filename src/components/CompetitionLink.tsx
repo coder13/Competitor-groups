@@ -29,7 +29,7 @@ const CompetitionLink = ({
         className={classNames(
           'border bg-white list-none rounded-md px-1 py-1 flex cursor-pointer hover:bg-blue-200 group transition-colors my-1 flex-row',
           {
-            'opacity-50': endDate < new Date(),
+            'opacity-50': endDate < new Date(Date.now() - 1000 * 60 * 60 * 24),
           }
         )}>
         {hasFlag(country_iso2) && (
