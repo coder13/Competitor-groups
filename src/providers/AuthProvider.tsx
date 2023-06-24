@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useContext, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { WCA_ORIGIN, WCA_OAUTH_CLIENT_ID } from '../lib/wca-env';
 import history from '../lib/history';
 
@@ -41,6 +41,7 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState<User | null>(null);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const signOutIfExpired = useCallback(() => {
     if (expirationTime && new Date() >= new Date(expirationTime)) {
@@ -50,6 +51,8 @@ export default function AuthProvider({ children }) {
   }, [expirationTime]);
 
   const signIn = () => {
+    window.localStorage.setItem('redirect', window.location.pathname);
+
     const params = new URLSearchParams({
       client_id: WCA_OAUTH_CLIENT_ID,
       response_type: 'token',
@@ -114,8 +117,9 @@ export default function AuthProvider({ children }) {
     /* Clear the hash if there is a token. */
     if (hashParamAccessToken) {
       history.replace({ ...history.location, hash: undefined });
+      navigate(window.localStorage.getItem('redirect') || '/');
     }
-  }, [location]);
+  }, [location, navigate]);
 
   useEffect(
     () => () => {
