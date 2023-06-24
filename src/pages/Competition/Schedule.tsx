@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import DisclaimerText from '../../components/DisclaimerText';
-import { allActivities } from '../../lib/activities';
+import { allActivities, rooms } from '../../lib/activities';
 import { useWCIF } from './WCIFProvider';
 import ActivityRow from '../../components/ActivitiyRow';
 import { byDate, formatDate, formatToParts } from '../../lib/utils';
@@ -12,6 +12,8 @@ export default function Round() {
   useEffect(() => {
     setTitle('Schedule');
   }, [setTitle]);
+
+  const showRoom = useMemo(() => wcif && rooms(wcif).length > 1, [wcif]);
 
   const activities = useMemo(
     () =>
@@ -82,6 +84,7 @@ export default function Round() {
                   activity={activity}
                   timeZone={timeZone}
                   room={activity?.parent?.parent?.room || activity?.parent?.room || activity?.room}
+                  showRoom={showRoom}
                 />
               );
             })}
