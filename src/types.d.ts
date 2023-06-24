@@ -26,6 +26,8 @@ interface ApiCompetition {
   venue_details: string;
   website: string;
   event_ids: string[];
+  organizers: User[];
+  delegates: User[];
 }
 
 declare module '@wca/helpers/' {

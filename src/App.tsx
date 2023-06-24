@@ -18,6 +18,7 @@ import AuthProvider from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createContext, useEffect, useState } from 'react';
+import CompetitionInformation from './pages/Competition/Information';
 
 export const GlobalStateContext = createContext<{
   online: boolean;
@@ -45,6 +46,7 @@ const Navigation = () => {
           <Route path="stream" element={<CompetitionStreamSchedule />} />
           <Route path="rooms" element={<CompetitionRooms />} />
           <Route path="rooms/:roomId" element={<CompetitionRoom />} />
+          <Route path="information" element={<CompetitionInformation />} />
         </Route>
       </Route>
     </Routes>
