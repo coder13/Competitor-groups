@@ -71,6 +71,7 @@ export default function AuthProvider({ children }) {
     setUser(null);
     localStorage.removeItem(localStorageKey('accessToken'));
     localStorage.removeItem(localStorageKey('expirationTime'));
+    localStorage.removeItem(localStorageKey('user'));
   };
 
   useEffect(() => {
