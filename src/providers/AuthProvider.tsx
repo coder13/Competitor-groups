@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { WCA_ORIGIN, WCA_OAUTH_CLIENT_ID } from '../lib/wca-env';
+import { WCA_ORIGIN, WCA_OAUTH_CLIENT_ID, WCA_OAUTH_ORIGIN } from '../lib/wca-env';
 import history from '../lib/history';
 
 const localStorageKey = (key: string) => `competition-groups.${WCA_OAUTH_CLIENT_ID}.${key}`;
@@ -61,7 +61,7 @@ export default function AuthProvider({ children }) {
       state: 'foobar',
     });
 
-    window.location.href = `${WCA_ORIGIN}/oauth/authorize?${params.toString()}`;
+    window.location.href = `${WCA_OAUTH_ORIGIN}/oauth/authorize?${params.toString()}`;
   };
 
   const signOut = () => {
