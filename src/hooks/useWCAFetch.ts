@@ -7,7 +7,7 @@ export default function useWCAFetch() {
 
   return useCallback(
     async <T>(path, fetchOptions = {}) => {
-      const baseApiUrl = `${WCA_ORIGIN}/api/v0`;
+      const baseApiUrl = `${WCA_ORIGIN}`;
 
       const res = await fetch(
         `${baseApiUrl}${path}`,

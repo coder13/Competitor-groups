@@ -107,7 +107,7 @@ export default function AuthProvider({ children }) {
     }
 
     fetch(
-      `${WCA_ORIGIN}/api/v0/me`,
+      `${WCA_ORIGIN}/me`,
       Object.assign(
         {},
         {
