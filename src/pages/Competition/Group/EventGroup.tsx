@@ -11,6 +11,7 @@ import {
 } from '../../../lib/activities';
 import { byName, formatDateTimeRange, renderResultByEventId } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
+import { isRankedBySingle } from '../../../lib/events';
 
 const isAssignment = (assignment) => (a) =>
   a.assignments.some(({ assignmentCode }) => assignmentCode === assignment);
@@ -118,8 +119,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
       return '';
     }
 
-    const shouldShowAveragePr =
-      averagePr && !['333bf', '444bf', '555bf', '333mbf'].includes(eventId);
+    const shouldShowAveragePr = !isRankedBySingle(eventId);
 
     return renderResultByEventId(
       eventId,

@@ -9,7 +9,7 @@ import {
 } from '@wca/helpers';
 import flatten from 'lodash.flatten';
 import flatMap from 'lodash.flatmap';
-import { eventNameById } from './events';
+import { eventNameById, isRankedBySingle } from './events';
 import { formatTime } from './utils';
 
 const ActivityCodeRegExp = /(\w+)(?:-r(\d+))?(?:-g(\d+))?(?:-a(\d+))?/;
@@ -125,18 +125,20 @@ export const byWorldRanking = (eventId: EventId): ((a: Person, b: Person) => num
   const findEventPR = findPR(eventId);
 
   return (a, b) => {
-    const aPRAverage = findEventPR(a.personalBests || [], 'average');
-    const bPRAverage = findEventPR(b.personalBests || [], 'average');
+    if (!isRankedBySingle(eventId)) {
+      const aPRAverage = findEventPR(a.personalBests || [], 'average');
+      const bPRAverage = findEventPR(b.personalBests || [], 'average');
 
-    if (aPRAverage && bPRAverage) {
-      const diff = aPRAverage.worldRanking - bPRAverage.worldRanking;
-      if (diff !== 0) {
-        return diff;
+      if (aPRAverage && bPRAverage) {
+        const diff = aPRAverage.worldRanking - bPRAverage.worldRanking;
+        if (diff !== 0) {
+          return diff;
+        }
+      } else if (aPRAverage && !bPRAverage) {
+        return -1;
+      } else if (!aPRAverage && bPRAverage) {
+        return 1;
       }
-    } else if (aPRAverage && !bPRAverage) {
-      return -1;
-    } else if (!aPRAverage && bPRAverage) {
-      return 1;
     }
 
     const aPRSingle = findEventPR(a.personalBests || [], 'single');
