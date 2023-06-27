@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { allActivities, parseActivityCode } from '../../../lib/activities';
 import { useWCIF } from '../WCIFProvider';
-import EventGroup from './EventGroup';
-import OtherGroup from './OtherGroup';
+import EventActivity from './EventActivity';
+import OtherActivity from './OtherActivity';
 
 export default function Group() {
   const { wcif } = useWCIF();
@@ -32,7 +32,7 @@ export default function Group() {
   );
 
   const isEventGroup = !eventId?.startsWith('other');
-  const GroupComponent = isEventGroup ? EventGroup : OtherGroup;
+  const GroupComponent = isEventGroup ? EventActivity : OtherActivity;
 
   return (
     <div>
