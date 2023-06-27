@@ -96,7 +96,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
     .reduce((acc, assignmentCode) => {
       acc[assignmentCode] = everyoneInActivity.filter(isAssignment(assignmentCode));
       return acc;
-    }, {});
+    }, {}) as Record<AssignmentCode, Person[]>;
 
   // TODO: Calculate seed result from previous round results when available.
   const seedResult = (person) => {
@@ -128,12 +128,14 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
     );
   };
 
-  const stationNumber = (person) => {
+  const stationNumber = (assignmentCode) => (person) => {
     const assignment = person.assignments.find(
-      (a) => a.assignmentCode === 'competitor' && a.activityId === activity.id
+      (a) => a.assignmentCode === assignmentCode && a.activityId === activity.id
     );
     return assignment?.stationNumber;
   };
+
+  const anyCompetitorHasStationNumber = competitors.some(stationNumber('competitor'));
 
   return (
     <>
@@ -159,10 +161,10 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
         </AssignmentCategoryHeader>
         <table className="w-full text-left">
           <thead>
-            <tr className="bg-green-200 shadow-md">
+            <tr className="text-xs lg:text-sm bg-green-200 shadow-md">
               <th className="pt-1 pb-3 px-6">Name</th>
               <th className="pt-1 pb-3 px-6">Seed Result</th>
-              <th className="pt-1 pb-3 px-6">Station Number</th>
+              {anyCompetitorHasStationNumber && <th className="pt-1 pb-3 px-6">Station Number</th>}
             </tr>
           </thead>
           <tbody>
@@ -172,7 +174,9 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
                 to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
                 <td className="py-3 px-6">{person.name}</td>
                 <td className="py-3 px-6">{seedResult(person)}</td>
-                <td className="py-3 px-6">{stationNumber(person)}</td>
+                {anyCompetitorHasStationNumber && (
+                  <td className="py-3 px-6">{stationNumber('competitor')(person)}</td>
+                )}
               </Link>
             ))}
           </tbody>
@@ -181,39 +185,79 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
       {Object.keys(peopleByAssignmentCode)
         .sort((a, b) => AssignmentCodeRank.indexOf(a) - AssignmentCodeRank.indexOf(b))
         .map((assignmentCode) => {
-          const people = peopleByAssignmentCode[assignmentCode].sort(byName);
+          const people = peopleByAssignmentCode[assignmentCode];
+
+          const anyHasStationNumber = people.some(stationNumber(assignmentCode));
+
+          const headerColorClassName = {
+            'bg-yellow-100': assignmentCode === 'staff-scrambler',
+            'bg-red-200': assignmentCode === 'staff-runner',
+            'bg-blue-200': assignmentCode.match(/judge/i),
+            'bg-cyan-200': assignmentCode === 'staff-dataentry',
+            'bg-violet-200': assignmentCode === 'staff-announcer',
+            'bg-slate-200': !AssignmentCodeRank.includes(assignmentCode),
+          };
+          const colorClassName = {
+            'even:bg-yellow-50': assignmentCode === 'staff-scrambler',
+            'even:bg-red-50': assignmentCode === 'staff-runner',
+            'even:bg-blue-50': assignmentCode.match(/judge/i),
+            'even:bg-cyan-50': assignmentCode === 'staff-dataentry',
+            'even:bg-violet-50': assignmentCode === 'staff-announcer',
+            'even:bg-slate-50': !AssignmentCodeRank.includes(assignmentCode),
+          };
 
           return (
             <>
               <hr className="mb-2" />
               <div>
-                <h4
-                  className={classNames(`text-lg font-bold text-center shadow-md py-3 px-6`, {
-                    'bg-yellow-100': assignmentCode === 'staff-scrambler',
-                    'bg-red-200': assignmentCode === 'staff-runner',
-                    'bg-blue-200': assignmentCode.match(/judge/i),
-                    'bg-cyan-200': assignmentCode === 'staff-dataentry',
-                    'bg-violet-200': assignmentCode === 'staff-announcer',
-                    'bg-slate-200': !AssignmentCodeRank.includes(assignmentCode),
-                  })}>
+                <AssignmentCategoryHeader className={classNames(headerColorClassName)}>
                   {AssignmentCodeTitles[assignmentCode] || assignmentCode.replace('staff-', '')}
-                </h4>
-                <div className="hover:opacity-80">
-                  {people.map((person) => (
-                    <Link
-                      className={classNames(`p-2 block`, {
-                        'even:bg-yellow-50': assignmentCode === 'staff-scrambler',
-                        'even:bg-red-50': assignmentCode === 'staff-runner',
-                        'even:bg-blue-50': assignmentCode.match(/judge/i),
-                        'even:bg-cyan-50': assignmentCode === 'staff-dataentry',
-                        'even:bg-violet-50': assignmentCode === 'staff-announcer',
-                        'even:bg-slate-50': !AssignmentCodeRank.includes(assignmentCode),
-                      })}
-                      to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
-                      {person.name}
-                    </Link>
-                  ))}
-                </div>
+                </AssignmentCategoryHeader>
+                {anyHasStationNumber ? (
+                  <table className={'w-full text-left'}>
+                    <thead>
+                      <tr className={classNames(' text-sm shadow-md', headerColorClassName)}>
+                        <th className="pt-1 pb-3 px-6">Name</th>
+                        <th className="pt-1 pb-3 px-6">Station Number</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {people
+                        .sort((a, b) => {
+                          const aStationNumber = stationNumber(assignmentCode)(a);
+                          const bStationNumber = stationNumber(assignmentCode)(b);
+
+                          if (
+                            aStationNumber &&
+                            bStationNumber &&
+                            aStationNumber - bStationNumber !== 0
+                          ) {
+                            return aStationNumber - bStationNumber;
+                          }
+
+                          return byName(a, b);
+                        })
+                        .map((person) => (
+                          <Link
+                            className={classNames('table-row  hover:opacity-80', colorClassName)}
+                            to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
+                            <td className="py-3 px-6">{person.name}</td>
+                            <td className="py-3 px-6">{stationNumber(assignmentCode)(person)}</td>
+                          </Link>
+                        ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="hover:opacity-80">
+                    {people.sort(byName).map((person) => (
+                      <Link
+                        className={classNames(`p-2 block`, colorClassName)}
+                        to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
+                        {person.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </>
           );
