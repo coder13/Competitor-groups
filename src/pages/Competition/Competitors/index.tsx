@@ -6,7 +6,15 @@ import { useAuth } from '../../../providers/AuthProvider';
 
 export default function Competitors({ wcif }) {
   const { user } = useAuth();
-  const acceptedPersons = useMemo(() => wcif?.persons?.filter(acceptedRegistration) || [], [wcif]);
+  const acceptedPersons = useMemo(
+    () =>
+      wcif?.persons
+        ?.filter(acceptedRegistration)
+        .filter(
+          (person) => person.registration?.eventIds.length > 0 || person.assignments.length > 0
+        ) || [],
+    [wcif]
+  );
 
   const me = acceptedPersons.find((person) => person.wcaUserId === user?.id);
 
