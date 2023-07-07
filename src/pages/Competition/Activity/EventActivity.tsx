@@ -22,6 +22,7 @@ const AssignmentCodeRank: AssignmentCode[] = [
   'staff-judge',
   'staff-dataentry',
   'staff-announcer',
+  'staff-delegate',
 ];
 
 const AssignmentCategoryHeader = tw.h4`
@@ -34,6 +35,7 @@ const AssignmentCodeTitles = {
   'staff-judge': 'Judges',
   'staff-dataentry': 'Data Entry',
   'staff-announcer': 'Announcers',
+  'staff-delegate': 'Delegates',
 };
 
 interface EventGroupProps {
@@ -195,6 +197,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
             'bg-blue-200': assignmentCode.match(/judge/i),
             'bg-cyan-200': assignmentCode === 'staff-dataentry',
             'bg-violet-200': assignmentCode === 'staff-announcer',
+            'bg-purple-200': assignmentCode === 'staff-delegate',
             'bg-slate-200': !AssignmentCodeRank.includes(assignmentCode),
           };
           const colorClassName = {
@@ -203,6 +206,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
             'even:bg-blue-50': assignmentCode.match(/judge/i),
             'even:bg-cyan-50': assignmentCode === 'staff-dataentry',
             'even:bg-violet-50': assignmentCode === 'staff-announcer',
+            'even:bg-purple-50': assignmentCode === 'staff-delegate',
             'even:bg-slate-50': !AssignmentCodeRank.includes(assignmentCode),
           };
 
