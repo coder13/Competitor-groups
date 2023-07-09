@@ -117,11 +117,10 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
 
     const averagePr = person.prAverage?.best;
     const singlePr = person.prSingle?.best;
-    if (!averagePr && !singlePr) {
+    const shouldShowAveragePr = !isRankedBySingle(eventId);
+    if ((shouldShowAveragePr && !averagePr) || !singlePr) {
       return '';
     }
-
-    const shouldShowAveragePr = !isRankedBySingle(eventId);
 
     return renderResultByEventId(
       eventId,
