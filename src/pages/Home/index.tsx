@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import MyCompetitions from '../../components/MyCompetitions';
 import UpcomingCompetitions from '../../components/UpcomingCompetitions';
 import { useAuth } from '../../providers/AuthProvider';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const { user } = useAuth();
@@ -20,6 +21,9 @@ export default function Home() {
             competitors. The information provided is based on scheduled data. Pay close attention to
             the competition for the most up-to-date information. Start and end times can fluctuate.
           </p>
+          <Link to="/about" className="text-blue-700 underline">
+            How does this site work?
+          </Link>
         </div>
         {user && (
           <>

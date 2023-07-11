@@ -20,6 +20,7 @@ import AuthProvider from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createContext, useEffect, useState } from 'react';
+import About from './pages/About';
 
 export const GlobalStateContext = createContext<{
   online: boolean;
@@ -50,6 +51,7 @@ const Navigation = () => {
           <Route path="rooms/:roomId" element={<CompetitionRoom />} />
           <Route path="information" element={<CompetitionInformation />} />
         </Route>
+        <Route path="about" element={<About />} />
       </Route>
     </Routes>
   );
