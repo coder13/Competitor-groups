@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const Link = ({ to, children }) => (
+const Link = ({ to, children }: { to: string; children: React.ReactNode }) => (
   <a className="text-blue-700 underline" href={to} target="_blank" rel="noreferrer">
     {children}
   </a>

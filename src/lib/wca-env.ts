@@ -1,9 +1,6 @@
-export const WCA_ORIGIN =
-  process.env.REACT_APP_WCA_ORIGIN || 'https://api.worldcubeassociation.org';
-export const WCA_OAUTH_ORIGIN =
-  process.env.REACT_APP_WCA_OAUTH_ORIGIN || 'https://worldcubeassociation.org';
-export const WCA_OAUTH_CLIENT_ID = process.env.REACT_APP_WCA_CLIENT_ID || 'example-application-id';
+export const WCA_ORIGIN = import.meta.env.VITE_WCA_ORIGIN || 'https://api.worldcubeassociation.org';
 
-// For debug purposes
-global.WCA_ORIGIN = WCA_ORIGIN;
-global.WCA_OAUTH_CLIENT_ID = WCA_OAUTH_CLIENT_ID;
+export const WCA_OAUTH_ORIGIN =
+  import.meta.env.VITE_WCA_OAUTH_ORIGIN || 'https://worldcubeassociation.org';
+
+export const WCA_OAUTH_CLIENT_ID = import.meta.env.VITE_WCA_CLIENT_ID || 'example-application-id';

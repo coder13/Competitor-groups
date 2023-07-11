@@ -5,8 +5,9 @@ import {
   parseActivityCode,
 } from '../../lib/activities';
 import { useWCIF } from './WCIFProvider';
+import { Activity } from '@wca/helpers';
 
-const groupNumber = ({ activityCode }) => parseActivityCode(activityCode)?.groupNumber;
+const groupNumber = ({ activityCode }: Activity) => parseActivityCode(activityCode)?.groupNumber;
 
 const staffingAssignmentToText = ({ assignmentCode, activity }) =>
   `${assignmentCode.split('-')[1][0].toUpperCase()}${groupNumber(activity)}`;

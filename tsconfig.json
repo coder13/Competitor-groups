@@ -1,16 +1,22 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "strictNullChecks": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noEmit": true,
-    "jsx": "preserve",
-    "lib": ["es6", "dom"],
-    "module": "esnext",
-    "moduleResolution": "node",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["vite/client", "vite-plugin-svgr/client"],
+    "allowJs": true,
+    "noImplicitAny": false,
+    "skipLibCheck": false,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "allowJs": false
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "noEmit": true,
+    "jsx": "react-jsx"
   },
-  "include": ["./src/**/*"]
+  "include": ["src"]
 }
