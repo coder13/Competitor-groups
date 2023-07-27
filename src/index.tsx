@@ -23,6 +23,7 @@ reportWebVitals(undefined);
 const cacheName = 'MyFancyCacheName_v1';
 
 self.addEventListener('fetch', (event) => {
+  console.log(26, event);
   // Check if this is a navigation request
   if (event?.request?.mode === 'navigate') {
     // Open the cache
