@@ -6,5 +6,14 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), viteTsconfigPaths(), svgrPlugin(), VitePWA()],
+  plugins: [
+    react(),
+    viteTsconfigPaths(),
+    svgrPlugin(),
+    VitePWA({
+      workbox: {
+        globIgnores: [/worldcubeassociation/],
+      },
+    }),
+  ],
 });
