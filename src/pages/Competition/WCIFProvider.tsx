@@ -48,18 +48,35 @@ export default function WCIFProvider({ competitionId, children }) {
   const { online } = useContext(GlobalStateContext);
   const [title, setTitle] = useState('');
   const wcaApiFetch = useWCAFetch();
-  const {
-    data: wcif,
-    error,
-    isFetching,
-  } = useQuery<Competition>({
-    queryKey: ['wcif', competitionId],
-    queryFn: () =>
-      wcaApiFetch(`/competitions/${competitionId}/wcif/public`, {
-        cache: 'no-store',
-      }),
-    networkMode: 'always',
-  });
+  // const {
+  //   data: wcif,
+  //   error,
+  //   isFetching,
+  // } = useQuery<Competition>({
+  //   queryKey: ['wcif', competitionId],
+  //   queryFn: () =>
+  //     wcaApiFetch(`/competitions/${competitionId}/wcif/public`, {
+  //       cache: 'no-store',
+  //     }),
+  //   networkMode: 'always',
+  // });
+
+  const [wcif, setWcif] = useState<Competition | null>(null);
+  const [isFetching, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    wcaApiFetch(`/competitions/${competitionId}/wcif/public`, {
+      cache: 'no-store',
+    })
+      .then((data) => {
+        setWcif(data as Competition);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }, [competitionId, wcaApiFetch]);
 
   useEffect(() => {
     if (wcif) {
@@ -71,12 +88,12 @@ export default function WCIFProvider({ competitionId, children }) {
 
   const hasStream = wcif && streamActivities(wcif).length > 0;
 
-  if (error) {
-    <div className="flex">
-      <p>Error loading competition: </p>
-      <p>{error?.toString()}</p>
-    </div>;
-  }
+  // if (error) {
+  //   <div className="flex">
+  //     <p>Error loading competition: </p>
+  //     <p>{error?.toString()}</p>
+  //   </div>;
+  // }
 
   return (
     <WCIFContext.Provider value={{ wcif: wcif as Competition, setTitle }}>
