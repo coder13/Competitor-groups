@@ -66,16 +66,25 @@ export default function WCIFProvider({ competitionId, children }) {
 
   useEffect(() => {
     setLoading(true);
-    wcaApiFetch(`/competitions/${competitionId}/wcif/public`, {
-      cache: 'no-store',
-    })
-      .then((data) => {
-        setWcif(data as Competition);
-        setLoading(false);
+    const fetchComp = () => {
+      wcaApiFetch(`/competitions/${competitionId}/wcif/public`, {
+        cache: 'reload',
       })
-      .catch((e) => {
-        console.error(e);
-      });
+        .then((data) => {
+          setWcif(data as Competition);
+          setLoading(false);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    };
+
+    const interval = setInterval(fetchComp, 30000);
+    fetchComp();
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [competitionId, wcaApiFetch]);
 
   useEffect(() => {
