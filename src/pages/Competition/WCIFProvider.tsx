@@ -53,7 +53,7 @@ export default function WCIFProvider({ competitionId, children }) {
     error,
     isFetching,
   } = useQuery<Competition>({
-    queryKey: ['wcif', competitionId],
+    queryKey: ['wcif', competitionId, new Date().toISOString()],
     queryFn: () =>
       wcaApiFetch(`/competitions/${competitionId}/wcif/public`, {
         cache: 'no-store',
