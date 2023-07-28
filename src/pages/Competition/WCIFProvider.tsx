@@ -58,7 +58,7 @@ export default function WCIFProvider({ competitionId, children }) {
       wcaApiFetch(`/competitions/${competitionId}/wcif/public`, {
         cache: 'no-cache',
       }),
-    networkMode: 'online',
+    networkMode: 'always',
   });
 
   useEffect(() => {
