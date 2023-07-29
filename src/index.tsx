@@ -3,7 +3,6 @@ import '@cubing/icons';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 import './index.css';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import '@total-typescript/ts-reset';
 
 const container = document.getElementById('root');
@@ -16,35 +15,3 @@ root.render(<App />);
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals(undefined);
-
-serviceWorkerRegistration.unregister();
-// serviceWorkerRegistration.register();
-
-// Establish a cache name
-// const cacheName = 'MyFancyCacheName_v1';
-
-// self.addEventListener('fetch', (event) => {
-//   console.log(26, event);
-//   // Check if this is a navigation request
-//   if (event?.request?.mode === 'navigate') {
-//     // Open the cache
-//     event.respondWith(
-//       caches.open(cacheName).then((cache) => {
-//         // Go to the network first
-//         return fetch(event.request.url)
-//           .then((fetchedResponse) => {
-//             cache.put(event.request, fetchedResponse.clone());
-
-//             return fetchedResponse;
-//           })
-//           .catch(() => {
-//             // If the network is unavailable, get from cache
-//             console.log('loading from cache', event);
-//             return cache.match(event.request.url);
-//           });
-//       })
-//     );
-//   } else {
-//     return;
-//   }
-// });

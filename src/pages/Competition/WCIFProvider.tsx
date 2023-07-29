@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { GlobalStateContext } from '../../App';
 import NoteBox from '../../components/Notebox';
 import { streamActivities } from './../../lib/activities';
+import { WCA_ORIGIN } from '../../lib/wca-env';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
@@ -48,44 +49,18 @@ export default function WCIFProvider({ competitionId, children }) {
   const { online } = useContext(GlobalStateContext);
   const [title, setTitle] = useState('');
   const wcaApiFetch = useWCAFetch();
-  // const {
-  //   data: wcif,
-  //   error,
-  //   isFetching,
-  // } = useQuery<Competition>({
-  //   queryKey: ['wcif', competitionId],
-  //   queryFn: () =>
-  //     wcaApiFetch(`/competitions/${competitionId}/wcif/public`, {
-  //       cache: 'no-store',
-  //     }),
-  //   networkMode: 'always',
-  // });
-
-  const [wcif, setWcif] = useState<Competition | null>(null);
-  const [isFetching, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    const fetchComp = () => {
+  const {
+    data: wcif,
+    error,
+    isFetching,
+  } = useQuery<Competition>({
+    queryKey: ['wcif', competitionId],
+    queryFn: () =>
       wcaApiFetch(`/competitions/${competitionId}/wcif/public`, {
-        cache: 'reload',
-      })
-        .then((data) => {
-          setWcif(data as Competition);
-          setLoading(false);
-        })
-        .catch((e) => {
-          console.error(e);
-        });
-    };
-
-    const interval = setInterval(fetchComp, 30000);
-    fetchComp();
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [competitionId, wcaApiFetch]);
+        cache: 'no-store',
+      }),
+    networkMode: 'always',
+  });
 
   useEffect(() => {
     if (wcif) {
@@ -97,12 +72,12 @@ export default function WCIFProvider({ competitionId, children }) {
 
   const hasStream = wcif && streamActivities(wcif).length > 0;
 
-  // if (error) {
-  //   <div className="flex">
-  //     <p>Error loading competition: </p>
-  //     <p>{error?.toString()}</p>
-  //   </div>;
-  // }
+  if (error) {
+    <div className="flex">
+      <p>Error loading competition: </p>
+      <p>{error?.toString()}</p>
+    </div>;
+  }
 
   return (
     <WCIFContext.Provider value={{ wcif: wcif as Competition, setTitle }}>
