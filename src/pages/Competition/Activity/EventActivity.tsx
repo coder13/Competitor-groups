@@ -173,21 +173,24 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
 
   return (
     <>
-      <div className="p-2">
-        <h3 className="font-bold" style={{ lineHeight: 2 }}>
-          <span
-            className="px-3 py-2 rounded mr-2"
-            style={{
-              backgroundColor: `${room?.color}70`,
-            }}>
-            {room?.name}
-          </span>
-          <span>{activityCodeToName(activity?.activityCode)}</span>
-        </h3>
-        <p className="p-2">
-          {formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}
-        </p>
-      </div>
+      {wcif && (
+        <div className="p-2">
+          <h3 className="font-bold" style={{ lineHeight: 2 }}>
+            <Link
+              className="px-3 py-2 rounded mr-2"
+              style={{
+                backgroundColor: `${room?.color}70`,
+              }}
+              to={`/competitions/${wcif.id}/rooms/${room?.id}`}>
+              {room?.name}
+            </Link>
+            <span>{activityCodeToName(activity?.activityCode)}</span>
+          </h3>
+          <p className="p-2">
+            {formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}
+          </p>
+        </div>
+      )}
       <hr className="mb-2" />
       <div>
         <AssignmentCategoryHeader className="bg-green-200 pb-1">
