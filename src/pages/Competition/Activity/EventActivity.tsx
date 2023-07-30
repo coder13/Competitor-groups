@@ -110,11 +110,11 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
           return '';
         }
 
-        if (prevRound.format === 'a' || 'm') {
+        if (['a' || 'm'].includes(prevRound.format)) {
           return renderResultByEventId(eventId, 'average', prevRoundResults.average);
         }
 
-        return renderResultByEventId(eventId, 'single', prevRoundResults.average);
+        return renderResultByEventId(eventId, 'single', prevRoundResults.best);
       }
 
       const averagePr = person.prAverage?.best;
