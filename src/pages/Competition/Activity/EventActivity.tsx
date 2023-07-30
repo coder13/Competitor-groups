@@ -1,6 +1,6 @@
 import { Activity, AssignmentCode, EventId, Person } from '@wca/helpers';
 import classNames from 'classnames';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import tw from 'tailwind-styled-components/dist/tailwind';
 import {
@@ -47,9 +47,11 @@ interface EventGroupProps {
 export default function EventGroup({ competitionId, activity, persons }: EventGroupProps) {
   const { setTitle, wcif } = useWCIF();
   const { eventId, roundNumber } = parseActivityCode(activity?.activityCode || '');
-  const event = wcif?.events.find((e) => e.id === eventId);
-  const prevRound =
-    roundNumber && event?.rounds?.find((r) => r.id === `${eventId},r${roundNumber - 1}`);
+  const event = useMemo(() => wcif?.events.find((e) => e.id === eventId), [wcif]);
+  const prevRound = useMemo(
+    () => roundNumber && event?.rounds?.find((r) => r.id === `${eventId}-r${roundNumber - 1}`),
+    [event]
+  );
 
   useEffect(() => {
     if (activity) {
@@ -85,9 +87,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
     [persons, eventId]
   );
 
-  const competitors = everyoneInActivity
-    .filter(isAssignment('competitor'))
-    .sort(byWorldRanking(eventId as EventId));
+  const competitors = everyoneInActivity.filter(isAssignment('competitor'));
 
   const assignments = new Set(
     everyoneInActivity.map((person) => person.assignments?.map((a) => a.assignmentCode)).flat()
@@ -100,34 +100,67 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
       return acc;
     }, {}) as Record<AssignmentCode, Person[]>;
 
-  // TODO: Calculate seed result from previous round results when available.
-  const seedResult = (person) => {
-    if (prevRound) {
-      const prevRoundResults = prevRound.results?.find((r) => r.personId === person.registrantId);
-      if (!prevRoundResults) {
+  const seedResult = useCallback(
+    (person) => {
+      if (prevRound) {
+        const prevRoundResults = prevRound.results?.find(
+          (r) => r.personId?.toString() === person.registrantId?.toString()
+        );
+        if (!prevRoundResults) {
+          return '';
+        }
+
+        if (prevRound.format === 'a' || 'm') {
+          return renderResultByEventId(eventId, 'average', prevRoundResults.average);
+        }
+
+        return renderResultByEventId(eventId, 'single', prevRoundResults.average);
+      }
+
+      const averagePr = person.prAverage?.best;
+      const singlePr = person.prSingle?.best;
+      const shouldShowAveragePr = !isRankedBySingle(eventId);
+      if ((shouldShowAveragePr && !averagePr) || !singlePr) {
         return '';
       }
 
-      if (prevRound.format === 'a' || 'm') {
-        return renderResultByEventId(eventId, 'average', prevRoundResults.average);
+      return renderResultByEventId(
+        eventId,
+        shouldShowAveragePr ? 'average' : 'single',
+        shouldShowAveragePr ? averagePr : singlePr
+      );
+    },
+    [prevRound]
+  );
+
+  const seedRank = useCallback(
+    (person) => {
+      if (prevRound) {
+        const prevRoundResults = prevRound.results?.find(
+          (r) => r.personId?.toString() === person.registrantId?.toString()
+        );
+        if (!prevRoundResults) {
+          return '';
+        }
+
+        return prevRoundResults.ranking;
       }
 
-      return renderResultByEventId(eventId, 'single', prevRoundResults.average);
-    }
+      const averagePr = person.prAverage;
+      const singlePr = person.prSingle;
+      const shouldShowAveragePr = !isRankedBySingle(eventId);
+      if ((shouldShowAveragePr && !averagePr) || !singlePr) {
+        return '';
+      }
 
-    const averagePr = person.prAverage?.best;
-    const singlePr = person.prSingle?.best;
-    const shouldShowAveragePr = !isRankedBySingle(eventId);
-    if ((shouldShowAveragePr && !averagePr) || !singlePr) {
-      return '';
-    }
+      if (averagePr) {
+        return averagePr.worldRanking;
+      }
 
-    return renderResultByEventId(
-      eventId,
-      shouldShowAveragePr ? 'average' : 'single',
-      shouldShowAveragePr ? averagePr : singlePr
-    );
-  };
+      return singlePr.worldRanking;
+    },
+    [prevRound]
+  );
 
   const stationNumber = (assignmentCode) => (person) => {
     const assignment = person.assignments.find(
@@ -169,17 +202,24 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
             </tr>
           </thead>
           <tbody>
-            {competitors.map((person) => (
-              <Link
-                className="table-row even:bg-green-50 hover:opacity-80"
-                to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
-                <td className="py-3 px-6">{person.name}</td>
-                <td className="py-3 px-6">{seedResult(person)}</td>
-                {anyCompetitorHasStationNumber && (
-                  <td className="py-3 px-6">{stationNumber('competitor')(person)}</td>
-                )}
-              </Link>
-            ))}
+            {competitors
+              .map((person) => ({
+                ...person,
+                seedResult: seedResult(person),
+                seedRank: seedRank(person),
+              }))
+              .sort((a, b) => a.seedRank - b.seedRank)
+              .map((person) => (
+                <Link
+                  className="table-row even:bg-green-50 hover:opacity-80"
+                  to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
+                  <td className="py-3 px-6">{person.name}</td>
+                  <td className="py-3 px-6">{person.seedResult}</td>
+                  {anyCompetitorHasStationNumber && (
+                    <td className="py-3 px-6">{stationNumber('competitor')(person)}</td>
+                  )}
+                </Link>
+              ))}
           </tbody>
         </table>
       </div>
