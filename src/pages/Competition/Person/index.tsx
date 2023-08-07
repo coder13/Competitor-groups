@@ -11,6 +11,16 @@ import { formatDate, formatToParts, roundTime } from '../../../lib/utils';
 import DisclaimerText from '../../../components/DisclaimerText';
 import { shortEventNameById } from '../../../lib/events';
 import classNames from 'classnames';
+import { Extension } from '@wca/helpers/lib/models/extension';
+import { Person } from '@wca/helpers';
+
+const worldsAssignmentMap = {
+  'wca booth': 'WCA Booth',
+  'help desk': 'Help Desk',
+  data: 'Data Entry',
+  commentary: 'Commentary',
+  media: 'Media',
+};
 
 export const byDate = (
   a: { startTime: string } | undefined,
@@ -31,7 +41,7 @@ const RoomColored = styled(RoundedBg)`
   background-color: ${(p) => (p.$color ? `${p.$color}70` : 'inherit')};
 `;
 
-export default function Person() {
+export default function PersonPage() {
   const { wcif, setTitle } = useWCIF();
   const { registrantId } = useParams();
   const [now, setNow] = useState(new Date());
@@ -43,7 +53,11 @@ export default function Person() {
     return () => clearInterval(interval);
   }, []);
 
-  const person = wcif?.persons?.find((p) => p.registrantId.toString() === registrantId);
+  const person = wcif?.persons?.find(
+    (p) => p.registrantId.toString() === registrantId
+  ) as Person & {
+    extensions: Extension[];
+  };
 
   useEffect(() => {
     if (person) {
@@ -98,11 +112,47 @@ export default function Person() {
     [assignments]
   );
 
-  const assignmentsWithParsedDate = assignments
-    .map((a) => ({
-      ...a,
-      date: a.activity ? formatDate(new Date(a.activity.startTime)) : '???',
-    }))
+  const extraAssignments =
+    (
+      person?.extensions?.find(({ id }) => id === 'com.competitiongroups.worldsassignments')
+        ?.data as { assignments?: Array<{ staff: string; startTime: string; endTime: string }> }
+    )?.assignments?.map((assignment) => ({
+      assignmentCode: assignment.staff,
+      activityId: null,
+      activity: {
+        startTime: assignment.startTime,
+        endTime: assignment.endTime,
+        room: { id: null },
+        parent: null,
+      },
+    })) ?? [];
+
+  const allAssignments = [...assignments, ...extraAssignments].sort((a, b) =>
+    byDate(a.activity, b.activity)
+  );
+
+  const assignmentsWithParsedDate = allAssignments
+    .map((a) => {
+      const venue = a?.activity?.room?.id
+        ? wcif?.schedule.venues?.find((v) =>
+            v.rooms.some((r) => r.id === a.activity?.room?.id || a.activity?.parent?.room?.id)
+          )
+        : wcif?.schedule.venues?.[0];
+
+      const dateTime = a.activity ? new Date(a.activity.startTime) : new Date(0);
+
+      return {
+        ...a,
+        date:
+          dateTime?.toLocaleDateString([], {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            timeZone: venue?.timezone,
+          }) ?? 'foo',
+      };
+    })
     .sort((a, b) => byDate(a.activity, b.activity));
 
   const getAssignmentsByDate = useCallback(
@@ -112,13 +162,33 @@ export default function Person() {
     [assignmentsWithParsedDate]
   );
 
-  const scheduleDays = assignments
+  const scheduleDays = allAssignments
     .map((a) => {
+      const venue = a?.activity?.room?.id
+        ? wcif?.schedule.venues?.find((v) =>
+            v.rooms.some((r) => r.id === a.activity?.room?.id || a.activity?.parent?.room?.id)
+          )
+        : wcif?.schedule.venues?.[0];
+
       const dateTime = a.activity ? new Date(a.activity.startTime) : new Date(0);
+
       return {
         approxDateTime: dateTime.getTime(),
-        date: formatDate(dateTime) || 'foo',
-        dateParts: formatToParts(dateTime),
+        date:
+          dateTime.toLocaleDateString([], {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            timeZone: venue?.timezone,
+          }) ?? 'foo',
+        dateParts: new Intl.DateTimeFormat(navigator.language, {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          timeZone: venue?.timezone,
+        }).formatToParts(dateTime),
       };
     })
     .filter((v, i, arr) => arr.findIndex(({ date }) => date === v.date) === i)
@@ -158,8 +228,58 @@ export default function Person() {
                   )}
                   {getAssignmentsByDate(date)
                     .map((assignment) => ({ assignment, activity: getActivity(assignment) }))
-                    .sort((a, b) => byDate(a.activity, b.activity))
+                    .sort((a, b) => byDate(a.assignment.activity, b.assignment.activity))
                     .map(({ assignment, activity }, index, sortedAssignments) => {
+                      if (!activity?.id) {
+                        const roundedStartTime = roundTime(
+                          new Date(assignment.activity?.startTime || 0),
+                          5
+                        );
+                        const roundedEndTime = roundTime(
+                          new Date(assignment.activity?.endTime || 0),
+                          5
+                        );
+
+                        const formattedStartTime = roundedStartTime.toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          timeZone: wcif?.schedule?.venues?.[0]?.timezone,
+                        });
+                        const formattedEndTime = roundedEndTime.toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          timeZone: wcif?.schedule?.venues?.[0]?.timezone,
+                        });
+
+                        const isOver = now > roundedEndTime;
+                        const isCurrent = now > roundedStartTime && now < roundedEndTime;
+
+                        return (
+                          <tr
+                            key={`${assignment.date}-${formattedStartTime}-${assignment.assignmentCode}`}
+                            className={classNames(
+                              'table-row text-xs sm:text-sm hover:bg-slate-100 border-y',
+                              {
+                                'opacity-40': isOver,
+                                'bg-op': isCurrent,
+                              }
+                            )}>
+                            <td colSpan={2} className="py-2 text-center">
+                              {formattedStartTime} - {formattedEndTime}
+                            </td>
+                            <td colSpan={1} className="py-2 text-center">
+                              {worldsAssignmentMap[assignment.assignmentCode]}
+                            </td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                        );
+                      }
+
+                      if (!assignment.activityId) {
+                        return;
+                      }
+
                       const { eventId, roundNumber, groupNumber, attemptNumber } =
                         parseActivityCode(activity?.activityCode || '');
 
