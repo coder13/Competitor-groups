@@ -49,6 +49,11 @@ export default function About() {
           creative with the website, feel free to reach out to{' '}
           <Link to="https://github.com/coder13">me</Link>!
         </p>
+        <br />
+        <p className="leading-relaxed">
+          If you find this website useful, you can support me by donating{' '}
+          <Link to="https://cailynhoover.com/donate">here</Link>.
+        </p>
       </div>
     </div>
   );
