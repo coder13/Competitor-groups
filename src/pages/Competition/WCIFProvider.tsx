@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { GlobalStateContext } from '../../App';
 import NoteBox from '../../components/Notebox';
 import { streamActivities } from './../../lib/activities';
+import { WCA_ORIGIN } from '../../lib/wca-env';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
@@ -54,8 +55,11 @@ export default function WCIFProvider({ competitionId, children }) {
     isFetching,
   } = useQuery<Competition>({
     queryKey: ['wcif', competitionId],
-    queryFn: () => wcaApiFetch(`/competitions/${competitionId}/wcif/public`),
-    networkMode: 'online',
+    queryFn: () =>
+      wcaApiFetch(`/competitions/${competitionId}/wcif/public`, {
+        cache: 'no-store',
+      }),
+    networkMode: 'always',
   });
 
   useEffect(() => {

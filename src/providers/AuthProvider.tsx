@@ -144,14 +144,6 @@ export default function AuthProvider({ children }) {
       return true;
     }
 
-    console.log(
-      181,
-      expirationTime,
-      new Date(expirationTime).getTime(),
-      Date.now(),
-      Date.now() >= new Date(expirationTime).getTime()
-    );
-
     return Date.now() >= new Date(expirationTime).getTime();
   }, [user, expirationTime]);
 

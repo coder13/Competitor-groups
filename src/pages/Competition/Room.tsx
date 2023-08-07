@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { allChildActivities } from '../../lib/activities';
 import { useWCIF } from './WCIFProvider';
 import ActivityRow from '../../components/ActivitiyRow';
@@ -81,6 +81,14 @@ export default function Round() {
           </div>
         </div>
       ))}
+      <hr className="my-2" />
+      <div className="flex flex-row justify-between">
+        <Link
+          to={`/competitions/${wcif?.id}/rooms`}
+          className="w-full border bg-blue-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row">
+          Back to list of Rooms
+        </Link>
+      </div>
     </div>
   );
 }

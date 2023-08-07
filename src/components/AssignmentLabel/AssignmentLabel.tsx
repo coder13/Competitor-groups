@@ -34,6 +34,8 @@ export default function AssignmentLabel({ assignmentCode }: AssignmentLabelProps
       return <Container className="bg-violet-200">Announcer</Container>;
     case 'staff-delegate':
       return <Container className="bg-purple-200">Delegate</Container>;
+    case 'staff-stagelead':
+      return <Container className="bg-purple-800">Stage Lead</Container>;
     default:
       return <Container>{assignmentCode.replace('staff-', '')}</Container>;
   }

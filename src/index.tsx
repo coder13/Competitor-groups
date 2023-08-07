@@ -3,7 +3,6 @@ import '@cubing/icons';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 import './index.css';
-// import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import '@total-typescript/ts-reset';
 
 const container = document.getElementById('root');
@@ -16,5 +15,3 @@ root.render(<App />);
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals(undefined);
-
-// serviceWorkerRegistration.register();

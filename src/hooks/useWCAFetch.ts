@@ -6,7 +6,7 @@ export default function useWCAFetch() {
   const { accessToken } = useAuth();
 
   return useCallback(
-    async <T>(path, fetchOptions = {}) => {
+    async <T>(path, fetchOptions: RequestInit = {}) => {
       const baseApiUrl = `${WCA_ORIGIN}`;
 
       const res = await fetch(
