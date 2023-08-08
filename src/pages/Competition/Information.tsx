@@ -76,7 +76,7 @@ const UserRow = ({ user }: { user: User }) => {
       <a
         key={user.id}
         className="w-full flex"
-        href={`https://www.worldcubeassociation.org/persons/${user.wca_id}`}
+        href={user.wca_id && `https://www.worldcubeassociation.org/persons/${user.wca_id}`}
         target="_blank"
         rel="noreferrer">
         <img className="w-16 h-16 rounded-l" src={user.avatar?.thumb_url} alt={user.name} />
@@ -84,9 +84,11 @@ const UserRow = ({ user }: { user: User }) => {
           <span className="text-xl">{user.name}</span>
           <span className="text-xs">{user.wca_id}</span>
         </div>
-        <div className="p-2 flex items-center">
-          <i className="m-0 fa fa-solid fa-arrow-up-right-from-square" />
-        </div>
+        {user.wca_id && (
+          <div className="p-2 flex items-center">
+            <i className="m-0 fa fa-solid fa-arrow-up-right-from-square" />
+          </div>
+        )}
       </a>
     </li>
   );
