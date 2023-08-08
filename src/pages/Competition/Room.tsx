@@ -31,11 +31,27 @@ export default function Round() {
   );
 
   const scheduleDays = activities
-    .map((a) => {
-      const dateTime = new Date(a.startTime);
+    .map((activity) => {
+      const venue =
+        wcif?.schedule.venues?.find((v) =>
+          v.rooms.some((r) =>
+            r.activities.some(
+              (a) => a.id === activity.id || a.childActivities?.some((ca) => ca.id === activity.id)
+            )
+          )
+        ) || wcif?.schedule.venues?.[0];
+
+      const dateTime = new Date(activity.startTime);
+
       return {
         approxDateTime: dateTime.getTime(),
-        date: formatDate(dateTime) || 'foo',
+        date: dateTime.toLocaleDateString([], {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          timeZone: venue?.timezone,
+        }),
         dateParts: formatToParts(dateTime),
       };
     })
@@ -43,10 +59,29 @@ export default function Round() {
     .sort((a, b) => a.approxDateTime - b.approxDateTime);
 
   const activitiesWithParsedDate = activities
-    .map((a) => ({
-      ...a,
-      date: formatDate(new Date(a.startTime)),
-    }))
+    .map((activity) => {
+      const venue =
+        wcif?.schedule.venues?.find((v) =>
+          v.rooms.some((r) =>
+            r.activities.some(
+              (a) => a.id === activity.id || a.childActivities?.some((ca) => ca.id === activity.id)
+            )
+          )
+        ) || wcif?.schedule.venues?.[0];
+
+      const dateTime = new Date(activity.startTime);
+
+      return {
+        ...activity,
+        date: dateTime.toLocaleDateString([], {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          timeZone: venue?.timezone,
+        }),
+      };
+    })
     .sort((a, b) => byDate(a, b));
 
   const getActivitiesByDate = useCallback(
