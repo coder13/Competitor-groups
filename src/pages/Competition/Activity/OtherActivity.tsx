@@ -72,13 +72,14 @@ export default function OtherGroup({ competitionId, activity, persons }: OtherGr
     <>
       <div className="p-2">
         <h3 className="font-bold">
-          <span
+          <Link
             className="px-3 py-2 rounded mr-2"
             style={{
               backgroundColor: `${room?.color}70`,
-            }}>
+            }}
+            to={`/competitions/${wcif?.id}/rooms/${room?.id}`}>
             {room?.name}
-          </span>
+          </Link>
           {activity.name || activity.activityCode}
         </h3>{' '}
         <p className="p-2">
