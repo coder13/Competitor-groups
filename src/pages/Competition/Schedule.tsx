@@ -27,10 +27,21 @@ export default function Round() {
 
   const scheduleDays = activities
     .map((a) => {
+      const room = a.room || a.parent?.room;
+      const venue =
+        wcif?.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id)) ||
+        wcif?.schedule.venues?.[0];
+
       const dateTime = new Date(a.startTime);
       return {
         approxDateTime: dateTime.getTime(),
-        date: formatDate(dateTime) || 'foo',
+        date: dateTime.toLocaleDateString([], {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          timeZone: venue?.timezone,
+        }),
         dateParts: formatToParts(dateTime),
       };
     })
@@ -38,10 +49,25 @@ export default function Round() {
     .sort((a, b) => a.approxDateTime - b.approxDateTime);
 
   const activitiesWithParsedDate = activities
-    .map((a) => ({
-      ...a,
-      date: formatDate(new Date(a.startTime)),
-    }))
+    .map((a) => {
+      const room = a.room || a.parent?.room;
+      const venue =
+        wcif?.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id)) ||
+        wcif?.schedule.venues?.[0];
+
+      const dateTime = new Date(a.startTime);
+
+      return {
+        ...a,
+        date: dateTime.toLocaleDateString([], {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          timeZone: venue?.timezone,
+        }),
+      };
+    })
     .sort((a, b) => byDate(a, b));
 
   const getActivitiesByDate = useCallback(
@@ -71,9 +97,7 @@ export default function Round() {
               const venue = wcif?.schedule?.venues?.find((v) =>
                 v.rooms.some(
                   (r) =>
-                    r.id === activity.parent?.parent?.room?.id ||
-                    r.id === activity.parent?.room?.id ||
-                    activity?.room?.id
+                    r.id === activity.parent?.parent?.room?.id || r.id === activity.parent?.room?.id
                 )
               );
               const timeZone = venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';

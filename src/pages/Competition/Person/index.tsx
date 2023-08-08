@@ -135,7 +135,9 @@ export default function PersonPage() {
     .map((a) => {
       const venue = a?.activity?.room?.id
         ? wcif?.schedule.venues?.find((v) =>
-            v.rooms.some((r) => r.id === a.activity?.room?.id || a.activity?.parent?.room?.id)
+            v.rooms.some(
+              (r) => r.id === a.activity?.room?.id || r.id === a.activity?.parent?.room?.id
+            )
           )
         : wcif?.schedule.venues?.[0];
 
