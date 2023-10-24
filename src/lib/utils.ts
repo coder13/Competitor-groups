@@ -7,6 +7,7 @@ import {
   formatMultiResult,
 } from '@wca/helpers';
 import { format, parseISO } from 'date-fns';
+import * as ics from 'ics'
 
 export const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
 export const byDate = <T>(a: T & { startTime: string }, b: T & { startTime: string }) =>
@@ -148,3 +149,77 @@ export const renderResultByEventId = (
 
   return formatCentiseconds(result as number);
 };
+
+const AssignmentCodeDescription = {
+  'staff-scrambler': 'Scrambling for:',
+  'staff-runner': 'Runner for:',
+  'staff-judge': 'Judging for:',
+  'staff-dataentry': 'Data Entry for:',
+  'staff-announcer': 'Announcing for:',
+  'staff-delegate': 'Delegating for:',
+  'competitor': 'Competing in:'
+};
+
+export const generateIcs = (assignments, fileName) => { 
+  if (!assignments) {
+    return;
+  }
+
+  console.log(assignments);
+
+  let events: { title: string; description: string; location: string; start: ics.DateArray; end: ics.DateArray }[] = [];
+
+  assignments.forEach(item => {
+    const titleFormatted = `${AssignmentCodeDescription[item.assignmentCode]} for ${item.activity.name}`;
+    const startDate = new Date(item.activity.startTime);
+    const endDate = new Date(item.activity.endTime);
+
+    const startDateArray: ics.DateArray = [
+      startDate.getFullYear(),
+      startDate.getMonth() + 1, // Months are 1-based in ics format
+      startDate.getDate(),
+      startDate.getHours(),
+      startDate.getMinutes(),
+    ];
+
+    const endDateArray: ics.DateArray = [
+      endDate.getFullYear(),
+      endDate.getMonth() + 1,
+      endDate.getDate(),
+      endDate.getHours(),
+      endDate.getMinutes(),
+    ];endDate
+
+    const icalEvent = {
+      title: titleFormatted,
+      description: item.activity.name,
+      location: item.activity.parent.room.name,
+      start: startDateArray,
+      end: endDateArray,
+    };
+
+    events.push(icalEvent);
+  });
+
+  const { error, value } = ics.createEvents(events);
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  if (!value) {
+    return;
+  }
+
+  const blob = new Blob([value], { type: 'text/calendar' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `fileName`;
+  a.style.display = 'none';
+
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
+  }
