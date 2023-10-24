@@ -447,7 +447,9 @@ export default function PersonPage() {
       )}
       <div className="flex items-center justify-center">
         <button
-          onClick={() => generateIcs(assignmentsWithParsedDate, `${wcif?.name}: ${person.name}`)}
+          onClick={() =>
+            generateIcs(assignmentsWithParsedDate, wcif, `${wcif?.name} ${person.name}`)
+          }
           className="my-2 bg-white text-blue-500 border border-blue-500 p-2 rounded-md"
           style={{ width: '300px' }}>
           Download Calendar Export

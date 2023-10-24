@@ -160,12 +160,11 @@ const AssignmentCodeDescription = {
   competitor: 'Competing in:',
 };
 
-export const generateIcs = (assignments, fileName) => {
+export const generateIcs = (assignments, wcif, fileName: string) => {
   if (!assignments) {
+    //Check if assignments is empty
     return;
   }
-
-  console.log(assignments);
 
   let events: {
     title: string;
@@ -176,7 +175,7 @@ export const generateIcs = (assignments, fileName) => {
   }[] = [];
 
   assignments.forEach((item) => {
-    const titleFormatted = `${AssignmentCodeDescription[item.assignmentCode]} for ${
+    const titleFormatted = `${AssignmentCodeDescription[item.assignmentCode]} ${
       item.activity.name
     }`;
     const startDate = new Date(item.activity.startTime);
@@ -184,7 +183,7 @@ export const generateIcs = (assignments, fileName) => {
 
     const startDateArray: ics.DateArray = [
       startDate.getFullYear(),
-      startDate.getMonth() + 1, // Months are 1-based in ics format
+      startDate.getMonth() + 1, // Months are 1-indexed in ics format
       startDate.getDate(),
       startDate.getHours(),
       startDate.getMinutes(),
@@ -197,12 +196,17 @@ export const generateIcs = (assignments, fileName) => {
       endDate.getHours(),
       endDate.getMinutes(),
     ];
-    endDate;
+
+    const location = {
+      lat: wcif.schedule.venues[0].latitudeMicrodegrees / 100,
+      lon: wcif.schedule.venues[0].longitudeMicrodegrees / 100,
+    };
 
     const icalEvent = {
       title: titleFormatted,
       description: item.activity.name,
       location: item.activity.parent.room.name,
+      ...(wcif.schedule.venues.length > 1 ? {} : { geo: location }),
       start: startDateArray,
       end: endDateArray,
     };
@@ -212,19 +216,14 @@ export const generateIcs = (assignments, fileName) => {
 
   const { error, value } = ics.createEvents(events);
 
-  if (error) {
-    console.log(error);
-    return;
-  }
-
-  if (!value) {
-    return;
+  if (error || !value) {
+    throw new Error('Failed to create ICS events');
   }
 
   const blob = new Blob([value], { type: 'text/calendar' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `fileName`;
+  a.download = fileName;
   a.style.display = 'none';
 
   document.body.appendChild(a);
