@@ -7,7 +7,7 @@ import {
   formatMultiResult,
 } from '@wca/helpers';
 import { format, parseISO } from 'date-fns';
-import * as ics from 'ics'
+import * as ics from 'ics';
 
 export const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
 export const byDate = <T>(a: T & { startTime: string }, b: T & { startTime: string }) =>
@@ -157,20 +157,28 @@ const AssignmentCodeDescription = {
   'staff-dataentry': 'Data Entry for:',
   'staff-announcer': 'Announcing for:',
   'staff-delegate': 'Delegating for:',
-  'competitor': 'Competing in:'
+  competitor: 'Competing in:',
 };
 
-export const generateIcs = (assignments, fileName) => { 
+export const generateIcs = (assignments, fileName) => {
   if (!assignments) {
     return;
   }
 
   console.log(assignments);
 
-  let events: { title: string; description: string; location: string; start: ics.DateArray; end: ics.DateArray }[] = [];
+  let events: {
+    title: string;
+    description: string;
+    location: string;
+    start: ics.DateArray;
+    end: ics.DateArray;
+  }[] = [];
 
-  assignments.forEach(item => {
-    const titleFormatted = `${AssignmentCodeDescription[item.assignmentCode]} for ${item.activity.name}`;
+  assignments.forEach((item) => {
+    const titleFormatted = `${AssignmentCodeDescription[item.assignmentCode]} for ${
+      item.activity.name
+    }`;
     const startDate = new Date(item.activity.startTime);
     const endDate = new Date(item.activity.endTime);
 
@@ -188,7 +196,8 @@ export const generateIcs = (assignments, fileName) => {
       endDate.getDate(),
       endDate.getHours(),
       endDate.getMinutes(),
-    ];endDate
+    ];
+    endDate;
 
     const icalEvent = {
       title: titleFormatted,
@@ -222,4 +231,4 @@ export const generateIcs = (assignments, fileName) => {
   a.click();
 
   document.body.removeChild(a);
-  }
+};
