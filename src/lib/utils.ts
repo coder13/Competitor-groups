@@ -181,6 +181,14 @@ export const generateIcs = (assignments, wcif, fileName: string) => {
     const startDate = new Date(item.activity.startTime);
     const endDate = new Date(item.activity.endTime);
 
+    let alarm = [
+      {
+        action: 'display',
+        description: titleFormatted,
+        trigger: { minutes: 5, before: true },
+      },
+    ];
+
     const startDateArray: ics.DateArray = [
       startDate.getFullYear(),
       startDate.getMonth() + 1, // Months are 1-indexed in ics format
@@ -209,6 +217,7 @@ export const generateIcs = (assignments, wcif, fileName: string) => {
       ...(wcif.schedule.venues.length > 1 ? {} : { geo: location }),
       start: startDateArray,
       end: endDateArray,
+      alarms: alarm,
     };
 
     events.push(icalEvent);
@@ -228,6 +237,5 @@ export const generateIcs = (assignments, wcif, fileName: string) => {
 
   document.body.appendChild(a);
   a.click();
-
   document.body.removeChild(a);
 };

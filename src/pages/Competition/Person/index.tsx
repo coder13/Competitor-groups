@@ -441,20 +441,24 @@ export default function PersonPage() {
       <DisclaimerText />
       <hr className="my-2" />
       {person?.assignments && person.assignments.length > 0 ? (
-        renderAssignments()
+        <div>
+          {renderAssignments()}
+          <div className="flex items-center justify-center">
+            <button
+              onClick={() =>
+                generateIcs(assignmentsWithParsedDate, wcif, `${wcif?.name} ${person.name}`)
+              }
+              className="my-2 bg-white text-blue-500 border border-blue-500 p-2 rounded-md"
+              style={{ width: '300px' }}>
+              Download Calendar Export
+            </button>
+          </div>
+        </div>
       ) : (
-        <div>No Assignments</div>
+        <div className="flex items-center justify-center">
+          <div>No Assignments</div>
+        </div>
       )}
-      <div className="flex items-center justify-center">
-        <button
-          onClick={() =>
-            generateIcs(assignmentsWithParsedDate, wcif, `${wcif?.name} ${person.name}`)
-          }
-          className="my-2 bg-white text-blue-500 border border-blue-500 p-2 rounded-md"
-          style={{ width: '300px' }}>
-          Download Calendar Export
-        </button>
-      </div>
     </div>
   );
 }
