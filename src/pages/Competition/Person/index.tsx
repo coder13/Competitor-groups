@@ -100,12 +100,14 @@ export default function PersonPage() {
         ? person?.assignments
             ?.map((assignment) => ({
               ...assignment,
-              activity: _allActivities.find(({ id }) => id === parseInt(assignment.activityId, 10)),
+              activity: _allActivities.find(({ id }) => id === assignment.activityId),
             }))
             .sort((a, b) => byDate(a.activity, b.activity))
         : [],
     [_allActivities, person?.assignments]
   );
+
+  console.log(108, wcif, person, assignments);
 
   const anyAssignmentsHasStationNumber = useMemo(
     () => assignments.some((a) => !!a.stationNumber),
@@ -120,6 +122,7 @@ export default function PersonPage() {
       assignmentCode: assignment.staff,
       activityId: null,
       activity: {
+        
         startTime: assignment.startTime,
         endTime: assignment.endTime,
         room: { id: null },
