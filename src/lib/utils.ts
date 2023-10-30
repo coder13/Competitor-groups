@@ -160,12 +160,18 @@ const AssignmentCodeDescription = {
   competitor: 'Competing in:',
 };
 
-export const generateIcs = (assignments, wcif, fileName: string) => {
-  if (!assignments) {
-    //Check if assignments is empty
-    return;
-  }
+const createDateArray = (date: Date) => {
+  const dateArray: ics.DateArray = [
+    date.getFullYear(),
+    date.getMonth() + 1, // Months are 1-indexed in ics format
+    date.getDate(),
+    date.getHours(),
+    date.getMinutes(),
+  ];
+  return dateArray;
+};
 
+export const generateIcs = (assignments, wcif, fileName: string) => {
   let events: {
     title: string;
     description: string;
@@ -189,21 +195,8 @@ export const generateIcs = (assignments, wcif, fileName: string) => {
       },
     ];
 
-    const startDateArray: ics.DateArray = [
-      startDate.getFullYear(),
-      startDate.getMonth() + 1, // Months are 1-indexed in ics format
-      startDate.getDate(),
-      startDate.getHours(),
-      startDate.getMinutes(),
-    ];
-
-    const endDateArray: ics.DateArray = [
-      endDate.getFullYear(),
-      endDate.getMonth() + 1,
-      endDate.getDate(),
-      endDate.getHours(),
-      endDate.getMinutes(),
-    ];
+    const startDateArray = createDateArray(startDate);
+    const endDateArray = createDateArray(endDate);
 
     const location = {
       lat: wcif.schedule.venues[0].latitudeMicrodegrees / 100,
