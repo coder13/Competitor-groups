@@ -144,7 +144,7 @@ export const renderResultByEventId = (
   }
 
   if (eventId === '333mbf') {
-    return formatMultiResult(decodeMultiResult('0' + result));
+    return formatMultiResult(decodeMultiResult(result));
   }
 
   return formatCentiseconds(result as number);

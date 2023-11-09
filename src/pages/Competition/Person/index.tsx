@@ -122,7 +122,6 @@ export default function PersonPage() {
       assignmentCode: assignment.staff,
       activityId: null,
       activity: {
-        
         startTime: assignment.startTime,
         endTime: assignment.endTime,
         room: { id: null },
