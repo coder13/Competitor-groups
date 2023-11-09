@@ -2,7 +2,7 @@ import { Activity, AssignmentCode, EventId, Person } from '@wca/helpers';
 import classNames from 'classnames';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import tw from 'tailwind-styled-components/dist/tailwind';
+import tw from 'tailwind-styled-components';
 import {
   activityCodeToName,
   byWorldRanking,
@@ -211,7 +211,9 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
                 seedResult: seedResult(person),
                 seedRank: seedRank(person),
               }))
-              .sort((a, b) => a.seedRank - b.seedRank)
+              .sort((a, b) => {
+                return (a.seedRank || 999999999) - (b.seedRank || 999999999);
+              })
               .map((person) => (
                 <Link
                   className="table-row even:bg-green-50 hover:opacity-80"

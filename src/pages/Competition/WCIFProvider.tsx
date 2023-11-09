@@ -41,6 +41,8 @@ const WCIFContext = createContext<IWCIFContextType>({
       startDate: '',
       venues: [],
     },
+    competitorLimit: 0,
+    extensions: [],
   },
   setTitle: () => {},
 });
