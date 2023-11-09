@@ -7,7 +7,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { ActivityWithRoomOrParent, parseActivityCode, rooms } from '../../../lib/activities';
 import AssignmentLabel from '../../../components/AssignmentLabel/AssignmentLabel';
-import { formatDate, formatToParts, roundTime } from '../../../lib/utils';
+import { formatDate, formatToParts, roundTime, generateIcs } from '../../../lib/utils';
 import DisclaimerText from '../../../components/DisclaimerText';
 import { shortEventNameById } from '../../../lib/events';
 import classNames from 'classnames';
@@ -443,9 +443,23 @@ export default function PersonPage() {
       <DisclaimerText />
       <hr className="my-2" />
       {person?.assignments && person.assignments.length > 0 ? (
-        renderAssignments()
+        <div>
+          {renderAssignments()}
+          <div className="flex items-center justify-center">
+            <button
+              onClick={() =>
+                generateIcs(assignmentsWithParsedDate, wcif, `${wcif?.name} ${person.name}`)
+              }
+              className="my-2 bg-white text-blue-500 border border-blue-500 p-2 rounded-md"
+              style={{ width: '300px' }}>
+              Download Calendar Export
+            </button>
+          </div>
+        </div>
       ) : (
-        <div>No Assignments</div>
+        <div className="flex items-center justify-center">
+          <div>No Assignments</div>
+        </div>
       )}
     </div>
   );

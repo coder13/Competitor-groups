@@ -7,6 +7,7 @@ import {
   formatMultiResult,
 } from '@wca/helpers';
 import { format, parseISO } from 'date-fns';
+import * as ics from 'ics';
 
 export const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
 export const byDate = <T>(a: T & { startTime: string }, b: T & { startTime: string }) =>
@@ -147,4 +148,87 @@ export const renderResultByEventId = (
   }
 
   return formatCentiseconds(result as number);
+};
+
+const AssignmentCodeDescription = {
+  'staff-scrambler': 'Scrambling for:',
+  'staff-runner': 'Runner for:',
+  'staff-judge': 'Judging for:',
+  'staff-dataentry': 'Data Entry for:',
+  'staff-announcer': 'Announcing for:',
+  'staff-delegate': 'Delegating for:',
+  competitor: 'Competing in:',
+};
+
+const createDateArray = (date: Date) => {
+  const dateArray: ics.DateArray = [
+    date.getFullYear(),
+    date.getMonth() + 1, // Months are 1-indexed in ics format
+    date.getDate(),
+    date.getHours(),
+    date.getMinutes(),
+  ];
+  return dateArray;
+};
+
+export const generateIcs = (assignments, wcif, fileName: string) => {
+  let events: {
+    title: string;
+    description: string;
+    location: string;
+    start: ics.DateArray;
+    end: ics.DateArray;
+  }[] = [];
+
+  assignments.forEach((item) => {
+    const titleFormatted = `${AssignmentCodeDescription[item.assignmentCode]} ${
+      item.activity.name
+    }`;
+    const startDate = new Date(item.activity.startTime);
+    const endDate = new Date(item.activity.endTime);
+
+    let alarm = [
+      {
+        action: 'display',
+        description: titleFormatted,
+        trigger: { minutes: 5, before: true },
+      },
+    ];
+
+    const startDateArray = createDateArray(startDate);
+    const endDateArray = createDateArray(endDate);
+
+    const location = {
+      lat: wcif.schedule.venues[0].latitudeMicrodegrees / 100,
+      lon: wcif.schedule.venues[0].longitudeMicrodegrees / 100,
+    };
+
+    const icalEvent = {
+      title: titleFormatted,
+      description: item.activity.name,
+      location: item.activity.parent.room.name,
+      ...(wcif.schedule.venues.length > 1 ? {} : { geo: location }),
+      start: startDateArray,
+      end: endDateArray,
+      alarms: alarm,
+    };
+
+    events.push(icalEvent);
+  });
+
+  const { error, value } = ics.createEvents(events);
+
+  if (error || !value) {
+    throw new Error('Failed to create ICS events');
+  }
+
+  const blob = new Blob([value], { type: 'text/calendar' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fileName;
+  a.style.display = 'none';
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 };
