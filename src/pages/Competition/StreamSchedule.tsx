@@ -1,5 +1,3 @@
-import tw from 'tailwind-styled-components';
-import styled from 'styled-components';
 import { useCallback, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { useWCIF } from './WCIFProvider';
@@ -15,16 +13,6 @@ export const byDate = (
   const bDate = b ? new Date(b.startTime).getTime() : Number.MAX_SAFE_INTEGER;
   return aDate - bDate;
 };
-
-const RoundedBg = tw.span`
-  px-[6px]
-  py-[4px]
-  rounded-md
-`;
-
-const RoomColored = styled(RoundedBg)`
-  background-color: ${(p) => (p.$color ? `${p.$color}70` : 'inherit')};
-`;
 
 export default function CompetitionStreamSchedule() {
   const { wcif, setTitle } = useWCIF();
@@ -132,7 +120,13 @@ export default function CompetitionStreamSchedule() {
                         <td className="py-2 text-center">{roundNumber}</td>
                         <td className="py-2 text-center">{groupNumber || '*'}</td>
                         <td className="py-2 text-center">
-                          <RoomColored $color={roomColor}>{roomName}</RoomColored>
+                          <span
+                            className="px-[6px]  py-[4px]  rounded-md"
+                            style={{
+                              backgroundColor: roomColor ? `${roomColor}70` : 'inherit',
+                            }}>
+                            {roomName}
+                          </span>
                         </td>
                         <td className="py-2 text-center">
                           {streamPersonIds(activity)

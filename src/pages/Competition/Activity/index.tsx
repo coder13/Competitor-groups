@@ -23,7 +23,7 @@ export default function Group() {
             .map((person) => ({
               ...person,
               assignments: person.assignments?.filter(
-                (a) => activityId && parseInt(a.activityId, 10) === parseInt(activityId, 10) // TODO this is a hack because types aren't fixed yet for @wca/helpers
+                (a) => activityId && a.activityId === parseInt(activityId, 10) // TODO this is a hack because types aren't fixed yet for @wca/helpers
               ),
             }))
             .filter(({ assignments }) => assignments && assignments.length > 0)

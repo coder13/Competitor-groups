@@ -2,13 +2,7 @@ import { Activity, AssignmentCode, EventId, Person } from '@wca/helpers';
 import classNames from 'classnames';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import tw from 'tailwind-styled-components';
-import {
-  activityCodeToName,
-  byWorldRanking,
-  parseActivityCode,
-  rooms,
-} from '../../../lib/activities';
+import { activityCodeToName, parseActivityCode, rooms } from '../../../lib/activities';
 import { byName, formatDateTimeRange, renderResultByEventId } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
 import { isRankedBySingle } from '../../../lib/events';
@@ -16,10 +10,6 @@ import { AssignmentCodeRank, AssignmentCodeTitles } from '../../../lib/assignmen
 
 const isAssignment = (assignment) => (a) =>
   a.assignments.some(({ assignmentCode }) => assignmentCode === assignment);
-
-const AssignmentCategoryHeader = tw.h4`
-text-lg font-bold text-center shadow-md py-3 px-6
-`;
 
 interface EventGroupProps {
   competitionId: string;
@@ -176,9 +166,9 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
       )}
       <hr className="mb-2" />
       <div>
-        <AssignmentCategoryHeader className="bg-green-200 pb-1">
+        <h4 className="bg-green-200 pb-1 text-lg font-bold text-center shadow-md py-3 px-6">
           Competitors
-        </AssignmentCategoryHeader>
+        </h4>
         <table className="w-full text-left">
           <thead>
             <tr className="text-xs lg:text-sm bg-green-200 shadow-md">
@@ -241,9 +231,13 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
             <>
               <hr className="mb-2" />
               <div>
-                <AssignmentCategoryHeader className={classNames(headerColorClassName)}>
+                <h4
+                  className={classNames(
+                    'text-lg font-bold text-center shadow-md py-3 px-6',
+                    headerColorClassName
+                  )}>
                   {AssignmentCodeTitles[assignmentCode] || assignmentCode.replace('staff-', '')}
-                </AssignmentCategoryHeader>
+                </h4>
                 {anyHasStationNumber ? (
                   <table className={'w-full text-left'}>
                     <thead>

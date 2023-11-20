@@ -1,12 +1,8 @@
 import { AssignmentCode } from '@wca/helpers';
-import tw from 'tailwind-styled-components';
 
-const Container = tw.span`
-  px-[6px]
-  py-[4px]
-  rounded-md
-  bg-blue-100
-`;
+const Container = ({ children, className }: React.PropsWithChildren<{ className?: string }>) => (
+  <span className={`${className} px-[6px] py-[4px] rounded-md bg-blue-100`}>{children}</span>
+);
 
 interface AssignmentLabelProps {
   assignmentCode: AssignmentCode;

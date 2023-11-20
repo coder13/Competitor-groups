@@ -1,13 +1,11 @@
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
-import tw from 'tailwind-styled-components';
-import styled from 'styled-components';
 import { useCallback, useEffect, useMemo, Fragment, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useWCIF } from '../WCIFProvider';
 import { ActivityWithRoomOrParent, parseActivityCode, rooms } from '../../../lib/activities';
 import AssignmentLabel from '../../../components/AssignmentLabel/AssignmentLabel';
-import { formatDate, formatToParts, roundTime } from '../../../lib/utils';
+import { roundTime } from '../../../lib/utils';
 import DisclaimerText from '../../../components/DisclaimerText';
 import { shortEventNameById } from '../../../lib/events';
 import classNames from 'classnames';
@@ -30,16 +28,6 @@ export const byDate = (
   const bDate = b ? new Date(b.startTime).getTime() : Number.MAX_SAFE_INTEGER;
   return aDate - bDate;
 };
-
-const RoundedBg = tw.span`
-  px-[6px]
-  py-[4px]
-  rounded-md
-`;
-
-const RoomColored = styled(RoundedBg)`
-  background-color: ${(p) => (p.$color ? `${p.$color}70` : 'inherit')};
-`;
 
 export default function PersonPage() {
   const { wcif, setTitle } = useWCIF();
@@ -394,7 +382,13 @@ export default function PersonPage() {
                               style={{
                                 lineHeight: 2,
                               }}>
-                              <RoomColored $color={roomColor}>{roomName}</RoomColored>
+                              <span
+                                className="px-[6px]  py-[4px]  rounded-md"
+                                style={{
+                                  backgroundColor: roomColor ? `${roomColor}70` : 'inherit',
+                                }}>
+                                {roomName}
+                              </span>
                             </td>
                           )}
                           {anyAssignmentsHasStationNumber && (
