@@ -40,7 +40,7 @@ const Navigation = () => {
           <Route path="persons/:registrantId" element={<CompetitionPerson />} />
           <Route path="personal-bests/:wcaId" element={<CompetitionPersonalBests />} />
           <Route path="overview" element={<CompetitionGroupsOverview />} />
-          <Route path="events/:eventId-r:roundNumber" element={<CompetitionRound />} />
+          <Route path="events/:roundId" element={<CompetitionRound />} />
           <Route path="events" element={<CompetitionEvents />} />
           <Route path="activities" element={<CompetitionSchedule />} />
           <Route path="activities/:activityId" element={<CompetitionActivity />} />
@@ -50,6 +50,7 @@ const Navigation = () => {
           <Route path="rooms" element={<CompetitionRooms />} />
           <Route path="rooms/:roomId" element={<CompetitionRoom />} />
           <Route path="information" element={<CompetitionInformation />} />
+          <Route path="*" element={<p>Path not resolved</p>} />
         </Route>
         <Route path="about" element={<About />} />
       </Route>

@@ -12,31 +12,14 @@ import {
 import { byName, formatDateTimeRange, renderResultByEventId } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
 import { isRankedBySingle } from '../../../lib/events';
+import { AssignmentCodeRank, AssignmentCodeTitles } from '../../../lib/assignments';
 
 const isAssignment = (assignment) => (a) =>
   a.assignments.some(({ assignmentCode }) => assignmentCode === assignment);
 
-const AssignmentCodeRank: AssignmentCode[] = [
-  'staff-scrambler',
-  'staff-runner',
-  'staff-judge',
-  'staff-dataentry',
-  'staff-announcer',
-  'staff-delegate',
-];
-
 const AssignmentCategoryHeader = tw.h4`
 text-lg font-bold text-center shadow-md py-3 px-6
 `;
-
-const AssignmentCodeTitles = {
-  'staff-scrambler': 'Scramblers',
-  'staff-runner': 'Runners',
-  'staff-judge': 'Judges',
-  'staff-dataentry': 'Data Entry',
-  'staff-announcer': 'Announcers',
-  'staff-delegate': 'Delegates',
-};
 
 interface EventGroupProps {
   competitionId: string;

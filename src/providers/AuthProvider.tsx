@@ -118,13 +118,13 @@ export default function AuthProvider({ children }) {
         }
       )
     )
-      .then((res) => {
+      .then(async (res) => {
         if (res.ok) {
-          return res.json() as Promise<{
+          return (await res.json()) as {
             me: User;
-          }>;
+          };
         } else {
-          throw res.json();
+          throw await res.json();
         }
       })
       .then((data) => {
