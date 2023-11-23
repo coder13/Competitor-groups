@@ -10,8 +10,7 @@ import { hasAssignmentInStage } from '../../lib/person';
 import { Container } from '../../components/Container';
 import classNames from 'classnames';
 
-const groupNumber = ({ activityCode }: Activity) =>
-  parseActivityCode(activityCode)?.groupNumber;
+const groupNumber = ({ activityCode }: Activity) => parseActivityCode(activityCode)?.groupNumber;
 
 const staffingAssignmentToText = ({ assignmentCode, activity }) =>
   `${assignmentCode.split('-')[1][0].toUpperCase()}${groupNumber(activity)}`;
@@ -35,18 +34,12 @@ const GroupsOverview = () => {
       };
       wcif?.events.forEach((event) => {
         // get first round activities
-        const activitiesForEvent = memodGroupActivitiesForRound(
-          `${event.id}-r1`
-        );
+        const activitiesForEvent = memodGroupActivitiesForRound(`${event.id}-r1`);
         const assignmentsForEvent = person.assignments
-          .filter((assignment) =>
-            activitiesForEvent.some((a) => a.id === assignment.activityId)
-          )
+          .filter((assignment) => activitiesForEvent.some((a) => a.id === assignment.activityId))
           .map((assignment) => ({
             ...assignment,
-            activity: activitiesForEvent.find(
-              (activity) => assignment.activityId === activity.id
-            ),
+            activity: activitiesForEvent.find((activity) => assignment.activityId === activity.id),
           }));
 
         const competingAssignment = assignmentsForEvent.find(
@@ -57,8 +50,7 @@ const GroupsOverview = () => {
         );
 
         obj.competing[event.id.toString()] =
-          competingAssignment &&
-          competingAssignmentToText(competingAssignment.activity);
+          competingAssignment && competingAssignmentToText(competingAssignment.activity);
 
         obj.staffing[event.id.toString() + '_staff'] = staffingAssignments
           .map(staffingAssignmentToText)
@@ -104,9 +96,7 @@ const GroupsOverview = () => {
         </thead>
         <tbody>
           {stages?.map((stage) => {
-            const childActivities = stage.activities.flatMap(
-              (ra) => ra.childActivities
-            );
+            const childActivities = stage.activities.flatMap((ra) => ra.childActivities);
 
             return (
               <>
@@ -143,8 +133,7 @@ const GroupsOverview = () => {
                       ({ assignmentCode }) => assignmentCode === 'competitor'
                     );
                     const staffingAssignments = assignments.filter(
-                      ({ assignmentCode }) =>
-                        assignmentCode.indexOf('staff') > -1
+                      ({ assignmentCode }) => assignmentCode.indexOf('staff') > -1
                     );
 
                     return (
@@ -175,17 +164,11 @@ const GroupsOverview = () => {
                               key={event.id}
                               className={classNames('text-center', {
                                 'bg-yellow-200':
-                                  staffingAssignment?.assignmentCode ===
-                                  'staff-scrambler',
-                                'bg-blue-200':
-                                  staffingAssignment?.assignmentCode ===
-                                  'staff-judge',
-                                'bg-red-200':
-                                  staffingAssignment?.assignmentCode ===
-                                  'staff-runner',
+                                  staffingAssignment?.assignmentCode === 'staff-scrambler',
+                                'bg-blue-200': staffingAssignment?.assignmentCode === 'staff-judge',
+                                'bg-red-200': staffingAssignment?.assignmentCode === 'staff-runner',
                               })}>
-                              {staffingAssignment &&
-                                staffingAssignmentToText(staffingAssignment)}
+                              {staffingAssignment && staffingAssignmentToText(staffingAssignment)}
                             </td>
                           );
                         })}

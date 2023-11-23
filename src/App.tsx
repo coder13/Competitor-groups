@@ -38,28 +38,19 @@ const Navigation = () => {
         <Route path="/competitions/:competitionId" element={<Competition />}>
           <Route index element={<CompetitionHome />} />
           <Route path="persons/:registrantId" element={<CompetitionPerson />} />
-          <Route
-            path="personal-bests/:wcaId"
-            element={<CompetitionPersonalBests />}
-          />
-          <Route path="overview" element={<CompetitionGroupsOverview />} />
+          <Route path="personal-bests/:wcaId" element={<CompetitionPersonalBests />} />
           <Route path="events/:roundId" element={<CompetitionRound />} />
           <Route path="events" element={<CompetitionEvents />} />
           <Route path="activities" element={<CompetitionSchedule />} />
-          <Route
-            path="activities/:activityId"
-            element={<CompetitionActivity />}
-          />
+          <Route path="activities/:activityId" element={<CompetitionActivity />} />
           <Route path="scramblers" element={<CompetitionScramblerSchedule />} />
           <Route path="stream" element={<CompetitionStreamSchedule />} />
           <Route path="rooms" element={<CompetitionRooms />} />
           <Route path="rooms/:roomId" element={<CompetitionRoom />} />
           <Route path="information" element={<CompetitionInformation />} />
           {/* Following pages are not accessible: */}
-          <Route
-            path="groups-schedule"
-            element={<CompetitionGroupsSchedule />}
-          />
+          <Route path="explore" element={<CompetitionGroupsOverview />} />
+          <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />
           <Route path="*" element={<p>Path not resolved</p>} />
         </Route>
         <Route path="about" element={<About />} />
