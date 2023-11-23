@@ -6,6 +6,7 @@ import { useWCIF } from './WCIFProvider';
 import { eventNameById } from '../../lib/events';
 import { renderResultByEventId } from '../../lib/utils';
 import classNames from 'classnames';
+import { Container } from '../../components/Container';
 
 export default function PersonalBests() {
   const { wcif, setTitle } = useWCIF();
@@ -22,7 +23,7 @@ export default function PersonalBests() {
   }
 
   return (
-    <>
+    <Container>
       <div className="p-1">
         <div className="flex justify-between items-center my-2">
           <div className="flex flex-shrink items-center">
@@ -56,7 +57,9 @@ export default function PersonalBests() {
         </thead>
         <tbody>
           {wcif?.events
-            ?.filter((event) => person?.registration?.eventIds.includes(event.id))
+            ?.filter((event) =>
+              person?.registration?.eventIds.includes(event.id)
+            )
             .map((event) => {
               const eventId = event.id;
 
@@ -70,7 +73,9 @@ export default function PersonalBests() {
               return (
                 <Fragment key={eventId}>
                   <tr>
-                    <td colSpan={5} className="bg-green-200 py-2 px-3 text-center">
+                    <td
+                      colSpan={5}
+                      className="bg-green-200 py-2 px-3 text-center">
                       {eventNameById(eventId)}
                     </td>
                   </tr>
@@ -78,7 +83,11 @@ export default function PersonalBests() {
                     <tr>
                       <td className="px-3 py-2">Single</td>
                       <td className="px-3 py-2 text-center">
-                        {renderResultByEventId(eventId, 'single', singlePb.best)}
+                        {renderResultByEventId(
+                          eventId,
+                          'single',
+                          singlePb.best
+                        )}
                       </td>
                       <td className="px-3 py-2 text-center">
                         <Ranking ranking={singlePb?.worldRanking} />
@@ -95,7 +104,11 @@ export default function PersonalBests() {
                     <tr>
                       <td className="px-3 py-2">Average</td>
                       <td className="px-3 py-2 text-center">
-                        {renderResultByEventId(eventId, 'average', averagePb.best)}
+                        {renderResultByEventId(
+                          eventId,
+                          'average',
+                          averagePb.best
+                        )}
                       </td>
                       <td className="px-3 py-2 text-center">
                         <Ranking ranking={averagePb?.worldRanking} />
@@ -113,7 +126,7 @@ export default function PersonalBests() {
             })}
         </tbody>
       </table>
-    </>
+    </Container>
   );
 }
 

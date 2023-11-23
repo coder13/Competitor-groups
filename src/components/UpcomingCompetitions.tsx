@@ -29,14 +29,19 @@ export default function UpcomingCompetitions() {
     error,
     status,
   } = useInfiniteQuery<
-    Pick<ApiCompetition, 'name' | 'id' | 'start_date' | 'end_date' | 'city' | 'country_iso2'>[]
+    Pick<
+      ApiCompetition,
+      'name' | 'id' | 'start_date' | 'end_date' | 'city' | 'country_iso2'
+    >[]
   >({
     queryKey: ['upcomingCompetitions'],
     queryFn: async ({ pageParam = 1 }) => {
       if (!online) {
         const wcaCache = await caches.open('wca');
         const responses = await wcaCache.keys();
-        const comps = responses.filter((request) => request.url.includes('wcif/public'));
+        const comps = responses.filter((request) =>
+          request.url.includes('wcif/public')
+        );
 
         const fetchedComps = (
           await Promise.all<(Competition & { endDate: Date }) | undefined>(
@@ -80,7 +85,9 @@ export default function UpcomingCompetitions() {
         page: pageParam.toString(),
       });
 
-      return wcaApiFetch<ApiCompetition[]>(`/competitions?${params.toString()}`);
+      return wcaApiFetch<ApiCompetition[]>(
+        `/competitions?${params.toString()}`
+      );
     },
     getNextPageParam: (lastPage, pages) => {
       // If we have more pages, keep going

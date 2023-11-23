@@ -1,7 +1,9 @@
-import { Assignment, AssignmentCode } from "@wca/helpers";
+import { AssignmentCode } from "@wca/helpers";
+
+export type SupportedAssignmentCode = 'competitor' | 'staff-scrambler' | 'staff-runner' | 'staff-judge' | 'staff-delegate' | 'staff-stagelead' | 'staff-announcer' | 'staff-dataentry' | 'staff-other';
 
 export type AssignmentConfig = {
-  id: string;
+  id: SupportedAssignmentCode;
   name: string;
   /**
    * Tailwind color class.
@@ -10,6 +12,7 @@ export type AssignmentConfig = {
   key: string;
   letter: string;
 }
+
 
 const Assignments: Array<AssignmentConfig> = [
   {
@@ -77,13 +80,13 @@ const Assignments: Array<AssignmentConfig> = [
   },
 ];
 
-export const AssignmentsMap: Record<Assignment['assignmentCode'], AssignmentConfig> = Assignments.reduce(
+export const AssignmentsMap = Assignments.reduce(
   (map, assignment) => ({
     ...map,
     [assignment.id]: assignment,
   }),
   {}
-);
+) as Record<SupportedAssignmentCode, AssignmentConfig>;
 
 export default Assignments;
 

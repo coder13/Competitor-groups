@@ -1,17 +1,20 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { acceptedRegistration } from '../../../lib/activities';
-import { byName } from '../../../lib/utils';
-import { useAuth } from '../../../providers/AuthProvider';
+import { acceptedRegistration } from '../../lib/activities';
+import { byName } from '../../lib/utils';
+import { useAuth } from '../../providers/AuthProvider';
+import { Competition } from '@wca/helpers';
 
-export default function Competitors({ wcif }) {
+export const Competitors = ({ wcif }: { wcif: Competition }) => {
   const { user } = useAuth();
   const acceptedPersons = useMemo(
     () =>
       wcif?.persons
         ?.filter(acceptedRegistration)
         .filter(
-          (person) => person.registration?.eventIds.length > 0 || person.assignments.length > 0
+          (person) =>
+            !!person.registration?.eventIds?.length ||
+            !!person.assignments?.length
         ) || [],
     [wcif]
   );
@@ -43,4 +46,4 @@ export default function Competitors({ wcif }) {
       </ul>
     </div>
   );
-}
+};

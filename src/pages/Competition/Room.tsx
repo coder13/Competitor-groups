@@ -4,6 +4,7 @@ import { allChildActivities } from '../../lib/activities';
 import { useWCIF } from './WCIFProvider';
 import ActivityRow from '../../components/ActivitiyRow';
 import { byDate, formatDate, formatToParts } from '../../lib/utils';
+import { Container } from '../../components/Container';
 
 export default function Round() {
   const { wcif, setTitle } = useWCIF();
@@ -18,15 +19,21 @@ export default function Round() {
   );
   const room = venue?.rooms?.find((room) => room.id.toString() === roomId);
 
-  const timeZone = venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';
+  const timeZone =
+    venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';
 
   const activities = useMemo(
     () =>
       room?.activities
         .flatMap((activity) =>
-          activity?.childActivities?.length ? allChildActivities(activity) : activity
+          activity?.childActivities?.length
+            ? allChildActivities(activity)
+            : activity
         )
-        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()) || [],
+        .sort(
+          (a, b) =>
+            new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+        ) || [],
     [room?.activities]
   );
 
@@ -36,7 +43,9 @@ export default function Round() {
         wcif?.schedule.venues?.find((v) =>
           v.rooms.some((r) =>
             r.activities.some(
-              (a) => a.id === activity.id || a.childActivities?.some((ca) => ca.id === activity.id)
+              (a) =>
+                a.id === activity.id ||
+                a.childActivities?.some((ca) => ca.id === activity.id)
             )
           )
         ) || wcif?.schedule.venues?.[0];
@@ -64,7 +73,9 @@ export default function Round() {
         wcif?.schedule.venues?.find((v) =>
           v.rooms.some((r) =>
             r.activities.some(
-              (a) => a.id === activity.id || a.childActivities?.some((ca) => ca.id === activity.id)
+              (a) =>
+                a.id === activity.id ||
+                a.childActivities?.some((ca) => ca.id === activity.id)
             )
           )
         ) || wcif?.schedule.venues?.[0];
@@ -92,38 +103,42 @@ export default function Round() {
   );
 
   return (
-    <div className="flex w-full flex-col text-sm md:text-base py-2">
-      <div className="p-2">
-        <h3 className="font-bold text-lg -mb-2">{room?.name}</h3>
-        <span className="text-xs">{venue?.name}</span>
-      </div>
-
-      {scheduleDays.map((day) => (
-        <div key={day.date} className="flex flex-col">
-          <p className="w-full text-center bg-slate-50 font-bold text-lg mb-1">{day.date}</p>
-          <div className="flex flex-col">
-            {getActivitiesByDate(day.date).map((activity) => {
-              return (
-                <ActivityRow
-                  key={activity.id}
-                  activity={activity}
-                  timeZone={timeZone}
-                  room={room}
-                  showRoom={false}
-                />
-              );
-            })}
-          </div>
+    <Container>
+      <div className="flex w-full flex-col text-sm md:text-base py-2">
+        <div className="p-2">
+          <h3 className="font-bold text-lg -mb-2">{room?.name}</h3>
+          <span className="text-xs">{venue?.name}</span>
         </div>
-      ))}
-      <hr className="my-2" />
-      <div className="flex flex-row justify-between">
-        <Link
-          to={`/competitions/${wcif?.id}/rooms`}
-          className="w-full border bg-blue-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row">
-          Back to list of Rooms
-        </Link>
+
+        {scheduleDays.map((day) => (
+          <div key={day.date} className="flex flex-col">
+            <p className="w-full text-center bg-slate-50 font-bold text-lg mb-1">
+              {day.date}
+            </p>
+            <div className="flex flex-col">
+              {getActivitiesByDate(day.date).map((activity) => {
+                return (
+                  <ActivityRow
+                    key={activity.id}
+                    activity={activity}
+                    timeZone={timeZone}
+                    room={room}
+                    showRoom={false}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        ))}
+        <hr className="my-2" />
+        <div className="flex flex-row justify-between">
+          <Link
+            to={`/competitions/${wcif?.id}/rooms`}
+            className="w-full border bg-blue-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row">
+            Back to list of Rooms
+          </Link>
+        </div>
       </div>
-    </div>
+    </Container>
   );
 }

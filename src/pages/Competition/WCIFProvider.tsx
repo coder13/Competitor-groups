@@ -9,15 +9,19 @@ import { GlobalStateContext } from '../../App';
 import NoteBox from '../../components/Notebox';
 import { streamActivities } from './../../lib/activities';
 import { WCA_ORIGIN } from '../../lib/wca-env';
+import { Container } from '../../components/Container';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
     end
     to={to}
     className={({ isActive }) =>
-      clsx(`p-2 text-blue-500 hover:bg-gray-50 hover:text-blue-700 w-full text-center`, {
-        'bg-gray-100 text-blue-700 shadow-lg': isActive,
-      })
+      clsx(
+        `p-2 text-blue-500 hover:bg-gray-50 hover:text-blue-700 w-full text-center`,
+        {
+          'bg-gray-100 text-blue-700 shadow-lg': isActive,
+        }
+      )
     }>
     {text}
   </NavLink>
@@ -91,23 +95,43 @@ export default function WCIFProvider({ competitionId, children }) {
       )}
       <div className="flex flex-col w-full h-full">
         <nav className="flex shadow-md print:hidden w-full justify-center">
-          <div className="lg:w-1/2 md:w-2/3 w-full flex flex-col md:flex-row justify-between">
+          <Container className="md:flex-row justify-between">
             <div className="flex">
-              <StyledNavLink to={`/competitions/${competitionId}`} text={wcif?.shortName} />
+              <StyledNavLink
+                to={`/competitions/${competitionId}`}
+                text={wcif?.shortName}
+              />
             </div>
             <div className="flex">
-              <StyledNavLink to={`/competitions/${competitionId}/events`} text="Events" />
-              <StyledNavLink to={`/competitions/${competitionId}/activities`} text="Schedule" />
-              <StyledNavLink to={`/competitions/${competitionId}/scramblers`} text="Scramblers" />
+              <StyledNavLink
+                to={`/competitions/${competitionId}/events`}
+                text="Events"
+              />
+              <StyledNavLink
+                to={`/competitions/${competitionId}/activities`}
+                text="Schedule"
+              />
+              <StyledNavLink
+                to={`/competitions/${competitionId}/scramblers`}
+                text="Scramblers"
+              />
               {hasStream && (
-                <StyledNavLink to={`/competitions/${competitionId}/stream`} text="Stream" />
+                <StyledNavLink
+                  to={`/competitions/${competitionId}/stream`}
+                  text="Stream"
+                />
               )}
             </div>
-          </div>
+          </Container>
         </nav>
         <div className="flex flex-col w-full items-center">
-          {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
-          {<div className="w-full lg:w-1/2 md:w-2/3">{children}</div>}
+          {isFetching ? (
+            <BarLoader width="100%" />
+          ) : (
+            <div style={{ height: '4px' }} />
+          )}
+
+          {children}
         </div>
       </div>
     </WCIFContext.Provider>

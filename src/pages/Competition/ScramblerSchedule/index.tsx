@@ -10,6 +10,7 @@ import {
 import { formatToWeekDay, groupBy } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
 import { BreakableActivityName } from '../../../components/BreakableActivityName';
+import { Container } from '../../../components/Container';
 
 export default function ScramblerSchedule() {
   const { wcif, setTitle } = useWCIF();
@@ -72,7 +73,7 @@ export default function ScramblerSchedule() {
   );
 
   return (
-    <div>
+    <Container>
       <div className="print:hidden">
         <div className="flex items-center flex-col">
           <p className="text-xl">Rooms</p>
@@ -157,6 +158,6 @@ export default function ScramblerSchedule() {
           </tbody>
         </table>
       </div>
-    </div>
+    </Container>
   );
 }

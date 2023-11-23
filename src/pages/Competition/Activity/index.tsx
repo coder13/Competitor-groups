@@ -4,13 +4,18 @@ import { allActivities, parseActivityCode } from '../../../lib/activities';
 import { useWCIF } from '../WCIFProvider';
 import EventActivity from './EventActivity';
 import OtherActivity from './OtherActivity';
+import { Container } from '../../../components/Container';
 
 export default function Group() {
   const { wcif } = useWCIF();
   const { activityId } = useParams();
 
   const activity = useMemo(
-    () => wcif && allActivities(wcif).find((a) => activityId && a.id === parseInt(activityId, 10)),
+    () =>
+      wcif &&
+      allActivities(wcif).find(
+        (a) => activityId && a.id === parseInt(activityId, 10)
+      ),
     [wcif, activityId]
   );
 
@@ -35,10 +40,14 @@ export default function Group() {
   const GroupComponent = isEventGroup ? EventActivity : OtherActivity;
 
   return (
-    <div>
+    <Container>
       {wcif?.id && activity && everyoneInActivity && (
-        <GroupComponent competitionId={wcif.id} activity={activity} persons={everyoneInActivity} />
+        <GroupComponent
+          competitionId={wcif.id}
+          activity={activity}
+          persons={everyoneInActivity}
+        />
       )}
-    </div>
+    </Container>
   );
 }

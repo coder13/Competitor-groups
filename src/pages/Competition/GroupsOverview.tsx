@@ -5,9 +5,13 @@ import {
   parseActivityCode,
 } from '../../lib/activities';
 import { useWCIF } from './WCIFProvider';
-import { Activity } from '@wca/helpers';
+import { Activity, EventId } from '@wca/helpers';
+import { hasAssignmentInStage } from '../../lib/person';
+import { Container } from '../../components/Container';
+import classNames from 'classnames';
 
-const groupNumber = ({ activityCode }: Activity) => parseActivityCode(activityCode)?.groupNumber;
+const groupNumber = ({ activityCode }: Activity) =>
+  parseActivityCode(activityCode)?.groupNumber;
 
 const staffingAssignmentToText = ({ assignmentCode, activity }) =>
   `${assignmentCode.split('-')[1][0].toUpperCase()}${groupNumber(activity)}`;
@@ -31,12 +35,18 @@ const GroupsOverview = () => {
       };
       wcif?.events.forEach((event) => {
         // get first round activities
-        const activitiesForEvent = memodGroupActivitiesForRound(`${event.id}-r1`);
+        const activitiesForEvent = memodGroupActivitiesForRound(
+          `${event.id}-r1`
+        );
         const assignmentsForEvent = person.assignments
-          .filter((assignment) => activitiesForEvent.some((a) => a.id === assignment.activityId))
+          .filter((assignment) =>
+            activitiesForEvent.some((a) => a.id === assignment.activityId)
+          )
           .map((assignment) => ({
             ...assignment,
-            activity: activitiesForEvent.find((activity) => assignment.activityId === activity.id),
+            activity: activitiesForEvent.find(
+              (activity) => assignment.activityId === activity.id
+            ),
           }));
 
         const competingAssignment = assignmentsForEvent.find(
@@ -47,7 +57,8 @@ const GroupsOverview = () => {
         );
 
         obj.competing[event.id.toString()] =
-          competingAssignment && competingAssignmentToText(competingAssignment.activity);
+          competingAssignment &&
+          competingAssignmentToText(competingAssignment.activity);
 
         obj.staffing[event.id.toString() + '_staff'] = staffingAssignments
           .map(staffingAssignmentToText)
@@ -68,45 +79,125 @@ const GroupsOverview = () => {
       });
   }, [assignmentsToObj, wcif?.persons]);
 
+  const stages = wcif?.schedule?.venues?.flatMap((venue) => venue.rooms);
+
+  const columns = (wcif?.events?.length || 0) * 2 + 2;
+
   return (
-    <div>
-      <table>
+    <Container fullWidth className="overflow-x-scroll px-2">
+      <table className="hover-table">
         <thead>
           <tr>
-            <td className="p-2">Name</td>
-            <td className="p-2">WCA ID</td>
+            <td className="p-2 ">Name</td>
+            <td className="p-2 ">WCA ID</td>
             {wcif?.events.map((event) => (
-              <td key={event.id} className="p-2">
+              <td key={event.id} className="p-2 bg-green-400">
                 {event.id}
               </td>
             ))}
             {wcif?.events.map((event) => (
-              <td key={event.id} className="p-2">
+              <td key={event.id} className="p-2 bg-blue-400">
                 {event.id}
               </td>
             ))}
           </tr>
         </thead>
         <tbody>
-          {assignments?.map((person) => (
-            <tr key={person.registrantId}>
-              <td className="p-2">{person.name}</td>
-              <td className="p-2">{person.wcaId}</td>
-              {wcif?.events.map((event) => (
-                <td key={event.id}>
-                  {person.assignmentsData.competing[event.id.toString()] || '-'}
-                </td>
-              ))}
-              {wcif?.events.map((event) => (
-                <td key={event.id}>
-                  {person.assignmentsData.staffing[event.id.toString() + '_staff'] || '-'}
-                </td>
-              ))}
-            </tr>
-          ))}
+          {stages?.map((stage) => {
+            const childActivities = stage.activities.flatMap(
+              (ra) => ra.childActivities
+            );
+
+            return (
+              <>
+                <tr
+                  style={{
+                    backgroundColor: `${stage.color}3f`,
+                  }}>
+                  <td colSpan={columns} className="px-3 py-2">
+                    {stage.name}
+                  </td>
+                </tr>
+                {assignments
+                  ?.filter((person) => hasAssignmentInStage(stage, person))
+                  .map((person) => {
+                    const assignments =
+                      person.assignments?.map((assignment) => {
+                        const activity = childActivities.find(
+                          (ca) => ca.id === assignment.activityId
+                        );
+
+                        return {
+                          ...assignment,
+                          activity,
+                          ...(activity?.activityCode && {
+                            ...(parseActivityCode(activity?.activityCode) as {
+                              eventId: EventId;
+                              roundNumber: number;
+                              groupNumber: number;
+                            }),
+                          }),
+                        };
+                      }) || [];
+                    const competingAssignments = assignments.filter(
+                      ({ assignmentCode }) => assignmentCode === 'competitor'
+                    );
+                    const staffingAssignments = assignments.filter(
+                      ({ assignmentCode }) =>
+                        assignmentCode.indexOf('staff') > -1
+                    );
+
+                    return (
+                      <tr key={person.registrantId}>
+                        <td className="p-2">{person.name}</td>
+                        <td className="p-2">{person.wcaId}</td>
+                        {wcif?.events.map((event) => {
+                          const competingAssignment = competingAssignments.find(
+                            (a) => a.eventId === event.id && a.roundNumber === 1
+                          );
+
+                          return (
+                            <td
+                              key={event.id}
+                              className={classNames('text-center', {
+                                'bg-green-200': !!competingAssignment,
+                              })}>
+                              {competingAssignment?.groupNumber}
+                            </td>
+                          );
+                        })}
+                        {wcif?.events.map((event) => {
+                          const staffingAssignment = staffingAssignments.find(
+                            (a) => a.eventId === event.id && a.roundNumber === 1
+                          );
+                          return (
+                            <td
+                              key={event.id}
+                              className={classNames('text-center', {
+                                'bg-yellow-200':
+                                  staffingAssignment?.assignmentCode ===
+                                  'staff-scrambler',
+                                'bg-blue-200':
+                                  staffingAssignment?.assignmentCode ===
+                                  'staff-judge',
+                                'bg-red-200':
+                                  staffingAssignment?.assignmentCode ===
+                                  'staff-runner',
+                              })}>
+                              {staffingAssignment &&
+                                staffingAssignmentToText(staffingAssignment)}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+              </>
+            );
+          })}
         </tbody>
       </table>
-    </div>
+    </Container>
   );
 };
 

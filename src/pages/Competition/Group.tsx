@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { activityCodeToName } from '../../lib/activities';
+import { Container } from '../../components/Container';
 
 export default function Group() {
   const { eventId, roundNumber } = useParams();
@@ -9,8 +10,12 @@ export default function Group() {
   // Split everyone up by assignmentCode and communicate where they are supposed to be for each group.
 
   return (
-    <div className="p-2">
-      <h3 className="text-2xl">Groups for {activityCodeToName(activityCode)}</h3>
-    </div>
+    <Container>
+      <div className="p-2">
+        <h3 className="text-2xl">
+          Groups for {activityCodeToName(activityCode)}
+        </h3>
+      </div>
+    </Container>
   );
 }
