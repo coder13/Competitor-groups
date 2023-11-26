@@ -8,6 +8,7 @@ interface AssignmentCodeCellProps<T extends React.ElementType> {
   assignmentCode?: SupportedAssignmentCode | string;
   letter?: boolean;
   as?: T;
+  border?: boolean;
 }
 
 export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
@@ -16,8 +17,11 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
   assignmentCode,
   letter = false,
   as,
+  border = false,
   ...props
 }: AssignmentCodeCellProps<T> & React.ComponentProps<T>) {
+  const assignment = assignmentCode && AssignmentsMap[assignmentCode];
+
   const content = useMemo(() => {
     if (!assignmentCode) {
       return '';
@@ -26,8 +30,6 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
     if (children) {
       return children;
     }
-
-    const assignment = AssignmentsMap[assignmentCode];
 
     if (!assignment) {
       return letter ? assignmentCode[0] : assignmentCode;
@@ -38,23 +40,23 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
 
   const Component = as || 'td';
 
+  const twColor = assignment?.color;
+  console.log(assignment?.colorClass);
+  const twBorderColor = assignment?.colorClass?.[300];
+
   return (
     <Component
-      className={classNames(
-        {
-          'bg-green-200': assignmentCode === 'competitor',
-          'bg-yellow-200': assignmentCode === 'staff-scrambler',
-          'bg-blue-200': assignmentCode === 'staff-judge',
-          'bg-red-200': assignmentCode === 'staff-runner',
-          'bg-purple-200': assignmentCode === 'staff-delegate',
-          'bg-indigo-200': assignmentCode === 'staff-stagelead',
-          'bg-pink-200': assignmentCode === 'staff-announcer',
-          'bg-grey-200':
-            assignmentCode === 'staff-dataentry' ||
-            assignmentCode === 'staff-other',
-        },
-        className
-      )}
+      style={{
+        ...(!border
+          ? {
+              backgroundColor: twColor ? `${twColor}4f` : undefined,
+            }
+          : {
+              borderColor: twBorderColor,
+              borderBottomWidth: 2,
+            }),
+      }}
+      className={className}
       {...props}>
       {content}
     </Component>

@@ -16,12 +16,9 @@ const StyledNavLink = ({ to, text }) => (
     end
     to={to}
     className={({ isActive }) =>
-      clsx(
-        `p-2 text-blue-500 hover:bg-gray-50 hover:text-blue-700 w-full text-center`,
-        {
-          'bg-gray-100 text-blue-700 shadow-lg': isActive,
-        }
-      )
+      clsx(`p-2 text-blue-500 hover:bg-gray-50 hover:text-blue-700 w-full text-center`, {
+        'bg-gray-100 text-blue-700 shadow-lg': isActive,
+      })
     }>
     {text}
   </NavLink>
@@ -97,39 +94,20 @@ export default function WCIFProvider({ competitionId, children }) {
         <nav className="flex shadow-md print:hidden w-full justify-center">
           <Container className="md:flex-row justify-between">
             <div className="flex">
-              <StyledNavLink
-                to={`/competitions/${competitionId}`}
-                text={wcif?.shortName}
-              />
+              <StyledNavLink to={`/competitions/${competitionId}`} text={wcif?.shortName} />
             </div>
             <div className="flex">
-              <StyledNavLink
-                to={`/competitions/${competitionId}/events`}
-                text="Events"
-              />
-              <StyledNavLink
-                to={`/competitions/${competitionId}/activities`}
-                text="Schedule"
-              />
-              <StyledNavLink
-                to={`/competitions/${competitionId}/scramblers`}
-                text="Scramblers"
-              />
+              <StyledNavLink to={`/competitions/${competitionId}/events`} text="Events" />
+              <StyledNavLink to={`/competitions/${competitionId}/activities`} text="Schedule" />
+              <StyledNavLink to={`/competitions/${competitionId}/scramblers`} text="Scramblers" />
               {hasStream && (
-                <StyledNavLink
-                  to={`/competitions/${competitionId}/stream`}
-                  text="Stream"
-                />
+                <StyledNavLink to={`/competitions/${competitionId}/stream`} text="Stream" />
               )}
             </div>
           </Container>
         </nav>
         <div className="flex flex-col w-full items-center">
-          {isFetching ? (
-            <BarLoader width="100%" />
-          ) : (
-            <div style={{ height: '4px' }} />
-          )}
+          {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
 
           {children}
         </div>
@@ -139,3 +117,15 @@ export default function WCIFProvider({ competitionId, children }) {
 }
 
 export const useWCIF = () => useContext(WCIFContext);
+
+export const useWcifUtils = () => {
+  const { wcif } = useWCIF();
+
+  const rooms = wcif?.schedule?.venues?.flatMap((venue) => venue.rooms) || [];
+  const roundActivies = rooms.flatMap((room) => room.activities);
+  const childActivities = roundActivies.flatMap((activity) => activity.childActivities);
+  const acceptedPersons =
+    wcif?.persons?.filter((person) => person.registration?.status === 'accepted') || [];
+
+  return { rooms, roundActivies, childActivities, acceptedPersons };
+};

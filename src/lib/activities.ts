@@ -106,9 +106,9 @@ export const groupActivitiesByRound = (
     hasDistributedAttempts(roundId)
       ? [roundActivity]
       : roundActivity.childActivities.map((activity) => ({
-          ...activity,
-          parent: roundActivity,
-        }))
+        ...activity,
+        parent: roundActivity,
+      }))
   );
 
 export const hasDistributedAttempts = (activityCode: string): boolean =>
@@ -167,7 +167,7 @@ export const activityDurationString = (
 export const streamPersonIds = (activity: ActivityWithRoomOrParent): number[] => {
   return (
     activity.extensions.find((ext) => ext.id === 'groupifier.ActivityConfig')?.data[
-      'featuredCompetitorWcaUserIds'
+    'featuredCompetitorWcaUserIds'
     ] || []
   );
 };
@@ -175,3 +175,19 @@ export const streamPersonIds = (activity: ActivityWithRoomOrParent): number[] =>
 export const streamActivities = (wcif: Competition): ActivityWithRoomOrParent[] => {
   return allActivities(wcif).filter((activity) => streamPersonIds(activity).length > 0);
 };
+
+export const prevActivityCode = (wcif: Competition, activityCode: string) => {
+  const roundActivities = allRoundActivities(wcif);
+  const childActivities = roundActivities.flatMap((a) => a.childActivities).sort((a, b) => a.startTime.localeCompare(b.startTime));
+  const activityCodes = childActivities.map((a) => a.activityCode);
+  const index = activityCodes.findIndex((a) => a === activityCode);
+  return activityCodes?.[index - 1];
+}
+
+export const nextActivityCode = (wcif: Competition, activityCode: string) => {
+  const roundActivities = allRoundActivities(wcif);
+  const childActivities = roundActivities.flatMap((a) => a.childActivities).sort((a, b) => a.startTime.localeCompare(b.startTime));
+  const activityCodes = childActivities.map((a) => a.activityCode);
+  const index = activityCodes.findIndex((a) => a === activityCode);
+  return activityCodes?.[index + 1];
+}
