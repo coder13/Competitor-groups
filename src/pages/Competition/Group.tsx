@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   activityCodeToName,
   allRoundActivities,
@@ -11,7 +11,7 @@ import { ActivityCode } from '@wca/helpers';
 import { useWCIF } from './WCIFProvider';
 import { SupportedAssignmentCode } from '../../lib/assignments';
 import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
-import { Fragment } from 'react';
+import { Fragment, useCallback, useEffect } from 'react';
 import { formatDateTimeRange } from '../../lib/utils';
 import classNames from 'classnames';
 
@@ -37,16 +37,10 @@ const useCommon = () => {
       );
     })
     .map((person) => {
-      const assignment = person.assignments?.find((a) =>
-        childActivityIds.includes(a.activityId)
-      );
-      const activity = childActivities.find(
-        (ca) => ca.id === assignment?.activityId
-      );
+      const assignment = person.assignments?.find((a) => childActivityIds.includes(a.activityId));
+      const activity = childActivities.find((ca) => ca.id === assignment?.activityId);
       const stage = stages.find((stage) =>
-        stage.activities.some((a) =>
-          a.childActivities.some((ca) => ca.id === activity?.id)
-        )
+        stage.activities.some((a) => a.childActivities.some((ca) => ca.id === activity?.id))
       );
 
       return {
@@ -95,9 +89,7 @@ export default function Group() {
 export const GroupHeader = () => {
   const { activityCode, multistage, stages, childActivities } = useCommon();
   const minStartTime = childActivities?.map((a) => a.startTime).sort()[0];
-  const maxEndTime = childActivities?.map((a) => a.endTime).sort()[
-    childActivities.length - 1
-  ];
+  const maxEndTime = childActivities?.map((a) => a.endTime).sort()[childActivities.length - 1];
 
   return (
     <div className="p-2">
@@ -132,9 +124,7 @@ export const MobileGroupView = () => {
       <GroupButtonMenu />
       <div className="">
         {GroupAssignmentCodeRank.filter((assignmentCode) =>
-          personsInActivity?.some(
-            (person) => person.assignment?.assignmentCode === assignmentCode
-          )
+          personsInActivity?.some((person) => person.assignment?.assignmentCode === assignmentCode)
         ).map((assignmentCode) => (
           <Fragment key={assignmentCode}>
             <div className="col-span-3 flex flex-col">
@@ -146,13 +136,8 @@ export const MobileGroupView = () => {
               />
               <div className="">
                 {personsInActivity
-                  ?.filter(
-                    (person) =>
-                      person.assignment?.assignmentCode === assignmentCode
-                  )
-                  .sort((a, b) =>
-                    (a.stage?.name || '').localeCompare(b.stage?.name || '')
-                  )
+                  ?.filter((person) => person.assignment?.assignmentCode === assignmentCode)
+                  .sort((a, b) => (a.stage?.name || '').localeCompare(b.stage?.name || ''))
                   ?.map((person) => (
                     <Link
                       key={person.registrantId}
@@ -204,9 +189,7 @@ const DesktopGroupView = () => {
           </div>
         ))}
         {GroupAssignmentCodeRank.filter((assignmentCode) =>
-          personsInActivity?.some(
-            (person) => person.assignment?.assignmentCode === assignmentCode
-          )
+          personsInActivity?.some((person) => person.assignment?.assignmentCode === assignmentCode)
         ).map((assignmentCode) => {
           return (
             <Fragment key={assignmentCode}>
@@ -218,9 +201,7 @@ const DesktopGroupView = () => {
               />
 
               {stages.map((stage) => (
-                <div
-                  key={stage.id}
-                  className="col-span-1 grid grid-cols-2 gap-x-4 gap-y-1">
+                <div key={stage.id} className="col-span-1 grid grid-cols-2 gap-x-4 gap-y-1">
                   {personsInActivity
                     ?.filter(
                       (person) =>
@@ -246,17 +227,56 @@ const DesktopGroupView = () => {
 };
 
 export const GroupButtonMenu = () => {
+  const navigate = useNavigate();
   const { competitionId } = useParams();
   const { wcif, activityCode } = useCommon();
+
   const prev = wcif && prevActivityCode(wcif, activityCode);
   const next = wcif && nextActivityCode(wcif, activityCode);
+
+  const prevUrl = `/competitions/${competitionId}/events/${prev?.split?.('-g')?.[0]}/${
+    prev?.split?.('-g')?.[1]
+  }`;
+  const nextUrl = `/competitions/${competitionId}/events/${next?.split?.('-g')?.[0]}/${
+    next?.split?.('-g')?.[1]
+  }`;
+
+  const goToPrev = useCallback(() => {
+    if (prev) {
+      console.log('prev');
+      navigate(prevUrl);
+    }
+  }, [wcif, activityCode]);
+
+  const goToNext = useCallback(() => {
+    if (next) {
+      console.log('next');
+      navigate(nextUrl);
+    }
+  }, [wcif, activityCode]);
+
+  useEffect(() => {
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft') {
+        goToPrev();
+      }
+
+      if (event.key === 'ArrowRight') {
+        goToNext();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeydown);
+    };
+  }, [wcif, activityCode]);
 
   return (
     <div className="px-2 flex space-x-2">
       <Link
-        to={`/competitions/${competitionId}/events/${
-          prev?.split?.('-g')?.[0]
-        }/${prev?.split?.('-g')?.[1]}`}
+        to={prevUrl || ''}
         className={classNames(
           'w-full border rounded-md p-2 px-2 flex cursor-pointer transition-colors my-1 justify-end',
           {
@@ -268,9 +288,7 @@ export const GroupButtonMenu = () => {
         Previous Group
       </Link>
       <Link
-        to={`/competitions/${competitionId}/events/${
-          next?.split?.('-g')?.[0]
-        }/${next?.split?.('-g')?.[1]}`}
+        to={nextUrl || ''}
         className={classNames(
           'w-full border rounded-md p-2 px-2 flex cursor-pointer group hover:bg-slate-100 transition-colors my-1',
           {

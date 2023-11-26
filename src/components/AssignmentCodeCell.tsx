@@ -41,7 +41,6 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
   const Component = as || 'td';
 
   const twColor = assignment?.color;
-  console.log(assignment?.colorClass);
   const twBorderColor = assignment?.colorClass?.[300];
 
   return (
