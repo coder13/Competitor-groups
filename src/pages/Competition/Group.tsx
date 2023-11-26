@@ -243,14 +243,12 @@ export const GroupButtonMenu = () => {
 
   const goToPrev = useCallback(() => {
     if (prev) {
-      console.log('prev');
       navigate(prevUrl);
     }
   }, [wcif, activityCode]);
 
   const goToNext = useCallback(() => {
     if (next) {
-      console.log('next');
       navigate(nextUrl);
     }
   }, [wcif, activityCode]);
