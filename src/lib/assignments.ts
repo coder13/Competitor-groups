@@ -7,6 +7,8 @@ export type SupportedAssignmentCode = 'competitor' | 'staff-scrambler' | 'staff-
 export type AssignmentConfig = {
   id: SupportedAssignmentCode;
   name: string;
+  plural: string;
+  verb: string;
   /**
    * Tailwind color class.
    */
@@ -21,6 +23,8 @@ const Assignments: Array<AssignmentConfig> = [
   {
     id: 'competitor',
     name: 'Competitor',
+    plural: 'Competitors',
+    verb: 'Competing',
     color: colors.green,
     colorClass: tailwindColors.green,
     key: 'c',
@@ -29,6 +33,8 @@ const Assignments: Array<AssignmentConfig> = [
   {
     id: 'staff-scrambler',
     name: 'Scrambler',
+    plural: 'Scramblers',
+    verb: 'Scrambling',
     color: colors.yellow,
     colorClass: tailwindColors.yellow,
     key: 's',
@@ -37,6 +43,8 @@ const Assignments: Array<AssignmentConfig> = [
   {
     id: 'staff-runner',
     name: 'Runner',
+    plural: 'Runners',
+    verb: 'Running',
     color: colors.red,
     colorClass: tailwindColors.red,
     key: 'r',
@@ -45,6 +53,8 @@ const Assignments: Array<AssignmentConfig> = [
   {
     id: 'staff-judge',
     name: 'Judge',
+    plural: 'Judges',
+    verb: 'Judging',
     color: colors.blue,
     colorClass: tailwindColors.blue,
     key: 'j',
@@ -53,6 +63,8 @@ const Assignments: Array<AssignmentConfig> = [
   {
     id: 'staff-delegate',
     name: 'Delegate',
+    plural: 'Delegates',
+    verb: 'Delegating',
     color: colors.purple,
     colorClass: tailwindColors.purple,
     key: 'd',
@@ -61,6 +73,8 @@ const Assignments: Array<AssignmentConfig> = [
   {
     id: 'staff-stagelead',
     name: 'Stage Lead',
+    plural: 'Stage Leads',
+    verb: 'In Charge',
     color: colors.indigo,
     colorClass: tailwindColors.indigo,
     key: 'l',
@@ -69,6 +83,8 @@ const Assignments: Array<AssignmentConfig> = [
   {
     id: 'staff-announcer',
     name: 'Announcer',
+    plural: 'Announcers',
+    verb: 'Announcing',
     color: colors.pink,
     colorClass: tailwindColors.pink,
     key: 'a',
@@ -77,6 +93,8 @@ const Assignments: Array<AssignmentConfig> = [
   {
     id: 'staff-dataentry',
     name: 'Data Entry',
+    plural: 'Data Entry',
+    verb: 'Entering Data',
     color: colors.grey,
     colorClass: tailwindColors.slate,
     key: 'e',
@@ -85,6 +103,8 @@ const Assignments: Array<AssignmentConfig> = [
   {
     id: 'staff-other',
     name: 'Other',
+    plural: 'Other',
+    verb: 'Other',
     color: colors.grey,
     colorClass: tailwindColors.slate,
     key: 'o',

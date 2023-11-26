@@ -4,6 +4,16 @@ import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import classNames from 'classnames';
 import { formatDateRange } from '../lib/utils';
 
+interface CompetitionLinkProps {
+  id: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+  country_iso2: string;
+  city: string;
+  live: boolean;
+}
+
 const CompetitionLink = ({
   id,
   name,
@@ -11,14 +21,8 @@ const CompetitionLink = ({
   end_date,
   country_iso2,
   city,
-}: {
-  id: string;
-  name: string;
-  start_date: string;
-  end_date: string;
-  country_iso2: string;
-  city: string;
-}) => {
+  live,
+}: CompetitionLinkProps) => {
   const endDate = new Date(
     new Date(end_date).getTime() + 1000 * 60 * new Date().getTimezoneOffset()
   );
@@ -43,6 +47,11 @@ const CompetitionLink = ({
             {city}
           </p>
         </div>
+        {live && (
+          <div className="flex flex-shrink text-2xl items-center px-2">
+            <span className="fa fa-tower-broadcast text-green-500" />
+          </div>
+        )}
       </li>
     </Link>
   );

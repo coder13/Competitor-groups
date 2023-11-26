@@ -23,6 +23,8 @@ import usePageTracking from './hooks/usePageTracking';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createContext, useEffect, useState } from 'react';
 import About from './pages/About';
+import { ApolloProvider } from '@apollo/client';
+import client from './apolloClient';
 
 export const GlobalStateContext = createContext<{
   online: boolean;
@@ -91,11 +93,13 @@ const App = () => {
         online,
       }}>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <AuthProvider>
-            <Navigation />
-          </AuthProvider>
-        </BrowserRouter>
+        <ApolloProvider client={client}>
+          <BrowserRouter>
+            <AuthProvider>
+              <Navigation />
+            </AuthProvider>
+          </BrowserRouter>
+        </ApolloProvider>
       </QueryClientProvider>
     </GlobalStateContext.Provider>
   );
