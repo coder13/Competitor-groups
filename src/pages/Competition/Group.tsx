@@ -65,7 +65,7 @@ const useCommon = () => {
   };
 };
 
-const GroupAssignmentCodeRank: SupportedAssignmentCode[] = [
+export const GroupAssignmentCodeRank: SupportedAssignmentCode[] = [
   'staff-delegate',
   'staff-announcer',
   'staff-stagelead',

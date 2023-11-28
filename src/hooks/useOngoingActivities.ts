@@ -42,5 +42,9 @@ export const useOngoingActivities = (competitionId: string) => {
     return () => unsub();
   }, [wcif]);
 
-  return ongoingActivities;
+  return {
+    data,
+    liveActivities,
+    ongoingActivities
+  };
 }

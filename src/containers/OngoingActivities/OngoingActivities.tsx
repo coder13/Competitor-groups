@@ -1,0 +1,50 @@
+import { Link } from 'react-router-dom';
+import { useOngoingActivities } from '../../hooks/useOngoingActivities';
+import ActivityRow from '../../components/ActivitiyRow';
+import { useWCIF } from '../../pages/Competition/WCIFProvider';
+
+interface OngoingActivitiesProps {
+  competitionId: string;
+}
+
+export const OngoingActivities = ({ competitionId }: OngoingActivitiesProps) => {
+  const { ongoingActivities } = useOngoingActivities(competitionId!);
+  const { wcif } = useWCIF();
+
+  if (!ongoingActivities) {
+    return null;
+  }
+
+  return (
+    <div className="p-2">
+      <h1 className="drop-shadow-sm flex justify-between">
+        <div>
+          <i className="text-lg fa fa-tower-broadcast mr-1 text-green-500" />
+          <span className="text-xl">Live Activities </span>
+          <span className="text-xs align-super">Powered by NotifyComp</span>
+        </div>
+        <div>
+          <Link to={`/competitions/${competitionId}/live`}>Go to live view</Link>
+        </div>
+      </h1>
+      <div className="flex flex-col">
+        {ongoingActivities.map((a) => {
+          const venue = wcif?.schedule?.venues?.find((v) =>
+            v.rooms.some((r) => r.id === a.parent?.parent?.room?.id || r.id === a.parent?.room?.id)
+          );
+          const timeZone = venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';
+
+          return (
+            <ActivityRow
+              key={a.id}
+              activity={a}
+              timeZone={timeZone}
+              room={a?.parent?.parent?.room || a?.parent?.room || a?.room}
+              showRoom={false}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+};

@@ -22,7 +22,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
 
   const me = acceptedPersons.find((person) => person.wcaUserId === user?.id);
 
-  const ongoingActivities = useOngoingActivities(competitionId!);
+  const { ongoingActivities } = useOngoingActivities(competitionId!);
 
   return (
     <div className="w-full h-full flex flex-1 flex-col p-2">

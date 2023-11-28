@@ -65,7 +65,7 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
             }
           : {
               borderColor: twBorderColor,
-              borderBottomWidth: 2,
+              borderBottomWidth: 4,
             }),
       }}
       className={className}

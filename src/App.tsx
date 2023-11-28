@@ -5,7 +5,6 @@ import CompetitionHome from './pages/Competition/Home';
 import CompetitionPerson from './pages/Competition/Person';
 import CompetitionGroupsOverview from './pages/Competition/GroupsOverview';
 import CompetitionEvents from './pages/Competition/Events';
-import CompetitionRound from './pages/Competition/Round';
 import CompetitionGroup from './pages/Competition/Group';
 import CompetitionGroupList from './pages/Competition/GroupList';
 import CompetitionActivity from './pages/Competition/Activity';
@@ -17,6 +16,7 @@ import CompetitionRooms from './pages/Competition/Rooms';
 import CompetitionRoom from './pages/Competition/Room';
 import CompetitionInformation from './pages/Competition/Information';
 import CompetitionPersonalBests from './pages/Competition/PersonalBests';
+import CompetitionLive from './pages/Competition/Live';
 import Home from './pages/Home';
 import AuthProvider from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
@@ -53,6 +53,7 @@ const Navigation = () => {
           <Route path="rooms" element={<CompetitionRooms />} />
           <Route path="rooms/:roomId" element={<CompetitionRoom />} />
           <Route path="information" element={<CompetitionInformation />} />
+          <Route path="live" element={<CompetitionLive />} />
           {/* Following pages are not accessible: */}
           <Route path="explore" element={<CompetitionGroupsOverview />} />
           <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />
