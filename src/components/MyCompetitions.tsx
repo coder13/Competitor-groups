@@ -4,6 +4,7 @@ import { useAuth } from '../providers/AuthProvider';
 import CompetitionListFragment from './CompetitionList';
 import { getLocalStorage, setLocalStorage } from '../lib/localStorage';
 import { useEffect } from 'react';
+import { useCompetitionsQuery } from '../queries';
 
 interface UserCompsResponse {
   upcoming_competitions: ApiCompetition[];
@@ -40,6 +41,8 @@ export default function MyCompetitions() {
     ...(data?.ongoing_competitions || []),
   ].sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
 
+  const { data: NotifyCompetitions } = useCompetitionsQuery();
+
   useEffect(() => {
     if (!data) {
       return;
@@ -65,6 +68,7 @@ export default function MyCompetitions() {
         title="Your Upcoming Competitions"
         competitions={competitions}
         loading={isFetching}
+        liveCompetitionIds={NotifyCompetitions?.competitions?.map((c) => c.id) || []}
       />
     </>
   );
