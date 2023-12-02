@@ -65,7 +65,7 @@ const GroupsOverview = () => {
         obj.staffing[event.id.toString() + '_staff'] = staffingAssignments
           .map(staffingAssignmentToText)
           .join(',');
-      });
+      }); 
       return obj;
     },
     [memodGroupActivitiesForRound, wcif?.events]

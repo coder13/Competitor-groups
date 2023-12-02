@@ -27,24 +27,16 @@ export default function ScramblerSchedule() {
     () =>
       wcif
         ? allRoundActivities(wcif)
-            .sort(
-              (a, b) =>
-                new Date(a.startTime).getTime() -
-                new Date(b.startTime).getTime()
-            )
+            .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
             .filter((activity) => activity.childActivities.length !== 0)
             .filter((activity) => activity.room?.name === roomSelector)
         : [],
     [roomSelector, wcif]
   );
-  const _allActivities = useMemo(
-    () => (wcif ? allActivities(wcif) : []),
-    [wcif]
-  );
+  const _allActivities = useMemo(() => (wcif ? allActivities(wcif) : []), [wcif]);
 
   const getActivity = useCallback(
-    (assignment) =>
-      _allActivities.find(({ id }) => id === assignment.activityId),
+    (assignment) => _allActivities.find(({ id }) => id === assignment.activityId),
     [_allActivities]
   );
 
@@ -52,9 +44,7 @@ export default function ScramblerSchedule() {
     () =>
       flatMap(wcif?.persons, (person) =>
         person.assignments
-          .filter(
-            (assignment) => assignment.assignmentCode === 'staff-scrambler'
-          )
+          .filter((assignment) => assignment.assignmentCode === 'staff-scrambler')
           .map((assignment) => ({
             ...assignment,
             personName: person.name,
@@ -79,10 +69,7 @@ export default function ScramblerSchedule() {
           <p className="text-xl">Rooms</p>
           <div className="flex flex-row w-full justify-evenly p-4">
             {_rooms.map((room) => (
-              <div
-                key={room.id}
-                className="form-check"
-                onClick={() => setRoomSelector(room.name)}>
+              <div key={room.id} className="form-check" onClick={() => setRoomSelector(room.name)}>
                 <input
                   className="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2"
                   type="radio"
@@ -111,50 +98,41 @@ export default function ScramblerSchedule() {
             </tr>
           </thead>
           <tbody>
-            {Object.entries(activitiesSplitAcrossDates).map(
-              ([date, activities]) => (
-                <Fragment key={date}>
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="font-bold text-lg text-center py-2 px-3">
-                      {date}
-                    </td>
-                  </tr>
-                  {activities.map((activity) => (
-                    <>
-                      <tr key={activity.id}>
-                        <td colSpan={2} className="py-2 px-3">
-                          <BreakableActivityName
-                            activityCode={activity.activityCode}
-                          />
+            {Object.entries(activitiesSplitAcrossDates).map(([date, activities]) => (
+              <Fragment key={date}>
+                <tr>
+                  <td colSpan={6} className="font-bold text-lg text-center py-2 px-3">
+                    {date}
+                  </td>
+                </tr>
+                {activities.map((activity) => (
+                  <>
+                    <tr key={activity.id}>
+                      <td colSpan={2} className="py-2 px-3">
+                        <BreakableActivityName activityCode={activity.activityCode} />
+                      </td>
+                    </tr>
+                    {activity.childActivities.map((childActivity) => (
+                      <Link
+                        key={childActivity.id}
+                        to={`/competitions/${wcif?.id}/activities/${childActivity.id}`}
+                        className="table-row hover:bg-slate-100">
+                        <td className="py-2 px-3">
+                          {activityCodeToName(childActivity.activityCode).split(', ')[2]}
                         </td>
-                      </tr>
-                      {activity.childActivities.map((childActivity) => (
-                        <Link
-                          key={childActivity.id}
-                          to={`/competitions/${wcif?.id}/activities/${childActivity.id}`}
-                          className="table-row hover:bg-slate-100">
-                          <td className="py-2 px-3">
-                            {
-                              activityCodeToName(
-                                childActivity.activityCode
-                              ).split(', ')[2]
-                            }
-                          </td>
-                          <td className="py-2 px-3">
-                            {assignments
-                              .filter((a) => a.activityId === childActivity.id)
-                              .map(({ personName }) => personName)
-                              .join(', ')}
-                          </td>
-                        </Link>
-                      ))}
-                    </>
-                  ))}
-                </Fragment>
-              )
-            )}
+                        <td className="py-2 px-3">
+                          {assignments
+                            .filter((a) => a.activityId === childActivity.id)
+                            ?.sort((a, b) => a.personName.localeCompare(b.personName))
+                            .map(({ personName }) => personName)
+                            .join(', ')}
+                        </td>
+                      </Link>
+                    ))}
+                  </>
+                ))}
+              </Fragment>
+            ))}
           </tbody>
         </table>
       </div>

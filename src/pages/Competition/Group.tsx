@@ -12,7 +12,7 @@ import { useWCIF } from './WCIFProvider';
 import { SupportedAssignmentCode } from '../../lib/assignments';
 import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
 import { Fragment, useCallback, useEffect } from 'react';
-import { formatDateTimeRange } from '../../lib/utils';
+import { byName, formatDateTimeRange } from '../../lib/utils';
 import classNames from 'classnames';
 
 const useCommon = () => {
@@ -137,7 +137,10 @@ export const MobileGroupView = () => {
               <div className="">
                 {personsInActivity
                   ?.filter((person) => person.assignment?.assignmentCode === assignmentCode)
-                  .sort((a, b) => (a.stage?.name || '').localeCompare(b.stage?.name || ''))
+                  .sort((a, b) => {
+                    const stageSort = (a.stage?.name || '').localeCompare(b.stage?.name || '');
+                    return stageSort !== 0 ? stageSort : byName(a, b);
+                  })
                   ?.map((person) => (
                     <Link
                       key={person.registrantId}
@@ -208,6 +211,7 @@ const DesktopGroupView = () => {
                         person.assignment?.assignmentCode === assignmentCode &&
                         person.stage?.id === stage.id
                     )
+                    ?.sort(byName)
                     .map((person) => (
                       <Link
                         key={person.registrantId}
