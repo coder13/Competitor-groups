@@ -176,18 +176,21 @@ export const streamActivities = (wcif: Competition): ActivityWithRoomOrParent[] 
   return allActivities(wcif).filter((activity) => streamPersonIds(activity).length > 0);
 };
 
-export const prevActivityCode = (wcif: Competition, activityCode: string) => {
+export const allUniqueActivityCodes = (wcif) => {
   const roundActivities = allRoundActivities(wcif);
   const childActivities = roundActivities.flatMap((a) => a.childActivities).sort((a, b) => a.startTime.localeCompare(b.startTime));
-  const activityCodes = childActivities.map((a) => a.activityCode);
+  const activityCodes = Array.from(new Set(childActivities.map((a) => a.activityCode)));
+  return activityCodes
+}
+
+export const prevActivityCode = (wcif: Competition, activityCode: string) => {
+  const activityCodes = allUniqueActivityCodes(wcif);
   const index = activityCodes.findIndex((a) => a === activityCode);
   return activityCodes?.[index - 1];
 }
 
 export const nextActivityCode = (wcif: Competition, activityCode: string) => {
-  const roundActivities = allRoundActivities(wcif);
-  const childActivities = roundActivities.flatMap((a) => a.childActivities).sort((a, b) => a.startTime.localeCompare(b.startTime));
-  const activityCodes = childActivities.map((a) => a.activityCode);
+  const activityCodes = allUniqueActivityCodes(wcif);
   const index = activityCodes.findIndex((a) => a === activityCode);
   return activityCodes?.[index + 1];
 }
