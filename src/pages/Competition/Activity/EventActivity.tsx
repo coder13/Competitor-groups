@@ -163,7 +163,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
 
   const activityName = activityCodeToName(activity.activityCode);
   const activityNameSplit = activityName.split(', ');
-  
+
   const roundName = activityNameSplit.slice(0, 2).join(', ');
   const groupName = activityNameSplit.slice(-1);
 
@@ -190,11 +190,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
             <span className="px-2">
               {formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}
             </span>
-            {round && (
-              <div className="space-y-1 p-2">
-                <CutoffTimeLimitPanel round={round} className="-m-2" />
-              </div>
-            )}
+            {round && <CutoffTimeLimitPanel round={round} className="w-full" />}
           </div>
         </div>
       )}
