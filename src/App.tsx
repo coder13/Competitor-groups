@@ -17,6 +17,7 @@ import CompetitionRoom from './pages/Competition/Room';
 import CompetitionInformation from './pages/Competition/Information';
 import CompetitionPersonalBests from './pages/Competition/PersonalBests';
 import CompetitionLive from './pages/Competition/Live';
+import CompetitionStats from './pages/Competition/Stats';
 import Home from './pages/Home';
 import AuthProvider from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
@@ -57,6 +58,7 @@ const Navigation = () => {
           {/* Following pages are not accessible: */}
           <Route path="explore" element={<CompetitionGroupsOverview />} />
           <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />
+          <Route path="stats" element={<CompetitionStats />} />
           <Route path="*" element={<p>Path not resolved</p>} />
         </Route>
         <Route path="about" element={<About />} />
