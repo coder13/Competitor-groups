@@ -57,9 +57,11 @@ export function CutoffTimeLimitPanel({
         )}
       </div>
       {round.advancementCondition && (
-        <div className={classNames('p-2', className)}>
-          Top <span className="font-semibold">{round.advancementCondition.level}</span> advance to
-          next round
+        <div className={className}>
+          <div className={'p-2'}>
+            Top <span className="font-semibold">{round.advancementCondition.level}</span> advance to
+            next round
+          </div>
         </div>
       )}
     </>

@@ -3,7 +3,14 @@ import classNames from 'classnames';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { activityCodeToName, parseActivityCode, rooms } from '../../../lib/activities';
-import { byName, formatDate, formatDateTimeRange, renderResultByEventId } from '../../../lib/utils';
+import {
+  byName,
+  formatDate,
+  formatDateRange,
+  formatDateTimeRange,
+  formatTimeRange,
+  renderResultByEventId,
+} from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
 import { isRankedBySingle } from '../../../lib/events';
 import { AssignmentCodeRank, AssignmentCodeTitles } from '../../../lib/assignments';
@@ -162,7 +169,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
   return (
     <>
       {wcif && (
-        <div className="p-2 space-y-1">
+        <div className="p-2 space-y-2">
           <h3 className="font-bold" style={{ lineHeight: 2 }}>
             <Link
               className="px-3 py-2 rounded mr-2 hover:underline"
@@ -178,14 +185,16 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
             {', '}
             <span>{groupName}</span>
           </h3>
-          <span className="px-2">
-            {`${formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}`}
-          </span>
-          {round && (
-            <div className="flex flex-col">
-              <CutoffTimeLimitPanel round={round} />
-            </div>
-          )}
+          <div className="space-y-1">
+            <span className="px-2">
+              {formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}
+            </span>
+            {round && (
+              <div className="space-y-1 p-2">
+                <CutoffTimeLimitPanel round={round} className="-m-2" />
+              </div>
+            )}
+          </div>
         </div>
       )}
       <hr className="mb-2" />
