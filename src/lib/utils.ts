@@ -156,16 +156,16 @@ export const renderCutoff = (cutoff: Cutoff) => {
     return '-';
   }
 
-  return `${formatCentiseconds(cutoff.attemptResult)}`;
+  return `${formatCentiseconds(cutoff.attemptResult).replace(/\.00+$/, '')}`;
 }
 
 
 export const renderCentiseconds = (centiseconds: number) => {
   if (centiseconds >= 60000) {
     const hours = Math.floor(centiseconds / 360000);
-    const centi = formatCentiseconds(centiseconds - hours * 360000).replace(/\.[0-9]+$/, '');
+    const centi = formatCentiseconds(centiseconds - hours * 360000).replace(/\.00+$/, '');
     return hours ? `${hours}:${centi}` : centi;
   }
 
-  return formatCentiseconds(centiseconds);
+  return formatCentiseconds(centiseconds).replace(/\.00+$/, '');
 };

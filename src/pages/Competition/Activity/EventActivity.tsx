@@ -163,6 +163,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
 
   const activityName = activityCodeToName(activity.activityCode);
   const activityNameSplit = activityName.split(', ');
+  
   const roundName = activityNameSplit.slice(0, 2).join(', ');
   const groupName = activityNameSplit.slice(-1);
 
