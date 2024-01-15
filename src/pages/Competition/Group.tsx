@@ -14,11 +14,14 @@ import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
 import { Fragment, useCallback, useEffect } from 'react';
 import { byName, formatDateTimeRange } from '../../lib/utils';
 import classNames from 'classnames';
+import { CutoffTimeLimitPanel } from '../../components/CutoffTimeLimitPanel';
 
 const useCommon = () => {
   const { wcif } = useWCIF();
   const { roundId, groupNumber } = useParams();
   const activityCode = `${roundId}-g${groupNumber}` as ActivityCode;
+
+  const round = wcif?.events?.flatMap((e) => e.rounds).find((r) => r.id === roundId);
 
   const stages = wcif ? rooms(wcif) : [];
   const roundActivies = wcif ? allRoundActivities(wcif) : [];
@@ -54,6 +57,7 @@ const useCommon = () => {
 
   return {
     wcif,
+    round,
     roundId,
     groupNumber,
     activityCode,
@@ -87,29 +91,46 @@ export default function Group() {
 }
 
 export const GroupHeader = () => {
-  const { activityCode, multistage, stages, childActivities } = useCommon();
+  const { round, activityCode, multistage, stages, childActivities } = useCommon();
   const minStartTime = childActivities?.map((a) => a.startTime).sort()[0];
   const maxEndTime = childActivities?.map((a) => a.endTime).sort()[childActivities.length - 1];
 
   return (
     <div className="p-2">
       <h3 className="text-2xl">{activityCodeToName(activityCode)}</h3>
+      <div
+        className="grid grid-cols-3"
+        style={{
+          gridTemplateRows: 'auto',
+        }}>
+        {stages
+          ?.filter(
+            (stage) =>
+              !!stage.activities.find((a) =>
+                a.childActivities.some((ca) => ca.activityCode === activityCode)
+              )
+          )
+          .map((stage) => {
+            const activity = stage.activities.find((a) =>
+              a.childActivities.some((ca) => ca.activityCode === activityCode)
+            );
 
-      <div className="grid grid-cols-3 grid-rows-2">
-        {stages?.map((stage) => {
-          const activity = stage.activities.find((a) =>
-            a.childActivities.some((ca) => ca.activityCode === activityCode)
-          );
-
-          return (
-            <Fragment key={stage.id}>
-              {multistage && <div className="col-span-1">{stage.name}:</div>}
-              <div className="col-span-2">
-                {activity && formatDateTimeRange(minStartTime, maxEndTime)}
-              </div>
-            </Fragment>
-          );
-        })}
+            return (
+              <Fragment key={stage.id}>
+                {multistage && <div className="col-span-1">{stage.name}:</div>}
+                <div
+                  className={classNames({
+                    'col-span-2': multistage,
+                    'col-span-full': !multistage,
+                  })}>
+                  {activity && formatDateTimeRange(minStartTime, maxEndTime)}
+                </div>
+              </Fragment>
+            );
+          })}
+      </div>
+      <div className="flex flex-col space-y-1 mt-4">
+        {round && <CutoffTimeLimitPanel round={round} className="-m-2" />}
       </div>
     </div>
   );

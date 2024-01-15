@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { useWCIF } from '../pages/Competition/WCIFProvider';
+import { Link, useParams } from 'react-router-dom';
 import { Activity, Room, Venue } from '@wca/helpers';
 import { formatTimeRange } from '../lib/utils';
 import classNames from 'classnames';
@@ -17,7 +16,7 @@ export default function ActivityRow({
   timeZone,
   showRoom = true,
 }: ActivityRowProps) {
-  const { wcif } = useWCIF();
+  const { competitionId } = useParams();
 
   const isOver = new Date(activity.endTime).getTime() < Date.now();
 
@@ -30,7 +29,7 @@ export default function ActivityRow({
           'opacity-50': isOver,
         }
       )}
-      to={`/competitions/${wcif?.id}/activities/${activity.id}`}>
+      to={`/competitions/${competitionId}/activities/${activity.id}`}>
       <span>{activity.name}</span>
       <span className="text-xs md:text-sm font-light flex justify-between">
         {showRoom && (

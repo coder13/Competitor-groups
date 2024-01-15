@@ -1,12 +1,13 @@
-import { Activity, AssignmentCode, EventId, Person } from '@wca/helpers';
+import { Activity, AssignmentCode, Person } from '@wca/helpers';
 import classNames from 'classnames';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { activityCodeToName, parseActivityCode, rooms } from '../../../lib/activities';
-import { byName, formatDateTimeRange, renderResultByEventId } from '../../../lib/utils';
+import { byName, formatDate, formatDateTimeRange, renderResultByEventId } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
 import { isRankedBySingle } from '../../../lib/events';
 import { AssignmentCodeRank, AssignmentCodeTitles } from '../../../lib/assignments';
+import { CutoffTimeLimitPanel } from '../../../components/CutoffTimeLimitPanel';
 
 const isAssignment = (assignment) => (a) =>
   a.assignments.some(({ assignmentCode }) => assignmentCode === assignment);
@@ -20,10 +21,19 @@ interface EventGroupProps {
 export default function EventGroup({ competitionId, activity, persons }: EventGroupProps) {
   const { setTitle, wcif } = useWCIF();
   const { eventId, roundNumber } = parseActivityCode(activity?.activityCode || '');
-  const event = useMemo(() => wcif?.events.find((e) => e.id === eventId), [wcif]);
+  const event = useMemo(() => wcif?.events.find((e) => e.id === eventId), [eventId, wcif?.events]);
+
+  const round = useMemo(() => {
+    if (!event) {
+      return null;
+    }
+
+    return event.rounds?.find((r) => r.id === `${eventId}-r${roundNumber}`);
+  }, [event, eventId, roundNumber]);
+
   const prevRound = useMemo(
     () => roundNumber && event?.rounds?.find((r) => r.id === `${eventId}-r${roundNumber - 1}`),
-    [event]
+    [event?.rounds, eventId, roundNumber]
   );
 
   useEffect(() => {
@@ -103,7 +113,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
         shouldShowAveragePr ? averagePr : singlePr
       );
     },
-    [prevRound]
+    [eventId, prevRound]
   );
 
   const seedRank = useCallback(
@@ -132,7 +142,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
 
       return singlePr.worldRanking;
     },
-    [prevRound]
+    [eventId, prevRound]
   );
 
   const stationNumber = (assignmentCode) => (person) => {
@@ -144,24 +154,38 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
 
   const anyCompetitorHasStationNumber = competitors.some(stationNumber('competitor'));
 
+  const activityName = activityCodeToName(activity.activityCode);
+  const activityNameSplit = activityName.split(', ');
+  const roundName = activityNameSplit.slice(0, 2).join(', ');
+  const groupName = activityNameSplit.slice(-1);
+
   return (
     <>
       {wcif && (
-        <div className="p-2">
+        <div className="p-2 space-y-1">
           <h3 className="font-bold" style={{ lineHeight: 2 }}>
             <Link
-              className="px-3 py-2 rounded mr-2"
+              className="px-3 py-2 rounded mr-2 hover:underline"
               style={{
                 backgroundColor: `${room?.color}70`,
               }}
               to={`/competitions/${wcif.id}/rooms/${room?.id}`}>
               {room?.name}
             </Link>
-            <span>{activityCodeToName(activity?.activityCode)}</span>
+            <Link to={`/competitions/${wcif.id}/events/${round?.id}`} className="hover:underline">
+              {roundName}
+            </Link>
+            {', '}
+            <span>{groupName}</span>
           </h3>
-          <p className="p-2">
-            {formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}
-          </p>
+          <span className="px-2">
+            {`${formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}`}
+          </span>
+          {round && (
+            <div className="flex flex-col">
+              <CutoffTimeLimitPanel round={round} />
+            </div>
+          )}
         </div>
       )}
       <hr className="mb-2" />

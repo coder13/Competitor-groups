@@ -1,5 +1,6 @@
 import {
   AttemptResult,
+  Cutoff,
   EventId,
   RankingType,
   decodeMultiResult,
@@ -99,7 +100,7 @@ export const formatDateTimeRange = (
   const endDate = new Date(end);
 
   if (startDate.toLocaleDateString() === endDate.toLocaleDateString()) {
-    return `${formmatDate(start)} ${formatTimeRange(start, end, minutes, timeZone)}`;
+    return `${formmatDate(start)}, ${formatTimeRange(start, end, minutes, timeZone)}`;
   }
 
   return `${formatDateTime(start, minutes, timeZone)} - ${formatDateTime(end, minutes, timeZone)}`;
@@ -147,4 +148,23 @@ export const renderResultByEventId = (
   }
 
   return formatCentiseconds(result as number);
+};
+
+export const renderCutoff = (cutoff: Cutoff) => {
+  if (cutoff.numberOfAttempts === 0) {
+    return '-';
+  }
+
+  return `${formatCentiseconds(cutoff.attemptResult)}`;
+}
+
+
+export const renderCentiseconds = (centiseconds: number) => {
+  if (centiseconds >= 60000) {
+    const hours = Math.floor(centiseconds / 360000);
+    const centi = formatCentiseconds(centiseconds - hours * 360000).replace(/\.[0-9]+$/, '');
+    return hours ? `${hours}:${centi}` : centi;
+  }
+
+  return formatCentiseconds(centiseconds);
 };

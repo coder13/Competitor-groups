@@ -1,12 +1,28 @@
 import { Link, useParams } from 'react-router-dom';
 import { Container } from '../../components/Container';
 import { activityCodeToName, parseActivityCode } from '@wca/helpers';
-import { useWcifUtils } from './WCIFProvider';
+import { useWCIF, useWcifUtils } from './WCIFProvider';
 import { formatDateTimeRange } from '../../lib/utils';
+import { useEffect, useMemo } from 'react';
+import { CutoffTimeLimitPanel } from '../../components/CutoffTimeLimitPanel';
 
-export default function () {
+export default function GroupList() {
+  const { wcif, setTitle } = useWCIF();
   const { competitionId, roundId } = useParams();
   const { roundActivies } = useWcifUtils();
+
+  useEffect(() => {
+    if (!roundId) {
+      return;
+    }
+
+    setTitle(activityCodeToName(roundId));
+  });
+
+  const round = useMemo(
+    () => wcif?.events?.flatMap((e) => e.rounds).find((r) => r.id === roundId),
+    [roundId, wcif?.events]
+  );
 
   const rounds = roundActivies.filter((ra) => ra.activityCode === roundId);
   const groups = rounds.flatMap((r) => r.childActivities);
@@ -14,8 +30,11 @@ export default function () {
 
   return (
     <Container className="">
-      <div className="p-2">
+      <div className="p-2 space-y-3">
         <h3 className="text-2xl">{roundId && activityCodeToName(roundId)}</h3>
+        <div className="flex flex-col space-y-1">
+          {round && <CutoffTimeLimitPanel round={round} className="-m-2" />}
+        </div>
       </div>
       <ul className="space-y-2 flex flex-col p-2">
         {[...uniqueGroupCodes.values()].map((value) => {

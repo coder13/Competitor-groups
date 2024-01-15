@@ -12,7 +12,11 @@ import { Activity, Assignment, Room } from '@wca/helpers';
 import { AssignmentsMap } from '../../lib/assignments';
 import classNames from 'classnames';
 import { Container } from '../../components/Container';
+import { CutoffTimeLimitPanel } from '../../components/CutoffTimeLimitPanel';
 
+/**
+ * @deprecated
+ */
 export default function Round() {
   const { wcif, setTitle } = useWCIF();
   const { roundId: activityCode } = useParams() as { roundId: string };
@@ -29,9 +33,7 @@ export default function Round() {
   const stages = wcif?.schedule?.venues?.flatMap((venue) => venue.rooms);
   const roundActivities = stages
     ?.map((room) => {
-      const round = room.activities.find(
-        (a) => a.activityCode === activityCode
-      );
+      const round = room.activities.find((a) => a.activityCode === activityCode);
       return round ? { ...round, room } : round;
     })
     .filter((x) => x?.room) as Array<Activity & { room: Room }>;
@@ -46,9 +48,7 @@ export default function Round() {
               .map((a) => ({
                 ...a,
                 activity: groups.find((g) => g.id === a.activityId),
-              })) || []) as Array<
-              Assignment & { activity: ActivityWithRoomOrParent }
-            >,
+              })) || []) as Array<Assignment & { activity: ActivityWithRoomOrParent }>,
           }))
           .filter((person) => person.assignments.length > 0)
       : [];
@@ -70,9 +70,7 @@ export default function Round() {
             }}>
             <div className="px-2 py-2">
               <h3 className="text-xl">{s.room.name}</h3>
-              <h5 className="text-sm">
-                {formatDateTimeRange(s.startTime, s.endTime)}
-              </h5>
+              <h5 className="text-sm">{formatDateTimeRange(s.startTime, s.endTime)}</h5>
             </div>
             <table className="text-left text-xs w-full">
               <thead>
@@ -91,9 +89,7 @@ export default function Round() {
               <tbody>
                 {sortedPersons
                   .filter((p) =>
-                    p.assignments.some(
-                      (a) => a.activity.parent?.room?.id === s.room.id
-                    )
+                    p.assignments.some((a) => a.activity.parent?.room?.id === s.room.id)
                   )
                   .map((person) => (
                     <Link
@@ -102,11 +98,8 @@ export default function Round() {
                       to={`/competitions/${wcif?.id}/persons/${person.registrantId}`}>
                       <td className="px-3 py-2">{person.name}</td>
                       {s.childActivities.map((a) => {
-                        const assignment = person.assignments.find(
-                          (g) => g.activity.id === a.id
-                        );
-                        const assignmentConfig =
-                          AssignmentsMap[assignment?.assignmentCode || ''];
+                        const assignment = person.assignments.find((g) => g.activity.id === a.id);
+                        const assignmentConfig = AssignmentsMap[assignment?.assignmentCode || ''];
                         if (assignment?.assignmentCode === 'competitor') {
                           console.log(assignmentConfig);
                         }
@@ -115,21 +108,14 @@ export default function Round() {
                           <td
                             key={person.registrantId + a.id}
                             className={classNames(`text-center`, {
-                              ['bg-green-200']:
-                                assignmentConfig?.color === 'green',
+                              ['bg-green-200']: assignmentConfig?.color === 'green',
                               ['bg-red-200']: assignmentConfig?.color === 'red',
-                              ['bg-blue-200']:
-                                assignmentConfig?.color === 'blue',
-                              ['bg-yellow-200']:
-                                assignmentConfig?.color === 'yellow',
-                              ['bg-purple-200']:
-                                assignmentConfig?.color === 'purple',
-                              ['bg-indigo-200']:
-                                assignmentConfig?.color === 'indigo',
-                              ['bg-pink-200']:
-                                assignmentConfig?.color === 'pink',
-                              ['bg-grey-200']:
-                                assignmentConfig?.color === 'grey',
+                              ['bg-blue-200']: assignmentConfig?.color === 'blue',
+                              ['bg-yellow-200']: assignmentConfig?.color === 'yellow',
+                              ['bg-purple-200']: assignmentConfig?.color === 'purple',
+                              ['bg-indigo-200']: assignmentConfig?.color === 'indigo',
+                              ['bg-pink-200']: assignmentConfig?.color === 'pink',
+                              ['bg-grey-200']: assignmentConfig?.color === 'grey',
                             })}>
                             {assignmentConfig?.letter || ''}
                           </td>
