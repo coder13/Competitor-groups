@@ -58,10 +58,25 @@ export function CutoffTimeLimitPanel({
       </div>
       {round.advancementCondition && (
         <div className={className}>
-          <div className={'p-2'}>
-            Top <span className="font-semibold">{round.advancementCondition.level}</span> advance to
-            next round
-          </div>
+          {round.advancementCondition.type === 'ranking' && (
+            <div className="p-2">
+              Top <span className="font-semibold">{round.advancementCondition.level}</span> advance
+              to next round
+            </div>
+          )}
+          {round.advancementCondition.type === 'percent' && (
+            <div className="p-2">
+              Top <span className="font-semibold">{round.advancementCondition.level}%</span> advance
+              to next round
+            </div>
+          )}
+          {round.advancementCondition.type === 'attemptResult' && (
+            <div className="p-2">
+              Result better than{' '}
+              <span className="font-semibold">{round.advancementCondition.level}</span> advances to
+              next round. Minimum of 25% of competitors must be eliminated.
+            </div>
+          )}
         </div>
       )}
     </>
