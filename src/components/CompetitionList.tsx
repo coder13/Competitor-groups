@@ -18,8 +18,8 @@ export default function CompetitionListFragment({
   liveCompetitionIds,
 }: CompetitionListFragmentProps) {
   return (
-    <div className="w-full p-1">
-      <h3 className="text-2xl mb-2">{title}</h3>
+    <div className="w-full p-2">
+      <h3 className="text-lg md:text-xl lg:text-2xl">{title}</h3>
       {loading ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
       {!!competitions.length && (
         <ul className="px-0">

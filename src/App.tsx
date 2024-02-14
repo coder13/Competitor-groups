@@ -24,6 +24,7 @@ import usePageTracking from './hooks/usePageTracking';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createContext, useEffect, useState } from 'react';
 import About from './pages/About';
+import Support from './pages/Support';
 import { ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
 
@@ -62,6 +63,7 @@ const Navigation = () => {
           <Route path="*" element={<p>Path not resolved</p>} />
         </Route>
         <Route path="about" element={<About />} />
+        <Route path="support" element={<Support />} />
       </Route>
     </Routes>
   );

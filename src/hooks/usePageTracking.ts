@@ -19,6 +19,16 @@ const usePageTracking = (trackingCode) => {
   }, [trackingCode, user]);
 
   useEffect(() => {
+    if (initialized && user?.id) {
+      ReactGA.set({ userId: user.id });
+    } else if (initialized && !user?.id) {
+      ReactGA.set({ userId: null });
+    } else if (!initialized) {
+      console.log('Would have set userId to', user?.id);
+    }
+  }, [initialized, user?.id]);
+
+  useEffect(() => {
     if (initialized) {
       ReactGA.pageview(location.pathname + location.search);
     } else {

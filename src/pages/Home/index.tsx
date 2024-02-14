@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <Container>
-      <div className="flex flex-col w-full text-xs md:text-base p-2 md:p-0">
+      <div className="flex flex-col w-full text-xs md:text-base py-2 px-2 md:pxs-0">
         <p>Learn all you need about your WCA competition assignments!</p>
         <p>
           Note: This website exists as a convenience tool for organizers, delegates, and
@@ -23,6 +23,13 @@ export default function Home() {
         </p>
         <Link to="/about" className="text-blue-700 underline">
           How does this site work?
+        </Link>
+      </div>
+      <div className="px-2">
+        <Link
+          className="flex w-full py-2.5 px-2 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 "
+          to="/support">
+          Keep the lights on!
         </Link>
       </div>
       {user && (
