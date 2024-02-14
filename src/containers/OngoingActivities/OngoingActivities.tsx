@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useOngoingActivities } from '../../hooks/useOngoingActivities';
 import ActivityRow from '../../components/ActivitiyRow';
 import { useWCIF } from '../../pages/Competition/WCIFProvider';
+import { useAuth } from '../../providers/AuthProvider';
 
 interface OngoingActivitiesProps {
   competitionId: string;
@@ -10,9 +11,30 @@ interface OngoingActivitiesProps {
 export const OngoingActivities = ({ competitionId }: OngoingActivitiesProps) => {
   const { ongoingActivities } = useOngoingActivities(competitionId!);
   const { wcif } = useWCIF();
+  const { user } = useAuth();
 
-  if (!ongoingActivities) {
-    return null;
+  const roles = wcif?.persons?.find((p) => p.wcaUserId === user?.id)?.roles;
+  const isInChargeOfComp = roles?.some((r) =>
+    ['delegate', 'trainee-delegate', 'organizer'].includes(r)
+  );
+
+  if (!ongoingActivities?.length) {
+    const subject = `[${wcif?.shortName}]%20NotifyComp%20Support%20Request`;
+    const body = `Hello, I am a ${
+      roles?.some((i) => i.includes('delegate')) ? 'delegate' : 'organizer'
+    } for ${wcif?.shortName} and I would like to learn more about live activity support.`;
+
+    return isInChargeOfComp && wcif?.id ? (
+      <div className="py-2">
+        <a
+          className="border border-green-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-green-200 group transition-colors my-1 flex-row mx-2"
+          href={`mailto:support@notifycomp.com?subject=${subject}&body=${body}`}
+          target="_blank"
+          rel="noreferrer">
+          Elevate your competition, learn about live activity support
+        </a>
+      </div>
+    ) : null;
   }
 
   return (
