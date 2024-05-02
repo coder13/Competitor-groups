@@ -256,7 +256,7 @@ export default function PersonPage() {
                     )
                     .map(
                       ({ assignment, activity }, index, sortedAssignments) => {
-                        if (!activity?.id) {
+                        if (activity?.id !== undefined && activity?.id !== null) {
                           const roundedStartTime = roundTime(
                             new Date(assignment.activity?.startTime || 0),
                             5
