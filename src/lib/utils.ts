@@ -2,10 +2,12 @@ import {
   AttemptResult,
   Cutoff,
   EventId,
+  ParsedActivityCode,
   RankingType,
   decodeMultiResult,
   formatCentiseconds,
   formatMultiResult,
+  parseActivityCode,
 } from '@wca/helpers';
 import { format, parseISO } from 'date-fns';
 
@@ -157,8 +159,7 @@ export const renderCutoff = (cutoff: Cutoff) => {
   }
 
   return `${formatCentiseconds(cutoff.attemptResult).replace(/\.00+$/, '')}`;
-}
-
+};
 
 export const renderCentiseconds = (centiseconds: number) => {
   if (centiseconds >= 60000) {
@@ -168,4 +169,29 @@ export const renderCentiseconds = (centiseconds: number) => {
   }
 
   return formatCentiseconds(centiseconds).replace(/\.00+$/, '');
+};
+
+export const parseActivityCodeFlexible = (
+  activityCode: string
+):
+  | ParsedActivityCode
+  | {
+      eventId: string;
+      roundNumber: 1;
+      groupNumber: number;
+      attemptNumber: null;
+    } => {
+  if (activityCode.startsWith('other')) {
+    const regex = /other-(\w+)-g(\d+)/;
+    const matches = activityCode.match(regex);
+    const groupNumber = parseInt(matches![2], 10);
+    return {
+      eventId: `other-${matches![1]}`,
+      roundNumber: 1,
+      groupNumber,
+      attemptNumber: null,
+    };
+  }
+
+  return parseActivityCode(activityCode);
 };
