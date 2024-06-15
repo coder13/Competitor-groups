@@ -272,7 +272,8 @@ export default function PersonPage() {
                               {formattedStartTime} - {formattedEndTime}
                             </td>
                             <td colSpan={1} className="py-2 text-center">
-                              {worldsAssignmentMap[assignment.assignmentCode]}
+                              {worldsAssignmentMap[assignment.assignmentCode] ||
+                                assignment.assignmentCode}
                             </td>
                             <td></td>
                             <td></td>
