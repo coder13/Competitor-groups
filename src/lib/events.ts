@@ -30,7 +30,7 @@ export const isRankedBySingle = (eventId: EventId) =>
 export const eventNameById = (eventId: EventId) => propertyById('name', eventId);
 
 export const shortEventNameById = (eventId: EventId | string, name?: string) =>
-  (eventId.startsWith('other') ? propertyById('shortName', eventId as EventId) : name) || eventId;
+  eventId.startsWith('other') ? name : propertyById('shortName', eventId as EventId) || eventId;
 
 const propertyById = (property: string, eventId: EventId) =>
   events.find((event) => event.id === eventId)?.[property];
