@@ -106,9 +106,9 @@ export const groupActivitiesByRound = (
     hasDistributedAttempts(roundId)
       ? [roundActivity]
       : roundActivity.childActivities.map((activity) => ({
-        ...activity,
-        parent: roundActivity,
-      }))
+          ...activity,
+          parent: roundActivity,
+        }))
   );
 
 export const hasDistributedAttempts = (activityCode: string): boolean =>
@@ -167,7 +167,7 @@ export const activityDurationString = (
 export const streamPersonIds = (activity: ActivityWithRoomOrParent): number[] => {
   return (
     activity.extensions.find((ext) => ext.id === 'groupifier.ActivityConfig')?.data[
-    'featuredCompetitorWcaUserIds'
+      'featuredCompetitorWcaUserIds'
     ] || []
   );
 };
@@ -178,19 +178,29 @@ export const streamActivities = (wcif: Competition): ActivityWithRoomOrParent[] 
 
 export const allUniqueActivityCodes = (wcif) => {
   const roundActivities = allRoundActivities(wcif);
-  const childActivities = roundActivities.flatMap((a) => a.childActivities).sort((a, b) => a.startTime.localeCompare(b.startTime));
+  const childActivities = roundActivities
+    .flatMap((a) => a.childActivities)
+    .sort((a, b) => a.startTime.localeCompare(b.startTime));
   const activityCodes = Array.from(new Set(childActivities.map((a) => a.activityCode)));
-  return activityCodes
-}
+  return activityCodes;
+};
 
 export const prevActivityCode = (wcif: Competition, activityCode: string) => {
   const activityCodes = allUniqueActivityCodes(wcif);
   const index = activityCodes.findIndex((a) => a === activityCode);
   return activityCodes?.[index - 1];
-}
+};
 
 export const nextActivityCode = (wcif: Competition, activityCode: string) => {
   const activityCodes = allUniqueActivityCodes(wcif);
   const index = activityCodes.findIndex((a) => a === activityCode);
   return activityCodes?.[index + 1];
-}
+};
+
+export const getStationNumber =
+  (assignmentCode: string, activity: Activity) => (person: Person) => {
+    const assignment = person.assignments?.find(
+      (a) => a.assignmentCode === assignmentCode && a.activityId === activity.id
+    );
+    return assignment?.stationNumber;
+  };

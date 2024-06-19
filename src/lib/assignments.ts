@@ -1,8 +1,19 @@
 import tailwindColors from 'tailwindcss/colors';
-import { AssignmentCode } from "@wca/helpers";
-import { colors } from "./colors";
+import { AssignmentCode } from '@wca/helpers';
+import { colors } from './colors';
 
-export type SupportedAssignmentCode = 'competitor' | 'staff-scrambler' | 'staff-runner' | 'staff-judge' | 'staff-delegate' | 'staff-stagelead' | 'staff-announcer' | 'staff-dataentry' | 'staff-other';
+export type SupportedAssignmentCode =
+  | 'competitor'
+  | 'staff-scrambler'
+  | 'staff-runner'
+  | 'staff-judge'
+  | 'staff-delegate'
+  | 'staff-stagelead'
+  | 'staff-announcer'
+  | 'staff-dataentry'
+  | 'staff-break'
+  | 'staff-setupteardown'
+  | 'staff-other';
 
 export type AssignmentConfig = {
   id: SupportedAssignmentCode;
@@ -16,8 +27,7 @@ export type AssignmentConfig = {
   colorClass: Record<string, string>;
   key: string;
   letter: string;
-}
-
+};
 
 const Assignments: Array<AssignmentConfig> = [
   {
@@ -110,6 +120,26 @@ const Assignments: Array<AssignmentConfig> = [
     key: 'o',
     letter: 'O',
   },
+  {
+    id: 'staff-break',
+    name: 'Break',
+    plural: 'Break',
+    verb: 'Break',
+    color: colors.gray[100],
+    colorClass: tailwindColors.gray,
+    key: 'b',
+    letter: 'B',
+  },
+  {
+    id: 'staff-setupteardown',
+    name: 'Setup/Teardown',
+    color: colors.gray[100],
+    colorClass: tailwindColors.gray,
+    plural: 'Setup/Teardown',
+    verb: 'Setup/Teardown',
+    key: 't',
+    letter: 'T',
+  },
 ];
 
 export const AssignmentsMap = Assignments.reduce(
@@ -128,7 +158,9 @@ export const AssignmentCodeRank: AssignmentCode[] = [
   'staff-judge',
   'staff-dataentry',
   'staff-announcer',
+  'staff-stagelead',
   'staff-delegate',
+  'staff-setupteardown',
 ];
 
 export const AssignmentCodeTitles = {
@@ -138,4 +170,5 @@ export const AssignmentCodeTitles = {
   'staff-dataentry': 'Data Entry',
   'staff-announcer': 'Announcers',
   'staff-delegate': 'Delegates',
+  'staff-break': 'Break',
 };

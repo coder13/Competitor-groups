@@ -52,8 +52,6 @@ export default function MyCompetitions() {
     setLocalStorage('my.ongoing_competitions', JSON.stringify(data.ongoing_competitions));
   }, [data]);
 
-  console.log(52, getLocalStorage('expirationTime'));
-
   return (
     <>
       {expired && (

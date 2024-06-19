@@ -1,11 +1,11 @@
-import { ActivitiesSubscriptionDocument, NotifyComp, useActivitiesQuery } from "../queries";
-import { useWCIF } from "../pages/Competition/WCIFProvider";
-import { allActivities } from "../lib/activities";
-import { useEffect } from "react";
+import { ActivitiesSubscriptionDocument, NotifyComp, useActivitiesQuery } from '../queries';
+import { useWCIF } from '../pages/Competition/WCIFProvider';
+import { allActivities } from '../lib/activities';
+import { useEffect } from 'react';
 
 export const useOngoingActivities = (competitionId: string) => {
   const { wcif } = useWCIF();
-  const activities = wcif ? allActivities(wcif) : []
+  const activities = wcif ? allActivities(wcif) : [];
 
   const { data, subscribeToMore } = useActivitiesQuery(competitionId!);
   // const { data: data2 } = useActivitiesSubscription(competitionId!);
@@ -22,7 +22,6 @@ export const useOngoingActivities = (competitionId: string) => {
       document: ActivitiesSubscriptionDocument,
       variables: { competitionIds: [wcif?.id] },
       updateQuery: (prev, { subscriptionData }) => {
-        console.log(prev, subscriptionData);
         if (!subscriptionData?.data?.activity) {
           return prev;
         }
@@ -40,11 +39,11 @@ export const useOngoingActivities = (competitionId: string) => {
     });
 
     return () => unsub();
-  }, [wcif]);
+  }, [subscribeToMore, wcif]);
 
   return {
     data,
     liveActivities,
-    ongoingActivities
+    ongoingActivities,
   };
-}
+};

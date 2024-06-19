@@ -1,20 +1,14 @@
 import { Activity, AssignmentCode, Person } from '@wca/helpers';
 import classNames from 'classnames';
-import { useCallback, useEffect, useMemo } from 'react';
+import { Fragment, useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { activityCodeToName, parseActivityCode, rooms } from '../../../lib/activities';
-import {
-  byName,
-  formatDate,
-  formatDateRange,
-  formatDateTimeRange,
-  formatTimeRange,
-  renderResultByEventId,
-} from '../../../lib/utils';
+import { byName, formatDateTimeRange, renderResultByEventId } from '../../../lib/utils';
 import { useWCIF } from '../WCIFProvider';
 import { isRankedBySingle } from '../../../lib/events';
 import { AssignmentCodeRank, AssignmentCodeTitles } from '../../../lib/assignments';
 import { CutoffTimeLimitPanel } from '../../../components/CutoffTimeLimitPanel';
+import { PeopleList } from './PeopleList';
 
 const isAssignment = (assignment) => (a) =>
   a.assignments.some(({ assignmentCode }) => assignmentCode === assignment);
@@ -219,6 +213,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
               })
               .map((person) => (
                 <Link
+                  key={person.registrantId}
                   className="table-row even:bg-green-50 hover:opacity-80"
                   to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
                   <td className="py-3 px-6">{person.name}</td>
@@ -231,92 +226,11 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
           </tbody>
         </table>
       </div>
-      {Object.keys(peopleByAssignmentCode)
-        .sort((a, b) => AssignmentCodeRank.indexOf(a) - AssignmentCodeRank.indexOf(b))
-        .map((assignmentCode) => {
-          const people = peopleByAssignmentCode[assignmentCode];
-
-          const anyHasStationNumber = people.some(stationNumber(assignmentCode));
-
-          const headerColorClassName = {
-            'bg-yellow-100': assignmentCode === 'staff-scrambler',
-            'bg-red-200': assignmentCode === 'staff-runner',
-            'bg-blue-200': assignmentCode.match(/judge/i),
-            'bg-cyan-200': assignmentCode === 'staff-dataentry',
-            'bg-violet-200': assignmentCode === 'staff-announcer',
-            'bg-purple-200': assignmentCode === 'staff-delegate',
-            'bg-slate-200': !AssignmentCodeRank.includes(assignmentCode),
-          };
-          const colorClassName = {
-            'even:bg-yellow-50': assignmentCode === 'staff-scrambler',
-            'even:bg-red-50': assignmentCode === 'staff-runner',
-            'even:bg-blue-50': assignmentCode.match(/judge/i),
-            'even:bg-cyan-50': assignmentCode === 'staff-dataentry',
-            'even:bg-violet-50': assignmentCode === 'staff-announcer',
-            'even:bg-purple-50': assignmentCode === 'staff-delegate',
-            'even:bg-slate-50': !AssignmentCodeRank.includes(assignmentCode),
-          };
-
-          return (
-            <>
-              <hr className="mb-2" />
-              <div>
-                <h4
-                  className={classNames(
-                    'text-lg font-bold text-center shadow-md py-3 px-6',
-                    headerColorClassName
-                  )}>
-                  {AssignmentCodeTitles[assignmentCode] || assignmentCode.replace('staff-', '')}
-                </h4>
-                {anyHasStationNumber ? (
-                  <table className={'w-full text-left'}>
-                    <thead>
-                      <tr className={classNames(' text-sm shadow-md', headerColorClassName)}>
-                        <th className="pt-1 pb-3 px-6">Name</th>
-                        <th className="pt-1 pb-3 px-6">Station Number</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {people
-                        .sort((a, b) => {
-                          const aStationNumber = stationNumber(assignmentCode)(a);
-                          const bStationNumber = stationNumber(assignmentCode)(b);
-
-                          if (
-                            aStationNumber &&
-                            bStationNumber &&
-                            aStationNumber - bStationNumber !== 0
-                          ) {
-                            return aStationNumber - bStationNumber;
-                          }
-
-                          return byName(a, b);
-                        })
-                        .map((person) => (
-                          <Link
-                            className={classNames('table-row  hover:opacity-80', colorClassName)}
-                            to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
-                            <td className="py-3 px-6">{person.name}</td>
-                            <td className="py-3 px-6">{stationNumber(assignmentCode)(person)}</td>
-                          </Link>
-                        ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div className="hover:opacity-80">
-                    {people.sort(byName).map((person) => (
-                      <Link
-                        className={classNames(`p-2 block`, colorClassName)}
-                        to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
-                        {person.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </>
-          );
-        })}
+      <PeopleList
+        competitionId={competitionId}
+        activity={activity}
+        peopleByAssignmentCode={peopleByAssignmentCode}
+      />
     </>
   );
 }

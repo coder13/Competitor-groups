@@ -110,10 +110,6 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
                 person.activity?.id === ca.id &&
                 person.assignment?.assignmentCode === assignmentCode
             );
-            console.log(ca.activityCode, assignmentCode, personsInActivity);
-            // const backgroundColor = ca.parent?.room?.color
-            //   ? `${ca.parent?.room?.color}7f`
-            //   : undefined;
 
             if (!personsInActivity || personsInActivity?.length === 0) {
               return null;

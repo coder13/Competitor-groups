@@ -55,7 +55,6 @@ export default function Round() {
   }, [groups, wcif]);
 
   const sortedPersons = personAssignments.sort(byName);
-  console.log(sortedPersons);
 
   return (
     <Container>
@@ -101,21 +100,20 @@ export default function Round() {
                         const assignment = person.assignments.find((g) => g.activity.id === a.id);
                         const assignmentConfig = AssignmentsMap[assignment?.assignmentCode || ''];
                         if (assignment?.assignmentCode === 'competitor') {
-                          console.log(assignmentConfig);
                         }
 
                         return (
                           <td
                             key={person.registrantId + a.id}
                             className={classNames(`text-center`, {
-                              ['bg-green-200']: assignmentConfig?.color === 'green',
-                              ['bg-red-200']: assignmentConfig?.color === 'red',
-                              ['bg-blue-200']: assignmentConfig?.color === 'blue',
-                              ['bg-yellow-200']: assignmentConfig?.color === 'yellow',
-                              ['bg-purple-200']: assignmentConfig?.color === 'purple',
-                              ['bg-indigo-200']: assignmentConfig?.color === 'indigo',
-                              ['bg-pink-200']: assignmentConfig?.color === 'pink',
-                              ['bg-grey-200']: assignmentConfig?.color === 'grey',
+                              'bg-green-200': assignmentConfig?.color === 'green',
+                              'bg-red-200': assignmentConfig?.color === 'red',
+                              'bg-blue-200': assignmentConfig?.color === 'blue',
+                              'bg-yellow-200': assignmentConfig?.color === 'yellow',
+                              'bg-purple-200': assignmentConfig?.color === 'purple',
+                              'bg-indigo-200': assignmentConfig?.color === 'indigo',
+                              'bg-pink-200': assignmentConfig?.color === 'pink',
+                              'bg-grey-200': assignmentConfig?.color === 'grey',
                             })}>
                             {assignmentConfig?.letter || ''}
                           </td>

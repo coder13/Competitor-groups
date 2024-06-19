@@ -96,8 +96,6 @@ export default function PersonPage() {
     [_allActivities, person?.assignments]
   );
 
-  console.log(108, wcif, person, assignments);
-
   const anyAssignmentsHasStationNumber = useMemo(
     () => assignments.some((a) => !!a.stationNumber),
     [assignments]
@@ -197,15 +195,13 @@ export default function PersonPage() {
     return <p>Loading...</p>;
   }
 
-  console.log(person.assignments);
-
   const renderAssignments = () => (
     <>
       <div className="shadow-md">
         <table className="w-full text-xs sm:text-sm">
           <thead>
             <tr className="bg-slate-100 shadow-sm">
-              <th className="py-2 text-center w-43">Activity</th>
+              <th className="py-2 text-center w-20">Activity</th>
               <th className="py-2 text-center">Time</th>
               <th className="py-2 text-center">Assignment</th>
               <th className="py-2 text-center">Group</th>
@@ -282,7 +278,7 @@ export default function PersonPage() {
                       }
 
                       if (!assignment.activityId) {
-                        return;
+                        return null;
                       }
 
                       const { eventId, roundNumber, groupNumber, attemptNumber } =

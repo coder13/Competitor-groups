@@ -1,0 +1,120 @@
+import { Activity, AssignmentCode, Person } from '@wca/helpers';
+import { AssignmentCodeRank, AssignmentCodeTitles } from '../../../lib/assignments';
+import classNames from 'classnames';
+import { Link } from 'react-router-dom';
+import { byName } from '../../../lib/utils';
+import { Fragment } from 'react';
+import { getStationNumber } from '../../../lib/activities';
+
+export interface PeopleListProps {
+  competitionId: string;
+  activity: Activity;
+  peopleByAssignmentCode: Record<AssignmentCode, Person[]>;
+}
+
+export const PeopleList = ({
+  competitionId,
+  activity,
+  peopleByAssignmentCode,
+}: PeopleListProps) => {
+  return (
+    <>
+      {Object.keys(peopleByAssignmentCode)
+        .sort((a, b) => {
+          const aRank = AssignmentCodeRank.indexOf(a);
+          const bRank = AssignmentCodeRank.indexOf(b);
+          return (
+            (aRank >= 0 ? aRank : AssignmentCodeRank.length) -
+            (bRank >= 0 ? bRank : AssignmentCodeRank.length)
+          );
+        })
+        .map((assignmentCode) => {
+          const people = peopleByAssignmentCode[assignmentCode];
+
+          const anyHasStationNumber = people.some(getStationNumber(assignmentCode, activity));
+
+          const headerColorClassName = {
+            'bg-yellow-100': assignmentCode === 'staff-scrambler',
+            'bg-red-200': assignmentCode === 'staff-runner',
+            'bg-blue-200': assignmentCode.match(/judge/i),
+            'bg-cyan-200': assignmentCode === 'staff-dataentry',
+            'bg-violet-200': assignmentCode === 'staff-announcer',
+            'bg-purple-200': assignmentCode === 'staff-delegate',
+            'bg-slate-200': !AssignmentCodeRank.includes(assignmentCode),
+          };
+          const colorClassName = {
+            'even:bg-yellow-50': assignmentCode === 'staff-scrambler',
+            'even:bg-red-50': assignmentCode === 'staff-runner',
+            'even:bg-blue-50': assignmentCode.match(/judge/i),
+            'even:bg-cyan-50': assignmentCode === 'staff-dataentry',
+            'even:bg-violet-50': assignmentCode === 'staff-announcer',
+            'even:bg-purple-50': assignmentCode === 'staff-delegate',
+            'even:bg-slate-50': !AssignmentCodeRank.includes(assignmentCode),
+          };
+
+          return (
+            <Fragment key={assignmentCode}>
+              <hr className="mb-2" />
+              <div>
+                <h4
+                  className={classNames(
+                    'text-lg font-bold text-center shadow-md py-3 px-6',
+                    headerColorClassName
+                  )}>
+                  {AssignmentCodeTitles[assignmentCode] || assignmentCode.replace('staff-', '')}
+                </h4>
+                {anyHasStationNumber ? (
+                  <table className={'w-full text-left'}>
+                    <thead>
+                      <tr className={classNames(' text-sm shadow-md', headerColorClassName)}>
+                        <th className="pt-1 pb-3 px-6">Name</th>
+                        <th className="pt-1 pb-3 px-6">Station Number</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {people
+                        .map((i) => ({
+                          ...i,
+                          stationNumber: getStationNumber(assignmentCode, activity)(i),
+                        }))
+                        .sort((a, b) => {
+                          if (
+                            a.stationNumber &&
+                            b.stationNumber &&
+                            a.stationNumber - b.stationNumber !== 0
+                          ) {
+                            return a.stationNumber - b.stationNumber;
+                          }
+
+                          return byName(a, b);
+                        })
+                        .map((person) => (
+                          <Link
+                            key={person.registrantId}
+                            className={classNames('table-row  hover:opacity-80', colorClassName)}
+                            to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
+                            <td className="py-3 px-6">{person.name}</td>
+                            <td className="py-3 px-6">{person.stationNumber}</td>
+                          </Link>
+                        ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="hover:opacity-80">
+                    {people.sort(byName).map((person) => (
+                      <Link
+                        key={person.registrantId}
+                        className={classNames(`p-2 block`, colorClassName)}
+                        to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
+                        {person.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Fragment>
+          );
+        })}
+    </>
+  );
+};
