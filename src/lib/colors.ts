@@ -1,4 +1,4 @@
-import tailwindColors from 'tailwindcss/colors'
+import tailwindColors from 'tailwindcss/colors';
 
 // Tailwind colors [400]
 export const colors: Record<string, string> = {
@@ -17,4 +17,5 @@ export const colors: Record<string, string> = {
   pink: tailwindColors.pink[400],
   violet: tailwindColors.violet[400],
   gray: tailwindColors.gray[400],
+  rose: tailwindColors.rose[400],
 };

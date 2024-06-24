@@ -12,6 +12,7 @@ export type SupportedAssignmentCode =
   | 'staff-announcer'
   | 'staff-dataentry'
   | 'staff-break'
+  | 'staff-core'
   | 'staff-setupteardown'
   | 'staff-other';
 
@@ -125,7 +126,7 @@ const Assignments: Array<AssignmentConfig> = [
     name: 'Break',
     plural: 'Break',
     verb: 'Break',
-    color: colors.gray[100],
+    color: colors.gray,
     colorClass: tailwindColors.gray,
     key: 'b',
     letter: 'B',
@@ -133,12 +134,22 @@ const Assignments: Array<AssignmentConfig> = [
   {
     id: 'staff-setupteardown',
     name: 'Setup/Teardown',
-    color: colors.gray[100],
+    color: colors.gray,
     colorClass: tailwindColors.gray,
     plural: 'Setup/Teardown',
     verb: 'Setup/Teardown',
     key: 't',
     letter: 'T',
+  },
+  {
+    id: 'staff-core',
+    name: 'Core Staff',
+    color: colors.rose,
+    colorClass: tailwindColors.rose,
+    plural: 'Core Staff',
+    verb: 'Core Staff',
+    key: 'c',
+    letter: 'CS',
   },
 ];
 
@@ -156,11 +167,12 @@ export const AssignmentCodeRank: AssignmentCode[] = [
   'staff-scrambler',
   'staff-runner',
   'staff-judge',
-  'staff-dataentry',
   'staff-announcer',
   'staff-stagelead',
   'staff-delegate',
+  'staff-dataentry',
   'staff-setupteardown',
+  'staff-core',
 ];
 
 export const AssignmentCodeTitles = {
@@ -171,4 +183,5 @@ export const AssignmentCodeTitles = {
   'staff-announcer': 'Announcers',
   'staff-delegate': 'Delegates',
   'staff-break': 'Break',
+  'staff-core': 'Core Staff',
 };

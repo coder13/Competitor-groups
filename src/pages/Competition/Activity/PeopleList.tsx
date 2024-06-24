@@ -41,6 +41,7 @@ export const PeopleList = ({
             'bg-violet-200': assignmentCode === 'staff-announcer',
             'bg-purple-200': assignmentCode === 'staff-delegate',
             'bg-slate-200': !AssignmentCodeRank.includes(assignmentCode),
+            'bg-rose-200': assignmentCode === 'staff-core',
           };
           const colorClassName = {
             'even:bg-yellow-50': assignmentCode === 'staff-scrambler',
@@ -50,6 +51,7 @@ export const PeopleList = ({
             'even:bg-violet-50': assignmentCode === 'staff-announcer',
             'even:bg-purple-50': assignmentCode === 'staff-delegate',
             'even:bg-slate-50': !AssignmentCodeRank.includes(assignmentCode),
+            'even:bg-rose-50': assignmentCode === 'staff-core',
           };
 
           return (
