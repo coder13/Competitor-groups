@@ -4,13 +4,15 @@ import classNames from 'classnames';
 interface BreakableActivityNameProps {
   className?: string;
   activityCode: string;
+  activityName?: string;
 }
 
 export const BreakableActivityName = ({
   className = '',
   activityCode,
+  activityName = '',
 }: BreakableActivityNameProps) => {
-  const name = activityCodeToName(activityCode);
+  const name = activityCode.startsWith('other') ? activityName : activityCodeToName(activityCode);
   const [event, round] = name.split(',').map((s) => s.trim());
 
   return (

@@ -19,9 +19,15 @@ export default function ScramblerSchedule() {
     setTitle('Scramblers');
   }, [setTitle]);
 
-  const _rooms = wcif ? rooms(wcif) : [];
+  const _rooms = useMemo(() => (wcif ? rooms(wcif) : []), [wcif]);
 
   const [roomSelector, setRoomSelector] = useState(_rooms?.[0]?.name);
+
+  useEffect(() => {
+    if (!_rooms.some((room) => room.name === roomSelector)) {
+      setRoomSelector(_rooms?.[0]?.name);
+    }
+  }, [_rooms, roomSelector]);
 
   const _allRoundActivities = useMemo(
     () =>
@@ -109,7 +115,10 @@ export default function ScramblerSchedule() {
                   <>
                     <tr key={activity.id}>
                       <td colSpan={2} className="py-2 px-3">
-                        <BreakableActivityName activityCode={activity.activityCode} />
+                        <BreakableActivityName
+                          activityCode={activity.activityCode}
+                          activityName={activity.name}
+                        />
                       </td>
                     </tr>
                     {activity.childActivities.map((childActivity) => (
