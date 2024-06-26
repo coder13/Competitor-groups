@@ -13,8 +13,7 @@ export default function Information() {
 
   const { data, error, isFetching } = useQuery<ApiCompetition>({
     queryKey: ['competition', competitionId],
-    queryFn: async () =>
-      wcaApiFetch<ApiCompetition>(`/competitions/${competitionId}`),
+    queryFn: async () => wcaApiFetch<ApiCompetition>(`/competitions/${competitionId}`),
     networkMode: 'online',
     cacheTime: 1000 * 60 * 5,
   });
@@ -34,9 +33,7 @@ export default function Information() {
   return (
     <Container>
       <div className="flex flex-col w-full p-2 space-y-2 text-slate-800">
-        <ExternalLink href={data?.website || ''}>
-          View WCA competition webpage
-        </ExternalLink>
+        <ExternalLink href={data?.website || ''}>View WCA competition webpage</ExternalLink>
         <div className="flex flex-col w-full border border-slate-100 p-2 rounded">
           <h2 className="text-2xl font-bold">Venue</h2>
           <a
@@ -82,17 +79,10 @@ const UserRow = ({ user }: { user: User }) => {
       <a
         key={user.id}
         className="w-full flex"
-        href={
-          user.wca_id &&
-          `https://www.worldcubeassociation.org/persons/${user.wca_id}`
-        }
+        href={user.wca_id && `https://www.worldcubeassociation.org/persons/${user.wca_id}`}
         target="_blank"
         rel="noreferrer">
-        <img
-          className="w-16 h-16 rounded-l"
-          src={user.avatar?.thumb_url}
-          alt={user.name}
-        />
+        <img className="w-16 h-16 rounded-l" src={user.avatar?.thumb_url} alt={user.name} />
         <div className="flex flex-1 flex-col px-2">
           <span className="text-xl">{user.name}</span>
           <span className="text-xs">{user.wca_id}</span>

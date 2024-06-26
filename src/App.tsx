@@ -21,12 +21,12 @@ import CompetitionStats from './pages/Competition/Stats';
 import Home from './pages/Home';
 import AuthProvider from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createContext, useEffect, useState } from 'react';
 import About from './pages/About';
 import Support from './pages/Support';
 import { ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
+import { QueryProvider } from './providers/QueryProvider';
 
 export const GlobalStateContext = createContext<{
   online: boolean;
@@ -69,8 +69,6 @@ const Navigation = () => {
   );
 };
 
-const queryClient = new QueryClient();
-
 const App = () => {
   const [online, setOnline] = useState(navigator.onLine);
 
@@ -97,7 +95,7 @@ const App = () => {
       value={{
         online,
       }}>
-      <QueryClientProvider client={queryClient}>
+      <QueryProvider>
         <ApolloProvider client={client}>
           <BrowserRouter>
             <AuthProvider>
@@ -105,7 +103,7 @@ const App = () => {
             </AuthProvider>
           </BrowserRouter>
         </ApolloProvider>
-      </QueryClientProvider>
+      </QueryProvider>
     </GlobalStateContext.Provider>
   );
 };
