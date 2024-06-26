@@ -29,56 +29,62 @@ export default function UpcomingCompetitions() {
     isFetchingNextPage,
     error,
     status,
+    fetchStatus,
   } = useInfiniteQuery<
-    Pick<ApiCompetition, 'name' | 'id' | 'start_date' | 'end_date' | 'city' | 'country_iso2'>[]
+    Pick<ApiCompetition, 'name' | 'id' | 'start_date' | 'end_date' | 'city' | 'country_iso2'>[],
+    string
   >({
     queryKey: ['upcomingCompetitions'],
-    queryFn: async ({ pageParam = 1 }) => {
-      if (!online) {
-        const wcaCache = await caches.open('wca');
-        const responses = await wcaCache.keys();
-        const comps = responses.filter((request) => request.url.includes('wcif/public'));
+    queryFn: async ({ pageParam }) => {
+      // if (!online) {
+      //   const wcaCache = await caches.open('wca');
+      //   const responses = await wcaCache.keys();
+      //   const comps = responses.filter((request) => request.url.includes('wcif/public'));
 
-        const fetchedComps = (
-          await Promise.all<(Competition & { endDate: Date }) | undefined>(
-            comps.map(async (request) => {
-              const response = await wcaCache.match(request);
-              const c = (await response?.json()) as Competition;
-              const endDate = new Date(
-                new Date(c.schedule.startDate).getTime() +
-                  c.schedule.numberOfDays * 1000 * 60 * 60 * 24 +
-                  1000 * 60 * new Date().getTimezoneOffset()
-              );
+      //   const fetchedComps = (
+      //     await Promise.all<(Competition & { endDate: Date }) | undefined>(
+      //       comps.map(async (request) => {
+      //         const response = await wcaCache.match(request);
+      //         const c = (await response?.json()) as Competition;
+      //         const endDate = new Date(
+      //           new Date(c.schedule.startDate).getTime() +
+      //             c.schedule.numberOfDays * 1000 * 60 * 60 * 24 +
+      //             1000 * 60 * new Date().getTimezoneOffset()
+      //         );
 
-              wcaCache.delete(request);
+      //         wcaCache.delete(request);
 
-              if (endDate < oneWeekAgo) {
-                return;
-              }
-              return { ...c, endDate };
-            })
-          )
-        ).filter(Boolean);
+      //         if (endDate < oneWeekAgo) {
+      //           return;
+      //         }
+      //         return { ...c, endDate };
+      //       })
+      //     )
+      //   ).filter(Boolean);
 
-        return fetchedComps
-          .map((c) => {
-            return {
-              id: c.id,
-              name: c.name,
-              country_iso2: c.schedule.venues?.[0].countryIso2 || '',
-              start_date: c.schedule.startDate,
-              end_date: c.endDate.toISOString().split('T')[0],
-              city: '',
-            };
-          })
-          .sort((a, b) => a.start_date.localeCompare(b.start_date));
-      }
+      //   return fetchedComps
+      //     .map((c) => {
+      //       return {
+      //         id: c.id,
+      //         name: c.name,
+      //         country_iso2: c.schedule.venues?.[0].countryIso2 || '',
+      //         start_date: c.schedule.startDate,
+      //         end_date: c.endDate.toISOString().split('T')[0],
+      //         city: '',
+      //       };
+      //     })
+      //     .sort((a, b) => a.start_date.localeCompare(b.start_date));
+      // }
 
       const params = new URLSearchParams({
         start: oneWeekAgo.toISOString().split('T')[0],
         end: oneWeekFuture.toISOString().split('T')[0],
         sort: 'start_date',
-        page: pageParam.toString(),
+        ...(pageParam
+          ? {
+              page: pageParam.toString(),
+            }
+          : {}),
       });
 
       return wcaApiFetch<ApiCompetition[]>(`/competitions?${params.toString()}`);
@@ -93,8 +99,11 @@ export default function UpcomingCompetitions() {
       return undefined;
     },
     networkMode: 'offlineFirst',
-    cacheTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 5,
+    initialPageParam: 1,
   });
+
+  console.log(105, fetchStatus, upcomingCompetitions);
 
   const { data } = useCompetitionsQuery();
 

@@ -15,7 +15,7 @@ export default function Information() {
     queryKey: ['competition', competitionId],
     queryFn: async () => wcaApiFetch<ApiCompetition>(`/competitions/${competitionId}`),
     networkMode: 'online',
-    cacheTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 5,
   });
 
   useEffect(() => {

@@ -9,6 +9,7 @@ interface CompetitionListFragmentProps {
   >[];
   loading: boolean;
   liveCompetitionIds: string[];
+  lastFetchedAt?: number;
 }
 
 export default function CompetitionListFragment({
@@ -16,6 +17,7 @@ export default function CompetitionListFragment({
   competitions,
   loading,
   liveCompetitionIds,
+  lastFetchedAt,
 }: CompetitionListFragmentProps) {
   return (
     <div className="w-full p-2">
@@ -27,6 +29,11 @@ export default function CompetitionListFragment({
             <CompetitionLink key={comp.id} {...comp} live={liveCompetitionIds.includes(comp.id)} />
           ))}
         </ul>
+      )}
+      {lastFetchedAt && (
+        <div className="text-xs text-gray-500 text-right">
+          Last fetched at {new Date(lastFetchedAt).toLocaleTimeString()}
+        </div>
       )}
       {!loading && !competitions.length && (
         <div className="text-center text-gray-500">No competitions found.</div>
