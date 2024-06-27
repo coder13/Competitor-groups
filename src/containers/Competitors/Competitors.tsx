@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { acceptedRegistration } from '../../lib/activities';
+import { acceptedRegistration } from '../../lib/person';
 import { byName } from '../../lib/utils';
 import { useAuth } from '../../providers/AuthProvider';
 import { Competition } from '@wca/helpers';

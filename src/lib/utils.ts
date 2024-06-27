@@ -1,14 +1,3 @@
-import {
-  AttemptResult,
-  Cutoff,
-  EventId,
-  ParsedActivityCode,
-  RankingType,
-  decodeMultiResult,
-  formatCentiseconds,
-  formatMultiResult,
-  parseActivityCode,
-} from '@wca/helpers';
 import { format, parseISO } from 'date-fns';
 
 export const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
@@ -136,62 +125,3 @@ export const formatToParts = (date: Date) => DateTimeFormatter.formatToParts(dat
 
 export const formatToWeekDay = (date: Date) =>
   formatToParts(date).find((p) => p.type === 'weekday')?.value;
-
-export const renderResultByEventId = (
-  eventId: EventId,
-  rankingType: RankingType,
-  result: AttemptResult
-) => {
-  if (eventId === '333fm') {
-    return rankingType === 'average' ? ((result as number) / 100).toFixed(2).toString() : result;
-  }
-
-  if (eventId === '333mbf') {
-    return formatMultiResult(decodeMultiResult(result));
-  }
-
-  return formatCentiseconds(result as number);
-};
-
-export const renderCutoff = (cutoff: Cutoff) => {
-  if (cutoff.numberOfAttempts === 0) {
-    return '-';
-  }
-
-  return `${formatCentiseconds(cutoff.attemptResult).replace(/\.00+$/, '')}`;
-};
-
-export const renderCentiseconds = (centiseconds: number) => {
-  if (centiseconds >= 60000) {
-    const hours = Math.floor(centiseconds / 360000);
-    const centi = formatCentiseconds(centiseconds - hours * 360000).replace(/\.00+$/, '');
-    return hours ? `${hours}:${centi}` : centi;
-  }
-
-  return formatCentiseconds(centiseconds).replace(/\.00+$/, '');
-};
-
-export const parseActivityCodeFlexible = (
-  activityCode: string
-):
-  | ParsedActivityCode
-  | {
-      eventId: string;
-      roundNumber: 1;
-      groupNumber: number;
-      attemptNumber: null;
-    } => {
-  if (activityCode.startsWith('other')) {
-    const regex = /other-(\w+)-g(\d+)/;
-    const matches = activityCode.match(regex);
-    const groupNumber = parseInt(matches![2], 10);
-    return {
-      eventId: `other-${matches![1]}`,
-      roundNumber: 1,
-      groupNumber,
-      attemptNumber: null,
-    };
-  }
-
-  return parseActivityCode(activityCode);
-};

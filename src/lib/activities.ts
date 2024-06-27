@@ -2,10 +2,12 @@ import {
   Activity,
   Competition,
   EventId,
+  ParsedActivityCode,
   Person,
   PersonalBest,
   RankingType,
   Room,
+  parseActivityCode,
 } from '@wca/helpers';
 import flatten from 'lodash.flatten';
 import flatMap from 'lodash.flatmap';
@@ -114,9 +116,6 @@ export const groupActivitiesByRound = (
 export const hasDistributedAttempts = (activityCode: string): boolean =>
   ['333fm', '333mbf'].includes(parseActivityCode(activityCode).eventId);
 
-export const acceptedRegistration = ({ registration }: Person): boolean =>
-  registration?.status === 'accepted';
-
 const findPR = (eventId: EventId) => (personalBests: PersonalBest[], type: RankingType) =>
   personalBests.find((pr) => pr.eventId.toString() === eventId.toString() && pr.type === type);
 
@@ -204,3 +203,27 @@ export const getStationNumber =
     );
     return assignment?.stationNumber;
   };
+export const parseActivityCodeFlexible = (
+  activityCode: string
+):
+  | ParsedActivityCode
+  | {
+      eventId: string;
+      roundNumber: 1;
+      groupNumber: number;
+      attemptNumber: null;
+    } => {
+  if (activityCode.startsWith('other')) {
+    const regex = /other-(\w+)-g(\d+)/;
+    const matches = activityCode.match(regex);
+    const groupNumber = parseInt(matches![2], 10);
+    return {
+      eventId: `other-${matches![1]}`,
+      roundNumber: 1,
+      groupNumber,
+      attemptNumber: null,
+    };
+  }
+
+  return parseActivityCode(activityCode);
+};

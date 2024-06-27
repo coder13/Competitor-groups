@@ -1,9 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import {
-  acceptedRegistration,
-  groupActivitiesByRound,
-  parseActivityCode,
-} from '../../lib/activities';
+import { groupActivitiesByRound, parseActivityCode } from '../../lib/activities';
+import { acceptedRegistration } from '../../lib/person';
 import { useWCIF } from '../../providers/WCIFProvider';
 import { Activity, EventId } from '@wca/helpers';
 import { hasAssignmentInStage } from '../../lib/person';

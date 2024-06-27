@@ -2,7 +2,7 @@ import { Cutoff, Round, parseActivityCode } from '@wca/helpers';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
-import { renderCentiseconds, renderCutoff } from '../lib/utils';
+import { renderCentiseconds, renderCutoff } from '../lib/results';
 import { useWCIF } from '../providers/WCIFProvider';
 import { useState } from 'react';
 

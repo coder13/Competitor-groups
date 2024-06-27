@@ -29,6 +29,7 @@ import Support from './pages/Support';
 import { ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
 import { QueryProvider } from './providers/QueryProvider';
+import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
 
 export const GlobalStateContext = createContext<{
   online: boolean;
@@ -65,6 +66,7 @@ const Navigation = () => {
           <Route path="live" element={<CompetitionLive />} />
 
           {/* Following pages are not accessible: */}
+          <Route path="psych-sheet/:eventId" element={<PsychSheetEvent />} />
           <Route path="explore" element={<CompetitionGroupsOverview />} />
           <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />
           <Route path="stats" element={<CompetitionStats />} />

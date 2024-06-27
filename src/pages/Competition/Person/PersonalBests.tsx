@@ -4,7 +4,7 @@ import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { eventNameById } from '../../../lib/events';
-import { renderResultByEventId } from '../../../lib/utils';
+import { renderResultByEventId } from '../../../lib/results';
 import classNames from 'classnames';
 import { Container } from '../../../components/Container';
 
