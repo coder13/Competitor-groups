@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useWCIF } from '../../providers/WCIFProvider';
-import ExternalLink from '../../components/ExternalLink';
-import { Container } from '../../components/Container';
-import { useCompetition } from '../../hooks/queries/useCompetition';
-import { BarLoader } from 'react-spinners';
+import { useWCIF } from '../../../providers/WCIFProvider';
+import ExternalLink from '../../../components/ExternalLink';
+import { Container } from '../../../components/Container';
+import { useCompetition } from '../../../hooks/queries/useCompetition';
+import { UserRow } from './UserRow';
 
 export default function Information() {
   const { setTitle, wcif } = useWCIF();
   const { competitionId = '' } = useParams<{ competitionId: string }>();
 
-  const { data, error, isFetching } = useCompetition(competitionId);
+  const { data, error } = useCompetition(competitionId);
 
   useEffect(() => {
     setTitle('Information');
@@ -62,27 +62,3 @@ export default function Information() {
     </Container>
   );
 }
-
-const UserRow = ({ user }: { user: User }) => {
-  return (
-    <li className="w-full rounded flex border border-slate-400 space-x-2 justify-between hover:bg-slate-100 hover:border-slate-500 shadow transition-all">
-      <a
-        key={user.id}
-        className="w-full flex"
-        href={user.wca_id && `https://www.worldcubeassociation.org/persons/${user.wca_id}`}
-        target="_blank"
-        rel="noreferrer">
-        <img className="w-16 h-16 rounded-l" src={user.avatar?.thumb_url} alt={user.name} />
-        <div className="flex flex-1 flex-col px-2">
-          <span className="text-xl">{user.name}</span>
-          <span className="text-xs">{user.wca_id}</span>
-        </div>
-        {user.wca_id && (
-          <div className="p-2 flex items-center">
-            <i className="m-0 fa fa-solid fa-arrow-up-right-from-square" />
-          </div>
-        )}
-      </a>
-    </li>
-  );
-};

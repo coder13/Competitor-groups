@@ -1,23 +1,25 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layout';
-import Competition from './pages/Competition';
+import Competition from './pages/Competition/Layout';
 import CompetitionHome from './pages/Competition/Home';
 import CompetitionPerson from './pages/Competition/Person';
 import CompetitionGroupsOverview from './pages/Competition/GroupsOverview';
-import CompetitionEvents from './pages/Competition/Events';
-import CompetitionGroup from './pages/Competition/Group';
-import CompetitionGroupList from './pages/Competition/GroupList';
-import CompetitionActivity from './pages/Competition/Activity';
-import CompetitionSchedule from './pages/Competition/Schedule';
+import CompetitionEvents from './pages/Competition/ByGroup/Events';
+import CompetitionGroup from './pages/Competition/ByGroup/Group';
+import CompetitionGroupList from './pages/Competition/ByGroup/GroupList';
 import CompetitionScramblerSchedule from './pages/Competition/ScramblerSchedule';
 import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
 import CompetitionGroupsSchedule from './pages/Competition/GroupsSchedule';
-import CompetitionRooms from './pages/Competition/Rooms';
-import CompetitionRoom from './pages/Competition/Room';
 import CompetitionInformation from './pages/Competition/Information';
-import CompetitionPersonalBests from './pages/Competition/PersonalBests';
+import CompetitionPersonalBests from './pages/Competition/Person/PersonalBests';
 import CompetitionLive from './pages/Competition/Live';
 import CompetitionStats from './pages/Competition/Stats';
+import {
+  CompetitionActivity,
+  CompetitionRoom,
+  CompetitionRooms,
+  Schedule,
+} from './pages/Competition/Schedule';
 import Home from './pages/Home';
 import AuthProvider from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
@@ -44,19 +46,24 @@ const Navigation = () => {
         <Route path="/competitions" element={<Navigate to="/" />} />
         <Route path="/competitions/:competitionId" element={<Competition />}>
           <Route index element={<CompetitionHome />} />
+
           <Route path="persons/:registrantId" element={<CompetitionPerson />} />
           <Route path="personal-bests/:wcaId" element={<CompetitionPersonalBests />} />
-          <Route path="events/:roundId/:groupNumber" element={<CompetitionGroup />} />
-          <Route path="events/:roundId" element={<CompetitionGroupList />} />
+
           <Route path="events" element={<CompetitionEvents />} />
-          <Route path="activities" element={<CompetitionSchedule />} />
+          <Route path="events/:roundId" element={<CompetitionGroupList />} />
+          <Route path="events/:roundId/:groupNumber" element={<CompetitionGroup />} />
+
+          <Route path="activities" element={<Schedule />} />
           <Route path="activities/:activityId" element={<CompetitionActivity />} />
-          <Route path="scramblers" element={<CompetitionScramblerSchedule />} />
-          <Route path="stream" element={<CompetitionStreamSchedule />} />
           <Route path="rooms" element={<CompetitionRooms />} />
           <Route path="rooms/:roomId" element={<CompetitionRoom />} />
+
+          <Route path="scramblers" element={<CompetitionScramblerSchedule />} />
+          <Route path="stream" element={<CompetitionStreamSchedule />} />
           <Route path="information" element={<CompetitionInformation />} />
           <Route path="live" element={<CompetitionLive />} />
+
           {/* Following pages are not accessible: */}
           <Route path="explore" element={<CompetitionGroupsOverview />} />
           <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />

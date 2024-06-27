@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { allActivities, parseActivityCode } from '../../../lib/activities';
 import { useWCIF } from '../../../providers/WCIFProvider';
-import EventActivity from './EventActivity';
-import OtherActivity from './OtherActivity';
+import { EventActivity } from './EventActivity';
+import { OtherActivity } from './OtherActivity';
 import { Container } from '../../../components/Container';
 
-export default function Group() {
+export function CompetitionActivity() {
   const { wcif } = useWCIF();
   const { activityId } = useParams();
 

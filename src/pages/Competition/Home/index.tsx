@@ -1,9 +1,9 @@
-import { useWCIF } from '../../providers/WCIFProvider';
-import { Competitors } from '../../containers/Competitors';
+import { useWCIF } from '../../../providers/WCIFProvider';
+import { Competitors } from '../../../containers/Competitors';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Container } from '../../components/Container';
-import { OngoingActivities } from '../../containers/OngoingActivities';
+import { Container } from '../../../components/Container';
+import { OngoingActivities } from '../../../containers/OngoingActivities';
 
 export default function CompetitionHome() {
   const { competitionId } = useParams();

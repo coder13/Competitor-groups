@@ -5,16 +5,16 @@ import {
   nextActivityCode,
   prevActivityCode,
   rooms,
-} from '../../lib/activities';
-import { Container } from '../../components/Container';
+} from '../../../lib/activities';
+import { Container } from '../../../components/Container';
 import { ActivityCode } from '@wca/helpers';
-import { useWCIF } from '../../providers/WCIFProvider';
-import { SupportedAssignmentCode } from '../../lib/assignments';
-import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
+import { useWCIF } from '../../../providers/WCIFProvider';
+import { SupportedAssignmentCode } from '../../../lib/assignments';
+import { AssignmentCodeCell } from '../../../components/AssignmentCodeCell';
 import { Fragment, useCallback, useEffect } from 'react';
-import { byName, formatDateTimeRange } from '../../lib/utils';
+import { byName, formatDateTimeRange } from '../../../lib/utils';
 import classNames from 'classnames';
-import { CutoffTimeLimitPanel } from '../../components/CutoffTimeLimitPanel';
+import { CutoffTimeLimitPanel } from '../../../components/CutoffTimeLimitPanel';
 
 const useCommon = () => {
   const { wcif } = useWCIF();

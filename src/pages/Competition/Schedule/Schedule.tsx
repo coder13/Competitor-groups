@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import DisclaimerText from '../../components/DisclaimerText';
-import { allActivities, rooms } from '../../lib/activities';
-import { useWCIF } from '../../providers/WCIFProvider';
-import ActivityRow from '../../components/ActivitiyRow';
-import { byDate, formatDate, formatToParts } from '../../lib/utils';
-import { Container } from '../../components/Container';
+import DisclaimerText from '../../../components/DisclaimerText';
+import { allActivities, rooms } from '../../../lib/activities';
+import { useWCIF } from '../../../providers/WCIFProvider';
+import ActivityRow from '../../../components/ActivitiyRow';
+import { byDate, formatToParts } from '../../../lib/utils';
+import { Container } from '../../../components/Container';
 
-export default function Round() {
+export function Schedule() {
   const { wcif, setTitle } = useWCIF();
 
   useEffect(() => {

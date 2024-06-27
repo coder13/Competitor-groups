@@ -1,12 +1,10 @@
 import { Activity, AssignmentCode, Person } from '@wca/helpers';
-import classNames from 'classnames';
-import { Fragment, useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { activityCodeToName, parseActivityCode, rooms } from '../../../lib/activities';
-import { byName, formatDateTimeRange, renderResultByEventId } from '../../../lib/utils';
+import { formatDateTimeRange, renderResultByEventId } from '../../../lib/utils';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { isRankedBySingle } from '../../../lib/events';
-import { AssignmentCodeRank, AssignmentCodeTitles } from '../../../lib/assignments';
 import { CutoffTimeLimitPanel } from '../../../components/CutoffTimeLimitPanel';
 import { PeopleList } from './PeopleList';
 
@@ -19,7 +17,7 @@ interface EventGroupProps {
   persons: Person[];
 }
 
-export default function EventGroup({ competitionId, activity, persons }: EventGroupProps) {
+export function EventActivity({ competitionId, activity, persons }: EventGroupProps) {
   const { setTitle, wcif } = useWCIF();
   const { eventId, roundNumber } = parseActivityCode(activity?.activityCode || '');
   const event = useMemo(() => wcif?.events.find((e) => e.id === eventId), [eventId, wcif?.events]);

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useOngoingActivities } from '../../hooks/useOngoingActivities';
 import { useWCIF } from '../../providers/WCIFProvider';
 import { allChildActivities, allRoundActivities, rooms } from '../../lib/activities';
-import { GroupAssignmentCodeRank } from '../../pages/Competition/Group';
+import { GroupAssignmentCodeRank } from '../../pages/Competition/ByGroup/Group';
 import { Fragment } from 'react';
 import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
 import { formatTime } from '../../lib/utils';

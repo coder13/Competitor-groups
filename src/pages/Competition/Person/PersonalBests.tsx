@@ -2,11 +2,11 @@ import { Fragment, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
-import { useWCIF } from '../../providers/WCIFProvider';
-import { eventNameById } from '../../lib/events';
-import { renderResultByEventId } from '../../lib/utils';
+import { useWCIF } from '../../../providers/WCIFProvider';
+import { eventNameById } from '../../../lib/events';
+import { renderResultByEventId } from '../../../lib/utils';
 import classNames from 'classnames';
-import { Container } from '../../components/Container';
+import { Container } from '../../../components/Container';
 
 export default function PersonalBests() {
   const { wcif, setTitle } = useWCIF();

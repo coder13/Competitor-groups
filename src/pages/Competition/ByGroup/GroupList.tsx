@@ -1,10 +1,10 @@
 import { Link, useParams } from 'react-router-dom';
-import { Container } from '../../components/Container';
+import { Container } from '../../../components/Container';
 import { activityCodeToName, parseActivityCode } from '@wca/helpers';
-import { useWCIF, useWcifUtils } from '../../providers/WCIFProvider';
-import { formatDateTimeRange } from '../../lib/utils';
+import { useWCIF, useWcifUtils } from '../../../providers/WCIFProvider';
+import { formatDateTimeRange } from '../../../lib/utils';
 import { useEffect, useMemo } from 'react';
-import { CutoffTimeLimitPanel } from '../../components/CutoffTimeLimitPanel';
+import { CutoffTimeLimitPanel } from '../../../components/CutoffTimeLimitPanel';
 
 export default function GroupList() {
   const { wcif, setTitle } = useWCIF();

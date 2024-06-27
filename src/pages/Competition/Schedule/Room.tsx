@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { allChildActivities } from '../../lib/activities';
-import { useWCIF } from '../../providers/WCIFProvider';
-import ActivityRow from '../../components/ActivitiyRow';
-import { byDate, formatDate, formatToParts } from '../../lib/utils';
-import { Container } from '../../components/Container';
+import { allChildActivities } from '../../../lib/activities';
+import { useWCIF } from '../../../providers/WCIFProvider';
+import ActivityRow from '../../../components/ActivitiyRow';
+import { byDate, formatToParts } from '../../../lib/utils';
+import { Container } from '../../../components/Container';
 
-export default function Round() {
+export function CompetitionRoom() {
   const { wcif, setTitle } = useWCIF();
   const { roomId } = useParams();
 

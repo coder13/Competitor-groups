@@ -15,7 +15,7 @@ interface OtherGroupProps {
 const isAssignment = (assignment) => (a) =>
   a.assignments.some(({ assignmentCode }) => assignmentCode === assignment);
 
-export default function OtherGroup({ competitionId, activity, persons }: OtherGroupProps) {
+export function OtherActivity({ competitionId, activity, persons }: OtherGroupProps) {
   const { setTitle, wcif } = useWCIF();
 
   useEffect(() => {

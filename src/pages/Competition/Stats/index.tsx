@@ -1,6 +1,7 @@
-import { useWCIF } from '../../providers/WCIFProvider';
-import { Container } from '../../components/Container';
+import { useWCIF } from '../../../providers/WCIFProvider';
+import { Container } from '../../../components/Container';
 import { useEffect, useMemo } from 'react';
+import { StatsBox } from './StatsBox';
 
 export default function Round() {
   const { wcif, setTitle } = useWCIF();
@@ -47,14 +48,5 @@ export default function Round() {
         ))}
       </div>
     </Container>
-  );
-}
-
-function StatsBox({ title, value }: { title: string; value: number }) {
-  return (
-    <div className="flex flex-col text-center">
-      <span className="font-bold text-2xl">{value}</span>
-      <span>{title}</span>
-    </div>
   );
 }
