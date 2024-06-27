@@ -9,6 +9,12 @@ export const useWcif = (competitionId: string) => {
     queryKey: ['wcif', competitionId],
     queryFn: () => wcaApiFetch(`/competitions/${competitionId}/wcif/public`),
     initialData: () => {
+      const queryData = queryClient.getQueryData<Competition>(['wcif', competitionId]);
+
+      if (queryData) {
+        return queryData;
+      }
+
       const upcomingComps =
         queryClient
           .getQueryData<InfiniteData<CondensedApiCompetiton[]>>(['upcomingCompetitions'])
@@ -43,6 +49,5 @@ export const useWcif = (competitionId: string) => {
         extensions: [],
       };
     },
-    networkMode: 'offlineFirst',
   });
 };

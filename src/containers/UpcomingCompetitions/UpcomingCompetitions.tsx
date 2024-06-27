@@ -1,12 +1,10 @@
 import { useContext, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import CompetitionListFragment from '../../components/CompetitionList';
 import { BarLoader } from 'react-spinners';
 import { GlobalStateContext } from '../../App';
 import NoteBox from '../../components/Notebox';
 import { useCompetitionsQuery } from '../../queries';
-import { wcaApiFetch } from '../../hooks/useWCAFetch';
 import { useInfiniteCompetitions } from '../../hooks/queries/useInfiniteCompetitions';
 import { LastFetchedAt } from '../../components/LastFetchedAt';
 
@@ -61,9 +59,8 @@ export default function UpcomingCompetitions() {
         </div>
       )}
 
-      {!!dataUpdatedAt && <LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
-
       {isFetchingNextPage && <BarLoader width="100%" />}
+      {!!dataUpdatedAt && <LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
     </>
   );
 }
