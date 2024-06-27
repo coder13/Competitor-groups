@@ -31,7 +31,7 @@ export default function CompetitionListFragment({
           ))}
         </ul>
       )}
-      {lastFetchedAt && <LastFetchedAt lastFetchedAt={new Date(lastFetchedAt)} />}
+      {!!lastFetchedAt && <LastFetchedAt lastFetchedAt={new Date(lastFetchedAt)} />}
       {!loading && !competitions.length && (
         <div className="text-center text-gray-500">No competitions found.</div>
       )}

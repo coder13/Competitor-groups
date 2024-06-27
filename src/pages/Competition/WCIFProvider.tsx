@@ -113,7 +113,7 @@ export default function WCIFProvider({ competitionId, children }) {
           {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
 
           {children}
-          {dataUpdatedAt && (
+          {!!dataUpdatedAt && (
             <Container className="py-2">
               {<LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
             </Container>
