@@ -10,6 +10,7 @@ import NoteBox from '../../components/Notebox';
 import { streamActivities } from './../../lib/activities';
 import { WCA_ORIGIN } from '../../lib/wca-env';
 import { Container } from '../../components/Container';
+import { LastFetchedAt } from '../../components/LastFetchedAt';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
@@ -56,6 +57,7 @@ export default function WCIFProvider({ competitionId, children }) {
     data: wcif,
     error,
     isFetching,
+    dataUpdatedAt,
   } = useQuery<Competition>({
     queryKey: ['wcif', competitionId],
     queryFn: () => wcaApiFetch(`/competitions/${competitionId}/wcif/public`),
@@ -81,12 +83,6 @@ export default function WCIFProvider({ competitionId, children }) {
 
   return (
     <WCIFContext.Provider value={{ wcif: wcif as Competition, setTitle }}>
-      {!online && (
-        <NoteBox
-          text="This app is operating in offline mode. Some data may be outdated."
-          prefix=""
-        />
-      )}
       <div className="flex flex-col w-full h-full">
         <nav className="flex shadow-md print:hidden w-full justify-center">
           <Container className="md:flex-row justify-between">
@@ -103,10 +99,25 @@ export default function WCIFProvider({ competitionId, children }) {
             </div>
           </Container>
         </nav>
+        {!online && (
+          <div className="flex flex-col w-full items-center my-2">
+            <Container>
+              <NoteBox
+                text="This app is operating in offline mode. Some data may be outdated."
+                prefix=""
+              />
+            </Container>
+          </div>
+        )}
         <div className="flex flex-col w-full items-center">
           {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
 
           {children}
+          {dataUpdatedAt && (
+            <Container className="py-2">
+              {<LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
+            </Container>
+          )}
         </div>
       </div>
     </WCIFContext.Provider>

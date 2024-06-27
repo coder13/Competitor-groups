@@ -1,5 +1,6 @@
 import { BarLoader } from 'react-spinners';
 import CompetitionLink from './CompetitionLink';
+import { LastFetchedAt } from './LastFetchedAt';
 
 interface CompetitionListFragmentProps {
   title: string;
@@ -30,11 +31,7 @@ export default function CompetitionListFragment({
           ))}
         </ul>
       )}
-      {lastFetchedAt && (
-        <div className="text-xs text-gray-500 text-right">
-          Last fetched at {new Date(lastFetchedAt).toLocaleTimeString()}
-        </div>
-      )}
+      {lastFetchedAt && <LastFetchedAt lastFetchedAt={new Date(lastFetchedAt)} />}
       {!loading && !competitions.length && (
         <div className="text-center text-gray-500">No competitions found.</div>
       )}

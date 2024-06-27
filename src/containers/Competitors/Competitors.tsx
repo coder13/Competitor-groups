@@ -33,9 +33,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
             to={`persons/${me.registrantId}`}>
             My Assignments
           </Link>
-          <br />
-          <hr />
-          <br />
+          <hr className="my-2" />
         </>
       )}
       <ul>
