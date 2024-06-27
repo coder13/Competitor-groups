@@ -11,6 +11,7 @@ import { LastFetchedAt } from '../../components/LastFetchedAt';
 import { useWcif } from '../../hooks/queries/useWcif';
 import { prefetchCompetition } from '../../hooks/queries/useCompetition';
 import { WCIFContext } from './WCIFContext';
+import ReactGA from 'react-ga4';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
@@ -40,6 +41,20 @@ export function WCIFProvider({ competitionId, children }) {
         ? `${title} - ${wcif.shortName} - Competition Groups`
         : `${wcif.shortName} - Competition Groups`;
     }
+
+    if (ReactGA.isInitialized) {
+      ReactGA.set({
+        competitionId,
+      });
+    }
+
+    return () => {
+      if (ReactGA.isInitialized) {
+        ReactGA.set({
+          competitionId: null,
+        });
+      }
+    };
   }, [wcif, title]);
 
   const hasStream = wcif && streamActivities(wcif).length > 0;
