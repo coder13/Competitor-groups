@@ -5,7 +5,13 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), viteTsconfigPaths(), VitePWA()],
+  plugins: [
+    react(),
+    viteTsconfigPaths(),
+    VitePWA({
+      registerType: 'autoUpdate',
+    }),
+  ],
   build: {
     rollupOptions: {
       output: {
