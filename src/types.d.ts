@@ -9,6 +9,7 @@ interface User {
     url?: string;
     thumb_url?: string;
   };
+  delegate_status: string;
 }
 
 interface ApiCompetition {

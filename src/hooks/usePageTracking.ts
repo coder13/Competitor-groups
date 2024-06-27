@@ -12,7 +12,12 @@ const usePageTracking = (trackingCode) => {
     ReactGA.initialize(trackingCode, {
       debug: window.location.href.includes('localhost'),
       gaOptions: {
-        ...(user?.id ? { userId: user?.id?.toString() } : {}),
+        ...(user?.id
+          ? {
+              userId: user?.id?.toString(),
+              delegate_status: user?.delegate_status,
+            }
+          : {}),
       },
     });
     setInitialized(true);
@@ -20,9 +25,15 @@ const usePageTracking = (trackingCode) => {
 
   useEffect(() => {
     if (initialized && user?.id) {
-      ReactGA.set({ userId: user.id });
+      ReactGA.set({
+        userId: user.id,
+        delegate_status: user.delegate_status,
+      });
     } else if (initialized && !user?.id) {
-      ReactGA.set({ userId: null });
+      ReactGA.set({
+        userId: null,
+        delegate_status: null,
+      });
     } else if (!initialized) {
       console.log('Would have set userId to', user?.id);
     }
