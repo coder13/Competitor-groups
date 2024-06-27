@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useWCIF } from './WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import useWCAFetch from '../../hooks/useWCAFetch';
 import ExternalLink from '../../components/ExternalLink';
 import { Container } from '../../components/Container';

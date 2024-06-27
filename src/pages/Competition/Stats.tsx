@@ -1,4 +1,4 @@
-import { useWCIF } from './WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import { Container } from '../../components/Container';
 import { useEffect, useMemo } from 'react';
 

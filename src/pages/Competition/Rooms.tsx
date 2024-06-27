@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useWCIF } from './WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import { useEffect } from 'react';
 import { Container } from '../../components/Container';
 

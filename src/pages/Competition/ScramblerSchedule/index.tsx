@@ -8,7 +8,7 @@ import {
   rooms,
 } from '../../../lib/activities';
 import { formatToWeekDay, groupBy } from '../../../lib/utils';
-import { useWCIF } from '../WCIFProvider';
+import { useWCIF } from '../../../providers/WCIFProvider';
 import { BreakableActivityName } from '../../../components/BreakableActivityName';
 import { Container } from '../../../components/Container';
 

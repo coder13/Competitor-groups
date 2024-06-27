@@ -4,7 +4,7 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { activityCodeToName, parseActivityCode, rooms } from '../../../lib/activities';
 import { byName, formatDateTimeRange, renderResultByEventId } from '../../../lib/utils';
-import { useWCIF } from '../WCIFProvider';
+import { useWCIF } from '../../../providers/WCIFProvider';
 import { isRankedBySingle } from '../../../lib/events';
 import { AssignmentCodeRank, AssignmentCodeTitles } from '../../../lib/assignments';
 import { CutoffTimeLimitPanel } from '../../../components/CutoffTimeLimitPanel';

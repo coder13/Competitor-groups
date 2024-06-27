@@ -2,7 +2,7 @@ import { Fragment, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
-import { useWCIF } from './WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import { eventNameById } from '../../lib/events';
 import { renderResultByEventId } from '../../lib/utils';
 import classNames from 'classnames';
@@ -57,9 +57,7 @@ export default function PersonalBests() {
         </thead>
         <tbody>
           {wcif?.events
-            ?.filter((event) =>
-              person?.registration?.eventIds.includes(event.id)
-            )
+            ?.filter((event) => person?.registration?.eventIds.includes(event.id))
             .map((event) => {
               const eventId = event.id;
 
@@ -73,9 +71,7 @@ export default function PersonalBests() {
               return (
                 <Fragment key={eventId}>
                   <tr>
-                    <td
-                      colSpan={5}
-                      className="bg-green-200 py-2 px-3 text-center">
+                    <td colSpan={5} className="bg-green-200 py-2 px-3 text-center">
                       {eventNameById(eventId)}
                     </td>
                   </tr>
@@ -83,11 +79,7 @@ export default function PersonalBests() {
                     <tr>
                       <td className="px-3 py-2">Single</td>
                       <td className="px-3 py-2 text-center">
-                        {renderResultByEventId(
-                          eventId,
-                          'single',
-                          singlePb.best
-                        )}
+                        {renderResultByEventId(eventId, 'single', singlePb.best)}
                       </td>
                       <td className="px-3 py-2 text-center">
                         <Ranking ranking={singlePb?.worldRanking} />
@@ -104,11 +96,7 @@ export default function PersonalBests() {
                     <tr>
                       <td className="px-3 py-2">Average</td>
                       <td className="px-3 py-2 text-center">
-                        {renderResultByEventId(
-                          eventId,
-                          'average',
-                          averagePb.best
-                        )}
+                        {renderResultByEventId(eventId, 'average', averagePb.best)}
                       </td>
                       <td className="px-3 py-2 text-center">
                         <Ranking ranking={averagePb?.worldRanking} />

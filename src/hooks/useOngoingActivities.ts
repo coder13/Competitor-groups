@@ -1,5 +1,5 @@
 import { ActivitiesSubscriptionDocument, NotifyComp, useActivitiesQuery } from '../queries';
-import { useWCIF } from '../pages/Competition/WCIFProvider';
+import { useWCIF } from '../providers/WCIFProvider';
 import { allActivities } from '../lib/activities';
 import { useEffect } from 'react';
 

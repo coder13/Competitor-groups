@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { allChildActivities } from '../../lib/activities';
-import { useWCIF } from './WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import ActivityRow from '../../components/ActivitiyRow';
 import { byDate, formatDate, formatToParts } from '../../lib/utils';
 import { Container } from '../../components/Container';
@@ -19,21 +19,15 @@ export default function Round() {
   );
   const room = venue?.rooms?.find((room) => room.id.toString() === roomId);
 
-  const timeZone =
-    venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';
+  const timeZone = venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';
 
   const activities = useMemo(
     () =>
       room?.activities
         .flatMap((activity) =>
-          activity?.childActivities?.length
-            ? allChildActivities(activity)
-            : activity
+          activity?.childActivities?.length ? allChildActivities(activity) : activity
         )
-        .sort(
-          (a, b) =>
-            new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-        ) || [],
+        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()) || [],
     [room?.activities]
   );
 
@@ -43,9 +37,7 @@ export default function Round() {
         wcif?.schedule.venues?.find((v) =>
           v.rooms.some((r) =>
             r.activities.some(
-              (a) =>
-                a.id === activity.id ||
-                a.childActivities?.some((ca) => ca.id === activity.id)
+              (a) => a.id === activity.id || a.childActivities?.some((ca) => ca.id === activity.id)
             )
           )
         ) || wcif?.schedule.venues?.[0];
@@ -73,9 +65,7 @@ export default function Round() {
         wcif?.schedule.venues?.find((v) =>
           v.rooms.some((r) =>
             r.activities.some(
-              (a) =>
-                a.id === activity.id ||
-                a.childActivities?.some((ca) => ca.id === activity.id)
+              (a) => a.id === activity.id || a.childActivities?.some((ca) => ca.id === activity.id)
             )
           )
         ) || wcif?.schedule.venues?.[0];
@@ -112,9 +102,7 @@ export default function Round() {
 
         {scheduleDays.map((day) => (
           <div key={day.date} className="flex flex-col">
-            <p className="w-full text-center bg-slate-50 font-bold text-lg mb-1">
-              {day.date}
-            </p>
+            <p className="w-full text-center bg-slate-50 font-bold text-lg mb-1">{day.date}</p>
             <div className="flex flex-col">
               {getActivitiesByDate(day.date).map((activity) => {
                 return (

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { allActivities, parseActivityCode } from '../../../lib/activities';
-import { useWCIF } from '../WCIFProvider';
+import { useWCIF } from '../../../providers/WCIFProvider';
 import EventActivity from './EventActivity';
 import OtherActivity from './OtherActivity';
 import { Container } from '../../../components/Container';
@@ -11,11 +11,7 @@ export default function Group() {
   const { activityId } = useParams();
 
   const activity = useMemo(
-    () =>
-      wcif &&
-      allActivities(wcif).find(
-        (a) => activityId && a.id === parseInt(activityId, 10)
-      ),
+    () => wcif && allActivities(wcif).find((a) => activityId && a.id === parseInt(activityId, 10)),
     [wcif, activityId]
   );
 
@@ -42,11 +38,7 @@ export default function Group() {
   return (
     <Container>
       {wcif?.id && activity && everyoneInActivity && (
-        <GroupComponent
-          competitionId={wcif.id}
-          activity={activity}
-          persons={everyoneInActivity}
-        />
+        <GroupComponent competitionId={wcif.id} activity={activity} persons={everyoneInActivity} />
       )}
     </Container>
   );

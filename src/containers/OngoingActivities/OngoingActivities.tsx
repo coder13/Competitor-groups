@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useOngoingActivities } from '../../hooks/useOngoingActivities';
 import ActivityRow from '../../components/ActivitiyRow';
-import { useWCIF } from '../../pages/Competition/WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import { useAuth } from '../../providers/AuthProvider';
 
 interface OngoingActivitiesProps {

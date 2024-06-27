@@ -1,5 +1,5 @@
 import { useParams, Outlet } from 'react-router-dom';
-import WCIFProvider from './WCIFProvider';
+import WCIFProvider from '../../providers/WCIFProvider';
 
 export default function Competition() {
   const { competitionId } = useParams();

@@ -8,7 +8,7 @@ import {
 } from '../../lib/activities';
 import { Container } from '../../components/Container';
 import { ActivityCode } from '@wca/helpers';
-import { useWCIF } from './WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import { SupportedAssignmentCode } from '../../lib/assignments';
 import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
 import { Fragment, useCallback, useEffect } from 'react';

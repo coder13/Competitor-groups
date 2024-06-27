@@ -1,7 +1,7 @@
 import { Activity, AssignmentCode, Person } from '@wca/helpers';
 import { useEffect, useMemo } from 'react';
 import { rooms } from '../../../lib/activities';
-import { useWCIF } from '../WCIFProvider';
+import { useWCIF } from '../../../providers/WCIFProvider';
 import { formatDateTimeRange } from '../../../lib/utils';
 import { Link } from 'react-router-dom';
 import { PeopleList } from './PeopleList';

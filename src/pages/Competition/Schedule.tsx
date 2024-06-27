@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import DisclaimerText from '../../components/DisclaimerText';
 import { allActivities, rooms } from '../../lib/activities';
-import { useWCIF } from './WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import ActivityRow from '../../components/ActivitiyRow';
 import { byDate, formatDate, formatToParts } from '../../lib/utils';
 import { Container } from '../../components/Container';
@@ -20,11 +20,7 @@ export default function Round() {
     () =>
       wcif
         ? allActivities(wcif)
-            .sort(
-              (a, b) =>
-                new Date(a.startTime).getTime() -
-                new Date(b.startTime).getTime()
-            )
+            .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
             .filter((activity) => activity.childActivities.length === 0)
         : [],
     [wcif]
@@ -34,9 +30,8 @@ export default function Round() {
     .map((a) => {
       const room = a.room || a.parent?.room;
       const venue =
-        wcif?.schedule.venues?.find((v) =>
-          v.rooms.some((r) => r.id === room?.id)
-        ) || wcif?.schedule.venues?.[0];
+        wcif?.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id)) ||
+        wcif?.schedule.venues?.[0];
 
       const dateTime = new Date(a.startTime);
       return {
@@ -58,9 +53,8 @@ export default function Round() {
     .map((a) => {
       const room = a.room || a.parent?.room;
       const venue =
-        wcif?.schedule.venues?.find((v) =>
-          v.rooms.some((r) => r.id === room?.id)
-        ) || wcif?.schedule.venues?.[0];
+        wcif?.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id)) ||
+        wcif?.schedule.venues?.[0];
 
       const dateTime = new Date(a.startTime);
 
@@ -99,9 +93,7 @@ export default function Round() {
         <hr className="my-2" />
         {scheduleDays.map((day) => (
           <div key={day.date} className="flex flex-col">
-            <p className="w-full text-center bg-slate-50 font-bold text-lg mb-1">
-              {day.date}
-            </p>
+            <p className="w-full text-center bg-slate-50 font-bold text-lg mb-1">{day.date}</p>
             <div className="flex flex-col">
               {getActivitiesByDate(day.date).map((activity) => {
                 const venue = wcif?.schedule?.venues?.find((v) =>
@@ -111,8 +103,7 @@ export default function Round() {
                       r.id === activity.parent?.room?.id
                   )
                 );
-                const timeZone =
-                  venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';
+                const timeZone = venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';
 
                 return (
                   <ActivityRow
@@ -120,9 +111,7 @@ export default function Round() {
                     activity={activity}
                     timeZone={timeZone}
                     room={
-                      activity?.parent?.parent?.room ||
-                      activity?.parent?.room ||
-                      activity?.room
+                      activity?.parent?.parent?.room || activity?.parent?.room || activity?.room
                     }
                     showRoom={showRoom}
                   />

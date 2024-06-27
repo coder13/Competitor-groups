@@ -1,11 +1,8 @@
 import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  groupActivitiesByRound,
-  parseActivityCode,
-} from '../../lib/activities';
+import { groupActivitiesByRound, parseActivityCode } from '../../lib/activities';
 import { eventNameById } from '../../lib/events';
-import { useWCIF } from './WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import { Container } from '../../components/Container';
 
 function onlyUnique(value, index, self) {
@@ -56,9 +53,7 @@ const Events = () => {
                       key={round.id}
                       className="hover:bg-blue-100 border even:bg-slate-50 cursor-pointer"
                       onClick={() => navigate(url)}>
-                      <td className="px-5 py-3">
-                        {index === 0 ? eventNameById(event.id) : ''}
-                      </td>
+                      <td className="px-5 py-3">{index === 0 ? eventNameById(event.id) : ''}</td>
                       <td className="px-5 py-3 text-center">
                         {parseActivityCode(round.id).roundNumber}
                       </td>

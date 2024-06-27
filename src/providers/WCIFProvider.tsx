@@ -2,15 +2,15 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 import { Competition } from '@wca/helpers';
-import useWCAFetch from '../../hooks/useWCAFetch';
+import useWCAFetch from '../hooks/useWCAFetch';
 import { BarLoader } from 'react-spinners';
 import { InfiniteData, useQuery, useQueryClient } from '@tanstack/react-query';
-import { GlobalStateContext } from '../../App';
-import NoteBox from '../../components/Notebox';
-import { streamActivities } from './../../lib/activities';
-import { Container } from '../../components/Container';
-import { LastFetchedAt } from '../../components/LastFetchedAt';
-import { queryClient } from '../../providers/QueryProvider';
+import { GlobalStateContext } from '../App';
+import NoteBox from '../components/Notebox';
+import { streamActivities } from '../lib/activities';
+import { Container } from '../components/Container';
+import { LastFetchedAt } from '../components/LastFetchedAt';
+import { queryClient } from './QueryProvider';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink

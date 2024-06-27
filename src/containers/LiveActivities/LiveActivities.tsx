@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useOngoingActivities } from '../../hooks/useOngoingActivities';
-import { useWCIF } from '../../pages/Competition/WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import { allChildActivities, allRoundActivities, rooms } from '../../lib/activities';
 import { GroupAssignmentCodeRank } from '../../pages/Competition/Group';
 import { Fragment } from 'react';

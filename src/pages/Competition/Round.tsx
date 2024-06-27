@@ -7,7 +7,7 @@ import {
   parseActivityCode,
 } from '../../lib/activities';
 import { byName, formatDateTimeRange } from '../../lib/utils';
-import { useWCIF } from './WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import { Activity, Assignment, Room } from '@wca/helpers';
 import { AssignmentsMap } from '../../lib/assignments';
 import classNames from 'classnames';

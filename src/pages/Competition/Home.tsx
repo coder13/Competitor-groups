@@ -1,4 +1,4 @@
-import { useWCIF } from './WCIFProvider';
+import { useWCIF } from '../../providers/WCIFProvider';
 import { Competitors } from '../../containers/Competitors';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';

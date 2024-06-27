@@ -2,7 +2,7 @@ import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { useCallback, useEffect, useMemo, Fragment, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useWCIF } from '../WCIFProvider';
+import { useWCIF } from '../../../providers/WCIFProvider';
 import { ActivityWithRoomOrParent, parseActivityCode, rooms } from '../../../lib/activities';
 import AssignmentLabel from '../../../components/AssignmentLabel/AssignmentLabel';
 import { parseActivityCodeFlexible, roundTime } from '../../../lib/utils';
