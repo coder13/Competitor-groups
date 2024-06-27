@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { wcaApiFetch } from '../useWCAFetch';
+import { FIVE_MINUTES } from '../../lib/constants';
 
 // This is a magic number constant that comes from the WCA API.
 const DEFAULT_WCA_PAGINATION = 25;
@@ -74,6 +75,6 @@ export const useInfiniteCompetitions = () =>
       return undefined;
     },
     networkMode: 'offlineFirst',
-    gcTime: 1000 * 60 * 5,
+    gcTime: FIVE_MINUTES,
     initialPageParam: 1,
   });

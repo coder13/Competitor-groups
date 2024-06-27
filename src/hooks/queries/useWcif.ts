@@ -2,19 +2,13 @@ import { InfiniteData, useQuery } from '@tanstack/react-query';
 import { Competition } from '@wca/helpers';
 import { queryClient } from '../../providers/QueryProvider';
 import { wcaApiFetch } from '../useWCAFetch';
-import { UserCompsResponse } from '../../components/MyCompetitions';
+import { UserCompsResponse } from '../../containers/MyCompetitions';
 
-export const useWcif = (competitionId: string) => {
-  return useQuery<Competition>({
+export const useWcif = (competitionId: string) =>
+  useQuery<Competition>({
     queryKey: ['wcif', competitionId],
     queryFn: () => wcaApiFetch(`/competitions/${competitionId}/wcif/public`),
     initialData: () => {
-      const queryData = queryClient.getQueryData<Competition>(['wcif', competitionId]);
-
-      if (queryData) {
-        return queryData;
-      }
-
       const upcomingComps =
         queryClient
           .getQueryData<InfiniteData<CondensedApiCompetiton[]>>(['upcomingCompetitions'])
@@ -49,5 +43,7 @@ export const useWcif = (competitionId: string) => {
         extensions: [],
       };
     },
+    initialDataUpdatedAt: () => {
+      return queryClient.getQueryState(['wcif', competitionId])?.dataUpdatedAt;
+    },
   });
-};

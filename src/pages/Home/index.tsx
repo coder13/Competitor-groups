@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import MyCompetitions from '../../components/MyCompetitions';
+import { MyCompetitions } from '../../containers/MyCompetitions';
 import UpcomingCompetitions from '../../containers/UpcomingCompetitions/UpcomingCompetitions';
 import { useAuth } from '../../providers/AuthProvider';
 import { Link } from 'react-router-dom';

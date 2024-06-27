@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '../providers/AuthProvider';
-import CompetitionListFragment from './CompetitionList';
-import { getLocalStorage, setLocalStorage } from '../lib/localStorage';
+import { useAuth } from '../../providers/AuthProvider';
+import CompetitionListFragment from '../../components/CompetitionList';
+import { setLocalStorage } from '../../lib/localStorage';
 import { useEffect, useMemo } from 'react';
-import { useCompetitionsQuery } from '../queries';
-import { wcaApiFetch } from '../hooks/useWCAFetch';
-import { FIVE_MINUTES } from '../lib/constants';
+import { useCompetitionsQuery } from '../../queries';
+import { wcaApiFetch } from '../../hooks/useWCAFetch';
+import { FIVE_MINUTES } from '../../lib/constants';
 
 const params = new URLSearchParams({
   upcoming_competitions: 'true',
@@ -17,23 +17,13 @@ export interface UserCompsResponse {
   ongoing_competitions: ApiCompetition[];
 }
 
-export default function MyCompetitions() {
+export function MyCompetitions() {
   const { user, expired, signIn } = useAuth();
 
   const { data, fetchStatus, dataUpdatedAt } = useQuery<UserCompsResponse, string>({
     queryKey: ['userCompetitions'],
     queryFn: async () =>
       await wcaApiFetch<UserCompsResponse>(`/users/${user?.id}?${params.toString()}`),
-    // initialData: () => {
-    //   return {
-    //     upcoming_competitions: getLocalStorage('my.upcoming_competitions')
-    //       ? JSON.parse(getLocalStorage('my.upcoming_competitions') as string)
-    //       : [],
-    //     ongoing_competitions: getLocalStorage('my.ongoing_competitions')
-    //       ? JSON.parse(getLocalStorage('my.ongoing_competitions') as string)
-    //       : [],
-    //   } as UserCompsResponse;
-    // },
     gcTime: FIVE_MINUTES,
     enabled: !!user,
     networkMode: 'offlineFirst',

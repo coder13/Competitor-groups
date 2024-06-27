@@ -1,16 +1,16 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 import { Competition } from '@wca/helpers';
 import { BarLoader } from 'react-spinners';
-import { GlobalStateContext } from '../App';
-import NoteBox from '../components/Notebox';
-import { streamActivities } from '../lib/activities';
-import { Container } from '../components/Container';
-import { LastFetchedAt } from '../components/LastFetchedAt';
-import { useWcif } from '../hooks/queries/useWcif';
-import { queryClient } from './QueryProvider';
-import { prefetchCompetition } from '../hooks/queries/useCompetition';
+import { GlobalStateContext } from '../../App';
+import NoteBox from '../../components/Notebox';
+import { streamActivities } from '../../lib/activities';
+import { Container } from '../../components/Container';
+import { LastFetchedAt } from '../../components/LastFetchedAt';
+import { useWcif } from '../../hooks/queries/useWcif';
+import { prefetchCompetition } from '../../hooks/queries/useCompetition';
+import { WCIFContext } from './WCIFContext';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
@@ -25,31 +25,7 @@ const StyledNavLink = ({ to, text }) => (
   </NavLink>
 );
 
-interface IWCIFContextType {
-  wcif?: Competition;
-  setTitle: (title: string) => void;
-}
-
-const WCIFContext = createContext<IWCIFContextType>({
-  wcif: {
-    formatVersion: '1.0',
-    id: '',
-    name: '',
-    shortName: '',
-    events: [],
-    persons: [],
-    schedule: {
-      numberOfDays: 0,
-      startDate: '',
-      venues: [],
-    },
-    competitorLimit: 0,
-    extensions: [],
-  },
-  setTitle: () => {},
-});
-
-export default function WCIFProvider({ competitionId, children }) {
+export function WCIFProvider({ competitionId, children }) {
   const { online } = useContext(GlobalStateContext);
   const [title, setTitle] = useState('');
   const { data: wcif, error, isFetching, dataUpdatedAt } = useWcif(competitionId);
@@ -116,17 +92,3 @@ export default function WCIFProvider({ competitionId, children }) {
     </WCIFContext.Provider>
   );
 }
-
-export const useWCIF = () => useContext(WCIFContext);
-
-export const useWcifUtils = () => {
-  const { wcif } = useWCIF();
-
-  const rooms = wcif?.schedule?.venues?.flatMap((venue) => venue.rooms) || [];
-  const roundActivies = rooms.flatMap((room) => room.activities);
-  const childActivities = roundActivies.flatMap((activity) => activity.childActivities);
-  const acceptedPersons =
-    wcif?.persons?.filter((person) => person.registration?.status === 'accepted') || [];
-
-  return { rooms, roundActivies, childActivities, acceptedPersons };
-};
