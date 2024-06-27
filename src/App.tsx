@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layout';
 import Competition from './pages/Competition';
 import CompetitionHome from './pages/Competition/Home';
@@ -41,6 +41,7 @@ const Navigation = () => {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="/competitions" element={<Navigate to="/" />} />
         <Route path="/competitions/:competitionId" element={<Competition />}>
           <Route index element={<CompetitionHome />} />
           <Route path="persons/:registrantId" element={<CompetitionPerson />} />

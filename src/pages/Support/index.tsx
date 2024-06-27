@@ -7,7 +7,7 @@ export default function Support() {
   }, []);
 
   return (
-    <Container>
+    <Container className="overflow-auto">
       <div className="flex flex-col items-center">
         <div className="flex flex-col max-w- pt-2 w-full text-sm md:text-base p-2 md:px-0  text-gray-800 space-y-4">
           <p>Thanks for being a user of Competition Groups!</p>

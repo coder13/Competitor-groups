@@ -28,7 +28,7 @@ const Events = () => {
   }, [setTitle]);
 
   return (
-    <Container>
+    <Container className="">
       <div className="flex flex-col w-full">
         <br />
         <div className="shadow-md border-slate-300 rounded-md">

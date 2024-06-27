@@ -77,8 +77,8 @@ export default function WCIFProvider({ competitionId, children }) {
 
   return (
     <WCIFContext.Provider value={{ wcif: wcif as Competition, setTitle }}>
-      <div className="flex flex-col w-full h-full">
-        <nav className="flex shadow-md print:hidden w-full justify-center">
+      <div className="flex flex-col w-full h-full overflow-hidden">
+        <nav className="flex shadow-md print:hidden w-full justify-center z-10">
           <Container className="md:flex-row justify-between">
             <div className="flex">
               <StyledNavLink to={`/competitions/${competitionId}`} text={wcif?.shortName} />
@@ -103,9 +103,8 @@ export default function WCIFProvider({ competitionId, children }) {
             </Container>
           </div>
         )}
-        <div className="flex flex-col w-full items-center">
-          {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
-
+        {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
+        <div className="flex flex-col w-full items-center overflow-auto">
           {children}
           {!!dataUpdatedAt && (
             <Container className="py-2">
