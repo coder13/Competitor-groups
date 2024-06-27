@@ -1,40 +1,42 @@
 import { useQuery } from '@tanstack/react-query';
-import useWCAFetch from '../hooks/useWCAFetch';
 import { useAuth } from '../providers/AuthProvider';
 import CompetitionListFragment from './CompetitionList';
 import { getLocalStorage, setLocalStorage } from '../lib/localStorage';
 import { useEffect, useMemo } from 'react';
 import { useCompetitionsQuery } from '../queries';
+import { wcaApiFetch } from '../hooks/useWCAFetch';
+import { FIVE_MINUTES } from '../lib/constants';
 
 const params = new URLSearchParams({
   upcoming_competitions: 'true',
   ongoing_competitions: 'true',
 });
 
-interface UserCompsResponse {
+export interface UserCompsResponse {
   upcoming_competitions: ApiCompetition[];
   ongoing_competitions: ApiCompetition[];
 }
 
 export default function MyCompetitions() {
   const { user, expired, signIn } = useAuth();
-  const wcaApiFetch = useWCAFetch();
 
-  const { data, isFetching, dataUpdatedAt } = useQuery<UserCompsResponse, string>({
+  const { data, fetchStatus, dataUpdatedAt } = useQuery<UserCompsResponse, string>({
     queryKey: ['userCompetitions'],
     queryFn: async () =>
       await wcaApiFetch<UserCompsResponse>(`/users/${user?.id}?${params.toString()}`),
-    gcTime: 1000 * 60 * 5,
-    initialData: () => {
-      return {
-        upcoming_competitions: getLocalStorage('my.upcoming_competitions')
-          ? JSON.parse(getLocalStorage('my.upcoming_competitions') as string)
-          : [],
-        ongoing_competitions: getLocalStorage('my.ongoing_competitions')
-          ? JSON.parse(getLocalStorage('my.ongoing_competitions') as string)
-          : [],
-      } as UserCompsResponse;
-    },
+    // initialData: () => {
+    //   return {
+    //     upcoming_competitions: getLocalStorage('my.upcoming_competitions')
+    //       ? JSON.parse(getLocalStorage('my.upcoming_competitions') as string)
+    //       : [],
+    //     ongoing_competitions: getLocalStorage('my.ongoing_competitions')
+    //       ? JSON.parse(getLocalStorage('my.ongoing_competitions') as string)
+    //       : [],
+    //   } as UserCompsResponse;
+    // },
+    gcTime: FIVE_MINUTES,
+    enabled: !!user,
+    networkMode: 'offlineFirst',
   });
 
   const competitions = useMemo(
@@ -69,7 +71,7 @@ export default function MyCompetitions() {
       <CompetitionListFragment
         title="Your Upcoming Competitions"
         competitions={competitions}
-        loading={isFetching}
+        loading={fetchStatus === 'fetching'}
         liveCompetitionIds={NotifyCompetitions?.competitions?.map((c) => c.id) || []}
         lastFetchedAt={dataUpdatedAt}
       />

@@ -2,15 +2,15 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 import { Competition } from '@wca/helpers';
-import useWCAFetch from '../hooks/useWCAFetch';
 import { BarLoader } from 'react-spinners';
-import { InfiniteData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { GlobalStateContext } from '../App';
 import NoteBox from '../components/Notebox';
 import { streamActivities } from '../lib/activities';
 import { Container } from '../components/Container';
 import { LastFetchedAt } from '../components/LastFetchedAt';
+import { useWcif } from '../hooks/queries/useWcif';
 import { queryClient } from './QueryProvider';
+import { prefetchCompetition } from '../hooks/queries/useCompetition';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
@@ -52,48 +52,11 @@ const WCIFContext = createContext<IWCIFContextType>({
 export default function WCIFProvider({ competitionId, children }) {
   const { online } = useContext(GlobalStateContext);
   const [title, setTitle] = useState('');
-  const wcaApiFetch = useWCAFetch();
-  const {
-    data: wcif,
-    error,
-    isFetching,
-    dataUpdatedAt,
-  } = useQuery<Competition>({
-    queryKey: ['wcif', competitionId],
-    queryFn: () => wcaApiFetch(`/competitions/${competitionId}/wcif/public`),
-    initialData: () => {
-      const upcomingComps =
-        queryClient
-          .getQueryData<InfiniteData<CondensedApiCompetiton[]>>(['upcomingCompetitions'])
-          ?.pages?.flat() || [];
-      const myUpcomingComps =
-        queryClient?.getQueryData<CondensedApiCompetiton[]>(['userCompetitions']) || [];
-      const allComps = [...upcomingComps, ...myUpcomingComps];
+  const { data: wcif, error, isFetching, dataUpdatedAt } = useWcif(competitionId);
 
-      const comp = allComps.find((c) => c.id === competitionId);
-
-      if (!comp) {
-        return;
-      }
-
-      return {
-        id: comp.id,
-        name: comp.name,
-        formatVersion: '1.0',
-        shortName: comp.short_name,
-        events: [],
-        persons: [],
-        schedule: {
-          numberOfDays: 1,
-          startDate: '',
-          venues: [],
-        },
-        competitorLimit: 0,
-        extensions: [],
-      };
-    },
-    networkMode: 'always',
-  });
+  useEffect(() => {
+    void prefetchCompetition(competitionId);
+  }, [competitionId]);
 
   useEffect(() => {
     if (wcif) {

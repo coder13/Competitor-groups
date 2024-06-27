@@ -75,6 +75,7 @@
     ]
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.47.0",
     "autoprefixer": "^10.4.7",
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",

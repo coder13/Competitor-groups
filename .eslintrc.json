@@ -1,5 +1,10 @@
 {
-  "extends": ["react-app", "plugin:react-hooks/recommended", "prettier"],
+  "extends": [
+    "react-app",
+    "plugin:react-hooks/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
+    "prettier"
+  ],
   "rules": {
     "import/first": 0,
     "no-restricted-globals": 0,

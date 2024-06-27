@@ -1,30 +1,22 @@
-import {
-  ApolloClient,
-  createHttpLink,
-  InMemoryCache,
-  split,
-} from '@apollo/client';
+import { ApolloClient, createHttpLink, InMemoryCache, split } from '@apollo/client';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { createClient } from 'graphql-ws';
 
 const httpLink = createHttpLink({
-  uri: import.meta.env.VITE_NOTIFYCOMP_API_ORIGIN,
+  uri: import.meta.env.VITE_NOTIFYCOMP_API_ORIGIN || 'https://admin.notifycomp.com/graphql',
 });
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: import.meta.env.VITE_NOTIFYCOMP_WS_ORIGIN,
+    url: import.meta.env.VITE_NOTIFYCOMP_WS_ORIGIN || 'wss://admin.notifycomp.com/graphql',
   })
 );
 
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
-    return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
-    );
+    return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
   },
   wsLink,
   httpLink

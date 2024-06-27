@@ -1,32 +1,22 @@
-import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useWCIF } from '../../providers/WCIFProvider';
-import useWCAFetch from '../../hooks/useWCAFetch';
 import ExternalLink from '../../components/ExternalLink';
 import { Container } from '../../components/Container';
+import { useCompetition } from '../../hooks/queries/useCompetition';
+import { BarLoader } from 'react-spinners';
 
 export default function Information() {
   const { setTitle, wcif } = useWCIF();
-  const { competitionId } = useParams<{ competitionId: string }>();
-  const wcaApiFetch = useWCAFetch();
+  const { competitionId = '' } = useParams<{ competitionId: string }>();
 
-  const { data, error, isFetching } = useQuery<ApiCompetition>({
-    queryKey: ['competition', competitionId],
-    queryFn: async () => wcaApiFetch<ApiCompetition>(`/competitions/${competitionId}`),
-    networkMode: 'online',
-    gcTime: 1000 * 60 * 5,
-  });
+  const { data, error, isFetching } = useCompetition(competitionId);
 
   useEffect(() => {
     setTitle('Information');
   }, [setTitle]);
 
   if (error) {
-    return null;
-  }
-
-  if (isFetching) {
     return null;
   }
 
