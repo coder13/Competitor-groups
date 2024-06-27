@@ -10,6 +10,7 @@ interface AssignmentCodeCellProps<T extends React.ElementType> {
   as?: T;
   border?: boolean;
   grammar?: 'verb' | 'noun' | 'plural-noun';
+  count?: number;
 }
 
 export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
@@ -20,6 +21,7 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
   as,
   border = false,
   grammar = 'noun',
+  count,
   ...props
 }: AssignmentCodeCellProps<T> & React.ComponentProps<T>) {
   const assignment = assignmentCode && AssignmentsMap[assignmentCode];
@@ -71,6 +73,12 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
       className={className}
       {...props}>
       {content}
+      {count ? (
+        <>
+          {' '}
+          <span className="text-sm">({count})</span>
+        </>
+      ) : null}
     </Component>
   );
 }

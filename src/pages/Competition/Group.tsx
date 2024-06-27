@@ -146,45 +146,52 @@ export const MobileGroupView = () => {
       <div className="">
         {GroupAssignmentCodeRank.filter((assignmentCode) =>
           personsInActivity?.some((person) => person.assignment?.assignmentCode === assignmentCode)
-        ).map((assignmentCode) => (
-          <Fragment key={assignmentCode}>
-            <div className="col-span-3 flex flex-col">
-              <AssignmentCodeCell
-                as="div"
-                border
-                assignmentCode={assignmentCode}
-                className="p-1 mt-2 drop-shadow-lg font-bold"
-              />
-              <div className="">
-                {personsInActivity
-                  ?.filter((person) => person.assignment?.assignmentCode === assignmentCode)
-                  .sort((a, b) => {
-                    const stageSort = (a.stage?.name || '').localeCompare(b.stage?.name || '');
-                    return stageSort !== 0 ? stageSort : byName(a, b);
-                  })
-                  ?.map((person) => (
-                    <Link
-                      key={person.registrantId}
-                      to={`/competitions/${wcif?.id}/persons/${person.registrantId}`}
-                      className="grid grid-cols-3 grid-rows-1 hover:opacity-80">
-                      <div className="col-span-2 p-1">{person.name}</div>
-                      {multistage && (
-                        <div
-                          className="col-span-1 p-1"
-                          style={{
-                            backgroundColor: person.stage?.color
-                              ? `${person.stage?.color}7f`
-                              : undefined,
-                          }}>
-                          {person.stage && person.stage.name}
-                        </div>
-                      )}
-                    </Link>
-                  ))}
+        ).map((assignmentCode) => {
+          const personsInActivityWithAssignment =
+            personsInActivity?.filter(
+              (person) => person.assignment?.assignmentCode === assignmentCode
+            ) || [];
+
+          return (
+            <Fragment key={assignmentCode}>
+              <div className="col-span-3 flex flex-col">
+                <AssignmentCodeCell
+                  as="div"
+                  border
+                  assignmentCode={assignmentCode}
+                  count={personsInActivityWithAssignment.length}
+                  className="p-1 mt-2 drop-shadow-lg font-bold"
+                />
+                <div className="">
+                  {personsInActivityWithAssignment
+                    .sort((a, b) => {
+                      const stageSort = (a.stage?.name || '').localeCompare(b.stage?.name || '');
+                      return stageSort !== 0 ? stageSort : byName(a, b);
+                    })
+                    ?.map((person) => (
+                      <Link
+                        key={person.registrantId}
+                        to={`/competitions/${wcif?.id}/persons/${person.registrantId}`}
+                        className="grid grid-cols-3 grid-rows-1 hover:opacity-80">
+                        <div className="col-span-2 p-1">{person.name}</div>
+                        {multistage && (
+                          <div
+                            className="col-span-1 p-1"
+                            style={{
+                              backgroundColor: person.stage?.color
+                                ? `${person.stage?.color}7f`
+                                : undefined,
+                            }}>
+                            {person.stage && person.stage.name}
+                          </div>
+                        )}
+                      </Link>
+                    ))}
+                </div>
               </div>
-            </div>
-          </Fragment>
-        ))}
+            </Fragment>
+          );
+        })}
       </div>
     </Container>
   );
@@ -215,23 +222,24 @@ const DesktopGroupView = () => {
         {GroupAssignmentCodeRank.filter((assignmentCode) =>
           personsInActivity?.some((person) => person.assignment?.assignmentCode === assignmentCode)
         ).map((assignmentCode) => {
+          const personsInActivityWithAssignment =
+            personsInActivity?.filter(
+              (person) => person.assignment?.assignmentCode === assignmentCode
+            ) || [];
           return (
             <Fragment key={assignmentCode}>
               <AssignmentCodeCell
                 as="div"
                 border
                 assignmentCode={assignmentCode}
+                count={personsInActivityWithAssignment.length}
                 className="p-1 col-span-full drop-shadow-lg font-bold mt-4"
               />
 
               {stages.map((stage) => (
                 <div key={stage.id} className="col-span-1 grid grid-cols-2 gap-x-4 gap-y-1">
-                  {personsInActivity
-                    ?.filter(
-                      (person) =>
-                        person.assignment?.assignmentCode === assignmentCode &&
-                        person.stage?.id === stage.id
-                    )
+                  {personsInActivityWithAssignment
+                    ?.filter((person) => person.stage?.id === stage.id)
                     ?.sort(byName)
                     .map((person) => (
                       <Link

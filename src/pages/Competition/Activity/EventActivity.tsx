@@ -57,7 +57,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
   const venue = wcif?.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id));
   const timeZone = venue?.timezone;
 
-  const everyoneInActivity = useMemo(
+  const personsWithPRs = useMemo(
     () =>
       persons.map((person) => ({
         ...person,
@@ -71,16 +71,16 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
     [persons, eventId]
   );
 
-  const competitors = everyoneInActivity.filter(isAssignment('competitor'));
+  const competitors = personsWithPRs.filter(isAssignment('competitor'));
 
   const assignments = new Set(
-    everyoneInActivity.map((person) => person.assignments?.map((a) => a.assignmentCode)).flat()
+    personsWithPRs.map((person) => person.assignments?.map((a) => a.assignmentCode)).flat()
   );
 
   const peopleByAssignmentCode = (Array.from(assignments.values()) as AssignmentCode[])
     .filter((assignmentCode) => assignmentCode !== 'competitor')
     .reduce((acc, assignmentCode) => {
-      acc[assignmentCode] = everyoneInActivity.filter(isAssignment(assignmentCode));
+      acc[assignmentCode] = personsWithPRs.filter(isAssignment(assignmentCode));
       return acc;
     }, {}) as Record<AssignmentCode, Person[]>;
 
@@ -191,7 +191,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
       <hr className="mb-2" />
       <div>
         <h4 className="bg-green-200 pb-1 text-lg font-bold text-center shadow-md py-3 px-6">
-          Competitors
+          Competitors <span className="text-sm">({competitors.length})</span>
         </h4>
         <table className="w-full text-left">
           <thead>
@@ -211,7 +211,7 @@ export default function EventGroup({ competitionId, activity, persons }: EventGr
               .sort((a, b) => {
                 return (a.seedRank || 999999999) - (b.seedRank || 999999999);
               })
-              .map((person) => (
+              .map((person, i) => (
                 <Link
                   key={person.registrantId}
                   className="table-row even:bg-green-50 hover:opacity-80"

@@ -63,7 +63,8 @@ export const PeopleList = ({
                     'text-lg font-bold text-center shadow-md py-3 px-6',
                     headerColorClassName
                   )}>
-                  {AssignmentCodeTitles[assignmentCode] || assignmentCode.replace('staff-', '')}
+                  {AssignmentCodeTitles[assignmentCode] || assignmentCode.replace('staff-', '')}{' '}
+                  <span className="text-sm">({people.length})</span>
                 </h4>
                 {anyHasStationNumber ? (
                   <table className={'w-full text-left'}>
