@@ -1,8 +1,10 @@
 {
-  "extends": ["react-app", "prettier"],
+  "extends": ["react-app", "plugin:react-hooks/recommended", "prettier"],
   "rules": {
     "import/first": 0,
-    "no-restricted-globals": 0
+    "no-restricted-globals": 0,
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "settings": {
     "import/resolver": {

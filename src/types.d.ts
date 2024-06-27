@@ -14,6 +14,7 @@ interface User {
 interface ApiCompetition {
   id: string;
   name: string;
+  short_name: string;
   city: string;
   country_iso2: string;
   start_date: string;
@@ -29,6 +30,11 @@ interface ApiCompetition {
   organizers: User[];
   delegates: User[];
 }
+
+type CondensedApiCompetiton = Pick<
+  ApiCompetition,
+  'name' | 'id' | 'start_date' | 'end_date' | 'city' | 'country_iso2' | 'short_name'
+>;
 
 declare module '@wca/helpers/' {
   import { AssignmentCode } from '@wca/helpers';

@@ -30,10 +30,7 @@ export default function UpcomingCompetitions() {
     error,
     status,
     fetchStatus,
-  } = useInfiniteQuery<
-    Pick<ApiCompetition, 'name' | 'id' | 'start_date' | 'end_date' | 'city' | 'country_iso2'>[],
-    string
-  >({
+  } = useInfiniteQuery<CondensedApiCompetiton[], string>({
     queryKey: ['upcomingCompetitions'],
     queryFn: async ({ pageParam }) => {
       // if (!online) {
