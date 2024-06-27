@@ -45,6 +45,7 @@ export function WCIFProvider({ competitionId, children }) {
     if (ReactGA.isInitialized) {
       ReactGA.set({
         competitionId,
+        content_group: competitionId,
       });
     }
 
@@ -52,6 +53,7 @@ export function WCIFProvider({ competitionId, children }) {
       if (ReactGA.isInitialized) {
         ReactGA.set({
           competitionId: null,
+          content_group: null,
         });
       }
     };
