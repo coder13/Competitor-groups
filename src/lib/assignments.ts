@@ -10,7 +10,9 @@ export type SupportedAssignmentCode =
   | 'staff-delegate'
   | 'staff-stagelead'
   | 'staff-announcer'
+  | 'staff-showrunner'
   | 'staff-dataentry'
+  | 'staff-lunch'
   | 'staff-break'
   | 'staff-core'
   | 'staff-setupteardown'
@@ -27,7 +29,6 @@ export type AssignmentConfig = {
   color: string;
   colorClass: Record<string, string>;
   key: string;
-  letter: string;
 };
 
 const Assignments: Array<AssignmentConfig> = [
@@ -39,7 +40,6 @@ const Assignments: Array<AssignmentConfig> = [
     color: colors.green,
     colorClass: tailwindColors.green,
     key: 'c',
-    letter: 'C',
   },
   {
     id: 'staff-scrambler',
@@ -49,7 +49,6 @@ const Assignments: Array<AssignmentConfig> = [
     color: colors.yellow,
     colorClass: tailwindColors.yellow,
     key: 's',
-    letter: 'S',
   },
   {
     id: 'staff-runner',
@@ -59,7 +58,6 @@ const Assignments: Array<AssignmentConfig> = [
     color: colors.red,
     colorClass: tailwindColors.red,
     key: 'r',
-    letter: 'R',
   },
   {
     id: 'staff-judge',
@@ -69,7 +67,6 @@ const Assignments: Array<AssignmentConfig> = [
     color: colors.blue,
     colorClass: tailwindColors.blue,
     key: 'j',
-    letter: 'J',
   },
   {
     id: 'staff-delegate',
@@ -79,7 +76,6 @@ const Assignments: Array<AssignmentConfig> = [
     color: colors.purple,
     colorClass: tailwindColors.purple,
     key: 'd',
-    letter: 'D',
   },
   {
     id: 'staff-stagelead',
@@ -89,7 +85,6 @@ const Assignments: Array<AssignmentConfig> = [
     color: colors.indigo,
     colorClass: tailwindColors.indigo,
     key: 'l',
-    letter: 'L',
   },
   {
     id: 'staff-announcer',
@@ -99,7 +94,15 @@ const Assignments: Array<AssignmentConfig> = [
     color: colors.pink,
     colorClass: tailwindColors.pink,
     key: 'a',
-    letter: 'A',
+  },
+  {
+    id: 'staff-showrunner',
+    name: 'Show Runner',
+    plural: 'Show Runners',
+    verb: 'Running the show',
+    color: colors.pink,
+    colorClass: tailwindColors.pink,
+    key: 'a',
   },
   {
     id: 'staff-dataentry',
@@ -109,7 +112,6 @@ const Assignments: Array<AssignmentConfig> = [
     color: colors.grey,
     colorClass: tailwindColors.slate,
     key: 'e',
-    letter: 'DA',
   },
   {
     id: 'staff-other',
@@ -119,7 +121,6 @@ const Assignments: Array<AssignmentConfig> = [
     color: colors.grey,
     colorClass: tailwindColors.slate,
     key: 'o',
-    letter: 'O',
   },
   {
     id: 'staff-break',
@@ -129,7 +130,15 @@ const Assignments: Array<AssignmentConfig> = [
     color: colors.gray,
     colorClass: tailwindColors.gray,
     key: 'b',
-    letter: 'B',
+  },
+  {
+    id: 'staff-lunch',
+    name: 'Break',
+    plural: 'Break',
+    verb: 'Break',
+    color: colors.gray,
+    colorClass: tailwindColors.gray,
+    key: 'l',
   },
   {
     id: 'staff-setupteardown',
@@ -139,7 +148,6 @@ const Assignments: Array<AssignmentConfig> = [
     plural: 'Setup/Teardown',
     verb: 'Setup/Teardown',
     key: 't',
-    letter: 'T',
   },
   {
     id: 'staff-core',
@@ -149,7 +157,6 @@ const Assignments: Array<AssignmentConfig> = [
     plural: 'Core Staff',
     verb: 'Core Staff',
     key: 'c',
-    letter: 'CS',
   },
 ];
 
@@ -167,12 +174,15 @@ export const AssignmentCodeRank: AssignmentCode[] = [
   'staff-scrambler',
   'staff-runner',
   'staff-judge',
+  'staff-showrunner',
   'staff-announcer',
   'staff-stagelead',
   'staff-delegate',
   'staff-dataentry',
   'staff-setupteardown',
   'staff-core',
+  'staff-break',
+  'staff-lunch',
 ];
 
 export const AssignmentCodeTitles = {
@@ -180,8 +190,10 @@ export const AssignmentCodeTitles = {
   'staff-runner': 'Runners',
   'staff-judge': 'Judges',
   'staff-dataentry': 'Data Entry',
+  'staff-showrunner': 'Show Runners',
   'staff-announcer': 'Announcers',
   'staff-delegate': 'Delegates',
-  'staff-break': 'Break',
   'staff-core': 'Core Staff',
+  'staff-break': 'Break',
+  'staff-lunch': 'Lunch',
 };
