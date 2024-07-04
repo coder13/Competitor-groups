@@ -1,6 +1,7 @@
 {
   "extends": [
-    "react-app",
+    "eslint:recommended",
+    "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@tanstack/eslint-plugin-query/recommended",
     "prettier"
@@ -14,9 +15,10 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+        "extensions": [".ts", ".tsx"],
         "paths": ["src"]
       }
     }
-  }
+  },
+  "ignorePatterns": ["node_modules/", "build/", "dist/", "*.config.js"]
 }

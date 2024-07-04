@@ -1,11 +1,11 @@
 import { ActivitiesSubscriptionDocument, NotifyComp, useActivitiesQuery } from '../queries';
 import { useWCIF } from '../providers/WCIFProvider';
-import { allActivities } from '../lib/activities';
+import { getAllActivities } from '../lib/activities';
 import { useEffect } from 'react';
 
 export const useOngoingActivities = (competitionId: string) => {
   const { wcif } = useWCIF();
-  const activities = wcif ? allActivities(wcif) : [];
+  const activities = wcif ? getAllActivities(wcif) : [];
 
   const { data, subscribeToMore } = useActivitiesQuery(competitionId!);
   // const { data: data2 } = useActivitiesSubscription(competitionId!);

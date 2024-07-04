@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { allChildActivities } from '../../../lib/activities';
+import { getAllChildActivities } from '../../../lib/activities';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import ActivityRow from '../../../components/ActivitiyRow';
-import { byDate, formatToParts } from '../../../lib/utils';
+import { byDate } from '../../../lib/utils';
+import { formatToParts } from '../../../lib/time';
 import { Container } from '../../../components/Container';
 
 export function CompetitionRoom() {
@@ -25,7 +26,7 @@ export function CompetitionRoom() {
     () =>
       room?.activities
         .flatMap((activity) =>
-          activity?.childActivities?.length ? allChildActivities(activity) : activity
+          activity?.childActivities?.length ? getAllChildActivities(activity) : activity
         )
         .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()) || [],
     [room?.activities]

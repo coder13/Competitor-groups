@@ -1,8 +1,14 @@
-import { Activity, AssignmentCode, Person } from '@wca/helpers';
+import {
+  Activity,
+  activityCodeToName,
+  AssignmentCode,
+  parseActivityCode,
+  Person,
+} from '@wca/helpers';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { activityCodeToName, parseActivityCode, rooms } from '../../../lib/activities';
-import { formatDateTimeRange } from '../../../lib/utils';
+import { getRooms } from '../../../lib/activities';
+import { formatDateTimeRange } from '../../../lib/time';
 import { renderResultByEventId } from '../../../lib/results';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { isRankedBySingle } from '../../../lib/events';
@@ -45,7 +51,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
   const room = useMemo(
     () =>
       wcif &&
-      rooms(wcif).find((r) =>
+      getRooms(wcif).find((r) =>
         r.activities.some(
           (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id)
         )

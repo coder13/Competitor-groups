@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { Activity, Room, Venue } from '@wca/helpers';
-import { formatTimeRange } from '../lib/utils';
+import { formatTimeRange } from '../lib/time';
 import classNames from 'classnames';
 
 interface ActivityRowProps {

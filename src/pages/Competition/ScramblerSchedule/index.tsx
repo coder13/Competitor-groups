@@ -1,16 +1,13 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import flatMap from 'lodash.flatmap';
-import {
-  activityCodeToName,
-  allActivities,
-  allRoundActivities,
-  rooms,
-} from '../../../lib/activities';
-import { formatToWeekDay, groupBy } from '../../../lib/utils';
+import { getAllActivities, getAllRoundActivities, getRooms } from '../../../lib/activities';
+import { groupBy } from '../../../lib/utils';
+import { formatToWeekDay } from '../../../lib/time';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { BreakableActivityName } from '../../../components/BreakableActivityName';
 import { Container } from '../../../components/Container';
+import { activityCodeToName } from '@wca/helpers';
 
 export default function ScramblerSchedule() {
   const { wcif, setTitle } = useWCIF();
@@ -19,7 +16,7 @@ export default function ScramblerSchedule() {
     setTitle('Scramblers');
   }, [setTitle]);
 
-  const _rooms = useMemo(() => (wcif ? rooms(wcif) : []), [wcif]);
+  const _rooms = useMemo(() => (wcif ? getRooms(wcif) : []), [wcif]);
 
   const [roomSelector, setRoomSelector] = useState(_rooms?.[0]?.name);
 
@@ -32,14 +29,14 @@ export default function ScramblerSchedule() {
   const _allRoundActivities = useMemo(
     () =>
       wcif
-        ? allRoundActivities(wcif)
+        ? getAllRoundActivities(wcif)
             .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
             .filter((activity) => activity.childActivities.length !== 0)
             .filter((activity) => activity.room?.name === roomSelector)
         : [],
     [roomSelector, wcif]
   );
-  const _allActivities = useMemo(() => (wcif ? allActivities(wcif) : []), [wcif]);
+  const _allActivities = useMemo(() => (wcif ? getAllActivities(wcif) : []), [wcif]);
 
   const getActivity = useCallback(
     (assignment) => _allActivities.find(({ id }) => id === assignment.activityId),

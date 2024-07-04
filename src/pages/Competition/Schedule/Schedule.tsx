@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import DisclaimerText from '../../../components/DisclaimerText';
-import { allActivities, rooms } from '../../../lib/activities';
+import { getAllActivities, getRooms } from '../../../lib/activities';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import ActivityRow from '../../../components/ActivitiyRow';
-import { byDate, formatToParts } from '../../../lib/utils';
+import { byDate } from '../../../lib/utils';
+import { formatToParts } from '../../../lib/time';
 import { Container } from '../../../components/Container';
 
 export function Schedule() {
@@ -14,12 +15,12 @@ export function Schedule() {
     setTitle('Schedule');
   }, [setTitle]);
 
-  const showRoom = useMemo(() => wcif && rooms(wcif).length > 1, [wcif]);
+  const showRoom = useMemo(() => wcif && getRooms(wcif).length > 1, [wcif]);
 
   const activities = useMemo(
     () =>
       wcif
-        ? allActivities(wcif)
+        ? getAllActivities(wcif)
             .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
             .filter((activity) => activity.childActivities.length === 0)
         : [],

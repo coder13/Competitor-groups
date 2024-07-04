@@ -3,7 +3,7 @@ import { Container } from '../../../components/Container';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { acceptedRegistration, isRegisteredForEvent } from '../../../lib/person';
 import { EventId } from '@wca/helpers';
-import { byWorldRanking } from '../../../lib/activities';
+import { byWorldRanking } from '../../../lib/sort';
 import { unique } from '../../../lib/utils';
 import { renderResultByEventId } from '../../../lib/results';
 

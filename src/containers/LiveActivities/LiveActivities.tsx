@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useOngoingActivities } from '../../hooks/useOngoingActivities';
 import { useWCIF } from '../../providers/WCIFProvider';
-import { allChildActivities, allRoundActivities, rooms } from '../../lib/activities';
+import { getAllChildActivities, getAllRoundActivities, getRooms } from '../../lib/activities';
 import { GroupAssignmentCodeRank } from '../../pages/Competition/ByGroup/Group';
 import { Fragment } from 'react';
 import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
-import { formatTime } from '../../lib/utils';
+import { formatTime } from '../../lib/time';
 import { useNow } from '../../hooks/useNow';
 import { formatDuration, intervalToDuration } from 'date-fns';
 
@@ -14,13 +14,13 @@ const useCommon = (competitionId: string) => {
 
   const { ongoingActivities, ...rest } = useOngoingActivities(competitionId!);
 
-  const stages = wcif ? rooms(wcif) : [];
-  const roundActivities = wcif ? allRoundActivities(wcif) : [];
+  const stages = wcif ? getRooms(wcif) : [];
+  const roundActivities = wcif ? getAllRoundActivities(wcif) : [];
   const multistage = stages.length > 1;
 
   // All activities that relate to the ongoing activities
   const childActivities = roundActivities
-    ?.flatMap((activity) => allChildActivities(activity))
+    ?.flatMap((activity) => getAllChildActivities(activity))
     .filter((ca) => ongoingActivities.some((oa) => oa.id === ca.id));
 
   const childActivityIds = childActivities.map((ca) => ca.id);

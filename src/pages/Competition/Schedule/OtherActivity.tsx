@@ -1,8 +1,8 @@
 import { Activity, AssignmentCode, Person } from '@wca/helpers';
 import { useEffect, useMemo } from 'react';
-import { rooms } from '../../../lib/activities';
+import { getRooms } from '../../../lib/activities';
 import { useWCIF } from '../../../providers/WCIFProvider';
-import { formatDateTimeRange } from '../../../lib/utils';
+import { formatDateTimeRange } from '../../../lib/time';
 import { Link } from 'react-router-dom';
 import { PeopleList } from './PeopleList';
 
@@ -27,7 +27,7 @@ export function OtherActivity({ competitionId, activity, persons }: OtherGroupPr
   const room = useMemo(
     () =>
       wcif &&
-      rooms(wcif).find((r) =>
+      getRooms(wcif).find((r) =>
         r.activities.some(
           (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id)
         )

@@ -1,18 +1,14 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import {
-  activityCodeToName,
-  allRoundActivities,
-  nextActivityCode,
-  prevActivityCode,
-  rooms,
-} from '../../../lib/activities';
+import { getAllRoundActivities, getRooms } from '../../../lib/activities';
+import { nextActivityCode, prevActivityCode } from '../../../lib/activityCodes';
 import { Container } from '../../../components/Container';
-import { ActivityCode } from '@wca/helpers';
+import { ActivityCode, activityCodeToName } from '@wca/helpers';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { SupportedAssignmentCode } from '../../../lib/assignments';
 import { AssignmentCodeCell } from '../../../components/AssignmentCodeCell';
 import { Fragment, useCallback, useEffect } from 'react';
-import { byName, formatDateTimeRange } from '../../../lib/utils';
+import { byName } from '../../../lib/utils';
+import { formatDateTimeRange } from '../../../lib/time';
 import classNames from 'classnames';
 import { CutoffTimeLimitPanel } from '../../../components/CutoffTimeLimitPanel';
 
@@ -23,8 +19,8 @@ const useCommon = () => {
 
   const round = wcif?.events?.flatMap((e) => e.rounds).find((r) => r.id === roundId);
 
-  const stages = wcif ? rooms(wcif) : [];
-  const roundActivies = wcif ? allRoundActivities(wcif) : [];
+  const stages = wcif ? getRooms(wcif) : [];
+  const roundActivies = wcif ? getAllRoundActivities(wcif) : [];
   const multistage = stages.length > 1;
 
   // All activities that relate to the activityCode

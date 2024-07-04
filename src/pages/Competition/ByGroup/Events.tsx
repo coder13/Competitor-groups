@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { groupActivitiesByRound, parseActivityCode } from '../../../lib/activities';
+import { groupActivitiesByRound } from '../../../lib/activities';
 import { eventNameById } from '../../../lib/events';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { Container } from '../../../components/Container';
+import { parseActivityCode } from '@wca/helpers';
 
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;

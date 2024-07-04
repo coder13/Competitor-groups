@@ -1,13 +1,12 @@
 import { useCallback, useMemo } from 'react';
-import { groupActivitiesByRound, parseActivityCode } from '../../lib/activities';
+import { groupActivitiesByRound } from '../../lib/activities';
 import { acceptedRegistration } from '../../lib/person';
 import { useWCIF } from '../../providers/WCIFProvider';
-import { Activity, EventId } from '@wca/helpers';
+import { Activity, EventId, parseActivityCode } from '@wca/helpers';
 import { hasAssignmentInStage } from '../../lib/person';
 import { Container } from '../../components/Container';
 import classNames from 'classnames';
 import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
-import { SupportedAssignmentCode } from '../../lib/assignments';
 
 const groupNumber = ({ activityCode }: Activity) => parseActivityCode(activityCode)?.groupNumber;
 

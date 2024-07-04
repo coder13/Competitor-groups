@@ -50,12 +50,11 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "vite",
+    "dev": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "deploy": "NODE_ENV=production npm run build && cp ./build/index.html ./build/200.html && surge ./build/ -d competition-groups.surge.sh"
+    "lint": "eslint ./src/ --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "serve": "vite preview"
   },
   "eslintConfig": {
     "extends": [
@@ -78,9 +77,9 @@
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.47.0",
     "autoprefixer": "^10.4.7",
-    "eslint": "^8.16.0",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-react-hooks": "^4.6.2",
     "postcss": "^8.4.14",
     "prettier": "^2.6.2",

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { useWCIF } from '../../../providers/WCIFProvider';
-import { parseActivityCode, streamActivities, streamPersonIds } from '../../../lib/activities';
-import { formatDate, formatToParts, roundTime } from '../../../lib/utils';
+import { streamActivities, streamPersonIds } from '../../../lib/activities';
+import { roundTime } from '../../../lib/utils';
+import { formatDate, formatToParts } from '../../../lib/time';
 import DisclaimerText from '../../../components/DisclaimerText';
+import { parseActivityCode } from '@wca/helpers';
 
 export const byDate = (
   a: { startTime: string } | undefined,
