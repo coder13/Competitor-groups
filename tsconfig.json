@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["vite/client", "vite-plugin-svgr/client"], // need to install 
+    "types": ["vite/client", "vite-plugin-svgr/client"], // need to install
     "allowJs": true,
     "noImplicitAny": false,
     "skipLibCheck": false,

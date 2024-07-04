@@ -41,11 +41,11 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
   const scheduleDays = useMemo(() => getGroupedAssignmentsByDate(wcif, person), []);
 
   useEffect(() => {
-    const today = new Date('2024-07-20T00:00:00Z');
+    const today = new Date();
 
     const collapse: string[] = [];
     scheduleDays.forEach(({ date, dateParts, assignments }) => {
-      const lastActivity = assignments.findLast((a) => a.activity)?.activity;
+      const lastActivity = [...assignments].reverse().find((a) => a.activity)?.activity;
       if (!lastActivity) {
         return;
       }
@@ -80,8 +80,6 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
 
   const isSingleDay = scheduleDays.length === 1;
 
-  console.log(collapsedDates);
-
   return (
     <>
       <div className="shadow-md">
@@ -98,7 +96,7 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
           </thead>
           <tbody>
             {scheduleDays.map(({ date, dateParts, assignments }) => {
-              const collapsed = collapsedDates.includes(date);
+              const collapsed = collapsedDates.includes(date) && scheduleDays.length > 1;
 
               return (
                 <Fragment key={date}>
@@ -117,7 +115,7 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                       </td>
                     </tr>
                   )}
-                  {(collapsedDates.includes(date) ? [] : assignments)
+                  {(collapsed ? [] : assignments)
                     .sort((a, b) => byDate(a.activity, b.activity))
                     .map(({ date, assignment }, index, sortedAssignments) => {
                       const activity = assignment.activity;
