@@ -24,6 +24,7 @@ export const nextActivityCode = (wcif: Competition, activityCode: string) => {
   return activityCodes?.[index + 1];
 };
 
+const regex = /other-(?:(\w+))?(?:-g(\d+))?/;
 export const parseActivityCodeFlexible = (
   activityCode: string
 ):
@@ -31,17 +32,16 @@ export const parseActivityCodeFlexible = (
   | {
       eventId: string;
       roundNumber: 1;
-      groupNumber: number;
+      groupNumber: number | null;
       attemptNumber: null;
     } => {
   if (activityCode.startsWith('other')) {
-    const regex = /other-(\w+)-g(\d+)/;
-    const matches = activityCode.match(regex);
-    const groupNumber = parseInt(matches![2], 10);
+    const [, e, g] = activityCode.match(regex) as any[];
+
     return {
-      eventId: `other-${matches![1]}`,
+      eventId: `other-${e}`,
       roundNumber: 1,
-      groupNumber,
+      groupNumber: g ? parseInt(g, 10) : null,
       attemptNumber: null,
     };
   }

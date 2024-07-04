@@ -103,10 +103,4 @@ export const getNumericDateFormatter = (timeZone?: string) =>
  * Formats into a numeric date based on timezone for easier grouping of assignments by date
  */
 export const formatNumericDate = (date: Date, timeZone?: string) =>
-  date.toLocaleDateString([], {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    timeZone,
-  });
+  getNumericDateFormatter(timeZone).format(date);

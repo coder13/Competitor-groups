@@ -1,7 +1,7 @@
-import { Fragment, useCallback, useMemo } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocalStorage } from '@uidotdev/usehooks';
 import { Competition, Person } from '@wca/helpers';
 import { getGroupedAssignmentsByDate } from './utils';
-import { getAllActivities } from '../../lib/activities';
 import { byDate, roundTime } from '../../lib/utils';
 import { parseActivityCodeFlexible } from '../../lib/activityCodes';
 import { useNow } from '../../hooks/useNow';
@@ -17,17 +17,70 @@ export interface AssignmentsProps {
 }
 
 export function Assignments({ wcif, person, showRoom, showStationNumber }: AssignmentsProps) {
+  const [initialCollapsed, saveCollapsed] = useLocalStorage<Record<string, string[]>>(
+    `collapse`,
+    {}
+  );
+
+  const [collapsedDates, setCollapsedDates] = useState<string[]>(() => {
+    console.log(26, initialCollapsed);
+    if (!initialCollapsed) {
+      return [];
+    }
+
+    const collapsed = initialCollapsed[`${wcif.id}-${person.registrantId}`];
+    if (!collapsed || !Array.isArray(collapsed)) {
+      return [];
+    }
+
+    return collapsed;
+  });
+
   const now = useNow(15 * 1000);
-  const allActivities = useMemo(() => getAllActivities(wcif), [wcif]);
 
   const scheduleDays = useMemo(() => getGroupedAssignmentsByDate(wcif, person), []);
 
+  useEffect(() => {
+    const today = new Date('2024-07-20T00:00:00Z');
+
+    const collapse: string[] = [];
+    scheduleDays.forEach(({ date, dateParts, assignments }) => {
+      const lastActivity = assignments.findLast((a) => a.activity)?.activity;
+      if (!lastActivity) {
+        return;
+      }
+
+      const lastActivityEndTime = new Date(lastActivity.endTime);
+      if (lastActivityEndTime < today && !collapsedDates.includes(date)) {
+        collapse.push(date);
+      }
+    });
+
+    setCollapsedDates((prev) => [...prev, ...collapse]);
+  }, [scheduleDays]);
+
+  const toggleDate = useCallback((date: string) => {
+    return () =>
+      setCollapsedDates((prev) => {
+        let newState = prev;
+        if (prev.includes(date)) {
+          newState = prev.filter((d) => d !== date);
+        } else {
+          newState = [...prev, date];
+        }
+
+        saveCollapsed({
+          ...initialCollapsed,
+          [`${wcif.id}-${person.registrantId}`]: newState,
+        });
+
+        return newState;
+      });
+  }, []);
+
   const isSingleDay = scheduleDays.length === 1;
 
-  const getActivity = useCallback(
-    (assignment) => allActivities.find(({ id }) => id === assignment.activityId),
-    []
-  );
+  console.log(collapsedDates);
 
   return (
     <>
@@ -44,154 +97,164 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
             </tr>
           </thead>
           <tbody>
-            {scheduleDays.map(({ date, dateParts, assignments }) => (
-              <Fragment key={date}>
-                {!isSingleDay && (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="font-bold text-base md:text-lg text-center py-2 bg-slate-50">
-                      Assignments for {dateParts.find((i) => i.type === 'weekday')?.value || date}
-                    </td>
-                  </tr>
-                )}
-                {assignments
-                  .sort((a, b) => byDate(a.activity, b.activity))
-                  .map(({ date, assignment }, index, sortedAssignments) => {
-                    const activity = assignment.activity;
-                    if (!activity) {
-                      return null;
-                    }
+            {scheduleDays.map(({ date, dateParts, assignments }) => {
+              const collapsed = collapsedDates.includes(date);
 
-                    const roundedStartTime = roundTime(new Date(activity.startTime || 0), 5);
-                    const roundedEndTime = roundTime(new Date(activity.endTime || 0), 5);
+              return (
+                <Fragment key={date}>
+                  {!isSingleDay && (
+                    <tr onClick={toggleDate(date)}>
+                      <td
+                        colSpan={6}
+                        className="font-bold text-base md:text-lg bg-slate-50 select-none cursor-pointer">
+                        <div className="flex justify-between">
+                          <span className="p-2 w-full text-center">
+                            Assignments for{' '}
+                            {dateParts.find((i) => i.type === 'weekday')?.value || date}
+                          </span>
+                          <span className="p-2 flex-end">{collapsed ? ' ▼' : ' ▲'}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  {(collapsedDates.includes(date) ? [] : assignments)
+                    .sort((a, b) => byDate(a.activity, b.activity))
+                    .map(({ date, assignment }, index, sortedAssignments) => {
+                      const activity = assignment.activity;
+                      if (!activity) {
+                        return null;
+                      }
 
-                    const isOver = now > roundedEndTime;
-                    const isCurrent = now > roundedStartTime && now < roundedEndTime;
+                      const roundedStartTime = roundTime(new Date(activity.startTime || 0), 5);
+                      const roundedEndTime = roundTime(new Date(activity.endTime || 0), 5);
 
-                    if (
-                      assignment.type === 'extra' ||
-                      !('room' in activity || 'parent' in activity)
-                    ) {
-                      return (
-                        <ExtraAssignment
-                          key={`${date}-${roundedStartTime.toLocaleString()}-${
-                            assignment.assignmentCode
-                          }`}
-                          assignment={assignment}
-                          isOver={isOver}
-                          isCurrent={isCurrent}
-                          startTime={roundedStartTime}
-                          endTime={roundedEndTime}
-                          timeZone={wcif.schedule.venues[0]?.timezone}
-                        />
+                      const isOver = now > roundedEndTime;
+                      const isCurrent = now > roundedStartTime && now < roundedEndTime;
+
+                      if (
+                        assignment.type === 'extra' ||
+                        !('room' in activity || 'parent' in activity)
+                      ) {
+                        return (
+                          <ExtraAssignment
+                            key={`${date}-${roundedStartTime.toLocaleString()}-${
+                              assignment.assignmentCode
+                            }`}
+                            assignment={assignment}
+                            isOver={isOver}
+                            isCurrent={isCurrent}
+                            startTime={roundedStartTime}
+                            endTime={roundedEndTime}
+                            timeZone={wcif.schedule.venues[0]?.timezone}
+                          />
+                        );
+                      }
+
+                      if (!assignment.activityId) {
+                        return null;
+                      }
+
+                      const { eventId, roundNumber, attemptNumber } = parseActivityCodeFlexible(
+                        assignment.activity?.activityCode || ''
                       );
-                    }
 
-                    if (!assignment.activityId) {
-                      return null;
-                    }
+                      const venue = wcif?.schedule.venues?.find((v) =>
+                        v.rooms.some((r) => {
+                          if (activity.room) {
+                            return r.id === activity.room.id;
+                          } else if (activity.parent?.room) {
+                            return r.id === activity.parent.room.id;
+                          }
 
-                    const { eventId, roundNumber, attemptNumber } = parseActivityCodeFlexible(
-                      assignment.activity?.activityCode || ''
-                    );
+                          return false;
+                        })
+                      );
+                      const timeZone = venue?.timezone || 'UTC';
 
-                    const venue = wcif?.schedule.venues?.find((v) =>
-                      v.rooms.some((r) => {
-                        if (activity.room) {
-                          return r.id === activity.room.id;
-                        } else if (activity.parent?.room) {
-                          return r.id === activity.parent.room.id;
+                      const room = activity?.room || activity?.parent?.room;
+
+                      if (!room) {
+                        return null;
+                      }
+
+                      const roomName = room?.name;
+                      const roomColor = room?.color;
+
+                      let howManyNextAssignmentsAreSameRoundAttempt = 0;
+                      for (let i = index + 1; i < sortedAssignments.length; i++) {
+                        const nextAssignment = sortedAssignments[i];
+                        if (!nextAssignment?.activity) {
+                          break;
                         }
 
-                        return false;
-                      })
-                    );
-                    const timeZone = venue?.timezone || 'UTC';
+                        if (!isActivityWithRoomOrParent(nextAssignment.activity)) {
+                          debugger;
+                          break;
+                        }
 
-                    const room = activity?.room || activity?.parent?.room;
-
-                    if (!room) {
-                      return null;
-                    }
-
-                    const roomName = room?.name;
-                    const roomColor = room?.color;
-
-                    let howManyNextAssignmentsAreSameRoundAttempt = 0;
-                    for (let i = index + 1; i < sortedAssignments.length; i++) {
-                      const nextAssignment = sortedAssignments[i];
-                      if (!nextAssignment?.activity) {
-                        break;
+                        const {
+                          eventId: nextAssignmentEventId,
+                          roundNumber: nextAssignmentRoundNumber,
+                          attemptNumber: nextAssignmentAttemptNumber,
+                        } = parseActivityCodeFlexible(nextAssignment.activity.activityCode);
+                        if (
+                          eventId === nextAssignmentEventId &&
+                          roundNumber === nextAssignmentRoundNumber &&
+                          attemptNumber === nextAssignmentAttemptNumber
+                        ) {
+                          howManyNextAssignmentsAreSameRoundAttempt++;
+                        } else {
+                          break;
+                        }
                       }
 
-                      if (!isActivityWithRoomOrParent(nextAssignment.activity)) {
-                        debugger;
-                        break;
-                      }
+                      const previousAssignment = sortedAssignments[index - 1];
+                      const nextAssignment = sortedAssignments[index + 1];
+                      const previousAssignmentActivityCode =
+                        previousAssignment?.activity &&
+                        isActivityWithRoomOrParent(previousAssignment.activity) &&
+                        parseActivityCodeFlexible(previousAssignment?.activity?.activityCode);
+                      const nextAssignmentActivityCode =
+                        nextAssignment?.activity &&
+                        isActivityWithRoomOrParent(nextAssignment.activity) &&
+                        parseActivityCodeFlexible(nextAssignment?.activity?.activityCode);
 
-                      const {
-                        eventId: nextAssignmentEventId,
-                        roundNumber: nextAssignmentRoundNumber,
-                        attemptNumber: nextAssignmentAttemptNumber,
-                      } = parseActivityCodeFlexible(nextAssignment.activity.activityCode);
-                      if (
-                        eventId === nextAssignmentEventId &&
-                        roundNumber === nextAssignmentRoundNumber &&
-                        attemptNumber === nextAssignmentAttemptNumber
-                      ) {
-                        howManyNextAssignmentsAreSameRoundAttempt++;
-                      } else {
-                        break;
-                      }
-                    }
+                      const previousActivityIsSameRoundAttempt =
+                        previousAssignmentActivityCode &&
+                        previousAssignmentActivityCode?.eventId === eventId &&
+                        previousAssignmentActivityCode?.roundNumber === roundNumber &&
+                        previousAssignmentActivityCode?.attemptNumber === attemptNumber;
 
-                    const previousAssignment = sortedAssignments[index - 1];
-                    const nextAssignment = sortedAssignments[index + 1];
-                    const previousAssignmentActivityCode =
-                      previousAssignment?.activity &&
-                      isActivityWithRoomOrParent(previousAssignment.activity) &&
-                      parseActivityCodeFlexible(previousAssignment?.activity?.activityCode);
-                    const nextAssignmentActivityCode =
-                      nextAssignment?.activity &&
-                      isActivityWithRoomOrParent(nextAssignment.activity) &&
-                      parseActivityCodeFlexible(nextAssignment?.activity?.activityCode);
+                      const nextActivityIsSameRoundAttempt =
+                        nextAssignmentActivityCode &&
+                        nextAssignmentActivityCode?.eventId === eventId &&
+                        nextAssignmentActivityCode?.roundNumber === roundNumber &&
+                        nextAssignmentActivityCode?.attemptNumber === attemptNumber;
 
-                    const previousActivityIsSameRoundAttempt =
-                      previousAssignmentActivityCode &&
-                      previousAssignmentActivityCode?.eventId === eventId &&
-                      previousAssignmentActivityCode?.roundNumber === roundNumber &&
-                      previousAssignmentActivityCode?.attemptNumber === attemptNumber;
+                      const showTopBorder = !previousActivityIsSameRoundAttempt;
+                      const showBottomBorder = !nextActivityIsSameRoundAttempt;
 
-                    const nextActivityIsSameRoundAttempt =
-                      nextAssignmentActivityCode &&
-                      nextAssignmentActivityCode?.eventId === eventId &&
-                      nextAssignmentActivityCode?.roundNumber === roundNumber &&
-                      nextAssignmentActivityCode?.attemptNumber === attemptNumber;
-
-                    const showTopBorder = !previousActivityIsSameRoundAttempt;
-                    const showBottomBorder = !nextActivityIsSameRoundAttempt;
-
-                    return (
-                      <PersonalNormalAssignment
-                        key={`${assignment.activityId}-${assignment.assignmentCode}`}
-                        competitionId={wcif.id}
-                        assignment={assignment}
-                        activity={activity}
-                        timeZone={timeZone}
-                        room={{ name: roomName, color: roomColor }}
-                        isCurrent={isCurrent}
-                        isOver={isOver}
-                        showTopBorder={showTopBorder}
-                        showBottomBorder={showBottomBorder}
-                        showRoom={showRoom}
-                        showStationNumber={showStationNumber}
-                        rowSpan={howManyNextAssignmentsAreSameRoundAttempt}
-                      />
-                    );
-                  })}
-              </Fragment>
-            ))}
+                      return (
+                        <PersonalNormalAssignment
+                          key={`${assignment.activityId}-${assignment.assignmentCode}`}
+                          competitionId={wcif.id}
+                          assignment={assignment}
+                          activity={activity}
+                          timeZone={timeZone}
+                          room={{ name: roomName, color: roomColor }}
+                          isCurrent={isCurrent}
+                          isOver={isOver}
+                          showTopBorder={showTopBorder}
+                          showBottomBorder={showBottomBorder}
+                          showRoom={showRoom}
+                          showStationNumber={showStationNumber}
+                          rowSpan={howManyNextAssignmentsAreSameRoundAttempt}
+                        />
+                      );
+                    })}
+                </Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>

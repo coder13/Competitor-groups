@@ -5,7 +5,7 @@ import { useWCIF } from '../../../providers/WCIFProvider';
 import { EventActivity } from './EventActivity';
 import { OtherActivity } from './OtherActivity';
 import { Container } from '../../../components/Container';
-import { parseActivityCode } from '@wca/helpers';
+import { parseActivityCodeFlexible } from '../../../lib/activityCodes';
 
 export function CompetitionActivity() {
   const { wcif } = useWCIF();
@@ -16,8 +16,6 @@ export function CompetitionActivity() {
       wcif && getAllActivities(wcif).find((a) => activityId && a.id === parseInt(activityId, 10)),
     [wcif, activityId]
   );
-
-  const { eventId } = parseActivityCode(activity?.activityCode || '');
 
   const everyoneInActivity = useMemo(
     () =>
@@ -33,6 +31,16 @@ export function CompetitionActivity() {
         : [],
     [wcif, activityId]
   );
+
+  if (!activity) {
+    return (
+      <Container>
+        <h2>Activity not found</h2>
+      </Container>
+    );
+  }
+
+  const { eventId } = parseActivityCodeFlexible(activity.activityCode);
 
   const isEventGroup = !eventId?.startsWith('other');
   const GroupComponent = isEventGroup ? EventActivity : OtherActivity;

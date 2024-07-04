@@ -12,6 +12,8 @@ import { useWcif } from '../../hooks/queries/useWcif';
 import { prefetchCompetition } from '../../hooks/queries/useCompetition';
 import { WCIFContext } from './WCIFContext';
 import ReactGA from 'react-ga4';
+import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorFallback } from '../../components/ErrorFallback';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
@@ -98,7 +100,7 @@ export function WCIFProvider({ competitionId, children }) {
         )}
         {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
         <div className="flex flex-col w-full items-center overflow-auto">
-          {children}
+          <ErrorBoundary FallbackComponent={ErrorFallback}>{children}</ErrorBoundary>
           {!!dataUpdatedAt && (
             <Container className="py-2">
               {<LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}

@@ -5,7 +5,7 @@ import { getAllActivities, getRooms } from '../../../lib/activities';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import ActivityRow from '../../../components/ActivitiyRow';
 import { byDate } from '../../../lib/utils';
-import { formatToParts } from '../../../lib/time';
+import { formatToParts, getNumericDateFormatter } from '../../../lib/time';
 import { Container } from '../../../components/Container';
 
 export function Schedule() {
@@ -37,13 +37,7 @@ export function Schedule() {
       const dateTime = new Date(a.startTime);
       return {
         approxDateTime: dateTime.getTime(),
-        date: dateTime.toLocaleDateString([], {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric',
-          timeZone: venue?.timezone,
-        }),
+        date: getNumericDateFormatter(venue?.timezone).format(dateTime),
         dateParts: formatToParts(dateTime),
       };
     })
@@ -61,13 +55,7 @@ export function Schedule() {
 
       return {
         ...a,
-        date: dateTime.toLocaleDateString([], {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric',
-          timeZone: venue?.timezone,
-        }),
+        date: getNumericDateFormatter(venue?.timezone).format(dateTime),
       };
     })
     .sort((a, b) => byDate(a, b));
