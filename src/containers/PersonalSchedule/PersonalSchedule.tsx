@@ -3,9 +3,11 @@ import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { Link } from 'react-router-dom';
 import { Competition, Person } from '@wca/helpers';
-import { getRooms } from '../../lib/activities';
+import { getAllActivities, getRooms } from '../../lib/activities';
 import DisclaimerText from '../../components/DisclaimerText';
 import { Assignments } from './Assignments';
+import { useNow } from '../../hooks/useNow';
+import { PersonalNormalAssignment } from './PersonalNormalAssignment';
 
 export interface PersonalScheduleContainerProps {
   wcif: Competition;
@@ -46,6 +48,7 @@ export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleCont
       <hr className="my-2" />
       <DisclaimerText />
       <hr className="my-2" />
+
       {person.assignments && person.assignments.length > 0 ? (
         <Assignments
           wcif={wcif}

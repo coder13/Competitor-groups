@@ -3,14 +3,11 @@ import { Competition, Person } from '@wca/helpers';
 import { getGroupedAssignmentsByDate } from './utils';
 import { getAllActivities } from '../../lib/activities';
 import { byDate, roundTime } from '../../lib/utils';
-import classNames from 'classnames';
-import { Link } from 'react-router-dom';
 import { parseActivityCodeFlexible } from '../../lib/activityCodes';
 import { useNow } from '../../hooks/useNow';
-import { shortEventNameById } from '../../lib/events';
-import AssignmentLabel from '../../components/AssignmentLabel/AssignmentLabel';
-import { worldsAssignmentMap } from './constants';
-import { ExtraAssignment } from './PersonalAssignment';
+import { ExtraAssignment } from './PersonalExtraAssignment';
+import { PersonalNormalAssignment } from './PersonalNormalAssignment';
+import { isActivityWithRoomOrParent } from '../../lib/typeguards';
 
 export interface AssignmentsProps {
   wcif: Competition;
@@ -59,30 +56,26 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                   </tr>
                 )}
                 {assignments
-                  .map((assignment) => ({
-                    assignment,
-                    activity: getActivity(assignment),
-                  }))
-                  .sort((a, b) => byDate(a.assignment.activity, b.assignment.activity))
-                  .map(({ assignment, activity }, index, sortedAssignments) => {
-                    if (!activity?.id) {
-                      const roundedStartTime = roundTime(
-                        new Date(assignment.activity.startTime || 0),
-                        5
-                      );
-                      const roundedEndTime = roundTime(
-                        new Date(assignment.activity.endTime || 0),
-                        5
-                      );
+                  .sort((a, b) => byDate(a.activity, b.activity))
+                  .map(({ date, assignment }, index, sortedAssignments) => {
+                    const activity = assignment.activity;
+                    if (!activity) {
+                      return null;
+                    }
 
-                      const isOver = now > roundedEndTime;
-                      const isCurrent = now > roundedStartTime && now < roundedEndTime;
+                    const roundedStartTime = roundTime(new Date(activity.startTime || 0), 5);
+                    const roundedEndTime = roundTime(new Date(activity.endTime || 0), 5);
 
-                      console.log(81);
+                    const isOver = now > roundedEndTime;
+                    const isCurrent = now > roundedStartTime && now < roundedEndTime;
 
+                    if (
+                      assignment.type === 'extra' ||
+                      !('room' in activity || 'parent' in activity)
+                    ) {
                       return (
                         <ExtraAssignment
-                          key={`${assignment.date}-${roundedStartTime.toLocaleString()}-${
+                          key={`${date}-${roundedStartTime.toLocaleString()}-${
                             assignment.assignmentCode
                           }`}
                           assignment={assignment}
@@ -99,33 +92,41 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                       return null;
                     }
 
-                    const { eventId, roundNumber, groupNumber, attemptNumber } =
-                      parseActivityCodeFlexible(activity?.activityCode || '');
+                    const { eventId, roundNumber, attemptNumber } = parseActivityCodeFlexible(
+                      assignment.activity?.activityCode || ''
+                    );
 
                     const venue = wcif?.schedule.venues?.find((v) =>
-                      v.rooms.some((r) => r.id === activity?.room?.id || activity?.parent?.room?.id)
+                      v.rooms.some((r) => {
+                        if (activity.room) {
+                          return r.id === activity.room.id;
+                        } else if (activity.parent?.room) {
+                          return r.id === activity.parent.room.id;
+                        }
+
+                        return false;
+                      })
                     );
-                    const timeZone = venue?.timezone;
+                    const timeZone = venue?.timezone || 'UTC';
 
                     const room = activity?.room || activity?.parent?.room;
+
+                    if (!room) {
+                      return null;
+                    }
+
                     const roomName = room?.name;
                     const roomColor = room?.color;
-                    const roundedStartTime = roundTime(new Date(activity?.startTime || 0), 5);
-                    const roundedEndTime = roundTime(new Date(activity?.endTime || 0), 5);
-
-                    const formattedStartTime = roundedStartTime.toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      timeZone,
-                    });
-
-                    const isOver = now > roundedEndTime;
-                    const isCurrent = now > roundedStartTime && now < roundedEndTime;
 
                     let howManyNextAssignmentsAreSameRoundAttempt = 0;
                     for (let i = index + 1; i < sortedAssignments.length; i++) {
                       const nextAssignment = sortedAssignments[i];
                       if (!nextAssignment?.activity) {
+                        break;
+                      }
+
+                      if (!isActivityWithRoomOrParent(nextAssignment.activity)) {
+                        debugger;
                         break;
                       }
 
@@ -149,77 +150,44 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                     const nextAssignment = sortedAssignments[index + 1];
                     const previousAssignmentActivityCode =
                       previousAssignment?.activity &&
+                      isActivityWithRoomOrParent(previousAssignment.activity) &&
                       parseActivityCodeFlexible(previousAssignment?.activity?.activityCode);
                     const nextAssignmentActivityCode =
                       nextAssignment?.activity &&
+                      isActivityWithRoomOrParent(nextAssignment.activity) &&
                       parseActivityCodeFlexible(nextAssignment?.activity?.activityCode);
 
                     const previousActivityIsSameRoundAttempt =
+                      previousAssignmentActivityCode &&
                       previousAssignmentActivityCode?.eventId === eventId &&
                       previousAssignmentActivityCode?.roundNumber === roundNumber &&
                       previousAssignmentActivityCode?.attemptNumber === attemptNumber;
 
                     const nextActivityIsSameRoundAttempt =
+                      nextAssignmentActivityCode &&
                       nextAssignmentActivityCode?.eventId === eventId &&
                       nextAssignmentActivityCode?.roundNumber === roundNumber &&
                       nextAssignmentActivityCode?.attemptNumber === attemptNumber;
 
+                    const showTopBorder = !previousActivityIsSameRoundAttempt;
+                    const showBottomBorder = !nextActivityIsSameRoundAttempt;
+
                     return (
-                      <Link
+                      <PersonalNormalAssignment
                         key={`${assignment.activityId}-${assignment.assignmentCode}`}
-                        style={{
-                          ...(isCurrent && {
-                            backgroundColor: `${roomColor}25`,
-                          }),
-                        }}
-                        className={classNames('table-row text-xs sm:text-sm hover:bg-slate-100', {
-                          'opacity-40': isOver,
-                          'bg-op': isCurrent,
-                          'border-t':
-                            !previousActivityIsSameRoundAttempt || eventId.toString() === 'other',
-                          'border-b':
-                            !nextActivityIsSameRoundAttempt || eventId.toString() === 'other',
-                        })}
-                        to={`/competitions/${wcif?.id}/activities/${assignment.activityId}`}>
-                        {!previousActivityIsSameRoundAttempt && (
-                          <td
-                            className="py-2 text-center justify-center"
-                            rowSpan={howManyNextAssignmentsAreSameRoundAttempt + 1}>
-                            {activity?.activityCode.startsWith('other')
-                              ? activity?.name
-                              : [
-                                  `${shortEventNameById(eventId)}`,
-                                  `${roundNumber && roundNumber > 1 ? `R${roundNumber}` : ''}`,
-                                  `${attemptNumber ? `A${attemptNumber}` : ''}`,
-                                ]
-                                  .filter(Boolean)
-                                  .join(' ')}
-                          </td>
-                        )}
-                        <td className="py-2 text-center">{formattedStartTime}</td>
-                        <td className="py-2 text-center">
-                          <AssignmentLabel assignmentCode={assignment.assignmentCode} />
-                        </td>
-                        <td className="py-2 text-center text-base sm:text-lg">{groupNumber}</td>
-                        {showRoom && (
-                          <td
-                            className="py-2 text-center"
-                            style={{
-                              lineHeight: 2,
-                            }}>
-                            <span
-                              className="px-[6px]  py-[4px]  rounded-md"
-                              style={{
-                                backgroundColor: roomColor ? `${roomColor}70` : 'inherit',
-                              }}>
-                              {roomName}
-                            </span>
-                          </td>
-                        )}
-                        {showStationNumber && (
-                          <td className="py-2 text-center">{assignment.stationNumber}</td>
-                        )}
-                      </Link>
+                        competitionId={wcif.id}
+                        assignment={assignment}
+                        activity={activity}
+                        timeZone={timeZone}
+                        room={{ name: roomName, color: roomColor }}
+                        isCurrent={isCurrent}
+                        isOver={isOver}
+                        showTopBorder={showTopBorder}
+                        showBottomBorder={showBottomBorder}
+                        showRoom={showRoom}
+                        showStationNumber={showStationNumber}
+                        rowSpan={howManyNextAssignmentsAreSameRoundAttempt}
+                      />
                     );
                   })}
               </Fragment>

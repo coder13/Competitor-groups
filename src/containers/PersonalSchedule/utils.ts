@@ -3,8 +3,9 @@ import { byDate } from '../../lib/utils';
 import { getAllActivities, getRooms } from '../../lib/activities';
 import { getWorldAssignmentsExtension } from '../../extensions/com.competitiongroups.worldsassignments';
 import { formatNumericDate, getNumericDateFormatter } from '../../lib/time';
-import { ActivityWithRoomOrParent } from '../../lib/types';
 import { isActivityWithRoomOrParent } from '../../lib/typeguards';
+import { parseActivityCodeFlexible } from '../../lib/activityCodes';
+import { shortEventNameById } from '../../lib/events';
 
 export const getNormalAssignments = (wcif: Competition, person: Person) => {
   const allActivities = getAllActivities(wcif);
@@ -12,6 +13,7 @@ export const getNormalAssignments = (wcif: Competition, person: Person) => {
   const assignments = person.assignments
     ? person.assignments
         ?.map((assignment) => ({
+          type: 'normal',
           ...assignment,
           activity: allActivities.find(({ id }) => id === assignment.activityId),
         }))
@@ -24,14 +26,29 @@ export const getNormalAssignments = (wcif: Competition, person: Person) => {
 const getExtraAssignments = (person: Person) => {
   const { assignments } = getWorldAssignmentsExtension(person.extensions);
 
-  return assignments.map((assignment) => ({
-    assignmentCode: assignment.staff,
-    activityId: null,
-    activity: {
-      startTime: assignment.startTime,
-      endTime: assignment.endTime,
-    },
-  }));
+  return assignments.map(
+    (
+      assignment
+    ): Assignment & {
+      type: 'extra';
+      activity: Activity;
+    } => ({
+      type: 'extra',
+      assignmentCode: assignment.staff,
+      activityId: -1,
+      stationNumber: null,
+      activity: {
+        activityCode: 'other-' + assignment.staff,
+        startTime: assignment.startTime,
+        endTime: assignment.endTime,
+        childActivities: [],
+        extensions: [],
+        id: -1,
+        name: assignment.staff,
+        scrambleSetId: null,
+      },
+    })
+  );
 };
 
 export const getAllAssignments = (wcif: Competition, person: Person) => {
@@ -54,59 +71,108 @@ export const getGroupedAssignmentsByDate = (wcif: Competition, person: Person) =
 
   const venues = wcif.schedule.venues || [];
 
-  return allAssignments
+  const scheduledDays = allAssignments
     .map((a) => {
+      if (a.type === 'extra') {
+        return {
+          approxDateTime: 0,
+          date: '',
+          dateParts: [],
+          assignments: [],
+        };
+      }
+
+      if (!a.activity) {
+        return {
+          approxDateTime: 0,
+          date: '',
+          dateParts: [],
+          assignments: [],
+        };
+      }
+
+      const roomId = a.activity && 'room' in a.activity && a.activity.room?.id;
       const parent = a.activity && 'parent' in a.activity && a.activity.parent;
-      const roomId = a.activity && 'room' in a.activity && a.activity.room.id;
 
       const venue = venues.find((v) => v.rooms.some((r) => r.id === roomId || parent));
 
-      const dateTime = new Date(a.activity.startTime);
+      const dateTime = new Date(a.activity?.startTime);
       const date = formatNumericDate(dateTime, venue?.timezone);
 
       return {
         approxDateTime: dateTime.getTime(),
         date: date,
         dateParts: getNumericDateFormatter(venue?.timezone).formatToParts(dateTime),
-        assignments: assignmentsWithParsedDate.filter((b) => b.date === date),
       };
     })
+    .filter((v, i, arr) => arr.findIndex(({ date }) => date === v.date) === i);
+
+  return scheduledDays
+    .map(({ date, ...props }) => ({
+      ...props,
+      date,
+      assignments: assignmentsWithParsedDate.filter((a) => a.date === date),
+    }))
     .filter(({ assignments }) => assignments.length)
-    .filter((v, i, arr) => arr.findIndex(({ date }) => date === v.date) === i)
     .sort((a, b) => a.approxDateTime - b.approxDateTime);
 };
 
 export const getAssignmentsWithParsedDate = (wcif: Competition, person: Person) => {
   const allAssignments = getAllAssignments(wcif, person);
   const venues = wcif.schedule.venues;
+  const rooms = getRooms(wcif);
 
   return allAssignments
     .map((assignment) => {
       const { activity } = assignment;
-      if (!isActivityWithRoomOrParent(activity) && 'startTime' in activity) {
+
+      if (!activity) {
+        return null;
+      }
+
+      if (assignment.type === 'extra') {
         return {
-          ...assignment,
+          assignment,
+          activity,
           date: formatNumericDate(new Date(activity.startTime), venues[0].timezone),
         };
       }
 
-      if (isActivityWithRoomOrParent(activity)) {
+      if (assignment.type === 'normal') {
+        if (!activity || !('room' in activity || 'parent' in activity)) {
+          return {
+            assignment,
+            date: formatNumericDate(new Date(), venues[0].timezone),
+          };
+        }
+
         const roomId = (activity.room || activity.parent?.room)?.id;
 
-        const venue = activity?.room?.id
-          ? venues.find((v) => v.rooms.some((r) => r.id === roomId))
-          : venues[0];
+        const venue = activity?.room?.id ? rooms.find((r) => r.id === roomId)?.venue : venues[0];
 
         const dateTime = new Date(activity.startTime);
 
         return {
-          ...assignment,
+          assignment,
+          activity,
           date: formatNumericDate(dateTime, venue?.timezone),
         };
       }
-
-      return null;
     })
     .filter(Boolean)
     .sort((a, b) => byDate(a.activity, b.activity));
+};
+
+export const formatBriefActivityName = (activity: Activity) => {
+  const { eventId, roundNumber, attemptNumber } = parseActivityCodeFlexible(activity.activityCode);
+
+  return activity.activityCode.startsWith('other')
+    ? activity.name
+    : [
+        `${shortEventNameById(eventId)}`,
+        `${roundNumber && roundNumber > 1 ? `R${roundNumber}` : ''}`,
+        `${attemptNumber ? `A${attemptNumber}` : ''}`,
+      ]
+        .filter(Boolean)
+        .join(' ');
 };

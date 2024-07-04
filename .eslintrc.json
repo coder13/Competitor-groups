@@ -10,7 +10,8 @@
     "import/first": 0,
     "no-restricted-globals": 0,
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+    "no-unused-vars": "warn"
   },
   "settings": {
     "import/resolver": {

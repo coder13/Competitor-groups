@@ -6,15 +6,25 @@ import {
   PersonalBest,
   RankingType,
   Room,
+  Venue,
   parseActivityCode,
 } from '@wca/helpers';
 import { formatTime } from './time';
-import { ActivityWithRoomOrParent } from './types';
+import { ActivityWithRoomOrParent, RoundActivity } from './types';
 
 export const getVenues = (wcif: Competition) => wcif.schedule.venues;
 
-export const getRooms = (wcif: Competition): Room[] =>
-  getVenues(wcif).flatMap((venue) => venue.rooms || []);
+export const getRooms = (
+  wcif: Competition
+): (Room & {
+  venue: Venue;
+})[] =>
+  getVenues(wcif).flatMap((venue) =>
+    venue.rooms.map((room) => ({
+      ...room,
+      venue,
+    }))
+  );
 
 /**
  * Returns the activity's child activities with a reference to the parent activity
@@ -29,7 +39,7 @@ export const getChildActivities = (roundActivity: Activity) => {
 /**
  * returns the activity itself and all its child activities recursively
  */
-export const getAllChildActivities = (activity: Activity) => {
+export const getAllChildActivities = <T extends Activity>(activity: T): (T & { parent: T })[] => {
   if (!activity.childActivities || activity.childActivities.length === 0) {
     return [];
   }
@@ -37,9 +47,9 @@ export const getAllChildActivities = (activity: Activity) => {
   const childActivities = activity.childActivities.map((child) => ({
     ...child,
     parent: activity,
-  }));
+  })) as (T & { parent: T })[];
 
-  const subChildActivities = childActivities.flatMap(getAllChildActivities);
+  const subChildActivities = childActivities.flatMap((a) => getAllChildActivities(a));
 
   return [...childActivities, ...subChildActivities];
 };
@@ -49,7 +59,7 @@ export const getAllChildActivities = (activity: Activity) => {
  * @param wcif
  * @returns
  */
-export const getAllRoundActivities = (wcif: Competition) => {
+export const getAllRoundActivities = (wcif: Competition): RoundActivity[] => {
   return getRooms(wcif).flatMap((room) =>
     room.activities.map((a) => ({
       ...a,
@@ -61,10 +71,11 @@ export const getAllRoundActivities = (wcif: Competition) => {
 /**
  * Returns a list of all activities in the competition including all child activities
  */
-export const getAllActivities = (wcif: Competition) => {
+export const getAllActivities = (wcif: Competition): ActivityWithRoomOrParent[] => {
   // Rounds
   const activities = getAllRoundActivities(wcif);
   const childActivities = activities.flatMap(getAllChildActivities);
+
   return [...activities, ...childActivities];
 };
 
