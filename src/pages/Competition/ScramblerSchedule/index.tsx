@@ -8,6 +8,10 @@ import { useWCIF } from '../../../providers/WCIFProvider';
 import { BreakableActivityName } from '../../../components/BreakableActivityName';
 import { Container } from '../../../components/Container';
 import { activityCodeToName } from '@wca/helpers';
+import { parseActivityCodeFlexible } from '../../../lib/activityCodes';
+import { niceActivityName } from '../Schedule';
+import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorFallback } from '../../../components/ErrorFallback';
 
 export default function ScramblerSchedule() {
   const { wcif, setTitle } = useWCIF();
@@ -118,23 +122,29 @@ export default function ScramblerSchedule() {
                         />
                       </td>
                     </tr>
-                    {activity.childActivities.map((childActivity) => (
-                      <Link
-                        key={childActivity.id}
-                        to={`/competitions/${wcif?.id}/activities/${childActivity.id}`}
-                        className="table-row hover:bg-slate-100">
-                        <td className="py-2 px-3">
-                          {activityCodeToName(childActivity.activityCode).split(', ')[2]}
-                        </td>
-                        <td className="py-2 px-3">
-                          {assignments
-                            .filter((a) => a.activityId === childActivity.id)
-                            ?.sort((a, b) => a.personName.localeCompare(b.personName))
-                            .map(({ personName }) => personName)
-                            .join(', ')}
-                        </td>
-                      </Link>
-                    ))}
+                    <ErrorBoundary FallbackComponent={ErrorFallback}>
+                      {activity.childActivities.map((childActivity) => {
+                        const { groupNumber } = parseActivityCodeFlexible(
+                          childActivity.activityCode
+                        );
+
+                        return (
+                          <Link
+                            key={childActivity.id}
+                            to={`/competitions/${wcif?.id}/activities/${childActivity.id}`}
+                            className="table-row hover:bg-slate-100">
+                            <td className="py-2 px-3">{`Group ${groupNumber}`}</td>
+                            <td className="py-2 px-3">
+                              {assignments
+                                .filter((a) => a.activityId === childActivity.id)
+                                ?.sort((a, b) => a.personName.localeCompare(b.personName))
+                                .map(({ personName }) => personName)
+                                .join(', ')}
+                            </td>
+                          </Link>
+                        );
+                      })}
+                    </ErrorBoundary>
                   </>
                 ))}
               </Fragment>

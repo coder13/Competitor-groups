@@ -1,4 +1,9 @@
-import { Competition, EventId, ParsedActivityCode, parseActivityCode } from '@wca/helpers';
+import {
+  Competition,
+  EventId,
+  ParsedActivityCode,
+  parseActivityCode as wcaHelperParseActivityCode,
+} from '@wca/helpers';
 import { getAllRoundActivities } from './activities';
 import { eventNameById } from './events';
 import { isValidNumber } from './time';
@@ -22,6 +27,20 @@ export const nextActivityCode = (wcif: Competition, activityCode: string) => {
   const activityCodes = allUniqueActivityCodes(wcif);
   const index = activityCodes.findIndex((a) => a === activityCode);
   return activityCodes?.[index + 1];
+};
+
+export const parseActivityCode = (activityCode: string): ParsedActivityCode => {
+  if (activityCode.startsWith('other')) {
+    return parseActivityCodeFlexible(activityCode) as ParsedActivityCode;
+  }
+
+  try {
+    return wcaHelperParseActivityCode(activityCode);
+  } catch (e) {
+    console.error(new Error(`Invalid activity code: ${activityCode}`));
+
+    return parseActivityCodeTryReallyHard(activityCode);
+  }
 };
 
 const regex = /other-(?:(\w+))?(?:-g(\d+))?/;
@@ -49,7 +68,30 @@ export const parseActivityCodeFlexible = (
   return parseActivityCode(activityCode);
 };
 
-export const activityCodeToName = (activityCode) => {
+export const parseActivityCodeTryReallyHard = (activityCode: string): ParsedActivityCode => {
+  const trimmedInput = activityCode.trim();
+  const parts = trimmedInput.split('-');
+  const eventId = parts[0];
+  const roundNumberPart = parts.find((part) => part.startsWith('r'))?.slice(1);
+  const groupNumberPart = parts.find((part) => part.startsWith('g'))?.slice(1);
+  const attemptNumberPart = parts.find((part) => part.startsWith('a'))?.slice(1);
+
+  const roundNumber =
+    roundNumberPart && !isNaN(+roundNumberPart) ? parseInt(roundNumberPart, 10) : null;
+  const groupNumber =
+    groupNumberPart && !isNaN(+groupNumberPart) ? parseInt(groupNumberPart, 10) : null;
+  const attemptNumber =
+    attemptNumberPart && !isNaN(+attemptNumberPart) ? parseInt(attemptNumberPart, 10) : null;
+
+  return {
+    eventId: eventId as EventId,
+    roundNumber,
+    groupNumber,
+    attemptNumber,
+  };
+};
+
+export const activityCodeToName = (activityCode: string) => {
   const { eventId, roundNumber, groupNumber, attemptNumber } = parseActivityCode(activityCode);
   return [
     eventId && eventNameById(eventId as EventId),

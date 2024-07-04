@@ -6,6 +6,7 @@ import { EventActivity } from './EventActivity';
 import { OtherActivity } from './OtherActivity';
 import { Container } from '../../../components/Container';
 import { parseActivityCodeFlexible } from '../../../lib/activityCodes';
+import { Activity, activityCodeToName } from '@wca/helpers';
 
 export function CompetitionActivity() {
   const { wcif } = useWCIF();
@@ -53,3 +54,16 @@ export function CompetitionActivity() {
     </Container>
   );
 }
+
+export const niceActivityName = (activty: Activity) => {
+  if (activty.activityCode.startsWith('other')) {
+    return activty.name;
+  } else {
+    try {
+      return activityCodeToName(activty.activityCode);
+    } catch (e) {
+      console.error(e);
+      return activty.name;
+    }
+  }
+};

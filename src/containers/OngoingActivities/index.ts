@@ -1,1 +1,1 @@
-export * from './OngoingActivities'
+export * from './OngoingActivities';
