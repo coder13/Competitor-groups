@@ -6,11 +6,13 @@ import {
   PersonalBest,
   RankingType,
   Room,
+  Schedule,
   Venue,
   parseActivityCode,
 } from '@wca/helpers';
-import { formatTime } from './time';
+import { formatTime, formatToParts, getNumericDateFormatter } from './time';
 import { ActivityWithRoomOrParent, RoundActivity } from './types';
+import { byDate } from './utils';
 
 export const getVenues = (wcif: Competition) => wcif.schedule.venues;
 
@@ -29,7 +31,7 @@ export const getRooms = (
 /**
  * Returns the activity's child activities with a reference to the parent activity
  */
-export const getChildActivities = (roundActivity: Activity) => {
+export const getChildActivities = (roundActivity): ActivityWithRoomOrParent[] => {
   return roundActivity.childActivities.map((child) => ({
     ...child,
     parent: roundActivity,
@@ -150,3 +152,87 @@ export const getStationNumber =
     );
     return assignment?.stationNumber;
   };
+
+export const isActivityInRoom = (room: Room) => {
+  const roundActivities = room.activities;
+  const childActivities = roundActivities.flatMap(getAllChildActivities);
+
+  return (activity: Activity) => {
+    return () => {
+      return (
+        roundActivities.some((a) => a.id === activity.id) ||
+        childActivities.some((a) => a.id === activity.id)
+      );
+    };
+  };
+};
+
+export const getVenueForActivity = (wcif: Competition) => {
+  const venueActivityMap: Record<number, Venue> = getVenues(wcif).reduce((acc, venue) => {
+    venue.rooms.forEach((room) => {
+      room.activities.forEach((activity) => {
+        acc[activity.id] = venue;
+
+        activity.childActivities.forEach((child) => {
+          acc[child.id] = venue;
+        });
+      });
+    });
+    return acc;
+  }, {});
+
+  return (activity: Activity) => venueActivityMap[activity.id];
+};
+
+/**
+ * From a wcif, returns all of the unique days that have activities scheduled
+ */
+export const getScheduledDays = (wcif: Competition) => {
+  const allActivities = getAllActivities(wcif);
+  const findVenue = getVenueForActivity(wcif);
+
+  const scheduleDays = allActivities
+    .map((a) => {
+      const venue = findVenue(a);
+      const dateTime = new Date(a.startTime);
+
+      const year = dateTime.getFullYear();
+      const month = dateTime.getMonth();
+      const day = dateTime.getDate();
+
+      const dateString = `${year}-${month}-${day}`;
+
+      return {
+        approxDateTime: dateTime.getTime(),
+        date: getNumericDateFormatter(venue?.timezone).format(dateTime),
+        dateParts: formatToParts(dateTime),
+        dateString,
+      };
+    })
+    // Filter to unique
+    .filter((v, i, arr) => arr.findIndex(({ date }) => date === v.date) === i)
+    .sort((a, b) => a.approxDateTime - b.approxDateTime);
+
+  return scheduleDays;
+};
+
+export const parseActivityStartDate = (activity: Activity, timeZone?: string) => {
+  const dateTime = new Date(activity.startTime);
+  return {
+    approxDateTime: dateTime.getTime(),
+    date: getNumericDateFormatter(timeZone).format(dateTime),
+    dateParts: formatToParts(dateTime),
+  };
+};
+
+export const getActivitiesWithParsedDate = (wcif: Competition) => {
+  const findVenue = getVenueForActivity(wcif);
+
+  return <T extends Activity>(activities: T[]) =>
+    activities
+      .map((activity) => ({
+        ...activity,
+        ...parseActivityStartDate(activity, findVenue(activity)?.timezone),
+      }))
+      .sort(byDate);
+};
