@@ -188,7 +188,8 @@ export const getVenueForActivity = (wcif: Competition) => {
  * From a wcif, returns all of the unique days that have activities scheduled
  */
 export const getScheduledDays = (wcif: Competition) => {
-  const allActivities = getAllActivities(wcif);
+  const activities = getAllActivities(wcif);
+  const allActivities = getActivitiesWithParsedDate(wcif)(activities);
   const findVenue = getVenueForActivity(wcif);
 
   const scheduleDays = allActivities
@@ -202,11 +203,14 @@ export const getScheduledDays = (wcif: Competition) => {
 
       const dateString = `${year}-${month}-${day}`;
 
+      const date = getNumericDateFormatter(venue?.timezone).format(dateTime);
+
       return {
         approxDateTime: dateTime.getTime(),
-        date: getNumericDateFormatter(venue?.timezone).format(dateTime),
+        date,
         dateParts: formatToParts(dateTime),
         dateString,
+        activities: allActivities.filter((b) => b.date === date),
       };
     })
     // Filter to unique

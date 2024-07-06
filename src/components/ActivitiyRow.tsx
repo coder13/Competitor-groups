@@ -2,6 +2,8 @@ import { Link, useParams } from 'react-router-dom';
 import { Activity, Room, Venue } from '@wca/helpers';
 import { formatTimeRange } from '../lib/time';
 import classNames from 'classnames';
+import { useNow } from '../hooks/useNow';
+import { useMemo } from 'react';
 
 interface ActivityRowProps {
   activity: Activity;
@@ -17,8 +19,9 @@ export default function ActivityRow({
   showRoom = true,
 }: ActivityRowProps) {
   const { competitionId } = useParams();
+  const now = useNow();
 
-  const isOver = new Date(activity.endTime).getTime() < Date.now();
+  const isOver = useMemo(() => new Date(activity.endTime).getTime() < now.getTime(), []);
 
   return (
     <Link
