@@ -8,6 +8,7 @@ import { useNow } from '../../hooks/useNow';
 import { ExtraAssignment } from './PersonalExtraAssignment';
 import { PersonalNormalAssignment } from './PersonalNormalAssignment';
 import { isActivityWithRoomOrParent } from '../../lib/typeguards';
+import { useCollapse } from '../../hooks/useCollapse';
 
 export interface AssignmentsProps {
   wcif: Competition;
@@ -16,25 +17,11 @@ export interface AssignmentsProps {
   showStationNumber: boolean;
 }
 
+const key = (compId: string, id) => `${compId}-${id}`;
 export function Assignments({ wcif, person, showRoom, showStationNumber }: AssignmentsProps) {
-  const [initialCollapsed, saveCollapsed] = useLocalStorage<Record<string, string[]>>(
-    `collapse`,
-    {}
+  const { collapsedDates, setCollapsedDates, toggleDate } = useCollapse(
+    key(wcif.id, person.registrantId)
   );
-
-  const [collapsedDates, setCollapsedDates] = useState<string[]>(() => {
-    console.log(26, initialCollapsed);
-    if (!initialCollapsed) {
-      return [];
-    }
-
-    const collapsed = initialCollapsed[`${wcif.id}-${person.registrantId}`];
-    if (!collapsed || !Array.isArray(collapsed)) {
-      return [];
-    }
-
-    return collapsed;
-  });
 
   const now = useNow(15 * 1000);
 
@@ -59,25 +46,6 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
     setCollapsedDates((prev) => [...prev, ...collapse]);
   }, [scheduleDays]);
 
-  const toggleDate = useCallback((date: string) => {
-    return () =>
-      setCollapsedDates((prev) => {
-        let newState = prev;
-        if (prev.includes(date)) {
-          newState = prev.filter((d) => d !== date);
-        } else {
-          newState = [...prev, date];
-        }
-
-        saveCollapsed({
-          ...initialCollapsed,
-          [`${wcif.id}-${person.registrantId}`]: newState,
-        });
-
-        return newState;
-      });
-  }, []);
-
   const isSingleDay = scheduleDays.length === 1;
 
   return (
@@ -101,7 +69,7 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
               return (
                 <Fragment key={date}>
                   {!isSingleDay && (
-                    <tr onClick={toggleDate(date)}>
+                    <tr onClick={() => toggleDate(date)}>
                       <td
                         colSpan={6}
                         className="font-bold text-base md:text-lg bg-slate-50 select-none cursor-pointer">
