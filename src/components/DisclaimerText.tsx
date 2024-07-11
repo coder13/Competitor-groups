@@ -1,7 +1,10 @@
 import NoteBox from './Notebox';
 
-export default function DisclaimerText() {
+export default function DisclaimerText({ className }: { className?: string }) {
   return (
-    <NoteBox text="Start times are subject to change and may run ahead or behind schedule. Check with competition organizers for updates." />
+    <NoteBox
+      className={className}
+      text="Start times are subject to change and may run ahead or behind schedule. Check with competition organizers for updates."
+    />
   );
 }

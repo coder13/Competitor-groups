@@ -46,6 +46,8 @@ export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleCont
         </p>
       </div>
       <hr className="my-2" />
+      
+      <hr className="my-2" />
       <DisclaimerText />
       <hr className="my-2" />
 
