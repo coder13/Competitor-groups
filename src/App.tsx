@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
 import Layout from './layout';
 import Competition from './pages/Competition/Layout';
 import CompetitionHome from './pages/Competition/Home';
@@ -21,7 +21,7 @@ import {
   Schedule,
 } from './pages/Competition/Schedule';
 import Home from './pages/Home';
-import AuthProvider from './providers/AuthProvider';
+import AuthProvider, { useAuth } from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
 import { createContext, useEffect, useState } from 'react';
 import About from './pages/About';
@@ -30,6 +30,32 @@ import { ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
 import { QueryProvider } from './providers/QueryProvider';
 import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
+import { useWCIF } from './providers/WCIFProvider';
+
+const PersonalSchedule = () => {
+  const navigate = useNavigate();
+  const { competitionId } = useParams() as { competitionId: string };
+  const { wcif } = useWCIF();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const person = wcif?.persons.find(
+      (p) => p.wcaUserId === user?.id && p.registration?.status === 'accepted'
+    );
+
+    if (person) {
+      navigate(`/competitions/${competitionId}/persons/${person.registrantId}`, {
+        replace: true,
+      });
+    } else {
+      navigate(`/competitions/${competitionId}`, {
+        replace: true,
+      });
+    }
+  }, [user, navigate, competitionId]);
+
+  return null;
+};
 
 export const GlobalStateContext = createContext<{
   online: boolean;
@@ -66,6 +92,7 @@ const Navigation = () => {
           <Route path="live" element={<CompetitionLive />} />
 
           {/* Following pages are not accessible: */}
+          <Route path="personal-schedule" element={<PersonalSchedule />} />
           <Route path="psych-sheet/:eventId" element={<PsychSheetEvent />} />
           <Route path="explore" element={<CompetitionGroupsOverview />} />
           <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />
