@@ -1,6 +1,7 @@
 import { BarLoader } from 'react-spinners';
 import CompetitionLink from './CompetitionLink';
 import { LastFetchedAt } from './LastFetchedAt';
+import { usePinnedCompetitions } from '../hooks/usePinnedCompetitions';
 
 interface CompetitionListFragmentProps {
   title: string;
@@ -20,14 +21,21 @@ export default function CompetitionListFragment({
   liveCompetitionIds,
   lastFetchedAt,
 }: CompetitionListFragmentProps) {
+  const { pinnedCompetitions } = usePinnedCompetitions();
+
   return (
     <div className="w-full p-2">
-      <h3 className="text-lg md:text-xl lg:text-2xl">{title}</h3>
+      <span className="text-sm text-blue-800">{title}</span>
       {loading ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
       {!!competitions.length && (
         <ul className="px-0">
           {competitions.map((comp) => (
-            <CompetitionLink key={comp.id} {...comp} live={liveCompetitionIds.includes(comp.id)} />
+            <CompetitionLink
+              key={comp.id}
+              {...comp}
+              isLive={liveCompetitionIds.includes(comp.id)}
+              isBookmarked={pinnedCompetitions.some((pinned) => pinned.id === comp.id)}
+            />
           ))}
         </ul>
       )}

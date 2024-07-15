@@ -11,7 +11,8 @@ interface CompetitionLinkProps {
   end_date: string;
   country_iso2: string;
   city: string;
-  live: boolean;
+  isLive: boolean;
+  isBookmarked?: boolean;
 }
 
 const CompetitionLink = ({
@@ -21,7 +22,8 @@ const CompetitionLink = ({
   end_date,
   country_iso2,
   city,
-  live,
+  isLive,
+  isBookmarked,
 }: CompetitionLinkProps) => {
   const endDate = new Date(
     new Date(end_date).getTime() + 1000 * 60 * new Date().getTimezoneOffset()
@@ -31,7 +33,7 @@ const CompetitionLink = ({
     <Link to={`/competitions/${id}`}>
       <li
         className={classNames(
-          'border bg-white list-none rounded-md px-1 py-1 flex cursor-pointer hover:bg-blue-200 group transition-colors my-1 flex-row',
+          'border bg-white list-none rounded-md px-2 py-2 flex cursor-pointer hover:bg-slate-100 group transition-colors my-1 flex-row',
           {
             'opacity-50': endDate < new Date(Date.now() - 1000 * 60 * 60 * 24),
           }
@@ -47,9 +49,14 @@ const CompetitionLink = ({
             {city}
           </p>
         </div>
-        {live && (
+        {isLive && (
           <div className="flex flex-shrink text-2xl items-center px-2">
             <span className="fa fa-tower-broadcast text-green-500" />
+          </div>
+        )}
+        {isBookmarked && !isLive && (
+          <div className="flex flex-shrink text-2xl items-center px-2">
+            <span className="fa fa-bookmark text-yellow-500" />
           </div>
         )}
       </li>

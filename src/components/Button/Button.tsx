@@ -6,10 +6,5 @@ export interface ButtonProps extends PropsWithChildren<ButtonHTMLAttributes<HTML
 }
 
 export const Button = ({ className, ...props }: ButtonProps) => {
-  return (
-    <button
-      className={classNames('px-4 py-2 rounded-md bg-blue-500 text-white', className)}
-      {...props}
-    />
-  );
+  return <button className={classNames('px-4 py-2 rounded-md text-white', className)} {...props} />;
 };

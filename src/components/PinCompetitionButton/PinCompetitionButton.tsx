@@ -11,6 +11,7 @@ export const PinCompetitionButton = ({ competitionId }: { competitionId: string 
   return (
     <div>
       <Button
+        className="bg-blue-200"
         onClick={() => {
           if (isPinned) {
             unpinCompetition(competitionId);
@@ -20,7 +21,7 @@ export const PinCompetitionButton = ({ competitionId }: { competitionId: string 
         }}
         disabled={!data && !error}>
         {isPinned ? (
-          <span className="fa fa-bookmark" />
+          <span className="fa fa-bookmark text-yellow-500" />
         ) : (
           <span className="fa-regular fa-bookmark" />
         )}

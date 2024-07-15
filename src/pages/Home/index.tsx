@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center w-full overflow-auto">
       <Container>
-        <div className="flex flex-col w-full text-xs md:text-base py-2 px-2 md:pxs-0">
+        <div className="flex flex-col w-full text-xs md:text-sm py-2 px-2 md:px-0">
           <p>Learn all you need about your WCA competition assignments!</p>
           <p>
             Note: This website exists as a convenience tool for organizers, delegates, and
@@ -34,13 +34,7 @@ export default function Home() {
             Keep the lights on!
           </Link>
         </div>
-        <PinnedCompetitions />
-        {user && (
-          <>
-            <MyCompetitions />
-            <br />
-          </>
-        )}
+        <MyCompetitions />
         <UpcomingCompetitions />
       </Container>
     </div>

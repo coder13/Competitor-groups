@@ -51,8 +51,18 @@ export function MyCompetitions() {
     setLocalStorage('my.ongoing_competitions', JSON.stringify(data.ongoing_competitions));
   }, [data]);
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <>
+      <CompetitionListFragment
+        title="Your Competitions"
+        competitions={[...pinnedCompetitions, ...competitions]}
+        loading={false}
+        liveCompetitionIds={NotifyCompetitions?.competitions?.map((c) => c.id) || []}
+      />
       {expired && (
         <div className="px-2">
           <button
@@ -63,13 +73,6 @@ export function MyCompetitions() {
           </button>
         </div>
       )}
-      <CompetitionListFragment
-        title="Your Upcoming Competitions"
-        competitions={competitions}
-        loading={fetchStatus === 'fetching'}
-        liveCompetitionIds={NotifyCompetitions?.competitions?.map((c) => c.id) || []}
-        lastFetchedAt={dataUpdatedAt}
-      />
     </>
   );
 }
