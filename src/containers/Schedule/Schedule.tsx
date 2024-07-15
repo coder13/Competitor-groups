@@ -1,8 +1,7 @@
-import { startTransition, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import ActivityRow from '../../components/ActivitiyRow';
 import { getRooms, getScheduledDays, getVenueForActivity } from '../../lib/activities';
 import { Competition } from '@wca/helpers';
-import { useLocalStorage } from '@uidotdev/usehooks';
 import { useCollapse } from '../../hooks/useCollapse';
 import { ActivityWithRoomOrParent } from '../../lib/types';
 
