@@ -28,7 +28,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
   return (
     <>
       {me && (
-        <div className="flex w-full my-1">
+        <div className="flex w-full">
           <LinkButton
             className="w-full"
             to={`/competitions/${competitionId}/personal-schedule`}
@@ -37,7 +37,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
           />
         </div>
       )}
-      <ul className="my-1">
+      <ul className="">
         {acceptedPersons.sort(byName).map((person) => {
           const assignedActivity = person.assignments?.find((a) =>
             ongoingActivities.some((oa) => oa.id === a.activityId)
@@ -45,7 +45,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
 
           return (
             <Link key={person.registrantId} to={`persons/${person.registrantId}`}>
-              <li className="border bg-white list-none rounded-md flex justify-between cursor-pointer hover:bg-blue-200 group transition-colors my-1 flex-row min-h-[40px] align-middle">
+              <li className="border bg-white list-none rounded-md flex justify-between cursor-pointer hover:bg-blue-200 group transition-colors my-1 flex-row min-h-[40px] items-center">
                 <div className="p-1">{person.name}</div>
                 {assignedActivity ? (
                   <AssignmentCodeCell
