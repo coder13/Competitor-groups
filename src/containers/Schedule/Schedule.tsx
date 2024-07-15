@@ -1,8 +1,7 @@
-import { startTransition, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import ActivityRow from '../../components/ActivitiyRow';
 import { getRooms, getScheduledDays, getVenueForActivity } from '../../lib/activities';
 import { Competition } from '@wca/helpers';
-import { useLocalStorage } from '@uidotdev/usehooks';
 import { useCollapse } from '../../hooks/useCollapse';
 import { ActivityWithRoomOrParent } from '../../lib/types';
 
@@ -33,7 +32,7 @@ const ScheduleDay = ({
   return (
     <div className="flex flex-col">
       <div
-        className="w-full text-center bg-slate-50 font-bold text-lg mb-1 select-none cursor-pointer h-10"
+        className="w-full text-center bg-slate-50 hover:bg-slate-100 font-bold text-lg mb-1 select-none cursor-pointer h-10 transition-colors duration-150"
         onClick={() => toggleCollapsed()}>
         <span>{date}</span>
         <span className="p-2 flex-end">{collapsed ? ' ▼' : ' ▲'}</span>
@@ -85,7 +84,7 @@ export const ScheduleContainer = ({ wcif }: ScheduleContainerProps) => {
   const showRoom = useMemo(() => wcif && getRooms(wcif).length > 1, [wcif]);
 
   return (
-    <>
+    <div>
       {scheduleDays.map(({ date, activities }) => (
         <ScheduleDay
           key={date}
@@ -95,6 +94,6 @@ export const ScheduleContainer = ({ wcif }: ScheduleContainerProps) => {
           showRoom={showRoom}
         />
       ))}
-    </>
+    </div>
   );
 };

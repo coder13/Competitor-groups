@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { Extension } from '@wca/helpers/lib/models/extension';
@@ -26,14 +26,6 @@ export const byDate = (
 export default function PersonPage() {
   const { wcif, setTitle } = useWCIF();
   const { registrantId } = useParams();
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNow(new Date());
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   const person = wcif?.persons?.find(
     (p) => p.registrantId.toString() === registrantId

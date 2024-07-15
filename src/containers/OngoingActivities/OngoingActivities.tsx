@@ -38,7 +38,7 @@ export const OngoingActivities = ({ competitionId }: OngoingActivitiesProps) => 
   }
 
   return (
-    <div className="p-2">
+    <div className="my-1 p-2">
       <h1 className="drop-shadow-sm flex justify-between">
         <div>
           <i className="text-lg fa fa-tower-broadcast mr-1 text-green-500" />

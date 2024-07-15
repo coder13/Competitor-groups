@@ -6,6 +6,7 @@ import { useAuth } from '../../providers/AuthProvider';
 import { Competition } from '@wca/helpers';
 import { useOngoingActivities } from '../../hooks/useOngoingActivities';
 import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
+import { LinkButton } from '../../components/LinkButton';
 
 export const Competitors = ({ wcif }: { wcif: Competition }) => {
   const { competitionId } = useParams();
@@ -25,18 +26,18 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
   const { ongoingActivities } = useOngoingActivities(competitionId!);
 
   return (
-    <div className="w-full h-full flex flex-1 flex-col p-2">
+    <>
       {me && (
-        <>
-          <Link
-            className="border bg-blue-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row"
-            to={`persons/${me.registrantId}`}>
-            My Assignments
-          </Link>
-          <hr className="my-2" />
-        </>
+        <div className="flex w-full">
+          <LinkButton
+            className="w-full"
+            to={`/competitions/${competitionId}/personal-schedule`}
+            title="My Assignments"
+            color="blue"
+          />
+        </div>
       )}
-      <ul>
+      <ul className="">
         {acceptedPersons.sort(byName).map((person) => {
           const assignedActivity = person.assignments?.find((a) =>
             ongoingActivities.some((oa) => oa.id === a.activityId)
@@ -44,7 +45,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
 
           return (
             <Link key={person.registrantId} to={`persons/${person.registrantId}`}>
-              <li className="border bg-white list-none rounded-md flex justify-between cursor-pointer hover:bg-blue-200 group transition-colors my-1 flex-row">
+              <li className="border bg-white list-none rounded-md flex justify-between cursor-pointer hover:bg-blue-200 group transition-colors my-1 flex-row min-h-[40px] items-center">
                 <div className="p-1">{person.name}</div>
                 {assignedActivity ? (
                   <AssignmentCodeCell
@@ -59,6 +60,6 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
           );
         })}
       </ul>
-    </div>
+    </>
   );
 };

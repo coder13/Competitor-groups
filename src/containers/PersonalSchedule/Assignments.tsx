@@ -1,5 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { useLocalStorage } from '@uidotdev/usehooks';
+import { Fragment, useEffect, useMemo } from 'react';
 import { Competition, Person } from '@wca/helpers';
 import { getGroupedAssignmentsByDate } from './utils';
 import { byDate, roundTime } from '../../lib/utils';

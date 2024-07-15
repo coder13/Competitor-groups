@@ -118,7 +118,7 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
             return (
               <div key={ca.id} className="col-span-full grid grid-cols-2 group">
                 <div
-                  className="col-span-1 px-2 py-1 group-hover:bg-slate-100 transition duration-75 ease-in-out transform"
+                  className="col-span-1 px-2 py-1 group-hover:bg-slate-100 transition duration-150 ease-in-out transform"
                   style={{
                     gridRow: `span ${personsInActivity?.length || 0}`,
                   }}>
@@ -133,7 +133,7 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
                       <Link
                         key={ca.id.toString() + assignmentCode + person.registrantId}
                         to={`/competitions/${competitionId}/persons/${person.registrantId}`}
-                        className="col-span-1 px-2 py-1 hover:bg-slate-100 transition duration-75 ease-in-out transform">
+                        className="col-span-1 px-2 py-1 hover:bg-slate-100 transition duration-150 ease-in-out transform">
                         {person.name}
                       </Link>
                     );

@@ -4,6 +4,7 @@ import UpcomingCompetitions from '../../containers/UpcomingCompetitions/Upcoming
 import { useAuth } from '../../providers/AuthProvider';
 import { Link } from 'react-router-dom';
 import { Container } from '../../components/Container';
+import { PinnedCompetitions } from '../../containers/PinnedCompetitions';
 
 export default function Home() {
   const { user } = useAuth();
@@ -33,6 +34,7 @@ export default function Home() {
             Keep the lights on!
           </Link>
         </div>
+        <PinnedCompetitions />
         {user && (
           <>
             <MyCompetitions />
