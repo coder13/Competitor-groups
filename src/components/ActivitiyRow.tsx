@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { Activity, Room, Venue } from '@wca/helpers';
+import { Activity, Room, Venue, activityCodeToName } from '@wca/helpers';
 import { formatTimeRange } from '../lib/time';
 import classNames from 'classnames';
 import { useNow } from '../hooks/useNow';
@@ -22,6 +22,7 @@ export default function ActivityRow({
   const now = useNow();
 
   const isOver = useMemo(() => new Date(activity.endTime).getTime() < now.getTime(), []);
+  const activityName = activity.activityCode.startsWith('other') ? activity.name : activityCodeToName(activity.activityCode);
 
   return (
     <Link
@@ -33,7 +34,7 @@ export default function ActivityRow({
         }
       )}
       to={`/competitions/${competitionId}/activities/${activity.id}`}>
-      <span>{activity.name}</span>
+      <span>{activityName}</span>
       <span className="text-xs md:text-sm font-light flex justify-between">
         {showRoom && (
           <span
