@@ -6,11 +6,7 @@ interface ContainerProps extends PropsWithChildren {
   fullWidth?: boolean;
 }
 
-export const Container = ({
-  children,
-  className,
-  fullWidth = false,
-}: ContainerProps) => {
+export const Container = ({ children, className, fullWidth = false }: ContainerProps) => {
   return (
     <div
       className={classNames(

@@ -1,5 +1,5 @@
-import { useContext, useState, useEffect, useMemo } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useContext, useState, useEffect, useMemo, useRef } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { Competition } from '@wca/helpers';
 import { BarLoader } from 'react-spinners';
@@ -33,8 +33,12 @@ const StyledNavLink = ({ to, text }) => (
 export function WCIFProvider({ competitionId, children }) {
   const { user } = useAuth();
   const { online } = useContext(GlobalStateContext);
+  const { pathname } = useLocation();
+
   const [title, setTitle] = useState('');
   const { data: wcif, error, isFetching, dataUpdatedAt } = useWcif(competitionId);
+
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     void prefetchCompetition(competitionId);
@@ -116,6 +120,10 @@ export function WCIFProvider({ competitionId, children }) {
     return _tabs;
   }, [competitionId]);
 
+  useEffect(() => {
+    ref.current?.scrollTo(0, 0);
+  }, [pathname]);
+
   return (
     <WCIFContext.Provider value={{ wcif: wcif as Competition, setTitle }}>
       <div className="flex flex-col w-full h-full overflow-hidden">
@@ -146,7 +154,7 @@ export function WCIFProvider({ competitionId, children }) {
           </div>
         )}
         {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
-        <div className="flex flex-col w-full items-center overflow-auto">
+        <div className="flex flex-col w-full items-center overflow-auto" ref={ref}>
           <ErrorBoundary FallbackComponent={ErrorFallback}>{children}</ErrorBoundary>
           {!!dataUpdatedAt && (
             <Container className="py-2">
