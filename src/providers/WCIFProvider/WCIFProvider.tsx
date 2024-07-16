@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 import { Competition } from '@wca/helpers';
@@ -14,6 +14,8 @@ import { WCIFContext } from './WCIFContext';
 import ReactGA from 'react-ga4';
 import { ErrorBoundary } from 'react-error-boundary';
 import { ErrorFallback } from '../../components/ErrorFallback';
+import { useAuth } from '../AuthProvider';
+import { isStaff } from '../../lib/person';
 
 const StyledNavLink = ({ to, text }) => (
   <NavLink
@@ -29,6 +31,7 @@ const StyledNavLink = ({ to, text }) => (
 );
 
 export function WCIFProvider({ competitionId, children }) {
+  const { user } = useAuth();
   const { online } = useContext(GlobalStateContext);
   const [title, setTitle] = useState('');
   const { data: wcif, error, isFetching, dataUpdatedAt } = useWcif(competitionId);
@@ -62,6 +65,8 @@ export function WCIFProvider({ competitionId, children }) {
   }, [wcif, title]);
 
   const hasStream = wcif && streamActivities(wcif).length > 0;
+  const person = wcif?.persons.find((p) => p.wcaUserId === user?.id);
+  const isPersonStaff = person && !isStaff(person);
 
   if (error) {
     <div className="flex">
@@ -69,6 +74,47 @@ export function WCIFProvider({ competitionId, children }) {
       <p>{error?.toString()}</p>
     </div>;
   }
+
+  const tabs = useMemo(() => {
+    const _tabs: {
+      href: string;
+      text: string;
+    }[] = [];
+
+    if (!isPersonStaff) {
+      _tabs.push({
+        href: `/competitions/${competitionId}`,
+        text: 'Groups',
+      });
+    }
+
+    _tabs.push(
+      {
+        href: `/competitions/${competitionId}/events`,
+        text: 'Events',
+      },
+      {
+        href: `/competitions/${competitionId}/activities`,
+        text: 'Schedule',
+      }
+    );
+
+    if (isPersonStaff) {
+      _tabs.push({
+        href: `/competitions/${competitionId}/scramblers`,
+        text: 'Scramblers',
+      });
+    }
+
+    if (isPersonStaff && hasStream) {
+      _tabs.push({
+        href: `/competitions/${competitionId}/stream`,
+        text: 'Stream',
+      });
+    }
+
+    return _tabs;
+  }, [competitionId]);
 
   return (
     <WCIFContext.Provider value={{ wcif: wcif as Competition, setTitle }}>
@@ -79,12 +125,13 @@ export function WCIFProvider({ competitionId, children }) {
               <StyledNavLink to={`/competitions/${competitionId}`} text={wcif?.shortName} />
             </div>
             <div className="flex">
-              <StyledNavLink to={`/competitions/${competitionId}/events`} text="Events" />
-              <StyledNavLink to={`/competitions/${competitionId}/activities`} text="Schedule" />
-              <StyledNavLink to={`/competitions/${competitionId}/scramblers`} text="Scramblers" />
-              {hasStream && (
-                <StyledNavLink to={`/competitions/${competitionId}/stream`} text="Stream" />
-              )}
+              {tabs.map((i) => (
+                <StyledNavLink
+                  key={i.href}
+                  to={`/competitions/${competitionId}/events`}
+                  text={i.text}
+                />
+              ))}
             </div>
           </Container>
         </nav>

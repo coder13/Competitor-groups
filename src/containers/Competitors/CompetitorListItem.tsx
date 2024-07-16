@@ -25,7 +25,7 @@ export const CompetitorListItem = ({
                 src={person.avatar?.thumbUrl}
                 alt={person.name}
                 width="60em"
-                className="object-center rounded-l-md"
+                className="object-center rounded-l"
               />
             </div>
           )}
