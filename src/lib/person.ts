@@ -13,3 +13,12 @@ export const isRegisteredForEvent =
   (eventId: EventId) =>
   ({ registration }: Person): boolean =>
     !!registration && registration.eventIds.includes(eventId);
+
+export const isDelegate = ({ roles }: Person): boolean =>
+  !!roles?.some((i) => i.includes('delegate'));
+
+export const isOrganizer = ({ roles }: Person): boolean =>
+  !!roles?.some((i) => i.includes('organizer'));
+
+export const isStaff = (person: Person): boolean =>
+  isDelegate(person) || isOrganizer(person) || !!person?.roles?.some((i) => i.includes('staff-'));

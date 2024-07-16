@@ -16,7 +16,7 @@ export default function CompetitionHome() {
   }, [setTitle]);
 
   return (
-    <Container className="space-y-2 pt-2">
+    <Container className="space-y-2 pt-2 p-1">
       <div className="flex space-x-2">
         <LinkButton to="information" title="View Competition Information" color="green" />
         <PinCompetitionButton competitionId={competitionId} />

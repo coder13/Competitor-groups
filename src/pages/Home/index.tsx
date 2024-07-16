@@ -1,14 +1,10 @@
 import { useEffect } from 'react';
 import { MyCompetitions } from '../../containers/MyCompetitions';
 import UpcomingCompetitions from '../../containers/UpcomingCompetitions/UpcomingCompetitions';
-import { useAuth } from '../../providers/AuthProvider';
 import { Link } from 'react-router-dom';
 import { Container } from '../../components/Container';
-import { PinnedCompetitions } from '../../containers/PinnedCompetitions';
 
 export default function Home() {
-  const { user } = useAuth();
-
   useEffect(() => {
     document.title = 'Competition Groups';
   }, []);

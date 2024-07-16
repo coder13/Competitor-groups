@@ -1,7 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import Header from './Header';
-import Footer from './Footer';
 import { ErrorFallback } from '../components/ErrorFallback';
 
 export default function Layout() {
