@@ -1,5 +1,5 @@
 import { useCompetition } from '../../hooks/queries/useCompetition';
-import { usePinnedCompetitions } from '../../hooks/usePinnedCompetitions';
+import { usePinnedCompetitions } from '../../hooks/UsePinnedCompetitions';
 import { Button } from '../Button';
 
 export const PinCompetitionButton = ({ competitionId }: { competitionId: string }) => {

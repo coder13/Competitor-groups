@@ -6,7 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { useCompetitionsQuery } from '../../queries';
 import { wcaApiFetch } from '../../hooks/useWCAFetch';
 import { FIVE_MINUTES } from '../../lib/constants';
-import { usePinnedCompetitions } from '../../hooks/usePinnedCompetitions';
+import { usePinnedCompetitions } from '../../hooks/UsePinnedCompetitions';
 
 const params = new URLSearchParams({
   upcoming_competitions: 'true',

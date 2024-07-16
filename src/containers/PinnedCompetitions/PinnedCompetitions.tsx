@@ -1,5 +1,5 @@
 import { useCompetitionsQuery } from '../../queries';
-import { usePinnedCompetitions } from '../../hooks/usePinnedCompetitions';
+import { usePinnedCompetitions } from '../../hooks/UsePinnedCompetitions';
 import CompetitionListFragment from '../../components/CompetitionList';
 
 export function PinnedCompetitions() {

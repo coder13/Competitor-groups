@@ -7,7 +7,7 @@ import { useNow } from '../../hooks/useNow';
 import { ExtraAssignment } from './PersonalExtraAssignment';
 import { PersonalNormalAssignment } from './PersonalNormalAssignment';
 import { isActivityWithRoomOrParent } from '../../lib/typeguards';
-import { useCollapse } from '../../hooks/useCollapse';
+import { useCollapse } from '../../hooks/UseCollapse';
 
 export interface AssignmentsProps {
   wcif: Competition;
