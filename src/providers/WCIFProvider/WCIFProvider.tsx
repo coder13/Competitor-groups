@@ -106,7 +106,7 @@ export function WCIFProvider({ competitionId, children }) {
       });
     }
 
-    if (isPersonStaff && hasStream) {
+    if (hasStream) {
       _tabs.push({
         href: `/competitions/${competitionId}/stream`,
         text: 'Stream',
