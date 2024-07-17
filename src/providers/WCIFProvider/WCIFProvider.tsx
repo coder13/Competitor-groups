@@ -70,7 +70,7 @@ export function WCIFProvider({ competitionId, children }) {
 
   const hasStream = wcif && streamActivities(wcif).length > 0;
   const person = wcif?.persons.find((p) => p.wcaUserId === user?.id);
-  const isPersonStaff = person && !isStaff(person);
+  const isPersonStaff = person && isStaff(person);
 
   if (error) {
     <div className="flex">
@@ -134,11 +134,7 @@ export function WCIFProvider({ competitionId, children }) {
             </div>
             <div className="flex">
               {tabs.map((i) => (
-                <StyledNavLink
-                  key={i.href}
-                  to={`/competitions/${competitionId}/events`}
-                  text={i.text}
-                />
+                <StyledNavLink key={i.href} to={i.href} text={i.text} />
               ))}
             </div>
           </Container>
