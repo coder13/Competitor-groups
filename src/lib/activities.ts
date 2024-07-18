@@ -188,7 +188,7 @@ export const getVenueForActivity = (wcif: Competition) => {
  * From a wcif, returns all of the unique days that have activities scheduled
  */
 export const getScheduledDays = (wcif: Competition) => {
-  const activities = getAllActivities(wcif);
+  const activities = getAllActivities(wcif).filter((i) => !i.childActivities.length);
   const allActivities = getActivitiesWithParsedDate(wcif)(activities);
   const findVenue = getVenueForActivity(wcif);
 
