@@ -24,7 +24,7 @@ export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleCont
     <div className="flex flex-col p-1">
       <div className="p-1">
         <div className="flex justify-between items-center">
-          <div className="flex flex-shrink items-center w-full">
+          <div className="flex flex-shrink items-center w-full space-x-2">
             <h3 className="text-xl sm:text-2xl">{person.name}</h3>
             {hasFlag(person.countryIso2) && (
               <div className="flex flex-shrink ml-2 text-lg sm:text-xl">
@@ -32,6 +32,7 @@ export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleCont
               </div>
             )}
             <div className="flex-grow" />
+            <span className="text-xl sm:text-2xl">{person.registrantId}</span>
             <Button
               className="bg-blue-200"
               onClick={() => {
