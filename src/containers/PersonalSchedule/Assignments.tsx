@@ -27,7 +27,7 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
   const scheduleDays = useMemo(() => getGroupedAssignmentsByDate(wcif, person), []);
 
   useEffect(() => {
-    const today = new Date();
+    const today = new Date().getTime();
 
     const collapse: string[] = [];
     scheduleDays.forEach(({ date, dateParts, assignments }) => {
@@ -37,7 +37,11 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
       }
 
       const lastActivityEndTime = new Date(lastActivity.endTime);
-      if (lastActivityEndTime < today && !collapsedDates.includes(date)) {
+      // Collapse days that are more than 4 hours old.
+      if (
+        today - lastActivityEndTime.getTime() > 1000 * 60 * 60 * 4 &&
+        !collapsedDates.includes(date)
+      ) {
         collapse.push(date);
       }
     });

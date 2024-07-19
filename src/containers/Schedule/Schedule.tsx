@@ -67,13 +67,14 @@ export const ScheduleContainer = ({ wcif }: ScheduleContainerProps) => {
   const scheduleDays = useMemo(() => getScheduledDays(wcif), [wcif]);
 
   useEffect(() => {
-    const today = new Date();
+    const now = new Date().getTime();
 
     const collapse = new Set(collapsedDates);
     scheduleDays.forEach(({ date, activities }) => {
       const lastActivityEndTime = Math.max(...activities.map((i) => new Date(i.endTime).getTime()));
 
-      if (new Date(lastActivityEndTime) < today) {
+      // Collapse days that are more than 4 hours old.
+      if (now - new Date(lastActivityEndTime).getTime() > 1000 * 60 * 60 * 4) {
         collapse.add(date);
       }
     });
