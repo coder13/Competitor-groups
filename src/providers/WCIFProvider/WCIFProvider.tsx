@@ -68,7 +68,6 @@ export function WCIFProvider({ competitionId, children }) {
     };
   }, [wcif, title]);
 
-  const hasStream = wcif && streamActivities(wcif).length > 0;
   const person = wcif?.persons.find((p) => p.wcaUserId === user?.id);
   const isPersonStaff = person && isStaff(person);
 
@@ -80,6 +79,8 @@ export function WCIFProvider({ competitionId, children }) {
   }
 
   const tabs = useMemo(() => {
+    const hasStream = wcif && streamActivities(wcif).length > 0;
+
     const _tabs: {
       href: string;
       text: string;
@@ -118,7 +119,7 @@ export function WCIFProvider({ competitionId, children }) {
     }
 
     return _tabs;
-  }, [competitionId]);
+  }, [wcif, competitionId]);
 
   useEffect(() => {
     ref.current?.scrollTo(0, 0);
