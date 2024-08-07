@@ -5,6 +5,8 @@ import { Competition, Person } from '@wca/helpers';
 import { renderResultByEventId } from '../../lib/results';
 import { eventNameById } from '../../lib/events';
 import { Ranking } from './Ranking';
+import { Link } from 'react-router-dom';
+import { LinkButton } from '../../components/LinkButton';
 
 export interface PersonalBestsContainerProps {
   wcif: Competition;
@@ -14,26 +16,25 @@ export interface PersonalBestsContainerProps {
 export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerProps) {
   return (
     <>
-      <div className="p-1">
-        <div className="flex justify-between items-center my-2">
-          <div className="flex flex-shrink items-center">
-            <h3 className="text-xl sm:text-2xl">{person.name}</h3>
-            {hasFlag(person.countryIso2) && (
-              <div className="flex flex-shrink ml-2 text-lg sm:text-xl">
-                {getUnicodeFlagIcon(person.countryIso2)}
-              </div>
-            )}
-          </div>
-          <a
-            className="text-lg sm:text-xl hover:underline text-blue-600"
-            href={`https://www.worldcubeassociation.org/persons/${person.wcaId}`}
-            target="_blank"
-            rel="noreferrer">
-            {person.wcaId}
-            <i className="ml-2 fa fa-solid fa-arrow-up-right-from-square" />
-          </a>
+      <div className="flex justify-between items-center min-h-10 px-1">
+        <div className="flex flex-shrink items-center w-full space-x-1">
+          {hasFlag(person.countryIso2) && (
+            <div className="flex flex-shrink text-lg sm:text-xl mx-1">
+              {getUnicodeFlagIcon(person.countryIso2)}
+            </div>
+          )}
+          <h3 className="text-xl sm:text-2xl">{person.name}</h3>
         </div>
+        <a
+          className="text-md sm:text-lg hover:underline text-blue-600 w-48 font-mono"
+          href={`https://www.worldcubeassociation.org/persons/${person.wcaId}`}
+          target="_blank"
+          rel="noreferrer">
+          {person.wcaId}
+          <i className="ml-2 fa fa-solid fa-arrow-up-right-from-square" />
+        </a>
       </div>
+      <hr className="my-2" />
 
       <table className="w-full text-sm">
         <thead className="bg-green-300 shadow-md">
@@ -62,7 +63,12 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
                 <Fragment key={eventId}>
                   <tr>
                     <td colSpan={5} className="bg-green-200 py-2 px-3 text-center">
-                      {eventNameById(eventId)}
+                      <Link
+                        key={eventId}
+                        to={`/competitions/${wcif.id}/psych-sheet/${eventId}`}
+                        className="underline">
+                        {eventNameById(eventId)}
+                      </Link>
                     </td>
                   </tr>
                   {singlePb && (
@@ -104,6 +110,14 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
             })}
         </tbody>
       </table>
+      <br />
+      <div className="px-1 flex">
+        <LinkButton
+          color="blue"
+          title="View Personal Assignments"
+          to={`/competitions/${wcif.id}/persons/${person.registrantId}`}
+        />
+      </div>
     </>
   );
 }

@@ -151,10 +151,12 @@ export function WCIFProvider({ competitionId, children }) {
           </div>
         )}
         {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
-        <div className="flex flex-col w-full items-center overflow-auto" ref={ref}>
+        <div
+          className="flex flex-col w-full items-center overflow-y-auto [scrollbar-gutter:stable;]"
+          ref={ref}>
           <ErrorBoundary FallbackComponent={ErrorFallback}>{children}</ErrorBoundary>
           {!!dataUpdatedAt && (
-            <Container className="py-2">
+            <Container className="py-2 px-1">
               {<LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
             </Container>
           )}

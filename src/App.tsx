@@ -76,6 +76,7 @@ const Navigation = () => {
 
           <Route path="persons/:registrantId" element={<CompetitionPerson />} />
           <Route path="personal-bests/:wcaId" element={<CompetitionPersonalBests />} />
+          <Route path="personal-records/:wcaId" element={<CompetitionPersonalBests />} />
 
           <Route path="events" element={<CompetitionEvents />} />
           <Route path="events/:roundId" element={<CompetitionGroupList />} />

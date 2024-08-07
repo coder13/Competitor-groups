@@ -11,3 +11,9 @@
     height: 100dvh;
   }
 }
+
+@layer utilities {
+  .striped > .contents:nth-child(even) > * {
+    @apply bg-green-50;
+  }
+}
