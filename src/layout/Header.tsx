@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 export default function Header() {
   const { user, signIn, signOut } = useAuth();
-  const [isPopoverOpen, setIsPopoverOpen] = useState(true);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   return (
     <header className="flex w-full shadow-md p-2 h-12 items-center print:hidden z-20 bg-white">

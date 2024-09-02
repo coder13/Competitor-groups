@@ -2,6 +2,7 @@ import { useState, useEffect, createContext, useContext, useCallback, useMemo } 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { WCA_ORIGIN, WCA_OAUTH_CLIENT_ID, WCA_OAUTH_ORIGIN } from '../lib/wca-env';
 import history from '../lib/history';
+import { fetchMe } from '../lib/api';
 
 const localStorageKey = (key: string) => `competition-groups.${WCA_OAUTH_CLIENT_ID}.${key}`;
 
@@ -25,6 +26,7 @@ interface IAuthContext {
   signOut: () => void;
   signedIn: () => boolean;
   user: User | null;
+  setUser: (user: User) => void;
   expired: boolean;
 }
 
@@ -34,6 +36,7 @@ const AuthContext = createContext<IAuthContext>({
   signOut: () => {},
   signedIn: () => false,
   user: null,
+  setUser: () => {},
   expired: true,
 });
 
@@ -106,27 +109,7 @@ export default function AuthProvider({ children }) {
       return;
     }
 
-    fetch(
-      `${WCA_ORIGIN}/me`,
-      Object.assign(
-        {},
-        {
-          headers: new Headers({
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          }),
-        }
-      )
-    )
-      .then(async (res) => {
-        if (res.ok) {
-          return (await res.json()) as {
-            me: User;
-          };
-        } else {
-          throw await res.json();
-        }
-      })
+    fetchMe(accessToken)
       .then((data) => {
         setLocalStorage('user', JSON.stringify(data.me));
         setUser(data.me);
@@ -150,6 +133,7 @@ export default function AuthProvider({ children }) {
   const value = {
     accessToken,
     user,
+    setUser,
     signIn,
     signOut,
     signedIn,

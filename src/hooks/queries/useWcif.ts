@@ -1,13 +1,12 @@
 import { InfiniteData, useQuery } from '@tanstack/react-query';
 import { Competition } from '@wca/helpers';
 import { queryClient } from '../../providers/QueryProvider';
-import { wcaApiFetch } from '../useWCAFetch';
-import { UserCompsResponse } from '../../containers/MyCompetitions';
+import { fetchWcif, UserCompsResponse } from '../../lib/api';
 
 export const useWcif = (competitionId: string) =>
   useQuery<Competition>({
     queryKey: ['wcif', competitionId],
-    queryFn: () => wcaApiFetch(`/competitions/${competitionId}/wcif/public`),
+    queryFn: () => fetchWcif(competitionId),
     initialData: () => {
       const upcomingComps =
         queryClient

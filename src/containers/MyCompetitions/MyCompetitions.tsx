@@ -4,29 +4,18 @@ import CompetitionListFragment from '../../components/CompetitionList';
 import { setLocalStorage } from '../../lib/localStorage';
 import { useEffect, useMemo } from 'react';
 import { useCompetitionsQuery } from '../../queries';
-import { wcaApiFetch } from '../../hooks/useWCAFetch';
+import { fetchUserWithCompetitions, UserCompsResponse } from '../../lib/api';
 import { FIVE_MINUTES } from '../../lib/constants';
 import { usePinnedCompetitions } from '../../hooks/UsePinnedCompetitions';
-
-const params = new URLSearchParams({
-  upcoming_competitions: 'true',
-  ongoing_competitions: 'true',
-});
-
-export interface UserCompsResponse {
-  upcoming_competitions: ApiCompetition[];
-  ongoing_competitions: ApiCompetition[];
-}
 
 export function MyCompetitions() {
   const { user, expired, signIn } = useAuth();
 
-  const { data, fetchStatus, dataUpdatedAt } = useQuery<UserCompsResponse, string>({
+  const { data } = useQuery<UserCompsResponse, string>({
     queryKey: ['userCompetitions'],
-    queryFn: async () =>
-      await wcaApiFetch<UserCompsResponse>(`/users/${user?.id}?${params.toString()}`),
+    queryFn: () => fetchUserWithCompetitions(user!.id.toString()),
     gcTime: FIVE_MINUTES,
-    enabled: !!user,
+    enabled: !!user?.id,
     networkMode: 'offlineFirst',
   });
 

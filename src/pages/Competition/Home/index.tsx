@@ -1,7 +1,7 @@
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { Competitors } from '../../../containers/Competitors';
 import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Container } from '../../../components/Container';
 import { OngoingActivities } from '../../../containers/OngoingActivities';
 import { LinkButton } from '../../../components/LinkButton';
