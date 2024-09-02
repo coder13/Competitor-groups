@@ -3,12 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { WCA_ORIGIN, WCA_OAUTH_CLIENT_ID, WCA_OAUTH_ORIGIN } from '../lib/wca-env';
 import history from '../lib/history';
 import { fetchMe } from '../lib/api';
-
-const localStorageKey = (key: string) => `competition-groups.${WCA_OAUTH_CLIENT_ID}.${key}`;
-
-const getLocalStorage = (key: string) => localStorage.getItem(localStorageKey(key));
-const setLocalStorage = (key: string, value: string) =>
-  localStorage.setItem(localStorageKey(key), value);
+import { queryClient } from './QueryProvider';
+import { getLocalStorage, localStorageKey, setLocalStorage } from '../lib/localStorage';
 
 /**
  * Allows for use of staging api in production
@@ -42,9 +38,9 @@ const AuthContext = createContext<IAuthContext>({
 
 export default function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(getLocalStorage('accessToken'));
-  const [expirationTime, setExpirationTime] = useState<string | null>(
-    getLocalStorage('expirationTime')
-  ); // Time at which it expires
+  // const [expirationTime, setExpirationTime] = useState<string | null>(
+  //   getLocalStorage('expirationTime')
+  // ); // Time at which it expires
   const [user, setUser] = useState<User | null>(() => {
     const rawUserData = getLocalStorage('user');
     return rawUserData ? (JSON.parse(rawUserData) as User) : null;
@@ -70,11 +66,13 @@ export default function AuthProvider({ children }) {
   const signOut = () => {
     console.log('signing out');
     setAccessToken(null);
-    setExpirationTime(null);
+
     setUser(null);
     localStorage.removeItem(localStorageKey('accessToken'));
     localStorage.removeItem(localStorageKey('expirationTime'));
     localStorage.removeItem(localStorageKey('user'));
+    localStorage.removeItem(localStorageKey('my.upcoming_competitions'));
+    localStorage.removeItem(localStorageKey('my.ongoing_competitions'));
   };
 
   useEffect(() => {
@@ -82,53 +80,49 @@ export default function AuthProvider({ children }) {
     const hashParams = new URLSearchParams(hash);
 
     const hashParamAccessToken = hashParams.get('access_token');
-    if (hashParamAccessToken) {
-      setAccessToken(hashParamAccessToken);
-      setLocalStorage('accessToken', hashParamAccessToken);
-    }
-
-    const hashParamExpiresIn = hashParams.get('expires_in');
-    if (hashParamExpiresIn && !isNaN(parseInt(hashParamExpiresIn, 10))) {
-      /* Expire the token 15 minutes before it actually does,
-         this way it doesn't expire right after the user enters the page. */
-      const expiresInSeconds = parseInt(hashParamExpiresIn, 10) - 15 * 60;
-      const expTime = new Date(new Date().getTime() + expiresInSeconds * 1000).toISOString();
-      setLocalStorage('expirationTime', expTime);
-      setExpirationTime(expTime);
-    }
-
-    /* Clear the hash if there is a token. */
-    if (hashParamAccessToken) {
-      history.replace({ ...history.location, hash: undefined });
-      navigate(window.localStorage.getItem('redirect') || '/');
-    }
-  }, [location, navigate]);
-
-  useEffect(() => {
-    if (!accessToken) {
+    if (!hashParamAccessToken) {
       return;
     }
 
-    fetchMe(accessToken)
-      .then((data) => {
-        setLocalStorage('user', JSON.stringify(data.me));
-        setUser(data.me);
+    fetchMe(hashParamAccessToken)
+      .then(({ me, ongoing_competitions, upcoming_competitions }) => {
+        setUserAndSave(me);
+        queryClient.setQueryData(['userCompetitions'], {
+          ongoing_competitions,
+          upcoming_competitions,
+        });
       })
       .catch((err) => console.error(err));
-  }, [accessToken]);
+
+    /* Clear the hash if there is a token. */
+    history.replace({ ...history.location, hash: undefined });
+    navigate(window.localStorage.getItem('redirect') || '/');
+
+    setAccessToken(hashParamAccessToken);
+
+    // const hashParamExpiresIn = hashParams.get('expires_in');
+    // if (hashParamExpiresIn && !isNaN(parseInt(hashParamExpiresIn, 10))) {
+    //   /* Expire the token 15 minutes before it actually does,
+    //      this way it doesn't expire right after the user enters the page. */
+    //   const expiresInSeconds = parseInt(hashParamExpiresIn, 10) - 15 * 60;
+    //   const expTime = new Date(new Date().getTime() + expiresInSeconds * 1000).toISOString();
+    //   setLocalStorage('expirationTime', expTime);
+    //   setExpirationTime(expTime);
+    // }
+  }, [location, navigate]);
 
   const signedIn = useCallback(() => !!accessToken, [accessToken]);
 
-  const expired = useMemo(() => {
-    if (!user) {
-      return false;
-    }
-    if (!expirationTime) {
-      return true;
-    }
+  // const expired = useMemo(() => {
+  //   if (!user) {
+  //     return false;
+  //   }
+  //   if (!expirationTime) {
+  //     return true;
+  //   }
 
-    return Date.now() >= new Date(expirationTime).getTime();
-  }, [user, expirationTime]);
+  //   return Date.now() >= new Date(expirationTime).getTime();
+  // }, [user, expirationTime]);
 
   const setUserAndSave = (user: User) => {
     setLocalStorage('user', JSON.stringify(user));
@@ -142,7 +136,7 @@ export default function AuthProvider({ children }) {
     signIn,
     signOut,
     signedIn,
-    expired,
+    expired: !user,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -23,6 +23,10 @@ export default function CompetitionListFragment({
 }: CompetitionListFragmentProps) {
   const { pinnedCompetitions } = usePinnedCompetitions();
 
+  if (!competitions.length && !loading) {
+    return null;
+  }
+
   return (
     <div className="w-full p-2">
       <span className="text-sm text-blue-800">{title}</span>

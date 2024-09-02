@@ -12,13 +12,29 @@ export const wcaApiFetch = async <T>(path: string, fetchOptions: RequestInit = {
   return (await res.json()) as T;
 };
 
-export const fetchMe = async (accessToken: string) =>
-  wcaApiFetch<{ me: User }>('/me', {
+export const fetchMe = async (
+  accessToken: string,
+  params: {
+    upcoming_competitions?: boolean;
+    ongoing_competitions?: boolean;
+  } = {}
+) => {
+  const urlParams = new URLSearchParams({
+    upcoming_competitions: params.upcoming_competitions ? 'true' : 'false',
+    ongoing_competitions: params.ongoing_competitions ? 'true' : 'false',
+  });
+
+  return wcaApiFetch<{
+    me: User;
+    ongoing_competitions?: ApiCompetition[];
+    upcoming_competitions?: ApiCompetition[];
+  }>(`/me?${urlParams}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`,
     },
   });
+};
 
 export const fetchUser = async (userId: string) => wcaApiFetch<{ user: User }>(`/users/${userId}`);
 
