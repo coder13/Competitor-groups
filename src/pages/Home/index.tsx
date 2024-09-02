@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { MyCompetitions } from '../../containers/MyCompetitions';
 import UpcomingCompetitions from '../../containers/UpcomingCompetitions/UpcomingCompetitions';
-import { Link } from 'react-router-dom';
 import { Container } from '../../components/Container';
 
 export default function Home() {

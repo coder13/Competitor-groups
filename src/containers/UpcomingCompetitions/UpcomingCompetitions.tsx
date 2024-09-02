@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import CompetitionListFragment from '../../components/CompetitionList';
+import CompetitionListFragment from '../../components/CompetitionList/CompetitionList';
 import { BarLoader } from 'react-spinners';
 import { GlobalStateContext } from '../../App';
 import NoteBox from '../../components/Notebox';
@@ -32,7 +32,7 @@ export default function UpcomingCompetitions() {
   }, [inView]);
 
   return (
-    <>
+    <div className="pb-2">
       {!online && (
         <NoteBox
           text="This app is operating in offline mode. Some competitions may not be available."
@@ -60,7 +60,10 @@ export default function UpcomingCompetitions() {
       )}
 
       {isFetchingNextPage && <BarLoader width="100%" />}
-      {!!dataUpdatedAt && <LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
-    </>
+
+      <div className="px-2">
+        {!!dataUpdatedAt && <LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
+      </div>
+    </div>
   );
 }

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import classNames from 'classnames';
-import { formatDateRange } from '../lib/time';
+import { formatDateRange } from '../../lib/time';
 
 interface CompetitionLinkProps {
   id: string;

@@ -29,7 +29,6 @@ export const useMyCompetitionsQuery = (userId?: number) => {
 
       return { user: user, upcoming_competitions, ongoing_competitions };
     },
-
     networkMode: 'offlineFirst',
   });
 
