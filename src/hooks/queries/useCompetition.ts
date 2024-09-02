@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { wcaApiFetch } from '../useWCAFetch';
+import { fetchCompetition } from '../../lib/api';
 import { queryClient } from '../../providers/QueryProvider';
 
 export const competitionQuery = (competitionId: string) => ({
   queryKey: ['competition', competitionId],
-  queryFn: async () => wcaApiFetch<ApiCompetition>(`/competitions/${competitionId}`),
+  queryFn: async () => fetchCompetition(competitionId),
 });
 
 export const useCompetition = (competitionId: string) => {

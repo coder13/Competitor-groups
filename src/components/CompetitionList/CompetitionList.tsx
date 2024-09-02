@@ -1,7 +1,7 @@
 import { BarLoader } from 'react-spinners';
 import CompetitionLink from './CompetitionLink';
-import { LastFetchedAt } from './LastFetchedAt';
-import { usePinnedCompetitions } from '../hooks/UsePinnedCompetitions';
+import { LastFetchedAt } from '../LastFetchedAt';
+import { usePinnedCompetitions } from '../../hooks/UsePinnedCompetitions';
 
 interface CompetitionListFragmentProps {
   title: string;
@@ -22,6 +22,10 @@ export default function CompetitionListFragment({
   lastFetchedAt,
 }: CompetitionListFragmentProps) {
   const { pinnedCompetitions } = usePinnedCompetitions();
+
+  if (!competitions.length && !loading) {
+    return null;
+  }
 
   return (
     <div className="w-full p-2">
