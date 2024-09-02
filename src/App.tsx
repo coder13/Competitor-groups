@@ -31,6 +31,7 @@ import client from './apolloClient';
 import { QueryProvider } from './providers/QueryProvider';
 import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
 import { useWCIF } from './providers/WCIFProvider';
+import UserLogin from './pages/UserLogin';
 
 const PersonalSchedule = () => {
   const navigate = useNavigate();
@@ -76,6 +77,7 @@ const Navigation = () => {
 
           <Route path="persons/:registrantId" element={<CompetitionPerson />} />
           <Route path="personal-bests/:wcaId" element={<CompetitionPersonalBests />} />
+          <Route path="personal-records/:wcaId" element={<CompetitionPersonalBests />} />
 
           <Route path="events" element={<CompetitionEvents />} />
           <Route path="events/:roundId" element={<CompetitionGroupList />} />
@@ -99,6 +101,7 @@ const Navigation = () => {
           <Route path="stats" element={<CompetitionStats />} />
           <Route path="*" element={<p>Path not resolved</p>} />
         </Route>
+        <Route path="/users/:userId" element={<UserLogin />} />
         <Route path="about" element={<About />} />
         <Route path="support" element={<Support />} />
       </Route>
