@@ -130,10 +130,15 @@ export default function AuthProvider({ children }) {
     return Date.now() >= new Date(expirationTime).getTime();
   }, [user, expirationTime]);
 
+  const setUserAndSave = (user: User) => {
+    setLocalStorage('user', JSON.stringify(user));
+    setUser(user);
+  };
+
   const value = {
     accessToken,
     user,
-    setUser,
+    setUser: setUserAndSave,
     signIn,
     signOut,
     signedIn,
