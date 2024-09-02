@@ -102,6 +102,7 @@ const Navigation = () => {
         <Route path="about" element={<About />} />
         <Route path="support" element={<Support />} />
       </Route>
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 };
