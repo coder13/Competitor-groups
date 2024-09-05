@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../providers/AuthProvider';
 import { Popover } from 'react-tiny-popover';
 import { useState } from 'react';
+import { useAuth } from '../providers/AuthProvider';
 
 export default function Header() {
   const { user, signIn, signOut } = useAuth();

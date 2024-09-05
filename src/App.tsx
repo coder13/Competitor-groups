@@ -21,14 +21,14 @@ import {
   Schedule,
 } from './pages/Competition/Schedule';
 import Home from './pages/Home';
-import AuthProvider, { useAuth } from './providers/AuthProvider';
+import { AuthProvider, useAuth } from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
 import { createContext, useEffect, useState } from 'react';
 import About from './pages/About';
 import Support from './pages/Support';
 import { ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
-import { QueryProvider } from './providers/QueryProvider';
+import { QueryProvider } from './providers/QueryProvider/QueryProvider';
 import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
 import { useWCIF } from './providers/WCIFProvider';
 import UserLogin from './pages/UserLogin';
