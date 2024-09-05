@@ -1,17 +1,32 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
 import { useState } from 'react';
-import { useAuth } from '../providers/AuthProvider';
+import { useAuth } from '../../providers/AuthProvider';
+import { useWcif } from '../../hooks/queries/useWcif';
 
 export default function Header() {
   const { user, signIn, signOut } = useAuth();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
+  const { competitionId } = useParams();
+
+  const { data: wcif } = useWcif(competitionId);
+
   return (
     <header className="flex w-full shadow-md p-2 h-12 items-center print:hidden z-20 bg-white">
-      <Link to="/" className="text-blue-500">
-        View Competitions
-      </Link>
+      <div className="flex items-center space-x-1">
+        <Link to="/" className="text-blue-500">
+          <i className="fa fa-home" />
+        </Link>
+        {wcif && (
+          <>
+            <span>{' / '}</span>
+            <Link to="/" className="text-blue-500">
+              {wcif?.shortName}
+            </Link>
+          </>
+        )}
+      </div>
       <div className="flex flex-1" />
       {user ? (
         <Popover

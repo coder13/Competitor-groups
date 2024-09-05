@@ -1,15 +1,15 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import CompetitionListFragment from '../../components/CompetitionList/CompetitionList';
 import { BarLoader } from 'react-spinners';
-import { GlobalStateContext } from '../../App';
 import NoteBox from '../../components/Notebox';
 import { useCompetitionsQuery } from '../../queries';
 import { useInfiniteCompetitions } from '../../hooks/queries/useInfiniteCompetitions';
 import { LastFetchedAt } from '../../components/LastFetchedAt';
+import { useApp } from '../../providers/AppProvider';
 
 export default function UpcomingCompetitions() {
-  const { online } = useContext(GlobalStateContext);
+  const { online } = useApp();
   const { ref, inView } = useInView();
 
   const {

@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import Header from './Header';
-import { ErrorFallback } from '../components/ErrorFallback';
+import { ErrorFallback } from '../../components/ErrorFallback';
 
-export default function Layout() {
+export function RootLayout() {
   return (
     <div className="flex flex-col flex-1 full-viewport-height overflow-hidden">
       <Header />
