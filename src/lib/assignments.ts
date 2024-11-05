@@ -192,6 +192,7 @@ export const AssignmentCodeTitles = {
   'staff-dataentry': 'Data Entry',
   'staff-showrunner': 'Show Runners',
   'staff-announcer': 'Announcers',
+  'staff-stagelead': 'Stage Leads',
   'staff-delegate': 'Delegates',
   'staff-core': 'Core Staff',
   'staff-break': 'Break',
