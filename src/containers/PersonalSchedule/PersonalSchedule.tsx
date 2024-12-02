@@ -9,6 +9,9 @@ import { Assignments } from './Assignments';
 import { usePinnedPersons } from '../../hooks/UsePinnedPersons';
 import { Button } from '../../components/Button';
 import { LinkButton } from '../../components/LinkButton';
+import ExternalLink from '../../components/ExternalLink';
+import { useQuery } from '@tanstack/react-query';
+import { useWcaLiveCompetitorLink } from '../../hooks/queries/useWcaLive';
 
 export interface PersonalScheduleContainerProps {
   wcif: Competition;
@@ -21,8 +24,13 @@ export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleCont
   const { pinnedPersons, pinPerson, unpinPerson } = usePinnedPersons(wcif.id);
   const isPinned = pinnedPersons.some((i) => i === person.registrantId);
 
+  const { data: wcaLiveLink, status: wcaLiveFetchStatus } = useWcaLiveCompetitorLink(
+    wcif.id,
+    person.registrantId.toString()
+  );
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pt-1">
       <div className="flex flex-shrink items-center w-full space-x-1 min-h-10 px-1">
         {hasFlag(person.countryIso2) && (
           <div className="flex flex-shrink text-lg sm:text-xl mx-1">
@@ -60,12 +68,16 @@ export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleCont
       {person.wcaId && (
         <>
           <hr className="my-2" />
-          <div className="px-1 flex">
+          <div className="px-1 flex flex-col space-y-2">
             <LinkButton
-              color="blue"
+              className=""
+              color="green"
               title="View Personal Records"
               to={`/competitions/${wcif.id}/personal-records/${person.wcaId}`}
             />
+            {wcaLiveFetchStatus === 'success' && (
+              <ExternalLink href={wcaLiveLink}>View Results</ExternalLink>
+            )}
           </div>
         </>
       )}
@@ -82,11 +94,11 @@ export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleCont
           showStationNumber={anyAssignmentsHasStationNumber}
         />
       ) : (
-        <div>No Assignments</div>
+        <div className="p-2">
+          <p>No Assignments.</p>
+          <p>Check back later for updates!</p>
+        </div>
       )}
     </div>
   );
-}
-{
-  /* <span className="text-xl sm:text-2xl">{person.registrantId}</span> */
 }
