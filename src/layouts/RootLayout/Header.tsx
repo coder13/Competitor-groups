@@ -21,7 +21,7 @@ export default function Header() {
         {wcif && (
           <>
             <span>{' / '}</span>
-            <Link to="/" className="text-blue-500">
+            <Link to={`/${wcif?.id || competitionId}`} className="text-blue-500">
               {wcif?.shortName}
             </Link>
           </>
