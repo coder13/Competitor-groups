@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchCompetition } from '../../lib/api';
-import { queryClient } from '../../providers/QueryProvider';
+import { queryClient } from '../../providers/QueryProvider/QueryProvider';
 
 export const competitionQuery = (competitionId: string) => ({
   queryKey: ['competition', competitionId],

@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
-import Layout from './layout';
-import Competition from './pages/Competition/Layout';
+import { RootLayout } from './layouts/RootLayout';
+import { CompetitionLayout } from './layouts/CompetitionLayout';
 import CompetitionHome from './pages/Competition/Home';
 import CompetitionPerson from './pages/Competition/Person';
 import CompetitionGroupsOverview from './pages/Competition/GroupsOverview';
@@ -21,17 +21,18 @@ import {
   Schedule,
 } from './pages/Competition/Schedule';
 import Home from './pages/Home';
-import AuthProvider, { useAuth } from './providers/AuthProvider';
+import { AuthProvider, useAuth } from './providers/AuthProvider';
 import usePageTracking from './hooks/usePageTracking';
-import { createContext, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import About from './pages/About';
 import Support from './pages/Support';
 import { ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
-import { QueryProvider } from './providers/QueryProvider';
+import { QueryProvider } from './providers/QueryProvider/QueryProvider';
 import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
 import { useWCIF } from './providers/WCIFProvider';
 import UserLogin from './pages/UserLogin';
+import { AppProvider } from './providers/AppProvider';
 
 const PersonalSchedule = () => {
   const navigate = useNavigate();
@@ -58,21 +59,15 @@ const PersonalSchedule = () => {
   return null;
 };
 
-export const GlobalStateContext = createContext<{
-  online: boolean;
-}>({
-  online: true,
-});
-
 const Navigation = () => {
   usePageTracking(import.meta.env.VITE_GA_MEASUREMENT_ID);
 
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route path="/" element={<RootLayout />}>
         <Route index element={<Home />} />
         <Route path="/competitions" element={<Navigate to="/" />} />
-        <Route path="/competitions/:competitionId" element={<Competition />}>
+        <Route path="/competitions/:competitionId" element={<CompetitionLayout />}>
           <Route index element={<CompetitionHome />} />
 
           <Route path="persons/:registrantId" element={<CompetitionPerson />} />
@@ -110,43 +105,18 @@ const Navigation = () => {
   );
 };
 
-const App = () => {
-  const [online, setOnline] = useState(navigator.onLine);
-
-  const handleOnline = () => {
-    setOnline(true);
-  };
-
-  const handleOffline = () => {
-    setOnline(false);
-  };
-
-  useEffect(() => {
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  return (
-    <GlobalStateContext.Provider
-      value={{
-        online,
-      }}>
-      <QueryProvider>
-        <ApolloProvider client={client}>
-          <BrowserRouter>
-            <AuthProvider>
-              <Navigation />
-            </AuthProvider>
-          </BrowserRouter>
-        </ApolloProvider>
-      </QueryProvider>
-    </GlobalStateContext.Provider>
-  );
-};
+const App = () => (
+  <AppProvider>
+    <QueryProvider>
+      <ApolloProvider client={client}>
+        <BrowserRouter>
+          <AuthProvider>
+            <Navigation />
+          </AuthProvider>
+        </BrowserRouter>
+      </ApolloProvider>
+    </QueryProvider>
+  </AppProvider>
+);
 
 export default App;

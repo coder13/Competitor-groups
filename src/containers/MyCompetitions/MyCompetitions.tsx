@@ -1,5 +1,5 @@
-import { useAuth } from '../../providers/AuthProvider';
 import CompetitionListFragment from '../../components/CompetitionList/CompetitionList';
+import { useAuth } from '../../providers/AuthProvider';
 import { useCompetitionsQuery } from '../../queries';
 import { useMyCompetitionsQuery } from './MyCompetitions.query';
 

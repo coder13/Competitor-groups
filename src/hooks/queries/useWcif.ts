@@ -3,10 +3,10 @@ import { Competition } from '@wca/helpers';
 import { queryClient } from '../../providers/QueryProvider';
 import { fetchWcif, UserCompsResponse } from '../../lib/api';
 
-export const useWcif = (competitionId: string) =>
+export const useWcif = (competitionId?: string) =>
   useQuery<Competition>({
     queryKey: ['wcif', competitionId],
-    queryFn: () => fetchWcif(competitionId),
+    queryFn: () => fetchWcif(competitionId!),
     initialData: () => {
       const upcomingComps =
         queryClient
@@ -45,4 +45,5 @@ export const useWcif = (competitionId: string) =>
     initialDataUpdatedAt: () => {
       return queryClient.getQueryState(['wcif', competitionId])?.dataUpdatedAt;
     },
+    enabled: !!competitionId,
   });
