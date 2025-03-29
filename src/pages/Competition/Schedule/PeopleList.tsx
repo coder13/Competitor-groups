@@ -39,6 +39,7 @@ export const PeopleList = ({
             'bg-blue-200': assignmentCode.match(/judge/i),
             'bg-cyan-200': assignmentCode === 'staff-dataentry',
             'bg-violet-200': assignmentCode === 'staff-announcer',
+            'bg-purple-800': assignmentCode === 'staff-stagelead',
             'bg-purple-200': assignmentCode === 'staff-delegate',
             'bg-slate-200': !AssignmentCodeRank.includes(assignmentCode),
             'bg-rose-200': assignmentCode === 'staff-core',
@@ -49,7 +50,7 @@ export const PeopleList = ({
             'even:bg-blue-50': assignmentCode.match(/judge/i),
             'even:bg-cyan-50': assignmentCode === 'staff-dataentry',
             'even:bg-violet-50': assignmentCode === 'staff-announcer',
-            'even:bg-purple-50': assignmentCode === 'staff-delegate',
+            'even:bg-purple-50': assignmentCode === 'staff-stagelead' || assignmentCode === 'staff-delegate',
             'even:bg-slate-50': !AssignmentCodeRank.includes(assignmentCode),
             'even:bg-rose-50': assignmentCode === 'staff-core',
           };
