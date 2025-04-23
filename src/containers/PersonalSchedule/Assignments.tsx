@@ -119,7 +119,7 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                         );
                       }
 
-                      if (!assignment.activityId) {
+                      if (assignment.activityId === undefined || assignment.activityId === null) {
                         return null;
                       }
 
