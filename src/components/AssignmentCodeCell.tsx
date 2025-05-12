@@ -36,7 +36,7 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
     }
 
     if (!assignment) {
-      return letter ? assignmentCode[0] : assignmentCode;
+      return letter ? assignmentCode[0] : assignmentCode.split('-')[1];
     }
     if (letter) {
       return assignment.letter;
