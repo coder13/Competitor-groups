@@ -8,6 +8,7 @@ import { ExtraAssignment } from './PersonalExtraAssignment';
 import { PersonalNormalAssignment } from './PersonalNormalAssignment';
 import { isActivityWithRoomOrParent } from '../../lib/typeguards';
 import { useCollapse } from '../../hooks/UseCollapse';
+import { getRoomData } from '../../lib/activities';
 
 export interface AssignmentsProps {
   wcif: Competition;
@@ -146,8 +147,7 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                         return null;
                       }
 
-                      const roomName = room?.name;
-                      const roomColor = room?.color;
+                      const stage = getRoomData(room, activity);
 
                       let howManyNextAssignmentsAreSameRoundAttempt = 0;
                       for (let i = index + 1; i < sortedAssignments.length; i++) {
@@ -210,7 +210,7 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                           assignment={assignment}
                           activity={activity}
                           timeZone={timeZone}
-                          room={{ name: roomName, color: roomColor }}
+                          room={stage}
                           isCurrent={isCurrent}
                           isOver={isOver}
                           showTopBorder={showTopBorder}

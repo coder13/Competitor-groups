@@ -13,6 +13,10 @@ import {
 import { formatTime, formatToParts, getNumericDateFormatter } from './time';
 import { ActivityWithRoomOrParent, RoundActivity } from './types';
 import { byDate } from './utils';
+import {
+  getNatsHelperGroupExtension,
+  getNatsHelperRoomExtension,
+} from '../extensions/org.cubingusa.natshelper.v1';
 
 export const getVenues = (wcif: Competition) => wcif.schedule.venues;
 
@@ -239,4 +243,26 @@ export const getActivitiesWithParsedDate = (wcif: Competition) => {
         ...parseActivityStartDate(activity, findVenue(activity)?.timezone),
       }))
       .sort(byDate);
+};
+
+export const getRoomData = (
+  room: Room,
+  activity: Activity
+): {
+  name: string;
+  color: string;
+} => {
+  const stages = getNatsHelperRoomExtension(room)?.stages;
+  const stageId = getNatsHelperGroupExtension(activity)?.stageId;
+
+  if (stages === undefined || stageId === undefined) {
+    return room;
+  }
+
+  const stage = stages.find((s) => s.id === stageId);
+  if (!stage) {
+    return room;
+  }
+
+  return stage;
 };

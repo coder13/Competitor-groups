@@ -1,7 +1,7 @@
 import { useCallback, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { useWCIF } from '../../../providers/WCIFProvider';
-import { streamActivities, streamPersonIds } from '../../../lib/activities';
+import { getRoomData, streamActivities, streamPersonIds } from '../../../lib/activities';
 import { roundTime } from '../../../lib/utils';
 import { formatDate, formatToParts } from '../../../lib/time';
 import DisclaimerText from '../../../components/DisclaimerText';
@@ -99,8 +99,9 @@ export default function CompetitionStreamSchedule() {
                     );
                     const timeZone = venue?.timezone;
 
-                    const roomName = activity?.room?.name || activity?.parent?.room?.name;
-                    const roomColor = activity?.room?.color || activity?.parent?.room?.color;
+                    const room = activity?.room || activity?.parent?.room;
+                    const roomData = room && getRoomData(room, activity);
+
                     const startTime = roundTime(
                       new Date(activity?.startTime || 0),
                       5
@@ -125,9 +126,9 @@ export default function CompetitionStreamSchedule() {
                           <span
                             className="px-[6px]  py-[4px]  rounded-md"
                             style={{
-                              backgroundColor: roomColor ? `${roomColor}70` : 'inherit',
+                              backgroundColor: roomData ? `${roomData.color}70` : 'inherit',
                             }}>
-                            {roomName}
+                            {roomData?.name}
                           </span>
                         </td>
                         <td className="py-2 text-center">

@@ -7,7 +7,7 @@ import {
 } from '@wca/helpers';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { getRooms } from '../../../lib/activities';
+import { getRoomData, getRooms } from '../../../lib/activities';
 import { formatDateTimeRange } from '../../../lib/time';
 import { renderResultByEventId } from '../../../lib/results';
 import { useWCIF } from '../../../providers/WCIFProvider';
@@ -59,6 +59,14 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
     [activity.id, wcif]
   );
 
+  const roomData = useMemo(() => {
+    if (!room) {
+      return undefined;
+    }
+
+    return getRoomData(room, activity);
+  }, [activity, room]);
+
   const venue = wcif?.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id));
   const timeZone = venue?.timezone;
 
@@ -99,7 +107,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
           return '';
         }
 
-        if (['a' || 'm'].includes(prevRound.format)) {
+        if (['a', 'm'].includes(prevRound.format)) {
           return renderResultByEventId(eventId, 'average', prevRoundResults.average);
         }
 
@@ -174,10 +182,10 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
             <Link
               className="px-3 py-2 rounded mr-2 hover:underline"
               style={{
-                backgroundColor: `${room?.color}70`,
+                backgroundColor: `${roomData?.color}70`,
               }}
               to={`/competitions/${wcif.id}/rooms/${room?.id}`}>
-              {room?.name}
+              {roomData?.name}
             </Link>
             <Link to={`/competitions/${wcif.id}/events/${round?.id}`} className="hover:underline">
               {roundName}
