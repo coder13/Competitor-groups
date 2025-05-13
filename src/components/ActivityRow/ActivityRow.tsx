@@ -1,9 +1,9 @@
-import { Link, useParams } from 'react-router-dom';
 import { Activity, Room, Venue, activityCodeToName } from '@wca/helpers';
-import { formatTimeRange } from '../lib/time';
 import classNames from 'classnames';
-import { useNow } from '../hooks/useNow';
 import { useMemo } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useNow } from '@/hooks/useNow';
+import { formatTimeRange } from '@/lib/time';
 
 interface ActivityRowProps {
   activity: Activity;
@@ -12,17 +12,17 @@ interface ActivityRowProps {
   showRoom?: boolean;
 }
 
-export default function ActivityRow({
-  activity,
-  room,
-  timeZone,
-  showRoom = true,
-}: ActivityRowProps) {
+export function ActivityRow({ activity, room, timeZone, showRoom = true }: ActivityRowProps) {
   const { competitionId } = useParams();
   const now = useNow();
 
-  const isOver = useMemo(() => new Date(activity.endTime).getTime() < now.getTime(), []);
-  const activityName = activity.activityCode.startsWith('other') ? activity.name : activityCodeToName(activity.activityCode);
+  const isOver = useMemo(
+    () => new Date(activity.endTime).getTime() < now.getTime(),
+    [activity.endTime, now],
+  );
+  const activityName = activity.activityCode.startsWith('other')
+    ? activity.name
+    : activityCodeToName(activity.activityCode);
 
   return (
     <Link
@@ -31,7 +31,7 @@ export default function ActivityRow({
         'flex flex-col w-full p-2 even:bg-slate-50 hover:bg-slate-100 even:hover:bg-slate-200',
         {
           'opacity-50': isOver,
-        }
+        },
       )}
       to={`/competitions/${competitionId}/activities/${activity.id}`}>
       <span>{activityName}</span>

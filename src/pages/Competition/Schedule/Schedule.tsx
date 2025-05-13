@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import DisclaimerText from '../../../components/DisclaimerText';
-import { useWCIF } from '../../../providers/WCIFProvider';
-import { Container } from '../../../components/Container';
-import { ScheduleContainer } from '../../../containers/Schedule';
-import { LinkButton } from '../../../components/LinkButton';
+import { useParams } from 'react-router-dom';
+import { Container, DisclaimerText, LinkButton } from '@/components';
+import { ScheduleContainer } from '@/containers/Schedule';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 export function Schedule() {
   const competitionId = useParams().competitionId;

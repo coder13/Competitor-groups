@@ -10,7 +10,7 @@ const httpLink = createHttpLink({
 const wsLink = new GraphQLWsLink(
   createClient({
     url: import.meta.env.VITE_NOTIFYCOMP_WS_ORIGIN || 'wss://admin.notifycomp.com/graphql',
-  })
+  }),
 );
 
 const splitLink = split(
@@ -19,7 +19,7 @@ const splitLink = split(
     return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
   },
   wsLink,
-  httpLink
+  httpLink,
 );
 
 const client = new ApolloClient({

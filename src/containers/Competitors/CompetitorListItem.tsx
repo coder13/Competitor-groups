@@ -1,6 +1,6 @@
 import { Person } from '@wca/helpers';
-import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
 import { Link } from 'react-router-dom';
+import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
 
 export interface CompetitorListItemProps {
   person: Person;

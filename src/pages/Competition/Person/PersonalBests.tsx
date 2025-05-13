@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useWCIF } from '../../../providers/WCIFProvider';
-import { PersonalBestsContainer } from '../../../containers/PersonalBests/PersonalBests';
-import { Container } from '../../../components/Container';
+import { Container } from '@/components/Container';
+import { PersonalBestsContainer } from '@/containers/PersonalBests/PersonalBests';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 export default function PersonalBests() {
   const { wcif, setTitle } = useWCIF();

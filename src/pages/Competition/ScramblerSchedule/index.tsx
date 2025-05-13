@@ -1,17 +1,13 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import flatMap from 'lodash.flatmap';
-import { getAllActivities, getAllRoundActivities, getRooms } from '../../../lib/activities';
-import { groupBy } from '../../../lib/utils';
-import { formatToWeekDay } from '../../../lib/time';
-import { useWCIF } from '../../../providers/WCIFProvider';
-import { BreakableActivityName } from '../../../components/BreakableActivityName';
-import { Container } from '../../../components/Container';
-import { activityCodeToName } from '@wca/helpers';
-import { parseActivityCodeFlexible } from '../../../lib/activityCodes';
-import { niceActivityName } from '../Schedule';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { ErrorFallback } from '../../../components/ErrorFallback';
+import { Link } from 'react-router-dom';
+import { BreakableActivityName, Container, ErrorFallback } from '@/components';
+import { getAllActivities, getAllRoundActivities, getRooms } from '@/lib/activities';
+import { parseActivityCodeFlexible } from '@/lib/activityCodes';
+import { formatToWeekDay } from '@/lib/time';
+import { groupBy } from '@/lib/utils';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 export default function ScramblerSchedule() {
   const { wcif, setTitle } = useWCIF();
@@ -38,13 +34,13 @@ export default function ScramblerSchedule() {
             .filter((activity) => activity.childActivities.length !== 0)
             .filter((activity) => activity.room?.name === roomSelector)
         : [],
-    [roomSelector, wcif]
+    [roomSelector, wcif],
   );
   const _allActivities = useMemo(() => (wcif ? getAllActivities(wcif) : []), [wcif]);
 
   const getActivity = useCallback(
     (assignment) => _allActivities.find(({ id }) => id === assignment.activityId),
-    [_allActivities]
+    [_allActivities],
   );
 
   const assignments = useMemo(
@@ -56,9 +52,9 @@ export default function ScramblerSchedule() {
             ...assignment,
             personName: person.name,
             activity: getActivity(assignment),
-          }))
+          })),
       ),
-    [getActivity, wcif?.persons]
+    [getActivity, wcif?.persons],
   );
 
   const activitiesSplitAcrossDates = groupBy(
@@ -66,7 +62,7 @@ export default function ScramblerSchedule() {
       ...activity,
       date: formatToWeekDay(new Date(activity.startTime)) || '???',
     })),
-    (x) => x.date
+    (x) => x.date,
   );
 
   return (
@@ -125,7 +121,7 @@ export default function ScramblerSchedule() {
                     <ErrorBoundary FallbackComponent={ErrorFallback}>
                       {activity.childActivities.map((childActivity) => {
                         const { groupNumber } = parseActivityCodeFlexible(
-                          childActivity.activityCode
+                          childActivity.activityCode,
                         );
 
                         return (

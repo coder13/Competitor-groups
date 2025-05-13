@@ -1,7 +1,7 @@
-import { Activity } from '@wca/helpers';
+import { Activity, Room } from '@wca/helpers';
 import { ActivityWithRoomOrParent } from './types';
 
-export const isActivity = (activity: any): activity is ActivityWithRoomOrParent => {
+export const isActivity = (activity: Activity | Room): activity is Activity => {
   return (
     'childActivities' in activity &&
     'name' in activity &&
@@ -16,14 +16,16 @@ export const isActivity = (activity: any): activity is ActivityWithRoomOrParent 
   );
 };
 
-export const isRoundActivity = (activity: any): activity is ActivityWithRoomOrParent => {
+export const isRoundActivity = (activity: Activity): activity is ActivityWithRoomOrParent => {
   return isActivity(activity) && 'room' in activity;
 };
 
-export const isGroupActivity = (activity: any): activity is ActivityWithRoomOrParent => {
+export const isGroupActivity = (activity: Activity): activity is ActivityWithRoomOrParent => {
   return isActivity(activity) && 'parent' in activity;
 };
 
-export const isActivityWithRoomOrParent = (activity: any): activity is ActivityWithRoomOrParent => {
+export const isActivityWithRoomOrParent = (
+  activity: Activity,
+): activity is ActivityWithRoomOrParent => {
   return (isActivity(activity) && 'room' in activity) || 'parent' in activity;
 };

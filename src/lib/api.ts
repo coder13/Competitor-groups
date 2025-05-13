@@ -17,7 +17,7 @@ export const fetchMe = async (
   params: {
     upcoming_competitions?: boolean;
     ongoing_competitions?: boolean;
-  } = {}
+  } = {},
 ) => {
   const urlParams = new URLSearchParams({
     upcoming_competitions: params.upcoming_competitions ? 'true' : 'false',
@@ -57,3 +57,6 @@ export const fetchWcif = async (competitionId: string) =>
 
 export const fetchCompetition = async (competitionId: string) =>
   await wcaApiFetch<ApiCompetition>(`/competitions/${competitionId}`);
+
+export const fetchSearchCompetition = (search: string) =>
+  wcaApiFetch<{ result: ApiCompetition[] }>(`/search/competitions?q=${search}`);

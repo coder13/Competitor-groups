@@ -18,7 +18,7 @@ export const LinkButton = ({ to, title, color, className }: LinkButtonProps) => 
           'bg-blue-200 hover:bg-blue-300': color === 'blue',
           'bg-green-200 hover:bg-green-300': color === 'green',
         },
-        className
+        className,
       )}>
       {title}
     </Link>

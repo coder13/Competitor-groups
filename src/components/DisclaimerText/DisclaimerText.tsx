@@ -1,6 +1,6 @@
-import NoteBox from './Notebox';
+import { NoteBox } from '../Notebox';
 
-export default function DisclaimerText({ className }: { className?: string }) {
+export function DisclaimerText({ className }: { className?: string }) {
   return (
     <NoteBox
       className={className}

@@ -1,7 +1,7 @@
-import { Outlet } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Outlet } from 'react-router-dom';
+import { ErrorFallback } from '@/components';
 import Header from './Header';
-import { ErrorFallback } from '../../components/ErrorFallback';
 
 export function RootLayout() {
   return (

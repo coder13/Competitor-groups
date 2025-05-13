@@ -1,12 +1,12 @@
-import { Fragment } from 'react';
+import { Competition, Person } from '@wca/helpers';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
-import { Competition, Person } from '@wca/helpers';
-import { renderResultByEventId } from '../../lib/results';
-import { eventNameById } from '../../lib/events';
-import { Ranking } from './Ranking';
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { LinkButton } from '../../components/LinkButton';
+import { LinkButton } from '@/components/LinkButton';
+import { eventNameById } from '@/lib/events';
+import { renderResultByEventId } from '@/lib/results';
+import { Ranking } from './Ranking';
 
 export interface PersonalBestsContainerProps {
   wcif: Competition;
@@ -53,10 +53,10 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
               const eventId = event.id;
 
               const averagePb = person?.personalBests?.find(
-                (p) => p.eventId === eventId && p.type === 'average'
+                (p) => p.eventId === eventId && p.type === 'average',
               );
               const singlePb = person?.personalBests?.find(
-                (p) => p.eventId === eventId && p.type === 'single'
+                (p) => p.eventId === eventId && p.type === 'single',
               );
 
               return (

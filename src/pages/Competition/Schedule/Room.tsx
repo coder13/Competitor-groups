@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getAllChildActivities } from '../../../lib/activities';
-import { useWCIF } from '../../../providers/WCIFProvider';
-import ActivityRow from '../../../components/ActivitiyRow';
-import { byDate } from '../../../lib/utils';
-import { formatToParts } from '../../../lib/time';
-import { Container } from '../../../components/Container';
+import { ActivityRow, Container } from '@/components';
+import { getAllChildActivities } from '@/lib/activities';
+import { formatToParts } from '@/lib/time';
+import { byDate } from '@/lib/utils';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 export function CompetitionRoom() {
   const { wcif, setTitle } = useWCIF();
@@ -16,7 +15,7 @@ export function CompetitionRoom() {
   }, [setTitle]);
 
   const venue = wcif?.schedule?.venues?.find((venue) =>
-    venue.rooms.some((room) => room.id.toString() === roomId)
+    venue.rooms.some((room) => room.id.toString() === roomId),
   );
   const room = venue?.rooms?.find((room) => room.id.toString() === roomId);
 
@@ -26,10 +25,10 @@ export function CompetitionRoom() {
     () =>
       room?.activities
         .flatMap((activity) =>
-          activity?.childActivities?.length ? getAllChildActivities(activity) : activity
+          activity?.childActivities?.length ? getAllChildActivities(activity) : activity,
         )
         .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()) || [],
-    [room?.activities]
+    [room?.activities],
   );
 
   const scheduleDays = activities
@@ -38,9 +37,9 @@ export function CompetitionRoom() {
         wcif?.schedule.venues?.find((v) =>
           v.rooms.some((r) =>
             r.activities.some(
-              (a) => a.id === activity.id || a.childActivities?.some((ca) => ca.id === activity.id)
-            )
-          )
+              (a) => a.id === activity.id || a.childActivities?.some((ca) => ca.id === activity.id),
+            ),
+          ),
         ) || wcif?.schedule.venues?.[0];
 
       const dateTime = new Date(activity.startTime);
@@ -66,9 +65,9 @@ export function CompetitionRoom() {
         wcif?.schedule.venues?.find((v) =>
           v.rooms.some((r) =>
             r.activities.some(
-              (a) => a.id === activity.id || a.childActivities?.some((ca) => ca.id === activity.id)
-            )
-          )
+              (a) => a.id === activity.id || a.childActivities?.some((ca) => ca.id === activity.id),
+            ),
+          ),
         ) || wcif?.schedule.venues?.[0];
 
       const dateTime = new Date(activity.startTime);
@@ -90,7 +89,7 @@ export function CompetitionRoom() {
     (date) => {
       return activitiesWithParsedDate.filter((a) => a.date === date);
     },
-    [activitiesWithParsedDate]
+    [activitiesWithParsedDate],
   );
 
   return (

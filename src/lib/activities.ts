@@ -6,7 +6,6 @@ import {
   PersonalBest,
   RankingType,
   Room,
-  Schedule,
   Venue,
   parseActivityCode,
 } from '@wca/helpers';
@@ -21,7 +20,7 @@ import {
 export const getVenues = (wcif: Competition) => wcif.schedule.venues;
 
 export const getRooms = (
-  wcif: Competition
+  wcif: Competition,
 ): (Room & {
   venue: Venue;
 })[] =>
@@ -29,7 +28,7 @@ export const getRooms = (
     venue.rooms.map((room) => ({
       ...room,
       venue,
-    }))
+    })),
   );
 
 /**
@@ -70,7 +69,7 @@ export const getAllRoundActivities = (wcif: Competition): RoundActivity[] => {
     room.activities.map((a) => ({
       ...a,
       room,
-    }))
+    })),
   );
 };
 
@@ -96,7 +95,7 @@ export const getGroupActivities = (wcif: Competition) => {
             ...ra,
             room,
           },
-        }))
+        })),
       ),
     ])
     .filter(Boolean) as ActivityWithRoomOrParent[];
@@ -134,7 +133,7 @@ export const findPR = (eventId: EventId) => (personalBests: PersonalBest[], type
 
 export const activityDurationString = (
   { startTime, endTime }: Activity,
-  timeZone?: string
+  timeZone?: string,
 ): string => `${formatTime(startTime, 5, timeZone)} - ${formatTime(endTime, 5, timeZone)}`;
 
 export const streamPersonIds = (activity: ActivityWithRoomOrParent): number[] => {
@@ -152,7 +151,7 @@ export const streamActivities = (wcif: Competition): ActivityWithRoomOrParent[] 
 export const getStationNumber =
   (assignmentCode: string, activity: Activity) => (person: Person) => {
     const assignment = person.assignments?.find(
-      (a) => a.assignmentCode === assignmentCode && a.activityId === activity.id
+      (a) => a.assignmentCode === assignmentCode && a.activityId === activity.id,
     );
     return assignment?.stationNumber;
   };

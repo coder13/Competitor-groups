@@ -1,6 +1,6 @@
-import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import AssignmentLabel from './AssignmentLabel';
+import { render } from '@testing-library/react';
+import { AssignmentLabel } from './AssignmentLabel';
 
 describe('components/AssignmentLabel', () => {
   it('should render correctly when assignmentCode is "competitor"', () => {

@@ -1,4 +1,4 @@
-import { format, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 import { roundTime } from './utils';
 
 const FormatTimeSettings: Intl.DateTimeFormatOptions = {
@@ -39,14 +39,14 @@ export const formatTimeRange = (
   start: string,
   end: string,
   minutes: number = 5,
-  timeZone?: string
+  timeZone?: string,
 ) => `${formatTime(start, minutes, timeZone)} - ${formatTime(end, minutes, timeZone)}`;
 
 export const formatDateTimeRange = (
   start: string,
   end: string,
   minutes: number = 5,
-  timeZone?: string
+  timeZone?: string,
 ) => {
   const startDate = new Date(start);
   const endDate = new Date(end);
@@ -57,22 +57,7 @@ export const formatDateTimeRange = (
 
   return `${formatDateTime(start, minutes, timeZone)} - ${formatDateTime(end, minutes, timeZone)}`;
 };
-// https://github.com/thewca/wca-live/blob/8884f8dc5bb2efcc3874f9fff4f6f3c098efbd6a/client/src/lib/date.js#L10
 
-export const formatDateRange = (startString: string, endString: string) => {
-  const [startDay, startMonth, startYear] = format(parseISO(startString), 'd MMM yyyy').split(' ');
-  const [endDay, endMonth, endYear] = format(parseISO(endString), 'd MMM yyyy').split(' ');
-  if (startString === endString) {
-    return `${startMonth} ${startDay}, ${startYear}`;
-  }
-  if (startMonth === endMonth && startYear === endYear) {
-    return `${startMonth} ${startDay} - ${endDay}, ${endYear}`;
-  }
-  if (startYear === endYear) {
-    return `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${startYear}`;
-  }
-  return `${startMonth} ${startDay}, ${startYear} - ${endMonth} ${endDay}, ${endYear}`;
-};
 export const DateTimeFormatter = new Intl.DateTimeFormat(navigator.language, {
   weekday: 'long',
   year: 'numeric',
@@ -82,6 +67,16 @@ export const DateTimeFormatter = new Intl.DateTimeFormat(navigator.language, {
 
 export const formatDate = (date: Date) => DateTimeFormatter.format(date);
 export const formatToParts = (date: Date) => DateTimeFormatter.formatToParts(date);
+
+export const formatDateRange = (start: string, end: string) => {
+  const scheduleDateTimeFormatter = new Intl.DateTimeFormat(navigator.language, {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+  });
+
+  return scheduleDateTimeFormatter.formatRange(parseISO(start), parseISO(end));
+};
 
 export const formatToWeekDay = (date: Date) =>
   formatToParts(date).find((p) => p.type === 'weekday')?.value;

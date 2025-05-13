@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 
-export const StyledNavLink = ({ to, text }) => (
+export const StyledNavLink = ({ to, text }: { to: string; text: string }) => (
   <NavLink
     end
     to={to}

@@ -1,9 +1,9 @@
-import { createRoot } from 'react-dom/client';
 import '@cubing/icons';
-import reportWebVitals from './reportWebVitals';
+import '@total-typescript/ts-reset';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import './index.css';
-import '@total-typescript/ts-reset';
+import reportWebVitals from './reportWebVitals';
 
 const container = document.getElementById('root');
 if (!container) throw new Error('Failed to find the root element');

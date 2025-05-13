@@ -6,22 +6,28 @@ export const usePinnedPersons = (competitionId: string) => {
     'pinnedPersons',
     {
       [competitionId]: [],
-    }
+    },
   );
 
-  const pinPerson = useCallback((registrantId: number) => {
-    setPinnedPersons((prev) => ({
-      ...prev,
-      [competitionId]: [...(prev[competitionId] || []), registrantId],
-    }));
-  }, []);
+  const pinPerson = useCallback(
+    (registrantId: number) => {
+      setPinnedPersons((prev) => ({
+        ...prev,
+        [competitionId]: [...(prev[competitionId] || []), registrantId],
+      }));
+    },
+    [competitionId, setPinnedPersons],
+  );
 
-  const unpinPerson = useCallback((registrantId: number) => {
-    setPinnedPersons((prev) => ({
-      ...prev,
-      [competitionId]: (prev[competitionId] || []).filter((id) => id !== registrantId),
-    }));
-  }, []);
+  const unpinPerson = useCallback(
+    (registrantId: number) => {
+      setPinnedPersons((prev) => ({
+        ...prev,
+        [competitionId]: (prev[competitionId] || []).filter((id) => id !== registrantId),
+      }));
+    },
+    [competitionId, setPinnedPersons],
+  );
 
   return {
     pinnedPersons: pinnedPersons[competitionId] || [],

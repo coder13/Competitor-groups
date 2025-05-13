@@ -1,6 +1,5 @@
-import { findPR } from './activities';
-
 import { EventId, Person } from '@wca/helpers';
+import { findPR } from './activities';
 import { isRankedBySingle } from './events';
 
 export const byWorldRanking = (eventId: EventId): ((a: Person, b: Person) => number) => {

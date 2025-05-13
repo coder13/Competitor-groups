@@ -1,5 +1,3 @@
-///<reference path="">
-
 interface User {
   id: number;
   name: string;

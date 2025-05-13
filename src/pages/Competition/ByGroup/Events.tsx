@@ -1,10 +1,10 @@
+import { parseActivityCode } from '@wca/helpers';
 import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { groupActivitiesByRound } from '../../../lib/activities';
-import { eventNameById } from '../../../lib/events';
-import { useWCIF } from '../../../providers/WCIFProvider';
-import { Container } from '../../../components/Container';
-import { parseActivityCode } from '@wca/helpers';
+import { Container } from '@/components/Container';
+import { groupActivitiesByRound } from '@/lib/activities';
+import { eventNameById } from '@/lib/events';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
@@ -21,7 +21,7 @@ const Events = () => {
             .map(({ activityCode }) => activityCode)
             .filter(onlyUnique).length
         : 0,
-    [wcif]
+    [wcif],
   );
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const Events = () => {
                       <td className="px-5 py-3 text-right">View</td>
                     </tr>
                   );
-                })
+                }),
               )}
             </tbody>
           </table>

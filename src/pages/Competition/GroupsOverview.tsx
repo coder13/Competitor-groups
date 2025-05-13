@@ -1,12 +1,12 @@
-import { useCallback, useMemo } from 'react';
-import { groupActivitiesByRound } from '../../lib/activities';
-import { acceptedRegistration } from '../../lib/person';
-import { useWCIF } from '../../providers/WCIFProvider';
 import { Activity, EventId, parseActivityCode } from '@wca/helpers';
-import { hasAssignmentInStage } from '../../lib/person';
-import { Container } from '../../components/Container';
 import classNames from 'classnames';
-import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
+import { useCallback, useMemo } from 'react';
+import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
+import { Container } from '@/components/Container';
+import { groupActivitiesByRound } from '@/lib/activities';
+import { acceptedRegistration } from '@/lib/person';
+import { hasAssignmentInStage } from '@/lib/person';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 const groupNumber = ({ activityCode }: Activity) => parseActivityCode(activityCode)?.groupNumber;
 
@@ -21,7 +21,7 @@ const GroupsOverview = () => {
 
   const memodGroupActivitiesForRound = useCallback(
     (activityCode) => (wcif ? groupActivitiesByRound(wcif, activityCode) : []),
-    [wcif]
+    [wcif],
   );
 
   const assignmentsToObj = useCallback(
@@ -41,10 +41,10 @@ const GroupsOverview = () => {
           }));
 
         const competingAssignment = assignmentsForEvent.find(
-          ({ assignmentCode }) => assignmentCode === 'competitor'
+          ({ assignmentCode }) => assignmentCode === 'competitor',
         );
         const staffingAssignments = assignmentsForEvent.filter(
-          ({ assignmentCode }) => assignmentCode.indexOf('staff') > -1
+          ({ assignmentCode }) => assignmentCode.indexOf('staff') > -1,
         );
 
         obj.competing[event.id.toString()] =
@@ -56,7 +56,7 @@ const GroupsOverview = () => {
       });
       return obj;
     },
-    [memodGroupActivitiesForRound, wcif?.events]
+    [memodGroupActivitiesForRound, wcif?.events],
   );
 
   const assignments = useMemo(() => {
@@ -112,7 +112,7 @@ const GroupsOverview = () => {
                     const assignments =
                       person.assignments?.map((assignment) => {
                         const activity = childActivities.find(
-                          (ca) => ca.id === assignment.activityId
+                          (ca) => ca.id === assignment.activityId,
                         );
 
                         return {
@@ -128,10 +128,10 @@ const GroupsOverview = () => {
                         };
                       }) || [];
                     const competingAssignments = assignments.filter(
-                      ({ assignmentCode }) => assignmentCode === 'competitor'
+                      ({ assignmentCode }) => assignmentCode === 'competitor',
                     );
                     const staffingAssignments = assignments.filter(
-                      ({ assignmentCode }) => assignmentCode.indexOf('staff') > -1
+                      ({ assignmentCode }) => assignmentCode.indexOf('staff') > -1,
                     );
 
                     return (
@@ -140,7 +140,7 @@ const GroupsOverview = () => {
                         <td className="p-2">{person.wcaId}</td>
                         {wcif?.events.map((event) => {
                           const competingAssignment = competingAssignments.find(
-                            (a) => a.eventId === event.id && a.roundNumber === 1
+                            (a) => a.eventId === event.id && a.roundNumber === 1,
                           );
 
                           return (
@@ -155,7 +155,7 @@ const GroupsOverview = () => {
                         })}
                         {wcif?.events.map((event) => {
                           const staffingAssignment = staffingAssignments.find(
-                            (a) => a.eventId === event.id && a.roundNumber === 1
+                            (a) => a.eventId === event.id && a.roundNumber === 1,
                           );
                           return (
                             <AssignmentCodeCell

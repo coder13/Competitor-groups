@@ -1,14 +1,14 @@
-import { Fragment, useEffect, useMemo } from 'react';
 import { Competition, Person } from '@wca/helpers';
-import { getGroupedAssignmentsByDate } from './utils';
-import { byDate, roundTime } from '../../lib/utils';
-import { parseActivityCodeFlexible } from '../../lib/activityCodes';
-import { useNow } from '../../hooks/useNow';
+import { Fragment, useEffect, useMemo } from 'react';
+import { useCollapse } from '@/hooks/UseCollapse';
+import { useNow } from '@/hooks/useNow';
+import { parseActivityCodeFlexible } from '@/lib/activityCodes';
+import { isActivityWithRoomOrParent } from '@/lib/typeguards';
+import { byDate, roundTime } from '@/lib/utils';
+import { getRoomData } from '../../lib/activities';
 import { ExtraAssignment } from './PersonalExtraAssignment';
 import { PersonalNormalAssignment } from './PersonalNormalAssignment';
-import { isActivityWithRoomOrParent } from '../../lib/typeguards';
-import { useCollapse } from '../../hooks/UseCollapse';
-import { getRoomData } from '../../lib/activities';
+import { getGroupedAssignmentsByDate } from './utils';
 
 export interface AssignmentsProps {
   wcif: Competition;
@@ -20,18 +20,18 @@ export interface AssignmentsProps {
 const key = (compId: string, id) => `${compId}-${id}`;
 export function Assignments({ wcif, person, showRoom, showStationNumber }: AssignmentsProps) {
   const { collapsedDates, setCollapsedDates, toggleDate } = useCollapse(
-    key(wcif.id, person.registrantId)
+    key(wcif.id, person.registrantId),
   );
 
   const now = useNow(15 * 1000);
 
-  const scheduleDays = useMemo(() => getGroupedAssignmentsByDate(wcif, person), []);
+  const scheduleDays = useMemo(() => getGroupedAssignmentsByDate(wcif, person), [person, wcif]);
 
   useEffect(() => {
     const today = new Date().getTime();
 
     const collapse: string[] = [];
-    scheduleDays.forEach(({ date, dateParts, assignments }) => {
+    scheduleDays.forEach(({ date, assignments }) => {
       const lastActivity = [...assignments].reverse().find((a) => a.activity)?.activity;
       if (!lastActivity) {
         return;
@@ -48,7 +48,7 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
     });
 
     setCollapsedDates((prev) => [...prev, ...collapse]);
-  }, [scheduleDays]);
+  }, [collapsedDates, scheduleDays, setCollapsedDates]);
 
   const isSingleDay = scheduleDays.length === 1;
 
@@ -125,7 +125,7 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                       }
 
                       const { eventId, roundNumber, attemptNumber } = parseActivityCodeFlexible(
-                        assignment.activity?.activityCode || ''
+                        assignment.activity?.activityCode || '',
                       );
 
                       const venue = wcif?.schedule.venues?.find((v) =>
@@ -137,7 +137,7 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                           }
 
                           return false;
-                        })
+                        }),
                       );
                       const timeZone = venue?.timezone || 'UTC';
 
@@ -157,7 +157,6 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                         }
 
                         if (!isActivityWithRoomOrParent(nextAssignment.activity)) {
-                          debugger;
                           break;
                         }
 

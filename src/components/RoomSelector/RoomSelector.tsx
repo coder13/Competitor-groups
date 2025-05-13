@@ -1,3 +1,4 @@
+/* eslint-disable */
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -17,8 +18,7 @@ const Row = styled.div`
 const Button = styled.div`
   display: flex;
   flex: 1;
-  background-color: ${(props: { highlight: boolean }) =>
-    props.highlight ? '#ABB2B9' : 'white'};
+  background-color: ${(props: { highlight: boolean }) => (props.highlight ? '#ABB2B9' : 'white')};
   justify-content: center;
 `;
 

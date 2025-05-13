@@ -1,5 +1,5 @@
-import tailwindColors from 'tailwindcss/colors';
 import { AssignmentCode } from '@wca/helpers';
+import tailwindColors from 'tailwindcss/colors';
 import { colors } from './colors';
 
 export type SupportedAssignmentCode =
@@ -165,7 +165,7 @@ export const AssignmentsMap = Assignments.reduce(
     ...map,
     [assignment.id]: assignment,
   }),
-  {}
+  {},
 ) as Record<SupportedAssignmentCode, AssignmentConfig>;
 
 export default Assignments;

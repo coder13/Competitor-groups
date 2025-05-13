@@ -7,6 +7,6 @@ export const useNow = (interval: number = 1000) => {
       setNow(new Date());
     }, interval);
     return () => clearInterval(int);
-  }, []);
+  }, [interval]);
   return now;
 };

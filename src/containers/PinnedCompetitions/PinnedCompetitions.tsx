@@ -1,6 +1,6 @@
-import { useCompetitionsQuery } from '../../queries';
-import { usePinnedCompetitions } from '../../hooks/UsePinnedCompetitions';
-import CompetitionListFragment from '../../components/CompetitionList/CompetitionList';
+import { CompetitionListFragment } from '@/components';
+import { usePinnedCompetitions } from '@/hooks/UsePinnedCompetitions';
+import { useCompetitionsQuery } from '@/queries';
 
 export function PinnedCompetitions() {
   const { pinnedCompetitions } = usePinnedCompetitions();

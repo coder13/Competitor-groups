@@ -1,11 +1,11 @@
-import { useWCIF } from '../../../providers/WCIFProvider';
-import { Competitors } from '../../../containers/Competitors';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container } from '../../../components/Container';
-import { OngoingActivities } from '../../../containers/OngoingActivities';
-import { LinkButton } from '../../../components/LinkButton';
-import { PinCompetitionButton } from '../../../components/PinCompetitionButton';
+import { Container } from '@/components/Container';
+import { LinkButton } from '@/components/LinkButton';
+import { PinCompetitionButton } from '@/components/PinCompetitionButton';
+import { Competitors } from '@/containers/Competitors';
+import { OngoingActivities } from '@/containers/OngoingActivities';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 export default function CompetitionHome() {
   const { competitionId } = useParams() as { competitionId: string };

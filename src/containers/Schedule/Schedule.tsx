@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo } from 'react';
-import ActivityRow from '../../components/ActivitiyRow';
-import { getRooms, getScheduledDays, getVenueForActivity } from '../../lib/activities';
 import { Competition } from '@wca/helpers';
-import { useCollapse } from '../../hooks/UseCollapse';
-import { ActivityWithRoomOrParent } from '../../lib/types';
+import { useCallback, useEffect, useMemo } from 'react';
+import { ActivityRow } from '@/components';
+import { useCollapse } from '@/hooks/UseCollapse';
+import { getRooms, getScheduledDays, getVenueForActivity } from '@/lib/activities';
+import { ActivityWithRoomOrParent } from '@/lib/types';
 
 const key = (compId: string) => `${compId}-schedule`;
 
@@ -27,7 +27,7 @@ const ScheduleDay = ({
   const collapsed = collapsedDates.includes(date);
   const toggleCollapsed = useCallback(() => {
     toggleDate(date);
-  }, []);
+  }, [date, toggleDate]);
 
   return (
     <div className="flex flex-col">
@@ -80,7 +80,7 @@ export const ScheduleContainer = ({ wcif }: ScheduleContainerProps) => {
     });
 
     setCollapsedDates([...collapse]);
-  }, [scheduleDays]);
+  }, [collapsedDates, scheduleDays, setCollapsedDates]);
 
   const showRoom = useMemo(() => wcif && getRooms(wcif).length > 1, [wcif]);
 

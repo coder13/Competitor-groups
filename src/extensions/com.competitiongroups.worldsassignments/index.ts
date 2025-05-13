@@ -2,7 +2,7 @@ import { Extension } from '@wca/helpers/lib/models/extension';
 import { WorldAssignmentsExtension } from './types';
 
 export const getWorldAssignmentsExtension = (
-  extensions: Extension[]
+  extensions: Extension[],
 ): WorldAssignmentsExtension => {
   const extension = extensions?.find(({ id }) => id === 'com.competitiongroups.worldsassignments');
 

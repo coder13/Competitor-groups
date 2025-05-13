@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import ReactGA from 'react-ga4';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from '../providers/AuthProvider';
 
 const usePageTracking = (trackingCode) => {
@@ -24,7 +24,7 @@ const usePageTracking = (trackingCode) => {
           : {}),
       },
     });
-  }, [trackingCode]);
+  }, [trackingCode, user]);
 
   useEffect(() => {
     if (ReactGA.isInitialized) {
@@ -42,7 +42,7 @@ const usePageTracking = (trackingCode) => {
     } else if (!ReactGA.isInitialized) {
       console.log('Would have set userId to', user?.id);
     }
-  }, [ReactGA.isInitialized, user?.id]);
+  }, [user]);
 
   useEffect(() => {
     if (ReactGA.isInitialized) {
@@ -54,7 +54,7 @@ const usePageTracking = (trackingCode) => {
     } else {
       console.log('Would have logged pageview for', location);
     }
-  }, [ReactGA.isInitialized, location]);
+  }, [location]);
 };
 
 export default usePageTracking;

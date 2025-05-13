@@ -1,15 +1,15 @@
+import { parseActivityCode } from '@wca/helpers';
 import { useCallback, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { useWCIF } from '../../../providers/WCIFProvider';
-import { getRoomData, streamActivities, streamPersonIds } from '../../../lib/activities';
-import { roundTime } from '../../../lib/utils';
-import { formatDate, formatToParts } from '../../../lib/time';
-import DisclaimerText from '../../../components/DisclaimerText';
-import { parseActivityCode } from '@wca/helpers';
+import { DisclaimerText } from '@/components';
+import { getRoomData, streamActivities, streamPersonIds } from '@/lib/activities';
+import { formatDate, formatToParts } from '@/lib/time';
+import { roundTime } from '@/lib/utils';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 export const byDate = (
   a: { startTime: string } | undefined,
-  b: { startTime: string } | undefined
+  b: { startTime: string } | undefined,
 ) => {
   const aDate = a ? new Date(a.startTime).getTime() : Number.MAX_SAFE_INTEGER;
   const bDate = b ? new Date(b.startTime).getTime() : Number.MAX_SAFE_INTEGER;
@@ -31,7 +31,7 @@ export default function CompetitionStreamSchedule() {
     (personId) => {
       return wcif?.persons.find(({ wcaUserId }) => wcaUserId === personId);
     },
-    [wcif]
+    [wcif],
   );
 
   const activitiesWithParsedDate = activities
@@ -45,7 +45,7 @@ export default function CompetitionStreamSchedule() {
     (date) => {
       return activitiesWithParsedDate.filter((a) => a.date === date);
     },
-    [activitiesWithParsedDate]
+    [activitiesWithParsedDate],
   );
 
   const scheduleDays = activities
@@ -91,11 +91,11 @@ export default function CompetitionStreamSchedule() {
                   .sort(byDate)
                   .map((activity) => {
                     const { eventId, roundNumber, groupNumber } = parseActivityCode(
-                      activity.activityCode
+                      activity.activityCode,
                     );
 
                     const venue = wcif.schedule.venues?.find((v) =>
-                      v.rooms.some((r) => r.id === activity?.parent?.room?.id)
+                      v.rooms.some((r) => r.id === activity?.parent?.room?.id),
                     );
                     const timeZone = venue?.timezone;
 
@@ -104,7 +104,7 @@ export default function CompetitionStreamSchedule() {
 
                     const startTime = roundTime(
                       new Date(activity?.startTime || 0),
-                      5
+                      5,
                     ).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
@@ -136,7 +136,7 @@ export default function CompetitionStreamSchedule() {
                             .map(getPersonById)
                             .filter((person) => !!person)
                             .map((person) => (
-                              <p>{person!.name}</p>
+                              <p key={person.registrantId}>{person!.name}</p>
                             ))}
                         </td>
                       </Link>

@@ -14,7 +14,7 @@ export const Container = ({ children, className, fullWidth = false }: ContainerP
         {
           'lg:w-1/2 md:w-2/3': !fullWidth,
         },
-        className
+        className,
       )}>
       {children}
     </div>

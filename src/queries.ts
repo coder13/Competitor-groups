@@ -1,4 +1,4 @@
-import { gql, useQuery, useSubscription } from "@apollo/client";
+import { gql, useQuery, useSubscription } from '@apollo/client';
 
 export const useCompetitionsQuery = () => {
   return useQuery<{
@@ -30,47 +30,48 @@ export const useActivitiesQuery = (competitionId: string) => {
       startTime: string;
       endTime: string;
     }[];
-  }>(gql`
-  query Activities($competitionId: String!) {
-    activities(competitionId: $competitionId) {
+  }>(
+    gql`
+      query Activities($competitionId: String!) {
+        activities(competitionId: $competitionId) {
+          activityId
+          startTime
+          endTime
+        }
+      }
+    `,
+    {
+      variables: {
+        competitionId,
+      },
+      skip: !competitionId,
+    },
+  );
+};
+
+export const ActivitiesSubscriptionDocument = gql`
+  subscription Activities($competitionIds: [String!]!) {
+    activity: activityUpdated(competitionIds: $competitionIds) {
       activityId
       startTime
       endTime
     }
   }
-  `, {
-    variables: {
-      competitionId
-    },
-    skip: !competitionId
-  });
-}
-
-export const ActivitiesSubscriptionDocument = gql`
-subscription Activities($competitionIds: [String!]!) {
-  activity: activityUpdated(competitionIds: $competitionIds) {
-    activityId
-    startTime
-    endTime
-  }
-}
-`
+`;
 
 export const useActivitiesSubscription = (competitionId: string) => {
   return useSubscription<{
-    activity: NotifyComp.Activity;
+    activity: NotifyCompActivity;
   }>(ActivitiesSubscriptionDocument, {
     variables: {
-      competitionIds: [competitionId]
+      competitionIds: [competitionId],
     },
-    skip: !competitionId
+    skip: !competitionId,
   });
-}
+};
 
-export namespace NotifyComp {
-  export interface Activity {
-    activityId: number;
-    startTime: string;
-    endTime: string;
-  }
+export interface NotifyCompActivity {
+  activityId: number;
+  startTime: string;
+  endTime: string;
 }

@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, PropsWithChildren } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { WCA_OAUTH_CLIENT_ID, WCA_OAUTH_ORIGIN } from '../../lib/wca-env';
-import history from '../../lib/history';
-import { fetchMe, fetchUserWithCompetitions } from '../../lib/api';
+import { fetchMe, fetchUserWithCompetitions } from '@/lib/api';
+import history from '@/lib/history';
+import { getLocalStorage, localStorageKey, setLocalStorage } from '@/lib/localStorage';
+import { WCA_OAUTH_CLIENT_ID, WCA_OAUTH_ORIGIN } from '@/lib/wca-env';
 import { queryClient } from '../QueryProvider';
-import { getLocalStorage, localStorageKey, setLocalStorage } from '../../lib/localStorage';
 import { AuthContext } from './AuthContext';
 
 /**
@@ -31,7 +31,7 @@ const signIn = () => {
   window.location.href = `${WCA_OAUTH_ORIGIN}/oauth/authorize?${params.toString()}`;
 };
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<User | null>(() => {
     const rawUserData = getLocalStorage('user');
     return rawUserData ? (JSON.parse(rawUserData) as User) : null;
@@ -51,25 +51,28 @@ export function AuthProvider({ children }) {
     localStorage.removeItem(localStorageKey('my.ongoing_competitions'));
   };
 
-  const signInAs = useCallback((userId: number) => {
-    queryClient
-      .getQueryCache()
-      .find({
-        queryKey: ['userCompetitions'],
-      })
-      ?.reset();
+  const signInAs = useCallback(
+    (userId: number) => {
+      queryClient
+        .getQueryCache()
+        .find({
+          queryKey: ['userCompetitions'],
+        })
+        ?.reset();
 
-    fetchUserWithCompetitions(userId.toString()).then(
-      ({ user, ongoing_competitions, upcoming_competitions }) => {
-        setUser(user);
-        queryClient.setQueryData(['userCompetitions'], {
-          ongoing_competitions,
-          upcoming_competitions,
-        });
-        navigate('/', { replace: true });
-      }
-    );
-  }, []);
+      fetchUserWithCompetitions(userId.toString()).then(
+        ({ user, ongoing_competitions, upcoming_competitions }) => {
+          setUser(user);
+          queryClient.setQueryData(['userCompetitions'], {
+            ongoing_competitions,
+            upcoming_competitions,
+          });
+          navigate('/', { replace: true });
+        },
+      );
+    },
+    [navigate],
+  );
 
   useEffect(() => {
     const hash = location.hash.replace(/^#/, '');
@@ -78,7 +81,6 @@ export function AuthProvider({ children }) {
     const accessToken = hashParams.get('access_token');
     if (!accessToken) {
       return;
-      2;
     }
 
     fetchMe(accessToken)

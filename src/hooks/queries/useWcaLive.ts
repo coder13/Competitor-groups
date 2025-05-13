@@ -6,7 +6,7 @@ export const useWcaLiveCompetitionLink = (competitionId: string) => {
     queryKey: ['wca-live/competition-link', competitionId],
     queryFn: async () => {
       const response = await fetch(
-        `https://live.worldcubeassociation.org/link/competitions/${competitionId}`
+        `https://live.worldcubeassociation.org/link/competitions/${competitionId}`,
       );
       if (!response.ok && response.status === 404) {
         const { errors } = (await response.json()) as {
@@ -27,7 +27,7 @@ export const useWcaLiveCompetitorLink = (competitionId: string, competitorId: st
     queryKey: ['wca-live/competition-competitor-link', competitionId, competitorId],
     queryFn: async () => {
       const response = await fetch(
-        `https://live.worldcubeassociation.org/link/competitions/${competitionId}/competitors/${competitorId}`
+        `https://live.worldcubeassociation.org/link/competitions/${competitionId}/competitors/${competitorId}`,
       );
       if (!response.ok && response.status === 404) {
         const { errors } = (await response.json()) as {
