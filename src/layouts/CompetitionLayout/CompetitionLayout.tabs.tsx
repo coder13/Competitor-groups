@@ -24,7 +24,7 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
 
     if (!isPersonStaff) {
       _tabs.push({
-        href: `/competitions/${wcif?.id}`,
+        href: `/competitions/${competitionId}`,
         text: 'Groups',
       });
     }
