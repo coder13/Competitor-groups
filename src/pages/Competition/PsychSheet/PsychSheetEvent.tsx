@@ -1,56 +1,115 @@
 import StickyBox from 'react-sticky-box';
-import { EventId } from '@wca/helpers';
-import { Link, useParams } from 'react-router-dom';
+import { activityCodeToName, Event, EventId } from '@wca/helpers';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import classNames from 'classnames';
-import { useMediaQuery } from '@uidotdev/usehooks';
 import { Container } from '../../../components/Container';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { acceptedRegistration, isRegisteredForEvent } from '../../../lib/person';
 import { byWorldRanking } from '../../../lib/sort';
 import { unique } from '../../../lib/utils';
 import { renderResultByEventId } from '../../../lib/results';
-
-// const CountryName = new Intl.DisplayNames(['en'], { type: 'region' });
+import { useCallback, useMemo } from 'react';
 
 export const PsychSheetEvent = () => {
-  const isSmallDevice = useMediaQuery('only screen and (max-width : 768px)');
-
-  const { eventId } = useParams() as {
+  const { competitionId, eventId } = useParams<{
+    competitionId: string;
     eventId: EventId;
-  };
+  }>();
+
   const { wcif } = useWCIF();
+  const navigate = useNavigate();
 
-  const persons =
-    wcif?.persons.filter(
-      (person) => acceptedRegistration(person) && isRegisteredForEvent(eventId)(person)
-    ) || [];
+  const psychSheetBaseUrl = `/competitions/${competitionId}/psych-sheet`;
 
-  // Creates a proper psychsheet with support for tied rankings
-  const sortedPersons = persons.sort(byWorldRanking(eventId)).map((person) => {
-    return {
-      ...person,
-      pr: person.personalBests?.find((pr) => pr.eventId === eventId && pr.type === 'average'),
-    };
+  const [urlSearchParams, setUrlSearchParams] = useSearchParams({
+    resultType: 'average',
   });
 
-  const rankings = sortedPersons
-    ?.map((person) => person.pr?.worldRanking ?? 0)
-    .filter((i) => i > 0)
-    .filter(unique);
+  const resultType = useMemo(
+    () => urlSearchParams.get('resultType') as 'average' | 'single',
+    [urlSearchParams]
+  );
 
-  const gridCss = 'grid grid-cols-[3em_2em_1fr_min-content_5em] grid-rows-10';
-  console.log(isSmallDevice);
+  const persons = useMemo(
+    () =>
+      wcif?.persons.filter(
+        (person) => eventId && acceptedRegistration(person) && isRegisteredForEvent(eventId)(person)
+      ) || [],
+    [wcif, eventId]
+  );
+
+  // Creates a proper psychsheet with support for tied rankings
+  const sortedPersons = useMemo(
+    () =>
+      eventId &&
+      persons.sort(byWorldRanking(eventId)).map((person) => {
+        return {
+          ...person,
+          pr: person.personalBests?.find(
+            (pr) => pr.eventId === eventId && pr.type === (resultType || 'average')
+          ),
+        };
+      }),
+    [eventId, persons, resultType]
+  );
+
+  const rankings = useMemo(
+    () =>
+      sortedPersons
+        ?.map((person) => person.pr?.worldRanking ?? 0)
+        .filter((i) => i > 0)
+        .filter(unique) ?? [],
+    [sortedPersons]
+  );
+
+  const gridCss = 'grid grid-cols-[3em_2em_1fr_min-content_7em] grid-rows-10';
+
+  const handleEventChange = useCallback(
+    (newEventId: EventId) => {
+      navigate(
+        `${psychSheetBaseUrl}/${newEventId}${
+          urlSearchParams.toString() ? `?${urlSearchParams}` : ''
+        }`
+      );
+    },
+    [navigate]
+  );
+
+  const handleResultTypeChange = useCallback(
+    (newResultType: 'average' | 'single') => {
+      setUrlSearchParams({
+        resultType: newResultType,
+      });
+    },
+    [navigate, eventId, resultType, setUrlSearchParams]
+  );
+
+  if (!eventId) {
+    return null;
+  }
 
   return (
     <Container className="w-full h-full">
       <div className={classNames('w-full h-full text-sm sm:text-base')}>
+        <div className="flex p-1 space-x-2">
+          <EventSelector value={eventId} events={wcif?.events || []} onChange={handleEventChange} />
+          <select
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-40"
+            value={resultType}
+            onChange={(e) => handleResultTypeChange(e.target.value as 'average' | 'single')}>
+            <option value="average">Average</option>
+            <option value="single">Single</option>
+          </select>
+        </div>
         <StickyBox offsetTop={0} offsetBottom={0}>
           <div className={classNames('bg-green-300 w-full', gridCss)} role="rowheader">
             <span className="px-3 py-2.5 text-right font-bold">#</span>
             <span className="px-3 py-2.5 text-left"></span>
             <span className="px-3 py-2.5 text-left font-bold">Name</span>
-            <span className="px-3 py-2.5 text-right font-bold">Avg</span>
+            <span className="px-3 py-2.5 text-right font-bold">
+              {resultType === 'single' ? 'Single' : 'Average'}{' '}
+            </span>
             <span className="px-3 py-2.5 text-right font-bold">WR</span>
           </div>
         </StickyBox>
@@ -82,7 +141,9 @@ export const PsychSheetEvent = () => {
                   {prAverage ? renderResultByEventId(eventId, 'average', prAverage.best) : ''}
                 </span>
                 <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
-                  {prAverage ? `${prAverage.worldRanking}` : ''}
+                  {prAverage
+                    ? `${prAverage.worldRanking.toLocaleString([...navigator.languages])}`
+                    : ''}
                 </span>
               </Link>
             );
@@ -90,5 +151,29 @@ export const PsychSheetEvent = () => {
         </div>
       </div>
     </Container>
+  );
+};
+
+export const EventSelector = ({
+  value,
+  events,
+  onChange,
+}: {
+  value: EventId;
+  events: Event[];
+  onChange: (eventId: EventId) => void;
+}) => {
+  return (
+    <select
+      id="events"
+      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      value={value}
+      onChange={(e) => onChange(e.target.value as EventId)}>
+      {events?.map((event) => (
+        <option key={event.id} value={event.id}>
+          {activityCodeToName(event.id)}
+        </option>
+      ))}
+    </select>
   );
 };

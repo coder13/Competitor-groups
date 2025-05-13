@@ -59,6 +59,22 @@ const PersonalSchedule = () => {
   return null;
 };
 
+const PsychSheet = () => {
+  const navigate = useNavigate();
+  const { competitionId } = useParams() as { competitionId: string };
+  const { wcif } = useWCIF();
+
+  useEffect(() => {
+    if (wcif) {
+      navigate(`/competitions/${competitionId}/psych-sheet/${wcif.events[0].id}`, {
+        replace: true,
+      });
+    }
+  }, [wcif, competitionId]);
+
+  return null;
+};
+
 const Navigation = () => {
   usePageTracking(import.meta.env.VITE_GA_MEASUREMENT_ID);
 
@@ -83,6 +99,9 @@ const Navigation = () => {
           <Route path="rooms" element={<CompetitionRooms />} />
           <Route path="rooms/:roomId" element={<CompetitionRoom />} />
 
+          <Route path="psych-sheet" element={<PsychSheet />} />
+          <Route path="psych-sheet/:eventId" element={<PsychSheetEvent />} />
+
           <Route path="scramblers" element={<CompetitionScramblerSchedule />} />
           <Route path="stream" element={<CompetitionStreamSchedule />} />
           <Route path="information" element={<CompetitionInformation />} />
@@ -90,7 +109,6 @@ const Navigation = () => {
 
           {/* Following pages are not accessible: */}
           <Route path="personal-schedule" element={<PersonalSchedule />} />
-          <Route path="psych-sheet/:eventId" element={<PsychSheetEvent />} />
           <Route path="explore" element={<CompetitionGroupsOverview />} />
           <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />
           <Route path="stats" element={<CompetitionStats />} />
