@@ -15,7 +15,7 @@ export default function UserLogin() {
     }
 
     signInAs(Number(userId));
-  }, []);
+  }, [signInAs, userId]);
 
   return <Home />;
 }

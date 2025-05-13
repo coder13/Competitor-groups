@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import DisclaimerText from '../../../components/DisclaimerText';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { Container } from '../../../components/Container';

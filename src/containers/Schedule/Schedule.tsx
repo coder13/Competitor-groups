@@ -27,7 +27,7 @@ const ScheduleDay = ({
   const collapsed = collapsedDates.includes(date);
   const toggleCollapsed = useCallback(() => {
     toggleDate(date);
-  }, []);
+  }, [date, toggleDate]);
 
   return (
     <div className="flex flex-col">
@@ -80,7 +80,7 @@ export const ScheduleContainer = ({ wcif }: ScheduleContainerProps) => {
     });
 
     setCollapsedDates([...collapse]);
-  }, [scheduleDays]);
+  }, [collapsedDates, scheduleDays, setCollapsedDates]);
 
   const showRoom = useMemo(() => wcif && getRooms(wcif).length > 1, [wcif]);
 

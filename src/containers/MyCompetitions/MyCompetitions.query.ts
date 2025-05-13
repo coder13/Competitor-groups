@@ -39,7 +39,7 @@ export const useMyCompetitionsQuery = (userId?: number) => {
       [...(data?.upcoming_competitions || []), ...(data?.ongoing_competitions || [])]
         .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
         .filter((c) => !pinnedCompetitions.some((pinned) => pinned.id === c.id)),
-    [data?.ongoing_competitions, data?.upcoming_competitions]
+    [data?.ongoing_competitions, data?.upcoming_competitions, pinnedCompetitions]
   );
 
   return {

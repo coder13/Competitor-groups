@@ -7,9 +7,7 @@ import { formatToWeekDay } from '../../../lib/time';
 import { useWCIF } from '../../../providers/WCIFProvider';
 import { BreakableActivityName } from '../../../components/BreakableActivityName';
 import { Container } from '../../../components/Container';
-import { activityCodeToName } from '@wca/helpers';
 import { parseActivityCodeFlexible } from '../../../lib/activityCodes';
-import { niceActivityName } from '../Schedule';
 import { ErrorBoundary } from 'react-error-boundary';
 import { ErrorFallback } from '../../../components/ErrorFallback';
 

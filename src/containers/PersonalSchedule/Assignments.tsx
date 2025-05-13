@@ -24,13 +24,13 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
 
   const now = useNow(15 * 1000);
 
-  const scheduleDays = useMemo(() => getGroupedAssignmentsByDate(wcif, person), []);
+  const scheduleDays = useMemo(() => getGroupedAssignmentsByDate(wcif, person), [person, wcif]);
 
   useEffect(() => {
     const today = new Date().getTime();
 
     const collapse: string[] = [];
-    scheduleDays.forEach(({ date, dateParts, assignments }) => {
+    scheduleDays.forEach(({ date, assignments }) => {
       const lastActivity = [...assignments].reverse().find((a) => a.activity)?.activity;
       if (!lastActivity) {
         return;
@@ -47,7 +47,7 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
     });
 
     setCollapsedDates((prev) => [...prev, ...collapse]);
-  }, [scheduleDays]);
+  }, [collapsedDates, scheduleDays, setCollapsedDates]);
 
   const isSingleDay = scheduleDays.length === 1;
 
@@ -157,7 +157,6 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                         }
 
                         if (!isActivityWithRoomOrParent(nextAssignment.activity)) {
-                          debugger;
                           break;
                         }
 

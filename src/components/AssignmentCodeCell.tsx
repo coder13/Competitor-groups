@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { AssignmentsMap, SupportedAssignmentCode } from '../lib/assignments';
-import classNames from 'classnames';
 
 interface AssignmentCodeCellProps<T extends React.ElementType> {
   children?: React.ReactNode;
@@ -51,7 +50,7 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
     }
 
     return assignment.name;
-  }, [assignmentCode]);
+  }, [assignment, assignmentCode, children, grammar, letter]);
 
   const Component = as || 'td';
 

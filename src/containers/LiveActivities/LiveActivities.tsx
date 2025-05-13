@@ -63,8 +63,7 @@ interface LiveActivitiesProps {
 }
 
 export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
-  const { multistage, childActivities, personsInActivities, liveActivities } =
-    useCommon(competitionId);
+  const { childActivities, personsInActivities, liveActivities } = useCommon(competitionId);
   const now = useNow();
 
   return (
@@ -75,17 +74,20 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
         <div className="col-span-3 font-bold p-1">Duration</div>
         {childActivities?.map((activity) => {
           const liveActivity = liveActivities?.find((la) => la.activityId === activity.id);
+          if (!liveActivity) {
+            return null;
+          }
           const { minutes, hours } = intervalToDuration({
-            start: new Date(liveActivity?.startTime!),
+            start: new Date(liveActivity.startTime),
             end: now,
           });
           const duration = formatDuration({ hours, minutes });
 
           return (
-            <Fragment>
+            <Fragment key={activity.id}>
               {/* {multistage && <div className="col-span-3">{activity.room?.name}:</div>} */}
               <div className="p-1 col-span-6">{activity.name}</div>
-              <div className="p-1 col-span-3">{formatTime(liveActivity?.startTime!)}</div>
+              <div className="p-1 col-span-3">{formatTime(liveActivity.startTime!)}</div>
               <div className="p-1 col-span-3">{minutes ? duration : 'now'}</div>
             </Fragment>
           );

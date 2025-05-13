@@ -1,12 +1,10 @@
 import { useMemo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { acceptedRegistration } from '../../lib/person';
 import { byName } from '../../lib/utils';
 import { useAuth } from '../../providers/AuthProvider';
 import { Competition } from '@wca/helpers';
 import { useOngoingActivities } from '../../hooks/useOngoingActivities';
-import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
-import { LinkButton } from '../../components/LinkButton';
 import { usePinnedPersons } from '../../hooks/UsePinnedPersons';
 import { CompetitorListItem } from './CompetitorListItem';
 

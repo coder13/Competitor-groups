@@ -73,7 +73,7 @@ export const PsychSheetEvent = () => {
         }`
       );
     },
-    [navigate]
+    [navigate, psychSheetBaseUrl, urlSearchParams]
   );
 
   const handleResultTypeChange = useCallback(
@@ -82,7 +82,7 @@ export const PsychSheetEvent = () => {
         resultType: newResultType,
       });
     },
-    [navigate, eventId, resultType, setUrlSearchParams]
+    [setUrlSearchParams]
   );
 
   if (!eventId) {

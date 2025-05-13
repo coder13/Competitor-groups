@@ -3,7 +3,6 @@ import { byDate } from '../../lib/utils';
 import { getAllActivities, getRooms } from '../../lib/activities';
 import { getWorldAssignmentsExtension } from '../../extensions/com.competitiongroups.worldsassignments';
 import { formatNumericDate, getNumericDateFormatter } from '../../lib/time';
-import { isActivityWithRoomOrParent } from '../../lib/typeguards';
 import { parseActivityCodeFlexible } from '../../lib/activityCodes';
 import { shortEventNameById } from '../../lib/events';
 

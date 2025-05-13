@@ -2,7 +2,6 @@ import { Assignment } from '@wca/helpers';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { ActivityWithRoomOrParent } from '../../lib/types';
-import { shortEventNameById } from '../../lib/events';
 import { parseActivityCodeFlexible } from '../../lib/activityCodes';
 import { formatBriefActivityName } from './utils';
 import { roundTime } from '../../lib/utils';

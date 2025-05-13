@@ -111,7 +111,8 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
           )}>
           <p>
             <b>Time limits</b> are established for all rounds, applying to each individual solve.
-            Solves that exceed the limit will be marked as "DNF" and the time will not count.
+            Solves that exceed the limit will be marked as &quot;DNF&quot; and the time will not
+            count.
           </p>
 
           <p>

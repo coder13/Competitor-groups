@@ -59,5 +59,5 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
     }
 
     return _tabs;
-  }, [wcif, competitionId]);
+  }, [wcif, competitionId, user?.id]);
 };

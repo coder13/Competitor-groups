@@ -21,8 +21,13 @@ export default function ActivityRow({
   const { competitionId } = useParams();
   const now = useNow();
 
-  const isOver = useMemo(() => new Date(activity.endTime).getTime() < now.getTime(), []);
-  const activityName = activity.activityCode.startsWith('other') ? activity.name : activityCodeToName(activity.activityCode);
+  const isOver = useMemo(
+    () => new Date(activity.endTime).getTime() < now.getTime(),
+    [activity.endTime, now]
+  );
+  const activityName = activity.activityCode.startsWith('other')
+    ? activity.name
+    : activityCodeToName(activity.activityCode);
 
   return (
     <Link

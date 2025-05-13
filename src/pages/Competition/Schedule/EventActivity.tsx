@@ -99,7 +99,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
           return '';
         }
 
-        if (['a' || 'm'].includes(prevRound.format)) {
+        if (['a', 'm'].includes(prevRound.format)) {
           return renderResultByEventId(eventId, 'average', prevRoundResults.average);
         }
 
@@ -216,7 +216,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
               .sort((a, b) => {
                 return (a.seedRank || 999999999) - (b.seedRank || 999999999);
               })
-              .map((person, i) => (
+              .map((person) => (
                 <Link
                   key={person.registrantId}
                   className="table-row even:bg-green-50 hover:opacity-80"

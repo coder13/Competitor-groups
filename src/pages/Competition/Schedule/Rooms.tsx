@@ -21,9 +21,8 @@ export function CompetitionRooms() {
             <br />
             <div className="flex flex-col space-y-4">
               {venue.rooms.map((room) => (
-                <Link to={`/competitions/${wcif.id}/rooms/${room.id}`}>
+                <Link key={room.id} to={`/competitions/${wcif.id}/rooms/${room.id}`}>
                   <div
-                    key={room.id}
                     className="flex flex-col shadow-md w-full cursor-pointer hover:opacity-90 rounded"
                     style={{
                       backgroundColor: `${room?.color}70`,

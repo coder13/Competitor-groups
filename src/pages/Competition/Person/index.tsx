@@ -6,14 +6,6 @@ import { Person } from '@wca/helpers';
 import { Container } from '../../../components/Container';
 import { PersonalScheduleContainer } from '../../../containers/PersonalSchedule';
 
-const worldsAssignmentMap = {
-  'wca booth': 'WCA Booth',
-  'help desk': 'Help Desk',
-  data: 'Data Entry',
-  commentary: 'Commentary',
-  media: 'Media',
-};
-
 export const byDate = (
   a: { startTime: string } | undefined,
   b: { startTime: string } | undefined

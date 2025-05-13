@@ -21,19 +21,19 @@ export default function About() {
           <p className="leading-relaxed">
             This purpose of this website is to show WCA competition assignments. This site can show
             competing and staff assignments for competitions with 1 room or more for 1 day or
-            multiday competitions updating with all of the competition's next round assignments.
-            This site simply presents the assignments *as-is* from how they are, as stored on the
-            WCA website.
+            multiday competitions updating with all of the competition&apos;s next round
+            assignments. This site simply presents the assignments *as-is* from how they are, as
+            stored on the WCA website.
           </p>
 
           <p className="leading-relaxed">
             Start times and end times are taken straight from the WCIF data as generated, rounded to
-            the nearest 5 minutes, and converted to the respective venue's timezones.
+            the nearest 5 minutes, and converted to the respective venue&apos;s timezones.
           </p>
 
           <p className="leading-relaxed">
-            To get your competition's assignments to show here, you must generate them with a tool
-            like <Link to="https://groupifier.jonatanklosko.com/">Groupifier</Link>,{' '}
+            To get your competition&apos;s assignments to show here, you must generate them with a
+            tool like <Link to="https://groupifier.jonatanklosko.com/">Groupifier</Link>,{' '}
             <Link to="https://delegate-dashboard.netlify.app/">DelegateDashboard</Link>, or{' '}
             <Link to="https://goosly.github.io/AGE/">AGE</Link>.
           </p>

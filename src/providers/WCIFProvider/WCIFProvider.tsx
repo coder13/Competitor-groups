@@ -5,16 +5,20 @@ import { prefetchCompetition } from '../../hooks/queries/useCompetition';
 import { WCIFContext } from './WCIFContext';
 import ReactGA from 'react-ga4';
 
-export interface WCIFProvider {
+export interface WCIFProviderProps {
   competitionId?: string;
   children: React.ReactNode;
 }
 
-export function WCIFProvider({ competitionId, children }) {
+export function WCIFProvider({ competitionId, children }: WCIFProviderProps) {
   const [title, setTitle] = useState('');
   const { data: wcif, error } = useWcif(competitionId);
 
   useEffect(() => {
+    if (!competitionId) {
+      return;
+    }
+
     void prefetchCompetition(competitionId);
   }, [competitionId]);
 
@@ -40,7 +44,7 @@ export function WCIFProvider({ competitionId, children }) {
         });
       }
     };
-  }, [wcif, title]);
+  }, [wcif, title, competitionId]);
 
   return (
     <WCIFContext.Provider value={{ wcif: wcif as Competition, setTitle }}>

@@ -274,13 +274,13 @@ export const GroupButtonMenu = () => {
     if (prev) {
       navigate(prevUrl);
     }
-  }, [wcif, activityCode]);
+  }, [prev, navigate, prevUrl]);
 
   const goToNext = useCallback(() => {
     if (next) {
       navigate(nextUrl);
     }
-  }, [wcif, activityCode]);
+  }, [next, navigate, nextUrl]);
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
@@ -298,7 +298,7 @@ export const GroupButtonMenu = () => {
     return () => {
       document.removeEventListener('keydown', handleKeydown);
     };
-  }, [wcif, activityCode]);
+  }, [wcif, activityCode, goToPrev, goToNext]);
 
   return (
     <div className="px-2 flex space-x-2">

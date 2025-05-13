@@ -135,7 +135,7 @@ export default function CompetitionStreamSchedule() {
                             .map(getPersonById)
                             .filter((person) => !!person)
                             .map((person) => (
-                              <p>{person!.name}</p>
+                              <p key={person.registrantId}>{person!.name}</p>
                             ))}
                         </td>
                       </Link>

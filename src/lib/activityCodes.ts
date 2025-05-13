@@ -36,7 +36,7 @@ export const parseActivityCode = (activityCode: string): ParsedActivityCode => {
 
   try {
     return wcaHelperParseActivityCode(activityCode);
-  } catch (e) {
+  } catch (_) {
     console.error(new Error(`Invalid activity code: ${activityCode}`));
 
     return parseActivityCodeTryReallyHard(activityCode);
@@ -55,7 +55,7 @@ export const parseActivityCodeFlexible = (
       attemptNumber: null;
     } => {
   if (activityCode.startsWith('other')) {
-    const [, e, g] = activityCode.match(regex) as any[];
+    const [, e, g] = activityCode.match(regex) as string[];
 
     return {
       eventId: `other-${e}`,

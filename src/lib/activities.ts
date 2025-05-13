@@ -6,7 +6,6 @@ import {
   PersonalBest,
   RankingType,
   Room,
-  Schedule,
   Venue,
   parseActivityCode,
 } from '@wca/helpers';

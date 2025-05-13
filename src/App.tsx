@@ -54,7 +54,7 @@ const PersonalSchedule = () => {
         replace: true,
       });
     }
-  }, [user, navigate, competitionId]);
+  }, [user, navigate, competitionId, wcif?.persons]);
 
   return null;
 };
@@ -70,7 +70,7 @@ const PsychSheet = () => {
         replace: true,
       });
     }
-  }, [wcif, competitionId]);
+  }, [wcif, competitionId, navigate]);
 
   return null;
 };
