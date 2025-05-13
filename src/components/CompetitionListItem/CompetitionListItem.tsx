@@ -4,7 +4,7 @@ import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import classNames from 'classnames';
 import { formatDateRange } from '../../lib/time';
 
-interface CompetitionLinkProps {
+interface CompetitionListItemProps {
   id: string;
   name: string;
   start_date: string;
@@ -15,7 +15,7 @@ interface CompetitionLinkProps {
   isBookmarked?: boolean;
 }
 
-const CompetitionLink = ({
+const CompetitionListItem = ({
   id,
   name,
   start_date,
@@ -24,7 +24,7 @@ const CompetitionLink = ({
   city,
   isLive,
   isBookmarked,
-}: CompetitionLinkProps) => {
+}: CompetitionListItemProps) => {
   const endDate = new Date(
     new Date(end_date).getTime() + 1000 * 60 * new Date().getTimezoneOffset()
   );
@@ -64,4 +64,4 @@ const CompetitionLink = ({
   );
 };
 
-export default CompetitionLink;
+export default CompetitionListItem;

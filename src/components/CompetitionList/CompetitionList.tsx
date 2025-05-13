@@ -1,5 +1,5 @@
 import { BarLoader } from 'react-spinners';
-import CompetitionLink from './CompetitionLink';
+import CompetitionListItem from '../CompetitionListItem/CompetitionListItem';
 import { LastFetchedAt } from '../LastFetchedAt';
 import { usePinnedCompetitions } from '../../hooks/UsePinnedCompetitions';
 
@@ -34,7 +34,7 @@ export default function CompetitionListFragment({
       {!!competitions.length && (
         <ul className="px-0">
           {competitions.map((comp) => (
-            <CompetitionLink
+            <CompetitionListItem
               key={comp.id}
               {...comp}
               isLive={liveCompetitionIds.includes(comp.id)}

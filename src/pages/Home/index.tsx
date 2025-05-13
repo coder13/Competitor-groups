@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MyCompetitions } from '../../containers/MyCompetitions';
 import UpcomingCompetitions from '../../containers/UpcomingCompetitions/UpcomingCompetitions';
 import { Container } from '../../components/Container';
+import { CompetitionSelect } from '../../components/CompetitionSelect';
 
 export default function Home() {
   useEffect(() => {
@@ -31,6 +32,9 @@ export default function Home() {
           </Link>
         </div>
         <MyCompetitions />
+        <div className="px-2">
+          <CompetitionSelect onSelect={(e) => console.log(e)} />
+        </div>
         <UpcomingCompetitions />
       </Container>
     </div>

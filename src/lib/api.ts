@@ -57,3 +57,6 @@ export const fetchWcif = async (competitionId: string) =>
 
 export const fetchCompetition = async (competitionId: string) =>
   await wcaApiFetch<ApiCompetition>(`/competitions/${competitionId}`);
+
+export const fetchSearchCompetition = (search: string) =>
+  wcaApiFetch<{ result: ApiCompetition[] }>(`/search/competitions?q=${search}`);
