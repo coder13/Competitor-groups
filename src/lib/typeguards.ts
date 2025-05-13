@@ -25,7 +25,7 @@ export const isGroupActivity = (activity: Activity): activity is ActivityWithRoo
 };
 
 export const isActivityWithRoomOrParent = (
-  activity: Activity
+  activity: Activity,
 ): activity is ActivityWithRoomOrParent => {
   return (isActivity(activity) && 'room' in activity) || 'parent' in activity;
 };

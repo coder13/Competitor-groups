@@ -1,6 +1,6 @@
-import { useWCIF } from '../../../providers/WCIFProvider';
-import { Container } from '../../../components/Container';
 import { useEffect, useMemo } from 'react';
+import { Container } from '@/components/Container';
+import { useWCIF } from '@/providers/WCIFProvider';
 import { StatsBox } from './StatsBox';
 
 export default function Round() {
@@ -15,9 +15,9 @@ export default function Round() {
   const acceptedRegistrations = useMemo(
     () =>
       wcif?.persons?.filter(
-        ({ registration }) => registration?.isCompeting && registration?.status === 'accepted'
+        ({ registration }) => registration?.isCompeting && registration?.status === 'accepted',
       ),
-    [wcif]
+    [wcif],
   );
 
   const acceptedRegistrationsCount = acceptedRegistrations?.length || 0;
@@ -41,7 +41,7 @@ export default function Round() {
           <span key={id} className="text-center">
             {
               acceptedRegistrations?.filter(({ registration }) =>
-                registration?.eventIds.includes(id)
+                registration?.eventIds.includes(id),
               )?.length
             }
           </span>

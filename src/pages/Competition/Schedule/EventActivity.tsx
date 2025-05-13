@@ -7,12 +7,12 @@ import {
 } from '@wca/helpers';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { getRooms } from '../../../lib/activities';
-import { formatDateTimeRange } from '../../../lib/time';
-import { renderResultByEventId } from '../../../lib/results';
-import { useWCIF } from '../../../providers/WCIFProvider';
-import { isRankedBySingle } from '../../../lib/events';
-import { CutoffTimeLimitPanel } from '../../../components/CutoffTimeLimitPanel';
+import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
+import { getRooms } from '@/lib/activities';
+import { isRankedBySingle } from '@/lib/events';
+import { renderResultByEventId } from '@/lib/results';
+import { formatDateTimeRange } from '@/lib/time';
+import { useWCIF } from '@/providers/WCIFProvider';
 import { PeopleList } from './PeopleList';
 
 const isAssignment = (assignment) => (a) =>
@@ -39,7 +39,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
 
   const prevRound = useMemo(
     () => roundNumber && event?.rounds?.find((r) => r.id === `${eventId}-r${roundNumber - 1}`),
-    [event?.rounds, eventId, roundNumber]
+    [event?.rounds, eventId, roundNumber],
   );
 
   useEffect(() => {
@@ -53,10 +53,10 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
       wcif &&
       getRooms(wcif).find((r) =>
         r.activities.some(
-          (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id)
-        )
+          (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id),
+        ),
       ),
-    [activity.id, wcif]
+    [activity.id, wcif],
   );
 
   const venue = wcif?.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id));
@@ -67,19 +67,19 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
       persons.map((person) => ({
         ...person,
         prSingle: person.personalBests?.find(
-          (pb) => pb.eventId === eventId && pb.type === 'single'
+          (pb) => pb.eventId === eventId && pb.type === 'single',
         ),
         prAverage: person.personalBests?.find(
-          (pb) => pb.eventId === eventId && pb.type === 'average'
+          (pb) => pb.eventId === eventId && pb.type === 'average',
         ),
       })),
-    [persons, eventId]
+    [persons, eventId],
   );
 
   const competitors = personsWithPRs.filter(isAssignment('competitor'));
 
   const assignments = new Set(
-    personsWithPRs.map((person) => person.assignments?.map((a) => a.assignmentCode)).flat()
+    personsWithPRs.map((person) => person.assignments?.map((a) => a.assignmentCode)).flat(),
   );
 
   const peopleByAssignmentCode = (Array.from(assignments.values()) as AssignmentCode[])
@@ -93,7 +93,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
     (person) => {
       if (prevRound) {
         const prevRoundResults = prevRound.results?.find(
-          (r) => r.personId?.toString() === person.registrantId?.toString()
+          (r) => r.personId?.toString() === person.registrantId?.toString(),
         );
         if (!prevRoundResults) {
           return '';
@@ -116,17 +116,17 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
       return renderResultByEventId(
         eventId,
         shouldShowAveragePr ? 'average' : 'single',
-        shouldShowAveragePr ? averagePr : singlePr
+        shouldShowAveragePr ? averagePr : singlePr,
       );
     },
-    [eventId, prevRound]
+    [eventId, prevRound],
   );
 
   const seedRank = useCallback(
     (person) => {
       if (prevRound) {
         const prevRoundResults = prevRound.results?.find(
-          (r) => r.personId?.toString() === person.registrantId?.toString()
+          (r) => r.personId?.toString() === person.registrantId?.toString(),
         );
         if (!prevRoundResults) {
           return '';
@@ -148,12 +148,12 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
 
       return singlePr.worldRanking;
     },
-    [eventId, prevRound]
+    [eventId, prevRound],
   );
 
   const stationNumber = (assignmentCode) => (person) => {
     const assignment = person.assignments.find(
-      (a) => a.assignmentCode === assignmentCode && a.activityId === activity.id
+      (a) => a.assignmentCode === assignmentCode && a.activityId === activity.id,
     );
     return assignment?.stationNumber;
   };

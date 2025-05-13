@@ -2,7 +2,7 @@ export const byName = (a: { name: string }, b: { name: string }) => a.name.local
 
 export const byDate = <T>(
   a: (T & { startTime: string }) | undefined,
-  b: (T & { startTime: string }) | undefined
+  b: (T & { startTime: string }) | undefined,
 ) => {
   const aDate = a ? new Date(a.startTime).getTime() : Number.MAX_SAFE_INTEGER;
   const bDate = b ? new Date(b.startTime).getTime() : Number.MAX_SAFE_INTEGER;
@@ -30,7 +30,7 @@ export const groupBy = <T>(xs: T[], getKey: (x: T) => string): Record<string, T[
 export const groupByMap = <T, S>(
   xs: T[],
   getKey: (x: T) => string,
-  fn: (x: T[]) => S
+  fn: (x: T[]) => S,
 ): Record<string, S> => {
   const grouped = groupBy(xs, getKey);
   const newGrouped = {};

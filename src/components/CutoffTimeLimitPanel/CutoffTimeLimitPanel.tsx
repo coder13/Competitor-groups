@@ -1,10 +1,10 @@
 import { Cutoff, Round, parseActivityCode } from '@wca/helpers';
 import classNames from 'classnames';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
-import { renderCentiseconds, renderCutoff } from '../lib/results';
-import { useWCIF } from '../providers/WCIFProvider';
-import { useState } from 'react';
+import { renderCentiseconds, renderCutoff } from '@/lib/results';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 export function CutoffTimeLimitPanel({
   round,
@@ -107,7 +107,7 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
             'z-1000 max-w-xs md:max-w-md lg:max-w-lg text-sm  transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-md opacity-0 p-4 space-y-2',
             {
               'opacity-100': open,
-            }
+            },
           )}>
           <p>
             <b>Time limits</b> are established for all rounds, applying to each individual solve.

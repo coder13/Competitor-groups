@@ -1,12 +1,12 @@
+import { Activity, activityCodeToName } from '@wca/helpers';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { getAllActivities } from '../../../lib/activities';
-import { useWCIF } from '../../../providers/WCIFProvider';
+import { Container } from '@/components/Container';
+import { getAllActivities } from '@/lib/activities';
+import { parseActivityCodeFlexible } from '@/lib/activityCodes';
+import { useWCIF } from '@/providers/WCIFProvider';
 import { EventActivity } from './EventActivity';
 import { OtherActivity } from './OtherActivity';
-import { Container } from '../../../components/Container';
-import { parseActivityCodeFlexible } from '../../../lib/activityCodes';
-import { Activity, activityCodeToName } from '@wca/helpers';
 
 export function CompetitionActivity() {
   const { wcif } = useWCIF();
@@ -15,7 +15,7 @@ export function CompetitionActivity() {
   const activity = useMemo(
     () =>
       wcif && getAllActivities(wcif).find((a) => activityId && a.id === parseInt(activityId, 10)),
-    [wcif, activityId]
+    [wcif, activityId],
   );
 
   const everyoneInActivity = useMemo(
@@ -25,12 +25,12 @@ export function CompetitionActivity() {
             .map((person) => ({
               ...person,
               assignments: person.assignments?.filter(
-                (a) => activityId && a.activityId === parseInt(activityId, 10) // TODO this is a hack because types aren't fixed yet for @wca/helpers
+                (a) => activityId && a.activityId === parseInt(activityId, 10), // TODO this is a hack because types aren't fixed yet for @wca/helpers
               ),
             }))
             .filter(({ assignments }) => assignments && assignments.length > 0)
         : [],
-    [wcif, activityId]
+    [wcif, activityId],
   );
 
   if (!activity) {

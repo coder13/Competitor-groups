@@ -1,16 +1,14 @@
-import { ErrorBoundary } from 'react-error-boundary';
-import { Container } from '../../components/Container';
-import { StyledNavLink } from '../../containers/StyledNavLink/StyledNavLink';
-import { useCompetitionLayoutTabs } from './CompetitionLayout.tabs';
-import { Outlet, useLocation, useParams } from 'react-router-dom';
-import { LastFetchedAt } from '../../components/LastFetchedAt';
-import { useWcif } from '../../hooks/queries/useWcif';
-import { useApp } from '../../providers/AppProvider';
-import NoteBox from '../../components/Notebox';
-import { BarLoader } from 'react-spinners';
-import { ErrorFallback } from '../../components/ErrorFallback';
 import { useEffect, useRef } from 'react';
-import { WCIFProvider } from '../../providers/WCIFProvider';
+import { ErrorBoundary } from 'react-error-boundary';
+import { Outlet, useLocation, useParams } from 'react-router-dom';
+import { BarLoader } from 'react-spinners';
+import { ErrorFallback, LastFetchedAt, NoteBox } from '@/components';
+import { Container } from '@/components/Container';
+import { StyledNavLink } from '@/containers/StyledNavLink/StyledNavLink';
+import { useWcif } from '@/hooks/queries/useWcif';
+import { useApp } from '@/providers/AppProvider';
+import { WCIFProvider } from '@/providers/WCIFProvider';
+import { useCompetitionLayoutTabs } from './CompetitionLayout.tabs';
 
 export function CompetitionLayout() {
   const { online } = useApp();

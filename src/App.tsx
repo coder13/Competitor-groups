@@ -1,38 +1,38 @@
+import { ApolloProvider } from '@apollo/client';
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
-import { RootLayout } from './layouts/RootLayout';
+import client from './apolloClient';
+import usePageTracking from './hooks/usePageTracking';
 import { CompetitionLayout } from './layouts/CompetitionLayout';
-import CompetitionHome from './pages/Competition/Home';
-import CompetitionPerson from './pages/Competition/Person';
-import CompetitionGroupsOverview from './pages/Competition/GroupsOverview';
+import { RootLayout } from './layouts/RootLayout';
+import About from './pages/About';
 import CompetitionEvents from './pages/Competition/ByGroup/Events';
 import CompetitionGroup from './pages/Competition/ByGroup/Group';
 import CompetitionGroupList from './pages/Competition/ByGroup/GroupList';
-import CompetitionScramblerSchedule from './pages/Competition/ScramblerSchedule';
-import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
+import CompetitionGroupsOverview from './pages/Competition/GroupsOverview';
 import CompetitionGroupsSchedule from './pages/Competition/GroupsSchedule';
+import CompetitionHome from './pages/Competition/Home';
 import CompetitionInformation from './pages/Competition/Information';
-import CompetitionPersonalBests from './pages/Competition/Person/PersonalBests';
 import CompetitionLive from './pages/Competition/Live';
-import CompetitionStats from './pages/Competition/Stats';
+import CompetitionPerson from './pages/Competition/Person';
+import CompetitionPersonalBests from './pages/Competition/Person/PersonalBests';
+import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
 import {
   CompetitionActivity,
   CompetitionRoom,
   CompetitionRooms,
   Schedule,
 } from './pages/Competition/Schedule';
+import CompetitionScramblerSchedule from './pages/Competition/ScramblerSchedule';
+import CompetitionStats from './pages/Competition/Stats';
+import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
 import Home from './pages/Home';
-import { AuthProvider, useAuth } from './providers/AuthProvider';
-import usePageTracking from './hooks/usePageTracking';
-import { useEffect } from 'react';
-import About from './pages/About';
 import Support from './pages/Support';
-import { ApolloProvider } from '@apollo/client';
-import client from './apolloClient';
-import { QueryProvider } from './providers/QueryProvider/QueryProvider';
-import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
-import { useWCIF } from './providers/WCIFProvider';
 import UserLogin from './pages/UserLogin';
 import { AppProvider } from './providers/AppProvider';
+import { AuthProvider, useAuth } from './providers/AuthProvider';
+import { QueryProvider } from './providers/QueryProvider/QueryProvider';
+import { useWCIF } from './providers/WCIFProvider';
 
 const PersonalSchedule = () => {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ const PersonalSchedule = () => {
 
   useEffect(() => {
     const person = wcif?.persons.find(
-      (p) => p.wcaUserId === user?.id && p.registration?.status === 'accepted'
+      (p) => p.wcaUserId === user?.id && p.registration?.status === 'accepted',
     );
 
     if (person) {

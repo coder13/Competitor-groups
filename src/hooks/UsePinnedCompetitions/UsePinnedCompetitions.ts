@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 export const usePinnedCompetitions = () => {
   const [pinnedCompetitions, setPinnedCompetitions] = useLocalStorage<ApiCompetition[]>(
     'pinnedCompetitions',
-    []
+    [],
   );
 
   const pinCompetition = useCallback(
@@ -17,7 +17,7 @@ export const usePinnedCompetitions = () => {
         return [...prev, competition];
       });
     },
-    [setPinnedCompetitions]
+    [setPinnedCompetitions],
   );
 
   const unpinCompetition = useCallback(
@@ -26,7 +26,7 @@ export const usePinnedCompetitions = () => {
         return prev.filter((c) => c.id !== competitionId);
       });
     },
-    [setPinnedCompetitions]
+    [setPinnedCompetitions],
   );
 
   return {

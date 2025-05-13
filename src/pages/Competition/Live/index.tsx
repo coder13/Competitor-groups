@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
-import { Container } from '../../../components/Container';
-import { LiveActivities } from '../../../containers/LiveActivities';
+import { Container } from '@/components/Container';
+import { LiveActivities } from '@/containers/LiveActivities';
 
 export default function LivePage() {
   const { competitionId } = useParams();

@@ -4,7 +4,7 @@ import { startTransition, useCallback, useState } from 'react';
 export const useCollapse = (key: string) => {
   const [initialCollapsed, saveCollapsed] = useLocalStorage<Record<string, string[]>>(
     `collapse`,
-    {}
+    {},
   );
 
   const [collapsedDates, setCollapsedDates] = useState<string[]>(() => {
@@ -40,7 +40,7 @@ export const useCollapse = (key: string) => {
         });
       });
     },
-    [initialCollapsed, key, saveCollapsed]
+    [initialCollapsed, key, saveCollapsed],
   );
 
   return {

@@ -39,14 +39,14 @@ export const formatTimeRange = (
   start: string,
   end: string,
   minutes: number = 5,
-  timeZone?: string
+  timeZone?: string,
 ) => `${formatTime(start, minutes, timeZone)} - ${formatTime(end, minutes, timeZone)}`;
 
 export const formatDateTimeRange = (
   start: string,
   end: string,
   minutes: number = 5,
-  timeZone?: string
+  timeZone?: string,
 ) => {
   const startDate = new Date(start);
   const endDate = new Date(end);

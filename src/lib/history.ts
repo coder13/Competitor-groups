@@ -1,5 +1,4 @@
 /* Customized history preserving `staging` query parameter on location change. */
-
 import { createBrowserHistory } from 'history';
 
 const preserveQueryParams = (history, location) => {

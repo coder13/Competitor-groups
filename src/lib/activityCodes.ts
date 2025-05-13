@@ -45,7 +45,7 @@ export const parseActivityCode = (activityCode: string): ParsedActivityCode => {
 
 const regex = /other-(?:(\w+))?(?:-g(\d+))?/;
 export const parseActivityCodeFlexible = (
-  activityCode: string
+  activityCode: string,
 ):
   | ParsedActivityCode
   | {

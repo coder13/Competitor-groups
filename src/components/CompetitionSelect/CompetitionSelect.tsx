@@ -1,8 +1,8 @@
 import { useCallback, useRef } from 'react';
 import AsyncSelect from 'react-select/async';
-import { fetchSearchCompetition } from '../../lib/api';
 import { OptionProps } from 'react-select/dist/declarations/src';
-import CompetitionListItem from '../CompetitionListItem/CompetitionListItem';
+import { fetchSearchCompetition } from '@/lib/api';
+import { CompetitionListItem } from '../CompetitionListItem';
 
 export interface CompetitionSelectProps {
   onSelect: (competitionId: string) => void;
@@ -26,7 +26,7 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
 
       onSelect(e.id);
     },
-    [onSelect]
+    [onSelect],
   );
 
   return (
@@ -49,7 +49,7 @@ export const CompetitionOption = ({ data }: OptionProps<ApiCompetition>) => {
 
 function useDebounced<Input, Output>(
   fn: (arg: Input) => Promise<Output>,
-  delay: number
+  delay: number,
 ): (arg: Input) => Promise<Output> {
   const timeout = useRef<number | null>(null);
 
@@ -65,6 +65,6 @@ function useDebounced<Input, Output>(
         }, delay);
       });
     },
-    [fn, delay]
+    [fn, delay],
   );
 }

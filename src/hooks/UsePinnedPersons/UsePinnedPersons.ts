@@ -6,7 +6,7 @@ export const usePinnedPersons = (competitionId: string) => {
     'pinnedPersons',
     {
       [competitionId]: [],
-    }
+    },
   );
 
   const pinPerson = useCallback(
@@ -16,7 +16,7 @@ export const usePinnedPersons = (competitionId: string) => {
         [competitionId]: [...(prev[competitionId] || []), registrantId],
       }));
     },
-    [competitionId, setPinnedPersons]
+    [competitionId, setPinnedPersons],
   );
 
   const unpinPerson = useCallback(
@@ -26,7 +26,7 @@ export const usePinnedPersons = (competitionId: string) => {
         [competitionId]: (prev[competitionId] || []).filter((id) => id !== registrantId),
       }));
     },
-    [competitionId, setPinnedPersons]
+    [competitionId, setPinnedPersons],
   );
 
   return {

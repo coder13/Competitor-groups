@@ -1,7 +1,7 @@
-import { ActivitiesSubscriptionDocument, NotifyComp, useActivitiesQuery } from '../queries';
-import { useWCIF } from '../providers/WCIFProvider';
-import { getAllActivities } from '../lib/activities';
 import { useEffect } from 'react';
+import { getAllActivities } from '@/lib/activities';
+import { useWCIF } from '../providers/WCIFProvider';
+import { ActivitiesSubscriptionDocument, NotifyCompActivity, useActivitiesQuery } from '../queries';
 
 export const useOngoingActivities = (competitionId: string) => {
   const { wcif } = useWCIF();
@@ -12,12 +12,12 @@ export const useOngoingActivities = (competitionId: string) => {
   const liveActivities = data?.activities.filter((a) => !a.endTime && a.startTime); // TODO: use subscription
   // these are the activities that are currently ongoing
   const ongoingActivities = activities.filter((a) =>
-    liveActivities?.some((b) => b.activityId === a.id)
+    liveActivities?.some((b) => b.activityId === a.id),
   );
 
   useEffect(() => {
     const unsub = subscribeToMore<{
-      activity: NotifyComp.Activity;
+      activity: NotifyCompActivity;
     }>({
       document: ActivitiesSubscriptionDocument,
       variables: { competitionIds: [wcif?.id] },

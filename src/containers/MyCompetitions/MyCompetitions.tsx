@@ -1,12 +1,12 @@
-import CompetitionListFragment from '../../components/CompetitionList/CompetitionList';
-import { useAuth } from '../../providers/AuthProvider';
-import { useCompetitionsQuery } from '../../queries';
+import { CompetitionListFragment } from '@/components';
+import { useAuth } from '@/providers/AuthProvider';
+import { useCompetitionsQuery } from '@/queries';
 import { useMyCompetitionsQuery } from './MyCompetitions.query';
 
 export function MyCompetitions() {
   const { user } = useAuth();
   const { error, status, isLoading, competitions, pinnedCompetitions } = useMyCompetitionsQuery(
-    user?.id
+    user?.id,
   );
 
   const { data: NotifyCompetitions } = useCompetitionsQuery();

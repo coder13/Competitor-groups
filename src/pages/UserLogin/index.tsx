@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '@/providers/AuthProvider';
 import Home from '../Home';
 
 export default function UserLogin() {

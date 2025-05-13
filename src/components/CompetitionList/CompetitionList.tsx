@@ -1,7 +1,7 @@
 import { BarLoader } from 'react-spinners';
-import CompetitionListItem from '../CompetitionListItem/CompetitionListItem';
+import { usePinnedCompetitions } from '@/hooks/UsePinnedCompetitions';
+import { CompetitionListItem } from '../CompetitionListItem';
 import { LastFetchedAt } from '../LastFetchedAt';
-import { usePinnedCompetitions } from '../../hooks/UsePinnedCompetitions';
 
 interface CompetitionListFragmentProps {
   title: string;
@@ -14,7 +14,7 @@ interface CompetitionListFragmentProps {
   lastFetchedAt?: number;
 }
 
-export default function CompetitionListFragment({
+export function CompetitionListFragment({
   title,
   competitions,
   loading,

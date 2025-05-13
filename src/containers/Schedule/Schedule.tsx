@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo } from 'react';
-import ActivityRow from '../../components/ActivitiyRow';
-import { getRooms, getScheduledDays, getVenueForActivity } from '../../lib/activities';
 import { Competition } from '@wca/helpers';
-import { useCollapse } from '../../hooks/UseCollapse';
-import { ActivityWithRoomOrParent } from '../../lib/types';
+import { useCallback, useEffect, useMemo } from 'react';
+import { ActivityRow } from '@/components';
+import { useCollapse } from '@/hooks/UseCollapse';
+import { getRooms, getScheduledDays, getVenueForActivity } from '@/lib/activities';
+import { ActivityWithRoomOrParent } from '@/lib/types';
 
 const key = (compId: string) => `${compId}-schedule`;
 

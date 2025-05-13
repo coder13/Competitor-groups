@@ -1,5 +1,5 @@
 import { AssignmentCode } from '@wca/helpers';
-import Assignments from '../../lib/assignments';
+import Assignments from '@/lib/assignments';
 
 const Container = ({ children, className }: React.PropsWithChildren<{ className?: string }>) => (
   <span className={`${className} px-[6px] py-[4px] rounded-md bg-blue-100`}>{children}</span>
@@ -9,7 +9,7 @@ interface AssignmentLabelProps {
   assignmentCode: AssignmentCode;
 }
 
-export default function AssignmentLabel({ assignmentCode }: AssignmentLabelProps) {
+export function AssignmentLabel({ assignmentCode }: AssignmentLabelProps) {
   if (assignmentCode.match(/judge/i)) {
     return (
       <Container className="bg-blue-200">

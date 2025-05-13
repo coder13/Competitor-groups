@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
-import { useWCIF } from '../../../providers/WCIFProvider';
 import { useEffect } from 'react';
-import { Container } from '../../../components/Container';
+import { Link } from 'react-router-dom';
+import { Container } from '@/components/Container';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 export function CompetitionRooms() {
   const { wcif, setTitle } = useWCIF();

@@ -1,15 +1,15 @@
-import StickyBox from 'react-sticky-box';
 import { activityCodeToName, Event, EventId } from '@wca/helpers';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import classNames from 'classnames';
-import { Container } from '../../../components/Container';
-import { useWCIF } from '../../../providers/WCIFProvider';
-import { acceptedRegistration, isRegisteredForEvent } from '../../../lib/person';
-import { byWorldRanking } from '../../../lib/sort';
-import { unique } from '../../../lib/utils';
-import { renderResultByEventId } from '../../../lib/results';
+import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { useCallback, useMemo } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import StickyBox from 'react-sticky-box';
+import { Container } from '@/components/Container';
+import { acceptedRegistration, isRegisteredForEvent } from '@/lib/person';
+import { renderResultByEventId } from '@/lib/results';
+import { byWorldRanking } from '@/lib/sort';
+import { unique } from '@/lib/utils';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 export const PsychSheetEvent = () => {
   const { competitionId, eventId } = useParams<{
@@ -28,15 +28,16 @@ export const PsychSheetEvent = () => {
 
   const resultType = useMemo(
     () => urlSearchParams.get('resultType') as 'average' | 'single',
-    [urlSearchParams]
+    [urlSearchParams],
   );
 
   const persons = useMemo(
     () =>
       wcif?.persons.filter(
-        (person) => eventId && acceptedRegistration(person) && isRegisteredForEvent(eventId)(person)
+        (person) =>
+          eventId && acceptedRegistration(person) && isRegisteredForEvent(eventId)(person),
       ) || [],
-    [wcif, eventId]
+    [wcif, eventId],
   );
 
   // Creates a proper psychsheet with support for tied rankings
@@ -47,11 +48,11 @@ export const PsychSheetEvent = () => {
         return {
           ...person,
           pr: person.personalBests?.find(
-            (pr) => pr.eventId === eventId && pr.type === (resultType || 'average')
+            (pr) => pr.eventId === eventId && pr.type === (resultType || 'average'),
           ),
         };
       }),
-    [eventId, persons, resultType]
+    [eventId, persons, resultType],
   );
 
   const rankings = useMemo(
@@ -60,7 +61,7 @@ export const PsychSheetEvent = () => {
         ?.map((person) => person.pr?.worldRanking ?? 0)
         .filter((i) => i > 0)
         .filter(unique) ?? [],
-    [sortedPersons]
+    [sortedPersons],
   );
 
   const gridCss = 'grid grid-cols-[3em_2em_1fr_min-content_7em] grid-rows-10';
@@ -70,10 +71,10 @@ export const PsychSheetEvent = () => {
       navigate(
         `${psychSheetBaseUrl}/${newEventId}${
           urlSearchParams.toString() ? `?${urlSearchParams}` : ''
-        }`
+        }`,
       );
     },
-    [navigate, psychSheetBaseUrl, urlSearchParams]
+    [navigate, psychSheetBaseUrl, urlSearchParams],
   );
 
   const handleResultTypeChange = useCallback(
@@ -82,7 +83,7 @@ export const PsychSheetEvent = () => {
         resultType: newResultType,
       });
     },
-    [setUrlSearchParams]
+    [setUrlSearchParams],
   );
 
   if (!eventId) {
@@ -122,7 +123,7 @@ export const PsychSheetEvent = () => {
                 : rankings.length) + 1;
 
             const prAverage = person.personalBests?.find(
-              (pr) => pr.eventId === eventId && pr.type === 'average'
+              (pr) => pr.eventId === eventId && pr.type === 'average',
             );
 
             return (

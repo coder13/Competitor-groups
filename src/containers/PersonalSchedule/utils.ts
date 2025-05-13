@@ -1,10 +1,10 @@
 import { Activity, Assignment, Competition, Person } from '@wca/helpers';
-import { byDate } from '../../lib/utils';
-import { getAllActivities, getRooms } from '../../lib/activities';
-import { getWorldAssignmentsExtension } from '../../extensions/com.competitiongroups.worldsassignments';
-import { formatNumericDate, getNumericDateFormatter } from '../../lib/time';
-import { parseActivityCodeFlexible } from '../../lib/activityCodes';
-import { shortEventNameById } from '../../lib/events';
+import { getWorldAssignmentsExtension } from '@/extensions/com.competitiongroups.worldsassignments';
+import { getAllActivities, getRooms } from '@/lib/activities';
+import { parseActivityCodeFlexible } from '@/lib/activityCodes';
+import { shortEventNameById } from '@/lib/events';
+import { formatNumericDate, getNumericDateFormatter } from '@/lib/time';
+import { byDate } from '@/lib/utils';
 
 export const getNormalAssignments = (wcif: Competition, person: Person) => {
   const allActivities = getAllActivities(wcif);
@@ -27,7 +27,7 @@ const getExtraAssignments = (person: Person) => {
 
   return assignments.map(
     (
-      assignment
+      assignment,
     ): Assignment & {
       type: 'extra';
       activity: Activity;
@@ -46,7 +46,7 @@ const getExtraAssignments = (person: Person) => {
         name: assignment.staff,
         scrambleSetId: null,
       },
-    })
+    }),
   );
 };
 
@@ -55,7 +55,7 @@ export const getAllAssignments = (wcif: Competition, person: Person) => {
   const extraAssignments = getExtraAssignments(person);
 
   const allAssignments = [...normalAssignments, ...extraAssignments].sort((a, b) =>
-    byDate(a.activity, b.activity)
+    byDate(a.activity, b.activity),
   );
 
   return allAssignments;

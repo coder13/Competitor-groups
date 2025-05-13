@@ -1,11 +1,11 @@
 import { Assignment } from '@wca/helpers';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { ActivityWithRoomOrParent } from '../../lib/types';
-import { parseActivityCodeFlexible } from '../../lib/activityCodes';
+import { AssignmentLabel } from '@/components';
+import { parseActivityCodeFlexible } from '@/lib/activityCodes';
+import { ActivityWithRoomOrParent } from '@/lib/types';
+import { roundTime } from '@/lib/utils';
 import { formatBriefActivityName } from './utils';
-import { roundTime } from '../../lib/utils';
-import AssignmentLabel from '../../components/AssignmentLabel/AssignmentLabel';
 
 export interface PersonalNormalAssignmentProps {
   competitionId: string;

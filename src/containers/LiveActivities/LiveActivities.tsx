@@ -1,13 +1,13 @@
-import { Link } from 'react-router-dom';
-import { useOngoingActivities } from '../../hooks/useOngoingActivities';
-import { useWCIF } from '../../providers/WCIFProvider';
-import { getAllChildActivities, getAllRoundActivities, getRooms } from '../../lib/activities';
-import { GroupAssignmentCodeRank } from '../../pages/Competition/ByGroup/Group';
-import { Fragment } from 'react';
-import { AssignmentCodeCell } from '../../components/AssignmentCodeCell';
-import { formatTime } from '../../lib/time';
-import { useNow } from '../../hooks/useNow';
 import { formatDuration, intervalToDuration } from 'date-fns';
+import { Fragment } from 'react';
+import { Link } from 'react-router-dom';
+import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
+import { useNow } from '@/hooks/useNow';
+import { useOngoingActivities } from '@/hooks/useOngoingActivities';
+import { getAllChildActivities, getAllRoundActivities, getRooms } from '@/lib/activities';
+import { formatTime } from '@/lib/time';
+import { GroupAssignmentCodeRank } from '@/pages/Competition/ByGroup/Group';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 const useCommon = (competitionId: string) => {
   const { wcif } = useWCIF();
@@ -28,14 +28,14 @@ const useCommon = (competitionId: string) => {
   const personsInActivities = wcif?.persons
     ?.filter((person) => {
       return person.assignments?.some((assignment) =>
-        childActivityIds.includes(assignment.activityId)
+        childActivityIds.includes(assignment.activityId),
       );
     })
     .map((person) => {
       const assignment = person.assignments?.find((a) => childActivityIds.includes(a.activityId));
       const activity = childActivities.find((ca) => ca.id === assignment?.activityId);
       const stage = stages.find((stage) =>
-        stage.activities.some((a) => a.childActivities.some((ca) => ca.id === activity?.id))
+        stage.activities.some((a) => a.childActivities.some((ca) => ca.id === activity?.id)),
       );
 
       return {
@@ -97,7 +97,7 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
       <hr className="col-span-full" />
 
       {GroupAssignmentCodeRank.filter((assignmentCode) =>
-        personsInActivities?.some((person) => person.assignment?.assignmentCode === assignmentCode)
+        personsInActivities?.some((person) => person.assignment?.assignmentCode === assignmentCode),
       ).map((assignmentCode) => (
         <Fragment key={assignmentCode}>
           <AssignmentCodeCell
@@ -110,7 +110,7 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
             const personsInActivity = personsInActivities?.filter(
               (person) =>
                 person.activity?.id === ca.id &&
-                person.assignment?.assignmentCode === assignmentCode
+                person.assignment?.assignmentCode === assignmentCode,
             );
 
             if (!personsInActivity || personsInActivity?.length === 0) {

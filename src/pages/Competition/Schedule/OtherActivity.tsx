@@ -1,9 +1,9 @@
 import { Activity, AssignmentCode, Person } from '@wca/helpers';
 import { useEffect, useMemo } from 'react';
-import { getRooms } from '../../../lib/activities';
-import { useWCIF } from '../../../providers/WCIFProvider';
-import { formatDateTimeRange } from '../../../lib/time';
 import { Link } from 'react-router-dom';
+import { getRooms } from '@/lib/activities';
+import { formatDateTimeRange } from '@/lib/time';
+import { useWCIF } from '@/providers/WCIFProvider';
 import { PeopleList } from './PeopleList';
 
 interface OtherGroupProps {
@@ -29,10 +29,10 @@ export function OtherActivity({ competitionId, activity, persons }: OtherGroupPr
       wcif &&
       getRooms(wcif).find((r) =>
         r.activities.some(
-          (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id)
-        )
+          (a) => a.id === activity.id || a?.childActivities?.some((ca) => ca.id === activity.id),
+        ),
       ),
-    [activity.id, wcif]
+    [activity.id, wcif],
   );
 
   const venue = wcif?.schedule.venues?.find((v) => v.rooms.some((r) => r.id === room?.id));
@@ -40,7 +40,7 @@ export function OtherActivity({ competitionId, activity, persons }: OtherGroupPr
 
   const assignments = useMemo(
     () => new Set(persons.map((person) => person.assignments?.map((a) => a.assignmentCode)).flat()),
-    [persons]
+    [persons],
   );
 
   const peopleByAssignmentCode = (Array.from(assignments.values()) as AssignmentCode[])

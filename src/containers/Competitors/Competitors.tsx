@@ -1,11 +1,11 @@
+import { Competition, Person } from '@wca/helpers';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { acceptedRegistration } from '../../lib/person';
-import { byName } from '../../lib/utils';
-import { useAuth } from '../../providers/AuthProvider';
-import { Competition, Person } from '@wca/helpers';
-import { useOngoingActivities } from '../../hooks/useOngoingActivities';
-import { usePinnedPersons } from '../../hooks/UsePinnedPersons';
+import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
+import { useOngoingActivities } from '@/hooks/useOngoingActivities';
+import { acceptedRegistration } from '@/lib/person';
+import { byName } from '@/lib/utils';
+import { useAuth } from '@/providers/AuthProvider';
 import { CompetitorListItem } from './CompetitorListItem';
 
 export const Competitors = ({ wcif }: { wcif: Competition }) => {
@@ -23,7 +23,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
         .filter((person) => !!person.registration?.eventIds?.length || !!person.assignments?.length)
         .map((person) => {
           const assignedActivity = person.assignments?.find((a) =>
-            ongoingActivities.some((oa) => oa.id === a.activityId)
+            ongoingActivities.some((oa) => oa.id === a.activityId),
           );
 
           return {
@@ -34,7 +34,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
           };
         })
         .sort(byName) || [],
-    [ongoingActivities, pinnedPersons, user?.id, wcif?.persons]
+    [ongoingActivities, pinnedPersons, user?.id, wcif?.persons],
   );
 
   const me = acceptedPersons.find((person) => person.wcaUserId === user?.id);
@@ -44,7 +44,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
 
   const acceptedUnpinnedPersons = everyoneButMe.filter(
     (person) =>
-      !person.pinned && (!input || person.name.toLowerCase().includes(input.toLowerCase().trim()))
+      !person.pinned && (!input || person.name.toLowerCase().includes(input.toLowerCase().trim())),
   );
 
   return (

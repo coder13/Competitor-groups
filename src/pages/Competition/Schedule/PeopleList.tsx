@@ -1,10 +1,10 @@
 import { Activity, AssignmentCode, Person } from '@wca/helpers';
-import { AssignmentCodeRank, AssignmentCodeTitles } from '../../../lib/assignments';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
-import { byName } from '../../../lib/utils';
 import { Fragment } from 'react';
-import { getStationNumber } from '../../../lib/activities';
+import { Link } from 'react-router-dom';
+import { getStationNumber } from '@/lib/activities';
+import { AssignmentCodeRank, AssignmentCodeTitles } from '@/lib/assignments';
+import { byName } from '@/lib/utils';
 
 export interface PeopleListProps {
   competitionId: string;
@@ -50,7 +50,8 @@ export const PeopleList = ({
             'even:bg-blue-50': assignmentCode.match(/judge/i),
             'even:bg-cyan-50': assignmentCode === 'staff-dataentry',
             'even:bg-violet-50': assignmentCode === 'staff-announcer',
-            'even:bg-purple-50': assignmentCode === 'staff-stagelead' || assignmentCode === 'staff-delegate',
+            'even:bg-purple-50':
+              assignmentCode === 'staff-stagelead' || assignmentCode === 'staff-delegate',
             'even:bg-slate-50': !AssignmentCodeRank.includes(assignmentCode),
             'even:bg-rose-50': assignmentCode === 'staff-core',
           };
@@ -62,7 +63,7 @@ export const PeopleList = ({
                 <h4
                   className={classNames(
                     'text-lg font-bold text-center shadow-md py-3 px-6',
-                    headerColorClassName
+                    headerColorClassName,
                   )}>
                   {AssignmentCodeTitles[assignmentCode] || assignmentCode.replace('staff-', '')}{' '}
                   <span className="text-sm">({people.length})</span>

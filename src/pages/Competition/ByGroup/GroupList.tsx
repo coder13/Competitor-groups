@@ -1,10 +1,10 @@
-import { Link, useParams } from 'react-router-dom';
-import { Container } from '../../../components/Container';
 import { activityCodeToName, parseActivityCode } from '@wca/helpers';
-import { useWCIF, useWcifUtils } from '../../../providers/WCIFProvider';
-import { formatDateTimeRange } from '../../../lib/time';
 import { useEffect, useMemo } from 'react';
-import { CutoffTimeLimitPanel } from '../../../components/CutoffTimeLimitPanel';
+import { Link, useParams } from 'react-router-dom';
+import { Container } from '@/components/Container';
+import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
+import { formatDateTimeRange } from '@/lib/time';
+import { useWCIF, useWcifUtils } from '@/providers/WCIFProvider';
 
 export default function GroupList() {
   const { wcif, setTitle } = useWCIF();
@@ -21,7 +21,7 @@ export default function GroupList() {
 
   const round = useMemo(
     () => wcif?.events?.flatMap((e) => e.rounds).find((r) => r.id === roundId),
-    [roundId, wcif?.events]
+    [roundId, wcif?.events],
   );
 
   const rounds = roundActivies.filter((ra) => ra.activityCode === roundId);

@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import { useOngoingActivities } from '../../hooks/useOngoingActivities';
-import ActivityRow from '../../components/ActivitiyRow';
-import { useWCIF } from '../../providers/WCIFProvider';
-import { useAuth } from '../../providers/AuthProvider';
+import { ActivityRow } from '@/components';
+import { useOngoingActivities } from '@/hooks/useOngoingActivities';
+import { useAuth } from '@/providers/AuthProvider';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 interface OngoingActivitiesProps {
   competitionId: string;
@@ -15,7 +15,7 @@ export const OngoingActivities = ({ competitionId }: OngoingActivitiesProps) => 
 
   const roles = wcif?.persons?.find((p) => p.wcaUserId === user?.id)?.roles;
   const isInChargeOfComp = roles?.some((r) =>
-    ['delegate', 'trainee-delegate', 'organizer'].includes(r)
+    ['delegate', 'trainee-delegate', 'organizer'].includes(r),
   );
 
   if (!ongoingActivities?.length) {
@@ -52,7 +52,7 @@ export const OngoingActivities = ({ competitionId }: OngoingActivitiesProps) => 
       <div className="flex flex-col">
         {ongoingActivities.map((a) => {
           const venue = wcif?.schedule?.venues?.find((v) =>
-            v.rooms.some((r) => r.id === a.parent?.parent?.room?.id || r.id === a.parent?.room?.id)
+            v.rooms.some((r) => r.id === a.parent?.parent?.room?.id || r.id === a.parent?.room?.id),
           );
           const timeZone = venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';
 

@@ -1,16 +1,16 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { getAllRoundActivities, getRooms } from '../../../lib/activities';
-import { nextActivityCode, prevActivityCode } from '../../../lib/activityCodes';
-import { Container } from '../../../components/Container';
 import { ActivityCode, activityCodeToName } from '@wca/helpers';
-import { useWCIF } from '../../../providers/WCIFProvider';
-import { SupportedAssignmentCode } from '../../../lib/assignments';
-import { AssignmentCodeCell } from '../../../components/AssignmentCodeCell';
-import { Fragment, useCallback, useEffect } from 'react';
-import { byName } from '../../../lib/utils';
-import { formatDateTimeRange } from '../../../lib/time';
 import classNames from 'classnames';
-import { CutoffTimeLimitPanel } from '../../../components/CutoffTimeLimitPanel';
+import { Fragment, useCallback, useEffect } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
+import { Container } from '@/components/Container';
+import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
+import { getAllRoundActivities, getRooms } from '@/lib/activities';
+import { nextActivityCode, prevActivityCode } from '@/lib/activityCodes';
+import { SupportedAssignmentCode } from '@/lib/assignments';
+import { formatDateTimeRange } from '@/lib/time';
+import { byName } from '@/lib/utils';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 const useCommon = () => {
   const { wcif } = useWCIF();
@@ -32,14 +32,14 @@ const useCommon = () => {
   const personsInActivity = wcif?.persons
     ?.filter((person) => {
       return person.assignments?.some((assignment) =>
-        childActivityIds.includes(assignment.activityId)
+        childActivityIds.includes(assignment.activityId),
       );
     })
     .map((person) => {
       const assignment = person.assignments?.find((a) => childActivityIds.includes(a.activityId));
       const activity = childActivities.find((ca) => ca.id === assignment?.activityId);
       const stage = stages.find((stage) =>
-        stage.activities.some((a) => a.childActivities.some((ca) => ca.id === activity?.id))
+        stage.activities.some((a) => a.childActivities.some((ca) => ca.id === activity?.id)),
       );
 
       return {
@@ -103,12 +103,12 @@ export const GroupHeader = () => {
           ?.filter(
             (stage) =>
               !!stage.activities.find((a) =>
-                a.childActivities.some((ca) => ca.activityCode === activityCode)
-              )
+                a.childActivities.some((ca) => ca.activityCode === activityCode),
+              ),
           )
           .map((stage) => {
             const activity = stage.activities.find((a) =>
-              a.childActivities.some((ca) => ca.activityCode === activityCode)
+              a.childActivities.some((ca) => ca.activityCode === activityCode),
             );
 
             return (
@@ -141,11 +141,11 @@ export const MobileGroupView = () => {
       <GroupButtonMenu />
       <div className="">
         {GroupAssignmentCodeRank.filter((assignmentCode) =>
-          personsInActivity?.some((person) => person.assignment?.assignmentCode === assignmentCode)
+          personsInActivity?.some((person) => person.assignment?.assignmentCode === assignmentCode),
         ).map((assignmentCode) => {
           const personsInActivityWithAssignment =
             personsInActivity?.filter(
-              (person) => person.assignment?.assignmentCode === assignmentCode
+              (person) => person.assignment?.assignmentCode === assignmentCode,
             ) || [];
 
           return (
@@ -216,11 +216,11 @@ const DesktopGroupView = () => {
           </div>
         ))}
         {GroupAssignmentCodeRank.filter((assignmentCode) =>
-          personsInActivity?.some((person) => person.assignment?.assignmentCode === assignmentCode)
+          personsInActivity?.some((person) => person.assignment?.assignmentCode === assignmentCode),
         ).map((assignmentCode) => {
           const personsInActivityWithAssignment =
             personsInActivity?.filter(
-              (person) => person.assignment?.assignmentCode === assignmentCode
+              (person) => person.assignment?.assignmentCode === assignmentCode,
             ) || [];
           return (
             <Fragment key={assignmentCode}>
@@ -309,7 +309,7 @@ export const GroupButtonMenu = () => {
           {
             'pointer-events-none opacity-25': !prev,
             'hover:bg-slate-100 group cursor-pointer': prev,
-          }
+          },
         )}>
         <span className="fa fa-arrow-left self-center mr-2 group-hover:-translate-x-2 transition-all" />
         Previous Group
@@ -321,7 +321,7 @@ export const GroupButtonMenu = () => {
           {
             'pointer-events-none opacity-25': !next,
             'hover:bg-slate-100 group': next,
-          }
+          },
         )}>
         Next Group
         <span className="fa fa-arrow-right self-center ml-2 group-hover:translate-x-2 transition-all" />

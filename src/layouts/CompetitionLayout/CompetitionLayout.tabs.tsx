@@ -1,8 +1,8 @@
 import { Competition } from '@wca/helpers';
 import { useMemo } from 'react';
-import { streamActivities } from '../../lib/activities';
-import { useAuth } from '../../providers/AuthProvider';
-import { isStaff } from '../../lib/person';
+import { streamActivities } from '@/lib/activities';
+import { isStaff } from '@/lib/person';
+import { useAuth } from '@/providers/AuthProvider';
 
 interface CompetitionLayoutTabsProps {
   competitionId: string;
@@ -41,7 +41,7 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
       {
         href: `/competitions/${competitionId}/psych-sheet`,
         text: 'Rankings',
-      }
+      },
     );
 
     if (isPersonStaff) {

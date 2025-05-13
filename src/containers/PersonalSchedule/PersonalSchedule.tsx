@@ -1,15 +1,12 @@
-import { useMemo } from 'react';
+import { Competition, Person } from '@wca/helpers';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
-import { Competition, Person } from '@wca/helpers';
-import { getRooms } from '../../lib/activities';
-import DisclaimerText from '../../components/DisclaimerText';
+import { useMemo } from 'react';
+import { Button, DisclaimerText, ExternalLink, LinkButton } from '@/components';
+import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
+import { useWcaLiveCompetitorLink } from '@/hooks/queries/useWcaLive';
+import { getRooms } from '@/lib/activities';
 import { Assignments } from './Assignments';
-import { usePinnedPersons } from '../../hooks/UsePinnedPersons';
-import { Button } from '../../components/Button';
-import { LinkButton } from '../../components/LinkButton';
-import ExternalLink from '../../components/ExternalLink';
-import { useWcaLiveCompetitorLink } from '../../hooks/queries/useWcaLive';
 
 export interface PersonalScheduleContainerProps {
   wcif: Competition;
@@ -24,7 +21,7 @@ export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleCont
 
   const { data: wcaLiveLink, status: wcaLiveFetchStatus } = useWcaLiveCompetitorLink(
     wcif.id,
-    person.registrantId.toString()
+    person.registrantId.toString(),
   );
 
   const showRoom = useMemo(() => getRooms(wcif).length > 1, [wcif]);

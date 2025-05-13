@@ -1,6 +1,5 @@
 // import { useWCIF } from './WCIFProvider';
-
-import { Container } from '../../components/Container';
+import { Container } from '@/components/Container';
 
 const Events = () => {
   // const { wcif } = useWCIF();

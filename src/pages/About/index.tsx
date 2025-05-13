@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Container } from '../../components/Container';
+import { Container } from '@/components/Container';
 
 const Link = ({ to, children }: { to: string; children: React.ReactNode }) => (
   <a className="text-blue-700 underline" href={to} target="_blank" rel="noreferrer">

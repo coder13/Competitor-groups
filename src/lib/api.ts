@@ -17,7 +17,7 @@ export const fetchMe = async (
   params: {
     upcoming_competitions?: boolean;
     ongoing_competitions?: boolean;
-  } = {}
+  } = {},
 ) => {
   const urlParams = new URLSearchParams({
     upcoming_competitions: params.upcoming_competitions ? 'true' : 'false',

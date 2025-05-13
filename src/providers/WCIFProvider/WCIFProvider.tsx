@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
 import { Competition } from '@wca/helpers';
-import { useWcif } from '../../hooks/queries/useWcif';
-import { prefetchCompetition } from '../../hooks/queries/useCompetition';
-import { WCIFContext } from './WCIFContext';
+import { useState, useEffect } from 'react';
 import ReactGA from 'react-ga4';
+import { prefetchCompetition } from '@/hooks/queries/useCompetition';
+import { useWcif } from '@/hooks/queries/useWcif';
+import { WCIFContext } from './WCIFContext';
 
 export interface WCIFProviderProps {
   competitionId?: string;

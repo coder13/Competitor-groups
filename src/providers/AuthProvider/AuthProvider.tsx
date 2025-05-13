@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, PropsWithChildren } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { WCA_OAUTH_CLIENT_ID, WCA_OAUTH_ORIGIN } from '../../lib/wca-env';
-import history from '../../lib/history';
-import { fetchMe, fetchUserWithCompetitions } from '../../lib/api';
+import { fetchMe, fetchUserWithCompetitions } from '@/lib/api';
+import history from '@/lib/history';
+import { getLocalStorage, localStorageKey, setLocalStorage } from '@/lib/localStorage';
+import { WCA_OAUTH_CLIENT_ID, WCA_OAUTH_ORIGIN } from '@/lib/wca-env';
 import { queryClient } from '../QueryProvider';
-import { getLocalStorage, localStorageKey, setLocalStorage } from '../../lib/localStorage';
 import { AuthContext } from './AuthContext';
 
 /**
@@ -68,10 +68,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
             upcoming_competitions,
           });
           navigate('/', { replace: true });
-        }
+        },
       );
     },
-    [navigate]
+    [navigate],
   );
 
   useEffect(() => {

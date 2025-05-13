@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { FIVE_MINUTES } from '../../lib/constants';
-import { wcaApiFetch } from '../../lib/api';
+import { wcaApiFetch } from '@/lib/api';
+import { FIVE_MINUTES } from '@/lib/constants';
 
 // This is a magic number constant that comes from the WCA API.
 const DEFAULT_WCA_PAGINATION = 25;

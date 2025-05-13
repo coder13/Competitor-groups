@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { AssignmentsMap, SupportedAssignmentCode } from '../lib/assignments';
+import { AssignmentsMap, SupportedAssignmentCode } from '@/lib/assignments';
 
 interface AssignmentCodeCellProps<T extends React.ElementType> {
   children?: React.ReactNode;

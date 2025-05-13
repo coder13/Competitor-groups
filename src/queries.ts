@@ -45,7 +45,7 @@ export const useActivitiesQuery = (competitionId: string) => {
         competitionId,
       },
       skip: !competitionId,
-    }
+    },
   );
 };
 

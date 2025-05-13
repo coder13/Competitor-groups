@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 
-export default function ExternalLink({
+export function ExternalLink({
   href,
   children,
   className,
@@ -16,7 +16,7 @@ export default function ExternalLink({
       rel="noreferrer"
       className={classNames(
         'flex align-center justify-between w-full bg-blue-200 px-4 py-2 rounded hover:opacity-80',
-        className
+        className,
       )}>
       {children}
       <i className="m-0 fa fa-solid fa-arrow-up-right-from-square" />

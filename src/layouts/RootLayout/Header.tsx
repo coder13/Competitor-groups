@@ -1,8 +1,8 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
-import { useState } from 'react';
-import { useAuth } from '../../providers/AuthProvider';
-import { useWcif } from '../../hooks/queries/useWcif';
+import { useWcif } from '@/hooks/queries/useWcif';
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function Header() {
   const { user, signIn, signOut } = useAuth();

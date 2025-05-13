@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useWCIF } from '../../../providers/WCIFProvider';
-import ExternalLink from '../../../components/ExternalLink';
-import { Container } from '../../../components/Container';
-import { useCompetition } from '../../../hooks/queries/useCompetition';
+import { Container, ExternalLink } from '@/components';
+import { useCompetition } from '@/hooks/queries/useCompetition';
+import { useWCIF } from '@/providers/WCIFProvider';
 import { UserRow } from './UserRow';
 
 export default function Information() {
@@ -45,17 +44,13 @@ export default function Information() {
         <div>
           <h2 className="text-2xl font-bold">Organizers</h2>
           <ul className="flex flex-col space-y-2">
-            {data?.organizers?.map((user) => (
-              <UserRow key={user.id} user={user} />
-            ))}
+            {data?.organizers?.map((user) => <UserRow key={user.id} user={user} />)}
           </ul>
         </div>
         <div>
           <h2 className="text-2xl font-bold">Delegates</h2>
           <ul className="flex flex-col space-y-2">
-            {data?.delegates?.map((user) => (
-              <UserRow key={user.id} user={user} />
-            ))}
+            {data?.delegates?.map((user) => <UserRow key={user.id} user={user} />)}
           </ul>
         </div>
       </div>
