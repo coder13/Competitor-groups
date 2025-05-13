@@ -1,0 +1,24 @@
+common:
+  wca:
+    event: Épreuve
+    round: Tour
+    group: Groupe
+    events:
+      '222': Cube 2x2x2
+      '333': Cube 3x3x3
+      '444': Cube 4x4x4
+      '555': Cube 5x5x5
+      '666': Cube 6x6x6
+      '777': Cube 7x7x7
+      333bf: 3x3x3 à l'aveugle
+      333fm: 3x3x3 résolution optimisée
+      333oh: 3x3x3 à une main
+      333ft: 3x3x3 avec les pieds
+      clock: Clock
+      minx: Megaminx
+      pyram: Pyraminx
+      skewb: Skewb
+      sq1: Square-1
+      444bf: Cube 4x4x4 à l'aveugle
+      555bf: Cube 5x5x5 à l'aveugle
+      333mbf: 3x3x3 résolutions multiples à l'aveugle

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
-import { useWcif } from '@/hooks/queries/useWcif';
+import { useCompetition } from '@/hooks/queries/useCompetition';
 import { useAuth } from '@/providers/AuthProvider';
 
 export default function Header() {
@@ -9,8 +9,7 @@ export default function Header() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const { competitionId } = useParams();
-
-  const { data: wcif } = useWcif(competitionId);
+  const { data: comp } = useCompetition(competitionId);
 
   return (
     <header className="flex w-full shadow-md p-2 h-12 items-center print:hidden z-20 bg-white">
@@ -18,14 +17,10 @@ export default function Header() {
         <Link to="/" className="text-blue-500">
           <i className="fa fa-home" />
         </Link>
-        {wcif && (
-          <>
-            <span>{' / '}</span>
-            <Link to={`/competitions/${wcif?.id || competitionId}`} className="text-blue-500">
-              {wcif?.shortName}
-            </Link>
-          </>
-        )}
+        <span>{' / '}</span>
+        <Link to={`/competitions/${comp?.id || competitionId}`} className="text-blue-500">
+          {comp?.short_name}
+        </Link>
       </div>
       <div className="flex flex-1" />
       {user ? (

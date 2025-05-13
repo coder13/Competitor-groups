@@ -28,6 +28,7 @@ import CompetitionStats from './pages/Competition/Stats';
 import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
 import Home from './pages/Home';
 import Support from './pages/Support';
+import Test from './pages/Test';
 import UserLogin from './pages/UserLogin';
 import { AppProvider } from './providers/AppProvider';
 import { AuthProvider, useAuth } from './providers/AuthProvider';
@@ -118,6 +119,7 @@ const Navigation = () => {
         <Route path="about" element={<About />} />
         <Route path="support" element={<Support />} />
       </Route>
+      <Route path="test" element={<Test />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

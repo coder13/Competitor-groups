@@ -4,6 +4,7 @@ import {
   ParsedActivityCode,
   parseActivityCode as wcaHelperParseActivityCode,
 } from '@wca/helpers';
+import i18n from '@/i18n';
 import { getAllRoundActivities } from './activities';
 import { eventNameById } from './events';
 import { isValidNumber } from './time';
@@ -95,9 +96,9 @@ export const activityCodeToName = (activityCode: string) => {
   const { eventId, roundNumber, groupNumber, attemptNumber } = parseActivityCode(activityCode);
   return [
     eventId && eventNameById(eventId as EventId),
-    isValidNumber(roundNumber) && `Round ${roundNumber}`,
-    isValidNumber(groupNumber) && `Group ${groupNumber}`,
-    isValidNumber(attemptNumber) && `Attempt ${attemptNumber}`,
+    isValidNumber(roundNumber) && i18n.t('activityCodeToName.round', { roundNumber }),
+    isValidNumber(groupNumber) && i18n.t('activityCodeToName.group', { groupNumber }),
+    isValidNumber(attemptNumber) && i18n.t('activityCodeToName.attempt', { attemptNumber }),
   ]
     .filter((x) => x)
     .join(', ');

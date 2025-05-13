@@ -1,4 +1,5 @@
 import { EventId } from '@wca/helpers';
+import i18n from '@/i18n';
 
 export const events: {
   id: EventId;
@@ -27,7 +28,15 @@ export const events: {
 export const isRankedBySingle = (eventId: EventId) =>
   ['333bf', '444bf', '555bf', '333mbf'].includes(eventId);
 
-export const eventNameById = (eventId: EventId) => propertyById('name', eventId);
+export const eventNameById = (eventId: EventId) => {
+  if (eventId.startsWith('other') || !events.find((event) => event.id === eventId)) {
+    return eventId;
+  }
+
+  return i18n.t(`common.wca.events.${eventId}`, {
+    fallbackLng: 'en',
+  });
+};
 
 export const shortEventNameById = (eventId: EventId | string, name?: string) =>
   eventId.startsWith('other') ? name : propertyById('shortName', eventId as EventId) || eventId;

@@ -7,11 +7,12 @@ export const competitionQuery = (competitionId: string) => ({
   queryFn: async () => fetchCompetition(competitionId),
 });
 
-export const useCompetition = (competitionId: string) => {
+export const useCompetition = (competitionId?: string) => {
   return useQuery<ApiCompetition>({
-    ...competitionQuery(competitionId),
+    ...competitionQuery(competitionId ?? ''),
     networkMode: 'offlineFirst',
     gcTime: 1000 * 60 * 5,
+    enabled: !!competitionId,
   });
 };
 
