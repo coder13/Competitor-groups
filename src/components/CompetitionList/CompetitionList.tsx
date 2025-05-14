@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { BarLoader } from 'react-spinners';
 import { usePinnedCompetitions } from '@/hooks/UsePinnedCompetitions';
 import { CompetitionListItem } from '../CompetitionListItem';
@@ -21,6 +22,7 @@ export function CompetitionListFragment({
   liveCompetitionIds,
   lastFetchedAt,
 }: CompetitionListFragmentProps) {
+  const { t } = useTranslation();
   const { pinnedCompetitions } = usePinnedCompetitions();
 
   if (!competitions.length && !loading) {
@@ -45,7 +47,7 @@ export function CompetitionListFragment({
       )}
       {!!lastFetchedAt && <LastFetchedAt lastFetchedAt={new Date(lastFetchedAt)} />}
       {!loading && !competitions.length && (
-        <div className="text-center text-gray-500">No competitions found.</div>
+        <div className="text-center text-gray-500">{t('common.competitionList.noneFound')}</div>
       )}
     </div>
   );

@@ -99,3 +99,13 @@ export const getNumericDateFormatter = (timeZone?: string) =>
  */
 export const formatNumericDate = (date: Date, timeZone?: string) =>
   getNumericDateFormatter(timeZone).format(date);
+
+export const getLocalizedTimeZoneName = (timeZoneId: string) => {
+  const formatter = new Intl.DateTimeFormat(navigator.language, {
+    timeZone: timeZoneId,
+    timeZoneName: 'long',
+  });
+
+  const parts = formatter.formatToParts(new Date());
+  return parts.find((p) => p.type === 'timeZoneName')?.value || timeZoneId;
+};

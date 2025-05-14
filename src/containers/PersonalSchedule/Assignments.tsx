@@ -1,5 +1,6 @@
 import { Competition, Person } from '@wca/helpers';
 import { Fragment, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCollapse } from '@/hooks/UseCollapse';
 import { useNow } from '@/hooks/useNow';
 import { parseActivityCodeFlexible } from '@/lib/activityCodes';
@@ -19,6 +20,8 @@ export interface AssignmentsProps {
 
 const key = (compId: string, id) => `${compId}-${id}`;
 export function Assignments({ wcif, person, showRoom, showStationNumber }: AssignmentsProps) {
+  const { t } = useTranslation();
+
   const { collapsedDates, setCollapsedDates, toggleDate } = useCollapse(
     key(wcif.id, person.registrantId),
   );
@@ -48,7 +51,8 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
     });
 
     setCollapsedDates((prev) => [...prev, ...collapse]);
-  }, [collapsedDates, scheduleDays, setCollapsedDates]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scheduleDays]);
 
   const isSingleDay = scheduleDays.length === 1;
 
@@ -58,12 +62,18 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
         <table className="w-full text-xs sm:text-sm">
           <thead>
             <tr className="bg-slate-100 shadow-sm">
-              <th className="py-2 text-center w-20">Activity</th>
-              <th className="py-2 text-center">Time</th>
-              <th className="py-2 text-center">Assignment</th>
-              <th className="py-2 text-center">Group</th>
-              {showRoom && <th className="py-2 text-center">Stage</th>}
-              {showStationNumber && <th className="py-2 text-center">Station</th>}
+              <th className="py-2 text-center w-20">
+                {t('competition.personalSchedule.activity')}
+              </th>
+              <th className="py-2 text-center">{t('competition.personalSchedule.time')}</th>
+              <th className="py-2 text-center">{t('competition.personalSchedule.assignment')}</th>
+              <th className="py-2 text-center">{t('competition.personalSchedule.group')}</th>
+              {showRoom && (
+                <th className="py-2 text-center">{t('competition.personalSchedule.stage')}</th>
+              )}
+              {showStationNumber && (
+                <th className="py-2 text-center">{t('competition.personalSchedule.station')}</th>
+              )}
             </tr>
           </thead>
           <tbody>

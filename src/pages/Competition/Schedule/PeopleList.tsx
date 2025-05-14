@@ -1,9 +1,10 @@
 import { Activity, AssignmentCode, Person } from '@wca/helpers';
 import classNames from 'classnames';
 import { Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { getStationNumber } from '@/lib/activities';
-import { AssignmentCodeRank, AssignmentCodeTitles } from '@/lib/assignments';
+import { AssignmentCodeRank } from '@/lib/assignments';
 import { byName } from '@/lib/utils';
 
 export interface PeopleListProps {
@@ -17,6 +18,8 @@ export const PeopleList = ({
   activity,
   peopleByAssignmentCode,
 }: PeopleListProps) => {
+  const { t } = useTranslation();
+
   return (
     <>
       {Object.keys(peopleByAssignmentCode)
@@ -56,6 +59,12 @@ export const PeopleList = ({
             'even:bg-rose-50': assignmentCode === 'staff-core',
           };
 
+          const assignmentCodeTitleKey = `common.assignments.${assignmentCode}.noun`;
+          const title = t(assignmentCodeTitleKey, {
+            count: people.length,
+            defaultValue: assignmentCode.replace('staff-', ''),
+          });
+
           return (
             <Fragment key={assignmentCode}>
               <hr className="mb-2" />
@@ -65,15 +74,16 @@ export const PeopleList = ({
                     'text-lg font-bold text-center shadow-md py-3 px-6',
                     headerColorClassName,
                   )}>
-                  {AssignmentCodeTitles[assignmentCode] || assignmentCode.replace('staff-', '')}{' '}
-                  <span className="text-sm">({people.length})</span>
+                  {title} <span className="text-sm">({people.length})</span>
                 </h4>
                 {anyHasStationNumber ? (
                   <table className={'w-full text-left'}>
                     <thead>
                       <tr className={classNames(' text-sm shadow-md', headerColorClassName)}>
-                        <th className="pt-1 pb-3 px-6">Name</th>
-                        <th className="pt-1 pb-3 px-6">Station Number</th>
+                        <th className="pt-1 pb-3 px-6">{t('common.name')}</th>
+                        <th className="pt-1 pb-3 px-6">
+                          {t('competition.eventActivity.stationNumber')}
+                        </th>
                       </tr>
                     </thead>
                     <tbody>

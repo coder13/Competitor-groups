@@ -2,6 +2,7 @@ import { Event, EventId } from '@wca/helpers';
 import classNames from 'classnames';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import StickyBox from 'react-sticky-box';
 import { Container } from '@/components/Container';
@@ -13,6 +14,7 @@ import { unique } from '@/lib/utils';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export const PsychSheetEvent = () => {
+  const { t } = useTranslation();
   const { competitionId, eventId } = useParams<{
     competitionId: string;
     eventId: EventId;
@@ -100,19 +102,23 @@ export const PsychSheetEvent = () => {
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-40"
             value={resultType}
             onChange={(e) => handleResultTypeChange(e.target.value as 'average' | 'single')}>
-            <option value="average">Average</option>
-            <option value="single">Single</option>
+            <option value="average">{t('common.wca.resultType.average')}</option>
+            <option value="single">{t('common.wca.resultType.single')}</option>
           </select>
         </div>
         <StickyBox offsetTop={0} offsetBottom={0}>
           <div className={classNames('bg-green-300 w-full', gridCss)} role="rowheader">
             <span className="px-3 py-2.5 text-right font-bold">#</span>
             <span className="px-3 py-2.5 text-left"></span>
-            <span className="px-3 py-2.5 text-left font-bold">Name</span>
-            <span className="px-3 py-2.5 text-right font-bold">
-              {resultType === 'single' ? 'Single' : 'Average'}{' '}
+            <span className="px-3 py-2.5 text-left font-bold">
+              {t('competition.rankings.name')}
             </span>
-            <span className="px-3 py-2.5 text-right font-bold">WR</span>
+            <span className="px-3 py-2.5 text-right font-bold">
+              {resultType === 'single'
+                ? t('common.wca.resultType.single')
+                : t('common.wca.resultType.average')}{' '}
+            </span>
+            <span className="px-3 py-2.5 text-right font-bold">{t('competition.rankings.WR')}</span>
           </div>
         </StickyBox>
 

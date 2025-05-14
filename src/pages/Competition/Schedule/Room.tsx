@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { ActivityRow, Container } from '@/components';
 import { getAllChildActivities } from '@/lib/activities';
@@ -7,17 +8,27 @@ import { byDate } from '@/lib/utils';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export function CompetitionRoom() {
+  const { t } = useTranslation();
+
   const { wcif, setTitle } = useWCIF();
   const { roomId } = useParams();
 
-  useEffect(() => {
-    setTitle('Schedule');
-  }, [setTitle]);
-
-  const venue = wcif?.schedule?.venues?.find((venue) =>
-    venue.rooms.some((room) => room.id.toString() === roomId),
+  const venue = useMemo(
+    () =>
+      wcif?.schedule?.venues?.find((venue) =>
+        venue.rooms.some((room) => room.id.toString() === roomId),
+      ),
+    [roomId, wcif?.schedule?.venues],
   );
-  const room = venue?.rooms?.find((room) => room.id.toString() === roomId);
+
+  const room = useMemo(
+    () => venue?.rooms?.find((room) => room.id.toString() === roomId),
+    [roomId, venue?.rooms],
+  );
+
+  useEffect(() => {
+    setTitle(room?.name || '');
+  }, [room, setTitle]);
 
   const timeZone = venue?.timezone ?? wcif?.schedule.venues?.[0]?.timezone ?? '';
 
@@ -46,7 +57,7 @@ export function CompetitionRoom() {
 
       return {
         approxDateTime: dateTime.getTime(),
-        date: dateTime.toLocaleDateString([], {
+        date: dateTime.toLocaleDateString(navigator.language, {
           weekday: 'long',
           year: 'numeric',
           month: 'numeric',
@@ -74,7 +85,7 @@ export function CompetitionRoom() {
 
       return {
         ...activity,
-        date: dateTime.toLocaleDateString([], {
+        date: dateTime.toLocaleDateString(navigator.language, {
           weekday: 'long',
           year: 'numeric',
           month: 'numeric',
@@ -94,7 +105,7 @@ export function CompetitionRoom() {
 
   return (
     <Container>
-      <div className="flex w-full flex-col text-sm md:text-base py-2">
+      <div className="flex w-full flex-col text-sm md:text-base py-2 px-1">
         <div className="p-2">
           <h3 className="font-bold text-lg -mb-2">{room?.name}</h3>
           <span className="text-xs">{venue?.name}</span>
@@ -123,7 +134,7 @@ export function CompetitionRoom() {
           <Link
             to={`/competitions/${wcif?.id}/rooms`}
             className="w-full border bg-blue-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row">
-            Back to list of Rooms
+            {t('competition.room.back')}
           </Link>
         </div>
       </div>

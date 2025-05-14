@@ -1,5 +1,6 @@
 import { Activity, AssignmentCode, parseActivityCode, Person } from '@wca/helpers';
 import { useCallback, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { getRoomData, getRooms } from '@/lib/activities';
@@ -20,6 +21,8 @@ interface EventGroupProps {
 }
 
 export function EventActivity({ competitionId, activity, persons }: EventGroupProps) {
+  const { t } = useTranslation();
+
   const { setTitle, wcif } = useWCIF();
   const { eventId, roundNumber } = parseActivityCode(activity?.activityCode || '');
   const event = useMemo(() => wcif?.events.find((e) => e.id === eventId), [eventId, wcif?.events]);
@@ -199,14 +202,17 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
       <hr className="mb-2" />
       <div>
         <h4 className="bg-green-200 pb-1 text-lg font-bold text-center shadow-md py-3 px-6">
-          Competitors <span className="text-sm">({competitors.length})</span>
+          {t('common.assignments.competitor.noun')}{' '}
+          <span className="text-sm">({competitors.length})</span>
         </h4>
         <table className="w-full text-left">
           <thead>
             <tr className="text-xs lg:text-sm bg-green-200 shadow-md">
-              <th className="pt-1 pb-3 px-6">Name</th>
-              <th className="pt-1 pb-3 px-6">Seed Result</th>
-              {anyCompetitorHasStationNumber && <th className="pt-1 pb-3 px-6">Station Number</th>}
+              <th className="pt-1 pb-3 px-6">{t('common.name')}</th>
+              <th className="pt-1 pb-3 px-6">{t('competition.eventActivity.seedResult')}</th>
+              {anyCompetitorHasStationNumber && (
+                <th className="pt-1 pb-3 px-6">{t('competition.eventActivity.stationNumber')}</th>
+              )}
             </tr>
           </thead>
           <tbody>

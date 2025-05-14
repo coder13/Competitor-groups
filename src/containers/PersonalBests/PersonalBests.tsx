@@ -2,6 +2,7 @@ import { Competition, Person } from '@wca/helpers';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { LinkButton } from '@/components/LinkButton';
 import { eventNameById } from '@/lib/events';
@@ -14,6 +15,8 @@ export interface PersonalBestsContainerProps {
 }
 
 export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerProps) {
+  const { t } = useTranslation();
+
   return (
     <>
       <div className="flex justify-between items-center min-h-10 px-1">
@@ -39,11 +42,11 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
       <table className="w-full text-sm">
         <thead className="bg-green-300 shadow-md">
           <tr>
-            <th className="py-2 px-3">Type</th>
-            <th>Best</th>
-            <th>WR</th>
-            <th>CR</th>
-            <th>NR</th>
+            <th className="py-2 px-3">{t('competition.personalRecords.type')}</th>
+            <th>{t('competition.personalRecords.best')}</th>
+            <th>{t('common.wca.recordType.WR')}</th>
+            <th>{t('common.wca.recordType.CR')}</th>
+            <th>{t('common.wca.recordType.NR')}</th>
           </tr>
         </thead>
         <tbody>
@@ -73,7 +76,7 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
                   </tr>
                   {singlePb && (
                     <tr>
-                      <td className="px-3 py-2">Single</td>
+                      <td className="px-3 py-2">{t('common.wca.resultType.single')}</td>
                       <td className="px-3 py-2 text-center">
                         {renderResultByEventId(eventId, 'single', singlePb.best)}
                       </td>
@@ -90,7 +93,7 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
                   )}
                   {averagePb && (
                     <tr>
-                      <td className="px-3 py-2">Average</td>
+                      <td className="px-3 py-2">{t('common.wca.resultType.average')}</td>
                       <td className="px-3 py-2 text-center">
                         {renderResultByEventId(eventId, 'average', averagePb.best)}
                       </td>
@@ -114,7 +117,7 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
       <div className="px-1 flex">
         <LinkButton
           color="blue"
-          title="View Personal Assignments"
+          title={t('competition.personalRecords.viewSchedule')}
           to={`/competitions/${wcif.id}/persons/${person.registrantId}`}
         />
       </div>
