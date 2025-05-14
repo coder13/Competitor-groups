@@ -1,0 +1,25 @@
+common:
+  wca:
+    event: 종목
+    round: 라운드
+    group: 그룹
+    group_other: 그룹
+    events:
+      '222': 2x2x2 큐브
+      '333': 3x3x3 큐브
+      '444': 4x4x4 큐브
+      '555': 5x5x5 큐브
+      '666': 6x6x6 큐브
+      '777': 7x7x7 큐브
+      333bf: 3x3x3 블라인드
+      333fm: 3x3x3 최소회전
+      333oh: 3x3x3 한 손
+      333ft: 3x3x3 발
+      clock: 클락
+      minx: 메가밍크스
+      pyram: 피라밍크스
+      skewb: 스큐브
+      sq1: 스퀘어-1
+      444bf: 4x4x4 블라인드
+      555bf: 5x5x5 블라인드
+      333mbf: 3x3x3 멀티 블라인드
