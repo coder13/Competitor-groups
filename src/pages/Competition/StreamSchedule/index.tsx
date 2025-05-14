@@ -1,5 +1,6 @@
 import { parseActivityCode } from '@wca/helpers';
 import { useCallback, useEffect, Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { DisclaimerText } from '@/components';
 import { getRoomData, streamActivities, streamPersonIds } from '@/lib/activities';
@@ -17,13 +18,15 @@ export const byDate = (
 };
 
 export default function CompetitionStreamSchedule() {
+  const { t } = useTranslation();
+
   const { wcif, setTitle } = useWCIF();
 
   useEffect(() => {
     if (wcif) {
-      setTitle(wcif?.name + ' Stream Schedule');
+      setTitle(t('competition.streamSchedule.title'));
     }
-  }, [wcif, setTitle]);
+  }, [wcif, setTitle, t]);
 
   const activities = wcif ? streamActivities(wcif) : [];
 
@@ -66,17 +69,19 @@ export default function CompetitionStreamSchedule() {
 
   const renderActivities = () => (
     <>
-      <h4 className="text-xl mb-2 text-center">Live Stream</h4>
+      <h4 className="text-xl mb-2 text-center">{t('competition.streamSchedule.subtitle')}</h4>
       <div className="shadow-md">
         <table className="w-full text-xs md:text-sm">
           <thead>
             <tr className="bg-slate-100 shadow-sm">
-              <th className="py-2 text-center">Time</th>
-              <th className="py-2 text-center">Event</th>
-              <th className="py-2 text-center">Round</th>
-              <th className="py-2 text-center">Group</th>
-              <th className="py-2 text-center">Stage</th>
-              <th className="py-2 text-center">Featured Competitors</th>
+              <th className="py-2 text-center">{t('competition.streamSchedule.time')}</th>
+              <th className="py-2 text-center">{t('competition.streamSchedule.event')}</th>
+              <th className="py-2 text-center">{t('competition.streamSchedule.round')}</th>
+              <th className="py-2 text-center">{t('competition.streamSchedule.group')}</th>
+              <th className="py-2 text-center">{t('competition.streamSchedule.stage')}</th>
+              <th className="py-2 text-center">
+                {t('competition.streamSchedule.featuredCompetitors')}
+              </th>
             </tr>
           </thead>
           <tbody>

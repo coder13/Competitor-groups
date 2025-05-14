@@ -118,6 +118,7 @@ common:
   search: 'Search'
   view: 'View'
   name: Name
+  stage: Stage
 header:
   login: 'Login'
   logout: 'Logout'
@@ -169,7 +170,7 @@ competition:
     time: Time
     assignment: Assignment
     group: Group
-    stage: Stage
+    stage: $t(common.stage)
     station: Station
   personalRecords:
     viewSchedule: View Personal Assignments
@@ -178,7 +179,16 @@ competition:
   scramblers:
     title: Scrambler Schedule
     rooms: Rooms
-    stage: Stage
+    stage: $t(common.stage)
     event: Event
     scramblers: Scramblers
+  streamSchedule:
+    title: Stream Schedule
+    subtitle: Live Stream
+    time: Time
+    event: $t(common.wca.event)
+    round: $t(common.wca.round)
+    group: $t(common.wca.group)
+    stage: $t(common.stage)
+    featuredCompetitors: Featured Competitors
 disclaimerText: Start times are subject to change and may run ahead or behind schedule. Check with competition organizers for updates.

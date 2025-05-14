@@ -170,4 +170,9 @@ competition:
     stage: 'Scène'
     event: 'Épreuve'
     scramblers: 'Mélangeurs'
+  streamSchedule:
+    title: 'Programme de diffusion'
+    subtitle: 'Diffusion en direct'
+    time: 'Heure'
+    featuredCompetitors: 'Concurrents à l’honneur'
 disclaimerText: Les horaires de début sont susceptibles de changer et peuvent être en avance ou en retard par rapport au programme. Veuillez vérifier auprès des organisateurs de la compétition pour les mises à jour.
