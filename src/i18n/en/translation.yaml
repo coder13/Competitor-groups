@@ -5,7 +5,7 @@ common:
     round: 'Round'
     group: 'Group'
     group_other: 'Groups'
-    attempt: 'Essai'
+    attempt: 'Attempt'
     events:
       '333': '3x3x3 Cube'
       '222': '2x2x2 Cube'
