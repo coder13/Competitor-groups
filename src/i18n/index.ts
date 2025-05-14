@@ -20,7 +20,7 @@ i18n.use(initReactI18next).init({
   resources,
   lng: navigator.language,
   fallbackLng: 'en',
-
+  debug: true,
   interpolation: {
     escapeValue: false,
   },

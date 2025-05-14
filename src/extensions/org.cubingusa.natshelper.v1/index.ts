@@ -1,5 +1,5 @@
-import { NatsHelperGroupExtensionData, NatsHelperStageExtensionData } from './types';
 import { Activity, Room } from '@wca/helpers';
+import { NatsHelperGroupExtensionData, NatsHelperStageExtensionData } from './types';
 
 const namespace = 'org.cubingusa.natshelper.v1';
 

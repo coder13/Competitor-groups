@@ -10,8 +10,8 @@ export default function Home() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    document.title = 'Competition Groups';
-  }, []);
+    document.title = t('common.title');
+  }, [t]);
 
   return (
     <div className="flex flex-col items-center w-full overflow-auto">
@@ -27,7 +27,7 @@ export default function Home() {
           <Link
             className="flex w-full py-2.5 px-2 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 "
             to="/support">
-            {t('home.ktlo')}
+            {t('home.support')}
           </Link>
         </div>
         <MyCompetitions />
