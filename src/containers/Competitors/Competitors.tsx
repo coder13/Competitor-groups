@@ -1,5 +1,6 @@
 import { Competition, Person } from '@wca/helpers';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
 import { useOngoingActivities } from '@/hooks/useOngoingActivities';
@@ -9,6 +10,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { CompetitorListItem } from './CompetitorListItem';
 
 export const Competitors = ({ wcif }: { wcif: Competition }) => {
+  const { t } = useTranslation();
   const [input, setInput] = useState('');
   const { competitionId } = useParams() as { competitionId: string };
   const { user } = useAuth();
@@ -60,14 +62,14 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
 
       <div className="w-full">
         <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">
-          Search
+          {t('common.search')}
         </label>
         <div className="relative">
           <input
             type="search"
             id="competitor-search"
             className="block w-full p-3  h-[40px] ps-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 "
-            placeholder="Search Competitors..."
+            placeholder={t('competition.competitors.searchCompetitors')}
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />

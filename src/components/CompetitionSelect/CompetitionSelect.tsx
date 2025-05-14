@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import AsyncSelect from 'react-select/async';
 import { OptionProps } from 'react-select/dist/declarations/src';
 import { fetchSearchCompetition } from '@/lib/api';
@@ -10,6 +11,8 @@ export interface CompetitionSelectProps {
 }
 
 export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProps) => {
+  const { t } = useTranslation();
+
   const loadOptions = useDebounced(async (inputValue: string) => {
     try {
       const res = await fetchSearchCompetition(inputValue);
@@ -34,7 +37,7 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
       className={className}
       cacheOptions
       loadOptions={loadOptions}
-      placeholder="Search Competitions"
+      placeholder={t('common.competitionSelect.placeholder')}
       components={{
         Option: CompetitionOption,
       }}

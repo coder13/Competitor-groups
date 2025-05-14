@@ -1,5 +1,6 @@
 import { parseActivityCode } from '@wca/helpers';
 import { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Container } from '@/components/Container';
 import { groupActivitiesByRound } from '@/lib/activities';
@@ -11,6 +12,8 @@ function onlyUnique(value, index, self) {
 }
 
 const Events = () => {
+  const { t } = useTranslation();
+
   const { wcif, setTitle } = useWCIF();
   const navigate = useNavigate();
 
@@ -36,11 +39,11 @@ const Events = () => {
           <table className="w-full text-left">
             <thead className="bg-slate-200">
               <tr>
-                <th className="px-6 py-3">Event</th>
-                <th className="px-6 py-3 text-center">Round</th>
-                <th className="px-6 py-3 text-center">Groups</th>
+                <th className="px-6 py-3">{t('common.wca.event')}</th>
+                <th className="px-6 py-3 text-center">{t('common.wca.round')}</th>
+                <th className="px-6 py-3 text-center">{t('common.wca.group_other')}</th>
                 <th className="px-6 py-3">
-                  <span className="sr-only">View</span>
+                  <span className="sr-only">{t('common.view')}</span>
                 </th>
               </tr>
             </thead>
@@ -61,7 +64,7 @@ const Events = () => {
                       <td className="px-5 py-3 text-center">
                         {uniqueGroupCountForRound(round.id)}
                       </td>
-                      <td className="px-5 py-3 text-right">View</td>
+                      <td className="px-5 py-3 text-right">{t('common.view')}</td>
                     </tr>
                   );
                 }),

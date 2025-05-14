@@ -1,9 +1,9 @@
-import { Activity, activityCodeToName } from '@wca/helpers';
+import { Activity } from '@wca/helpers';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container } from '@/components/Container';
 import { getAllActivities } from '@/lib/activities';
-import { parseActivityCodeFlexible } from '@/lib/activityCodes';
+import { activityCodeToName, parseActivityCodeFlexible } from '@/lib/activityCodes';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { EventActivity } from './EventActivity';
 import { OtherActivity } from './OtherActivity';

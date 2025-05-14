@@ -1,10 +1,11 @@
-import { activityCodeToName, Event, EventId } from '@wca/helpers';
+import { Event, EventId } from '@wca/helpers';
 import classNames from 'classnames';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { useCallback, useMemo } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import StickyBox from 'react-sticky-box';
 import { Container } from '@/components/Container';
+import { activityCodeToName } from '@/lib/activityCodes';
 import { acceptedRegistration, isRegisteredForEvent } from '@/lib/person';
 import { renderResultByEventId } from '@/lib/results';
 import { byWorldRanking } from '@/lib/sort';

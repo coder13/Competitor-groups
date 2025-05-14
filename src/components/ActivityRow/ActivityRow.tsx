@@ -1,8 +1,9 @@
-import { Activity, Room, Venue, activityCodeToName } from '@wca/helpers';
+import { Activity, Room, Venue } from '@wca/helpers';
 import classNames from 'classnames';
 import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useNow } from '@/hooks/useNow';
+import { activityCodeToName } from '@/lib/activityCodes';
 import { formatTimeRange } from '@/lib/time';
 
 interface ActivityRowProps {

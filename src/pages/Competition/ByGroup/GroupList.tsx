@@ -1,12 +1,16 @@
-import { activityCodeToName, parseActivityCode } from '@wca/helpers';
+import { parseActivityCode } from '@wca/helpers';
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { Container } from '@/components/Container';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
+import { activityCodeToName } from '@/lib/activityCodes';
 import { formatDateTimeRange } from '@/lib/time';
 import { useWCIF, useWcifUtils } from '@/providers/WCIFProvider';
 
 export default function GroupList() {
+  const { t } = useTranslation();
+
   const { wcif, setTitle } = useWCIF();
   const { competitionId, roundId } = useParams();
   const { roundActivies } = useWcifUtils();
@@ -17,7 +21,7 @@ export default function GroupList() {
     }
 
     setTitle(activityCodeToName(roundId));
-  });
+  }, [roundId, setTitle]);
 
   const round = useMemo(
     () => wcif?.events?.flatMap((e) => e.rounds).find((r) => r.id === roundId),
@@ -49,7 +53,9 @@ export default function GroupList() {
               className=" border bg-white list-none rounded-md px-3 py-2 flex cursor-pointer hover:bg-blue-200 group transition-colors flex-row"
               key={value}>
               <li className="flex flex-col">
-                <span className="text-xl">Group {groupNumber}</span>
+                <span className="text-xl">
+                  {t('common.activityCodeToName.group', { groupNumber })}
+                </span>
                 <span className="text-sm">{formatDateTimeRange(minStartTime, maxEndTime)}</span>
               </li>
             </Link>
@@ -60,7 +66,7 @@ export default function GroupList() {
         <Link
           to={`/competitions/${competitionId}/events/`}
           className="w-full border bg-blue-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row">
-          Back to Events...
+          {t('competition.groups.backToEvents')}
         </Link>
       </div>
     </Container>

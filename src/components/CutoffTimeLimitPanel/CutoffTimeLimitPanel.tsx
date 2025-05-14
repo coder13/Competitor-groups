@@ -1,6 +1,7 @@
 import { Cutoff, Round, parseActivityCode } from '@wca/helpers';
 import classNames from 'classnames';
 import { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
 import { renderCentiseconds, renderCutoff } from '@/lib/results';
@@ -13,6 +14,7 @@ export function CutoffTimeLimitPanel({
   round: Round;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const { wcif } = useWCIF();
 
   const cutoff = round.cutoff;
@@ -21,19 +23,22 @@ export function CutoffTimeLimitPanel({
 
   if (!timeLimit && !cutoff && !round.advancementCondition) return null;
 
+  const level = round.advancementCondition?.level;
+
   return (
     <div className={classNames('flex w-full', className)}>
       <div className="flex flex-col space-y-1 flex-1">
         <div className="divide-x-2 divide-gray-100">
           {cutoff && (
             <span className="px-2">
-              Cutoff: <span className="font-semibold">{renderCutoff(cutoff)}</span>
+              {t('common.wca.cutoff')}:{' '}
+              <span className="font-semibold">{renderCutoff(cutoff)}</span>
             </span>
           )}
 
           {timeLimit && !timeLimit?.cumulativeRoundIds.length && (
             <span className="px-2">
-              Timelimit: <span className="font-semibold">{timelimitTime}</span>
+              {t('common.wca.timeLimit')}: <span className="font-semibold">{timelimitTime}</span>
             </span>
           )}
 
@@ -51,7 +56,7 @@ export function CutoffTimeLimitPanel({
                         to={`/competitions/${wcif?.id}/events/${activityCode}`}>
                         <span
                           className={`cubing-icon event-${eventId} mx-1 before:-ml-1 before:mr-2`}>
-                          Round {roundNumber}
+                          {t('common.activityCodeToName.round', { roundNumber })}
                           {i < arry.length - 1 ? ', ' : ''}
                         </span>
                       </Link>
@@ -65,21 +70,29 @@ export function CutoffTimeLimitPanel({
           <div>
             {round.advancementCondition.type === 'ranking' && (
               <div className="px-2">
-                Top <span className="font-semibold">{round.advancementCondition.level}</span>{' '}
-                advance to next round
+                <Trans
+                  i18nKey={'common.wca.advancement.ranking'}
+                  values={{ level }}
+                  components={{ b: <span className="font-semibold" /> }}
+                />
               </div>
             )}
             {round.advancementCondition.type === 'percent' && (
               <div className="px-2">
-                Top <span className="font-semibold">{round.advancementCondition.level}%</span>{' '}
-                advance to next round
+                <Trans
+                  i18nKey={'common.wca.advancement.percent'}
+                  values={{ level }}
+                  components={{ b: <span className="font-semibold" /> }}
+                />
               </div>
             )}
             {round.advancementCondition.type === 'attemptResult' && (
               <div className="px-2">
-                Result better than{' '}
-                <span className="font-semibold">{round.advancementCondition.level}</span> advances
-                to next round. Minimum of 25% of competitors must be eliminated.
+                <Trans
+                  i18nKey={'common.wca.advancement.attemptResult'}
+                  values={{ level }}
+                  components={{ b: <span className="font-semibold" /> }}
+                />
               </div>
             )}
           </div>
@@ -93,6 +106,7 @@ export function CutoffTimeLimitPanel({
 }
 
 function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
@@ -110,28 +124,26 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
             },
           )}>
           <p>
-            <b>Time limits</b> are established for all rounds, applying to each individual solve.
-            Solves that exceed the limit will be marked as &quot;DNF&quot; and the time will not
-            count.
+            <Trans
+              i18nKey="common.wca.cutoffTimeLimitPopover.timeLimits"
+              components={{ b: <strong /> }}
+            />
           </p>
 
           <p>
-            Each round may include <b>cutoffs</b>, which dictate whether a competitor is eligible to
-            complete all their attempts to finish their average. To qualify, they must achieve a
-            time within the cutoff time during their initial solve or within their first two solves.
+            <Trans
+              i18nKey="common.wca.cutoffTimeLimitPopover.cutoffs"
+              components={{ b: <strong /> }}
+            />
             <br />
             <i>
               {cutoff &&
-                `This round requires the condition met in the first ${
-                  cutoff.numberOfAttempts
-                } attempt${cutoff.numberOfAttempts > 1 ? 's' : ''}`}
+                t('common.wca.cutoffTimeLimitPopover.cutoff', { count: cutoff.numberOfAttempts })}
             </i>
           </p>
 
           <p>
-            At least 25% of competitors must be eliminated before progressing to the next round. The
-            organizing team will establish advancement criteria for each round, but adjustments may
-            be necessary to ensure this minimum elimination threshold is met.
+            <Trans i18nKey="common.wca.cutoffTimeLimitPopover.advancement" />
           </p>
         </div>
       }>

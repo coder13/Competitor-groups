@@ -96,9 +96,9 @@ export const activityCodeToName = (activityCode: string) => {
   const { eventId, roundNumber, groupNumber, attemptNumber } = parseActivityCode(activityCode);
   return [
     eventId && eventNameById(eventId as EventId),
-    isValidNumber(roundNumber) && i18n.t('activityCodeToName.round', { roundNumber }),
-    isValidNumber(groupNumber) && i18n.t('activityCodeToName.group', { groupNumber }),
-    isValidNumber(attemptNumber) && i18n.t('activityCodeToName.attempt', { attemptNumber }),
+    isValidNumber(roundNumber) && i18n.t('common.activityCodeToName.round', { roundNumber }),
+    isValidNumber(groupNumber) && i18n.t('common.activityCodeToName.group', { groupNumber }),
+    isValidNumber(attemptNumber) && i18n.t('common.activityCodeToName.attempt', { attemptNumber }),
   ]
     .filter((x) => x)
     .join(', ');

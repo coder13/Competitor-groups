@@ -1,5 +1,6 @@
 import { Competition } from '@wca/helpers';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { streamActivities } from '@/lib/activities';
 import { isStaff } from '@/lib/person';
 import { useAuth } from '@/providers/AuthProvider';
@@ -10,6 +11,7 @@ interface CompetitionLayoutTabsProps {
 }
 
 export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLayoutTabsProps) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
 
   return useMemo(() => {
@@ -25,39 +27,39 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
     if (!isPersonStaff) {
       _tabs.push({
         href: `/competitions/${competitionId}`,
-        text: 'Groups',
+        text: t('header.tabs.groups'),
       });
     }
 
     _tabs.push(
       {
         href: `/competitions/${competitionId}/events`,
-        text: 'Events',
+        text: t('header.tabs.events'),
       },
       {
         href: `/competitions/${competitionId}/activities`,
-        text: 'Schedule',
+        text: t('header.tabs.schedule'),
       },
       {
         href: `/competitions/${competitionId}/psych-sheet`,
-        text: 'Rankings',
+        text: t('header.tabs.rankings'),
       },
     );
 
     if (isPersonStaff) {
       _tabs.push({
         href: `/competitions/${competitionId}/scramblers`,
-        text: 'Scramblers',
+        text: t('header.tabs.scramblers'),
       });
     }
 
     if (hasStream) {
       _tabs.push({
         href: `/competitions/${competitionId}/stream`,
-        text: 'Stream',
+        text: t('header.tabs.stream'),
       });
     }
 
     return _tabs;
-  }, [wcif, competitionId, user?.id]);
+  }, [wcif, competitionId, user?.id, t]);
 };

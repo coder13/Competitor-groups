@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useInView } from 'react-intersection-observer';
 import { BarLoader } from 'react-spinners';
 import { NoteBox, LastFetchedAt, CompetitionListFragment } from '@/components';
@@ -7,6 +8,8 @@ import { useApp } from '@/providers/AppProvider';
 import { useCompetitionsQuery } from '@/queries';
 
 export default function UpcomingCompetitions() {
+  const { t } = useTranslation();
+
   const { online } = useApp();
   const { ref, inView } = useInView();
 
@@ -40,7 +43,7 @@ export default function UpcomingCompetitions() {
       {status === 'error' && <div>Error: {error?.toString()}</div>}
 
       <CompetitionListFragment
-        title="Upcoming Competitions"
+        title={t('home.upcomingCompetitions')}
         competitions={upcomingCompetitions?.pages.flatMap((p) => p) || []}
         loading={status === 'pending'}
         liveCompetitionIds={data?.competitions?.map((c) => c.id) || []}

@@ -1,14 +1,9 @@
-import {
-  Activity,
-  activityCodeToName,
-  AssignmentCode,
-  parseActivityCode,
-  Person,
-} from '@wca/helpers';
+import { Activity, AssignmentCode, parseActivityCode, Person } from '@wca/helpers';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { getRoomData, getRooms } from '@/lib/activities';
+import { activityCodeToName } from '@/lib/activityCodes';
 import { isRankedBySingle } from '@/lib/events';
 import { renderResultByEventId } from '@/lib/results';
 import { formatDateTimeRange } from '@/lib/time';

@@ -1,8 +1,10 @@
 common:
+  appName: 'Competition Groups'
   wca:
     event: 'Event'
     round: 'Round'
     group: 'Group'
+    group_other: 'Groups'
     attempt: 'Essai'
     events:
       '333': '3x3x3 Cube'
@@ -23,7 +25,113 @@ common:
       '444bf': '4x4x4 Blindfolded'
       '555bf': '5x5x5 Blindfolded'
       '333mbf': '3x3x3 Multi-Blind'
-activityCodeToName:
-  round: '$t(common.wca.round) {{roundNumber}}'
-  group: '$t(common.wca.group) {{groupNumber}}'
-  attempt: '$t(common.wca.attempt) {{attemptNumber}}'
+    timeLimit: 'Time Limit'
+    Cutoff: 'Cutoff'
+    advancement:
+      ranking: 'Top <b>{{level}}</b> to next round'
+      percent: 'Top <b>{{level}}%</b> to next round'
+      attemptResult: Result better than <b>{level}</b> advances to next round. Minimum of 25% of competitors must be eliminated.
+    cutoffTimeLimitPopover:
+      timeLimits: <b>Time limits</b> are established for all rounds, applying to each individual solve. Solves that exceed the limit will be marked as &quot;DNF&quot; and the time will not count.
+      cutoffs: Each round may include <bold>cutoffs</bold>, which dictate whether a competitor is eligible to complete all their attempts to finish their average. To qualify, they must achieve a time within the cutoff time during their initial solve or within their first two solves.
+      cutoff: This round requires the condition met in the first {{count}} attempt
+      cutoff_other: This round requires the condition met in the first {{count}} attempts
+      advancement:
+        At least 25% of competitors must be eliminated before progressing to the next round. The
+        organizing team will establish advancement criteria for each round, but adjustments may
+        be necessary to ensure this minimum elimination threshold is met.
+  activityCodeToName:
+    round: '$t(common.wca.round) {{roundNumber}}'
+    group: '$t(common.wca.group) {{groupNumber}}'
+    attempt: '$t(common.wca.attempt) {{attemptNumber}}'
+  assignments:
+    competitor:
+      noun: Competitor
+      noun_other: Competitors
+      verb: Competing
+    staff-judge:
+      noun: Judge
+      noun_other: Judges
+      verb: Judging
+    staff-runner:
+      noun: Runner
+      noun_other: Runners
+      verb: Running
+    staff-scrambler:
+      noun: Scrambler
+      noun_other: Scramblers
+      verb: Scrambling
+    staff-delegate:
+      noun: Delegate
+      noun_other: Delegates
+      verb: Delegating
+    staff-dataentry:
+      noun: Data Entry
+      noun_other: Data Entry
+      verb: Entering Data
+    staff-announcer:
+      noun: Announcer
+      noun_other: Announcers
+      verb: Announcing
+    staff-stagelead:
+      noun: Stage Lead
+      noun_other: Stage Leads
+      verb: In charge
+    staff-showrunner:
+      noun: Showrunner
+      noun_other: Showrunners
+      verb: Running the show
+    staff-other:
+      noun: Staff
+      noun_other: Staff
+      verb: Staff
+    staff-break:
+      noun: Break
+      noun_other: Breaks
+      verb: On break
+    staff-lunch:
+      noun: Lunch
+      noun_other: Lunches
+      verb: On lunch
+    staff-setupteardown:
+      noun: Setup/Teardown
+      noun_other: Setup/Teardowns
+      verb: Setting up/tearing down
+    staff-core:
+      noun: Core Staff
+      noun_other: Core Staff
+      verb: Core Staff
+  lastFetched: 'Last fetched: {{date}}'
+  competitionSelect:
+    placeholder: 'Search Competitions'
+    noOptions: 'No competitions found'
+  loading: 'Loading...'
+  search: 'Search'
+  view: 'View'
+header:
+  login: 'Login'
+  logout: 'Logout'
+  tabs:
+    groups: 'Groups'
+    events: 'Events'
+    schedule: 'Schedule'
+    rankings: 'Rankings'
+    scramblers: 'Scramblers'
+    stream: 'Stream'
+home:
+  subtitle: 'Learn all you need about your WCA competition assignments!'
+  explanation: 'Note: This website exists as a convenience tool for organizers, delegates, and competitors. The information provided is based on scheduled data. Pay close attention to the competition for the most up-to-date information. Start and end times can fluctuate.'
+  learnMore: 'How does this site work?'
+  ktlo: 'Keep the lights on'
+  loadingMore: 'Loading more...'
+  myCompetitions: 'My Competitions'
+  upcomingCompetitions: 'Upcoming Competitions'
+  yourCompetitions: 'Your Competitions'
+competition:
+  competitors:
+    viewCompetitionInformation: 'View Competition Information'
+    searchCompetitors: 'Search Competitors'
+  groups:
+    backToEvents: 'Back to Events'
+    nextGroup: 'Next Group'
+    previousGroup: 'Previous Group'

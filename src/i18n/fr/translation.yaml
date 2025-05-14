@@ -3,6 +3,7 @@ common:
     event: Épreuve
     round: Tour
     group: Groupe
+    group_other: Groupes
     events:
       '222': Cube 2x2x2
       '333': Cube 3x3x3
@@ -22,3 +23,104 @@ common:
       444bf: Cube 4x4x4 à l'aveugle
       555bf: Cube 5x5x5 à l'aveugle
       333mbf: 3x3x3 résolutions multiples à l'aveugle
+    timeLimit: Limite de temps
+    cutoff: Cutoff
+    advancement:
+      ranking: Top <b>{{level}}</b> pour le tour suivant
+      percent: Top <b>{{level}}%</b> pour le tour suivant
+      attemptResult: Résultat meilleur que <b>{{level}}</b> avance au tour suivant. Un minimum de 25 % des compétiteurs doivent être éliminés.
+    cutoffTimeLimitPopover:
+      timeLimits: <bold>Les limites de temps</bold> sont établies pour tous les tours, s'appliquant à chaque essai individuel. Les essais qui dépassent la limite seront marqués comme "DNF" et le temps ne comptera pas.
+      cutoffs: Chaque tour peut inclure des <bold>cutoffs</bold>, qui dictent si un compétiteur est éligible pour compléter tous ses essais pour terminer sa moyenne. Pour se qualifier, il doit réaliser un temps dans la limite de cutoff lors de son essai initial ou dans ses deux premiers essais.
+      advancement: Au moins 25 % des compétiteurs doivent être éliminés avant de progresser au tour suivant. L'équipe d'organisation établira les critères d'avancement pour chaque tour, mais des ajustements peuvent être nécessaires pour garantir que ce seuil d'élimination minimum soit respecté.
+  assignments:
+    competitor:
+      noun: Concurrent
+      noun_other: Concurrents
+      verb: Participe
+    staff-judge:
+      noun: Arbitre
+      noun_other: Arbitres
+      verb: Arbitre
+    staff-runner:
+      noun: Coureur
+      noun_other: Coureurs
+      verb: Court
+    staff-scrambler:
+      noun: Mélangeur
+      noun_other: Mélangeurs
+      verb: Mélange
+    staff-delegate:
+      noun: Délégué
+      noun_other: Délégués
+      verb: Délègue
+    staff-dataentry:
+      noun: Saisie de données
+      noun_other: Saisie de données
+      verb: Saisie de données
+    staff-announcer:
+      noun: Annonceur
+      noun_other: Annonceurs
+      verb: Annonce
+    staff-stagelead:
+      noun: Responsable de scène
+      noun_other: Responsables de scène
+      verb: Supervise la scène
+    staff-showrunner:
+      noun: Directeur de l’événement
+      noun_other: Directeurs de l’événement
+      verb: Dirige l’événement
+    staff-other:
+      noun: Équipe
+      noun_other: Équipe
+      verb: Membre de l’équipe
+    staff-break:
+      noun: Pause
+      noun_other: Pauses
+      verb: En pause
+    staff-lunch:
+      noun: Déjeuner
+      noun_other: Déjeuners
+      verb: En déjeuner
+    staff-setupteardown:
+      noun: Installation/Démontage
+      noun_other: Installations/Démontages
+      verb: Installe/démonte
+    staff-core:
+      noun: Équipe principale
+      noun_other: Équipe principale
+      verb: Équipe principale
+  lastFetched: 'Dernière récupération: {{date}}'
+  competitionSelect:
+    placeholder: 'Rechercher des compétitions'
+    noOptions: 'Aucune compétition trouvée'
+  loading: 'Chargement...'
+  search: 'Rechercher'
+  view: 'Afficher'
+header:
+  login: 'Connexion'
+  logout: 'Déconnexion'
+  tabs:
+    groups: 'Groupes'
+    events: 'Événements'
+    schedule: 'Programme'
+    rankings: 'Classements'
+    scramblers: 'Mélangeurs'
+    stream: 'Diffusion'
+home:
+  subtitle: 'Apprenez tout ce que vous devez savoir sur vos affectations aux compétitions WCA !'
+  explanation: 'Remarque : Ce site web est un outil pratique pour les organisateurs, délégués et compétiteurs. Les informations fournies sont basées sur les données planifiées. Faites attention à la compétition pour obtenir les informations les plus récentes. Les horaires de début et de fin peuvent varier.'
+  learnMore: 'Comment fonctionne ce site ?'
+  ktlo: 'Gardez les lumières allumées'
+  loadingMore: 'Chargement en cours...'
+  myCompetitions: 'Mes compétitions'
+  upcomingCompetitions: 'Compétitions à venir'
+  yourCompetitions: 'Vos compétitions'
+competition:
+  competitors:
+    viewCompetitionInformation: 'Voir les informations sur la compétition'
+    searchCompetitors: 'Rechercher des compétiteurs'
+  groups:
+    backToEvents: 'Retour aux événements'
+    nextGroup: 'Groupe suivant'
+    previousGroup: 'Groupe précédent'

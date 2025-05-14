@@ -1,5 +1,5 @@
-import { activityCodeToName } from '@wca/helpers';
 import classNames from 'classnames';
+import { activityCodeToName } from '@/lib/activityCodes';
 
 interface BreakableActivityNameProps {
   className?: string;

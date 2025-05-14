@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AssignmentsMap, SupportedAssignmentCode } from '@/lib/assignments';
 
 interface AssignmentCodeCellProps<T extends React.ElementType> {
@@ -23,6 +24,7 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
   count,
   ...props
 }: AssignmentCodeCellProps<T> & React.ComponentProps<T>) {
+  const { t } = useTranslation();
   const assignment = assignmentCode && AssignmentsMap[assignmentCode];
 
   const content = useMemo(() => {
@@ -37,20 +39,22 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
     if (!assignment) {
       return letter ? assignmentCode[0] : assignmentCode.split('-')[1];
     }
+
     if (letter) {
       return assignment.letter;
     }
 
+    const translationKey = `common.assignments.${assignmentCode}`;
     if (grammar === 'plural-noun') {
-      return assignment.plural;
+      return t(`${translationKey}.noun_other`);
     }
 
     if (grammar === 'verb') {
-      return assignment.verb;
+      return t(`${translationKey}.verb`);
     }
 
-    return assignment.name;
-  }, [assignment, assignmentCode, children, grammar, letter]);
+    return t(`${translationKey}.noun`);
+  }, [assignment, assignmentCode, children, grammar, letter, t]);
 
   const Component = as || 'td';
 

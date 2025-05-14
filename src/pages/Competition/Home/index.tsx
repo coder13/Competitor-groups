@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Container } from '@/components/Container';
 import { LinkButton } from '@/components/LinkButton';
@@ -8,6 +9,7 @@ import { OngoingActivities } from '@/containers/OngoingActivities';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export default function CompetitionHome() {
+  const { t } = useTranslation();
   const { competitionId } = useParams() as { competitionId: string };
   const { wcif, setTitle } = useWCIF();
 
@@ -18,7 +20,11 @@ export default function CompetitionHome() {
   return (
     <Container className="space-y-2 pt-2 p-1">
       <div className="flex space-x-2">
-        <LinkButton to="information" title="View Competition Information" color="green" />
+        <LinkButton
+          to="information"
+          title={t('competition.competitors.viewCompetitionInformation')}
+          color="green"
+        />
         <PinCompetitionButton competitionId={competitionId} />
       </div>
       <OngoingActivities competitionId={competitionId!} />

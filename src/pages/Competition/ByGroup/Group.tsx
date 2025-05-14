@@ -1,12 +1,13 @@
-import { ActivityCode, activityCodeToName } from '@wca/helpers';
+import { ActivityCode } from '@wca/helpers';
 import classNames from 'classnames';
 import { Fragment, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
 import { Container } from '@/components/Container';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { getAllRoundActivities, getRooms } from '@/lib/activities';
-import { nextActivityCode, prevActivityCode } from '@/lib/activityCodes';
+import { activityCodeToName, nextActivityCode, prevActivityCode } from '@/lib/activityCodes';
 import { SupportedAssignmentCode } from '@/lib/assignments';
 import { formatDateTimeRange } from '@/lib/time';
 import { byName } from '@/lib/utils';
@@ -256,6 +257,7 @@ const DesktopGroupView = () => {
 };
 
 export const GroupButtonMenu = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { competitionId } = useParams();
   const { wcif, activityCode } = useCommon();
@@ -312,7 +314,7 @@ export const GroupButtonMenu = () => {
           },
         )}>
         <span className="fa fa-arrow-left self-center mr-2 group-hover:-translate-x-2 transition-all" />
-        Previous Group
+        {t('competition.groups.previousGroup')}
       </Link>
       <Link
         to={nextUrl || ''}
@@ -323,7 +325,7 @@ export const GroupButtonMenu = () => {
             'hover:bg-slate-100 group': next,
           },
         )}>
-        Next Group
+        {t('competition.groups.nextGroup')}
         <span className="fa fa-arrow-right self-center ml-2 group-hover:translate-x-2 transition-all" />
       </Link>
     </div>
