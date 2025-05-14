@@ -29,10 +29,19 @@ common:
       ranking: Top <b>{{level}}</b> pour le tour suivant
       percent: Top <b>{{level}}%</b> pour le tour suivant
       attemptResult: Résultat meilleur que <b>{{level}}</b> avance au tour suivant. Un minimum de 25 % des compétiteurs doivent être éliminés.
-    cutoffTimeLimitPopover:
-      timeLimits: <bold>Les limites de temps</bold> sont établies pour tous les tours, s'appliquant à chaque essai individuel. Les essais qui dépassent la limite seront marqués comme "DNF" et le temps ne comptera pas.
-      cutoffs: Chaque tour peut inclure des <bold>cutoffs</bold>, qui dictent si un compétiteur est éligible pour compléter tous ses essais pour terminer sa moyenne. Pour se qualifier, il doit réaliser un temps dans la limite de cutoff lors de son essai initial ou dans ses deux premiers essais.
-      advancement: Au moins 25 % des compétiteurs doivent être éliminés avant de progresser au tour suivant. L'équipe d'organisation établira les critères d'avancement pour chaque tour, mais des ajustements peuvent être nécessaires pour garantir que ce seuil d'élimination minimum soit respecté.
+    resultType:
+      single: Simple
+      average: Moyenne
+    recordType:
+      WR: WR
+      CR: CR
+      NR: NR
+  cutoffTimeLimitPopover:
+    timeLimits: <bold>Les limites de temps</bold> sont établies pour tous les tours, s'appliquant à chaque essai individuel. Les essais qui dépassent la limite seront marqués comme "DNF" et le temps ne comptera pas.
+    cutoffs: Chaque tour peut inclure des <bold>cutoffs</bold>, qui dictent si un compétiteur est éligible pour compléter tous ses essais pour terminer sa moyenne. Pour se qualifier, il doit réaliser un temps dans la limite de cutoff lors de son essai initial ou dans ses deux premiers essais.
+    cutoff: 'Cette manche exige que la condition soit remplie lors de la première tentative'
+    cutoff_other: 'Cette manche exige que la condition soit remplie lors des {{count}} premières tentatives'
+    advancement: Au moins 25 % des compétiteurs doivent être éliminés avant de progresser au tour suivant. L'équipe d'organisation établira les critères d'avancement pour chaque tour, mais des ajustements peuvent être nécessaires pour garantir que ce seuil d'élimination minimum soit respecté.
   assignments:
     competitor:
       noun: Concurrent
@@ -97,6 +106,7 @@ common:
   loading: 'Chargement...'
   search: 'Rechercher'
   view: 'Afficher'
+  name: 'Nom'
 header:
   login: 'Connexion'
   logout: 'Déconnexion'
@@ -124,3 +134,40 @@ competition:
     backToEvents: 'Retour aux événements'
     nextGroup: 'Groupe suivant'
     previousGroup: 'Groupe précédent'
+  rooms:
+    title: 'Salles'
+  room:
+    back: 'Retour à la liste des salles'
+  schedule:
+    title: 'Programme'
+    selectRoom: 'Sélectionner une salle'
+  eventActivity:
+    seedResult: 'Résultat de classement'
+    stationNumber: 'Numéro de poste'
+  rankings:
+    title: 'Classements'
+    name: 'Nom'
+  personalSchedule:
+    registeredEvents: 'Épreuves enregistrées'
+    viewPersonalRecords: 'Voir les records personnels'
+    viewResults: 'Voir les résultats'
+    noAssignments:
+      line1: 'Aucune affectation'
+      line2: 'Revenez plus tard pour les mises à jour !'
+    activity: 'Activité'
+    time: 'Heure'
+    assignment: 'Affectation'
+    group: 'Groupe'
+    stage: 'Scène'
+    station: 'Station'
+  personalRecords:
+    viewSchedule: 'Voir les affectations personnelles'
+    type: 'Type'
+    best: 'Meilleur'
+  scramblers:
+    title: 'Programme des mélangeurs'
+    rooms: 'Salles'
+    stage: 'Scène'
+    event: 'Épreuve'
+    scramblers: 'Mélangeurs'
+disclaimerText: Les horaires de début sont susceptibles de changer et peuvent être en avance ou en retard par rapport au programme. Veuillez vérifier auprès des organisateurs de la compétition pour les mises à jour.

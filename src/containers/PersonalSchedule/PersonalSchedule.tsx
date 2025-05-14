@@ -2,6 +2,7 @@ import { Competition, Person } from '@wca/helpers';
 import { hasFlag } from 'country-flag-icons';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, DisclaimerText, ExternalLink, LinkButton } from '@/components';
 import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
 import { useWcaLiveCompetitorLink } from '@/hooks/queries/useWcaLive';
@@ -14,6 +15,8 @@ export interface PersonalScheduleContainerProps {
 }
 
 export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleContainerProps) {
+  const { t } = useTranslation();
+
   const anyAssignmentsHasStationNumber = !!person.assignments?.some((a) => a.stationNumber);
 
   const { pinnedPersons, pinPerson, unpinPerson } = usePinnedPersons(wcif.id);
@@ -56,7 +59,7 @@ export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleCont
       {person.wcaId && <span className="px-1">{person.wcaId}</span>}
       <div className="px-1">
         <p className="text-sm sm:text-md">
-          <span>Registered Events:</span>
+          <span>{t('competition.personalSchedule.registeredEvents')}:</span>
           {person.registration?.eventIds.map((eventId) => (
             <span key={eventId} className={`cubing-icon event-${eventId} mx-1 text-lg`} />
           ))}
@@ -69,11 +72,13 @@ export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleCont
             <LinkButton
               className=""
               color="green"
-              title="View Personal Records"
+              title={t('competition.personalSchedule.viewPersonalRecords')}
               to={`/competitions/${wcif.id}/personal-records/${person.wcaId}`}
             />
             {wcaLiveFetchStatus === 'success' && (
-              <ExternalLink href={wcaLiveLink}>View Results</ExternalLink>
+              <ExternalLink href={wcaLiveLink}>
+                {t('competition.personalSchedule.viewResults')}
+              </ExternalLink>
             )}
           </div>
         </>
@@ -92,8 +97,8 @@ export function PersonalScheduleContainer({ wcif, person }: PersonalScheduleCont
         />
       ) : (
         <div className="p-2">
-          <p>No Assignments.</p>
-          <p>Check back later for updates!</p>
+          <p>{t('competition.personalSchedule.noAssignments.line1')}</p>
+          <p>{t('competition.personalSchedule.noAssignments.line2')}</p>
         </div>
       )}
     </div>

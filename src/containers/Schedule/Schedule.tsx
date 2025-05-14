@@ -80,7 +80,8 @@ export const ScheduleContainer = ({ wcif }: ScheduleContainerProps) => {
     });
 
     setCollapsedDates([...collapse]);
-  }, [collapsedDates, scheduleDays, setCollapsedDates]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scheduleDays]);
 
   const showRoom = useMemo(() => wcif && getRooms(wcif).length > 1, [wcif]);
 

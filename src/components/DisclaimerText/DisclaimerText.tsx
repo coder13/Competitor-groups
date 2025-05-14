@@ -1,10 +1,7 @@
+import { useTranslation } from 'react-i18next';
 import { NoteBox } from '../Notebox';
 
 export function DisclaimerText({ className }: { className?: string }) {
-  return (
-    <NoteBox
-      className={className}
-      text="Start times are subject to change and may run ahead or behind schedule. Check with competition organizers for updates."
-    />
-  );
+  const { t } = useTranslation();
+  return <NoteBox className={className} text={t('disclaimerText')} />;
 }

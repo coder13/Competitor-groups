@@ -31,15 +31,22 @@ common:
       ranking: 'Top <b>{{level}}</b> to next round'
       percent: 'Top <b>{{level}}%</b> to next round'
       attemptResult: Result better than <b>{level}</b> advances to next round. Minimum of 25% of competitors must be eliminated.
-    cutoffTimeLimitPopover:
-      timeLimits: <b>Time limits</b> are established for all rounds, applying to each individual solve. Solves that exceed the limit will be marked as &quot;DNF&quot; and the time will not count.
-      cutoffs: Each round may include <bold>cutoffs</bold>, which dictate whether a competitor is eligible to complete all their attempts to finish their average. To qualify, they must achieve a time within the cutoff time during their initial solve or within their first two solves.
-      cutoff: This round requires the condition met in the first {{count}} attempt
-      cutoff_other: This round requires the condition met in the first {{count}} attempts
-      advancement:
-        At least 25% of competitors must be eliminated before progressing to the next round. The
-        organizing team will establish advancement criteria for each round, but adjustments may
-        be necessary to ensure this minimum elimination threshold is met.
+    resultType:
+      single: single
+      average: Average
+    recordType:
+      WR: WR
+      CR: CR
+      NR: NR
+  cutoffTimeLimitPopover:
+    timeLimits: <b>Time limits</b> are established for all rounds, applying to each individual solve. Solves that exceed the limit will be marked as &quot;DNF&quot; and the time will not count.
+    cutoffs: Each round may include <bold>cutoffs</bold>, which dictate whether a competitor is eligible to complete all their attempts to finish their average. To qualify, they must achieve a time within the cutoff time during their initial solve or within their first two solves.
+    cutoff: This round requires the condition met in the first {{count}} attempt
+    cutoff_other: This round requires the condition met in the first {{count}} attempts
+    advancement:
+      At least 25% of competitors must be eliminated before progressing to the next round. The
+      organizing team will establish advancement criteria for each round, but adjustments may
+      be necessary to ensure this minimum elimination threshold is met.
   activityCodeToName:
     round: '$t(common.wca.round) {{roundNumber}}'
     group: '$t(common.wca.group) {{groupNumber}}'
@@ -105,9 +112,12 @@ common:
   competitionSelect:
     placeholder: 'Search Competitions'
     noOptions: 'No competitions found'
+  competitionList:
+    noneFound: 'No competitions found.'
   loading: 'Loading...'
   search: 'Search'
   view: 'View'
+  name: Name
 header:
   login: 'Login'
   logout: 'Logout'
@@ -135,3 +145,40 @@ competition:
     backToEvents: 'Back to Events'
     nextGroup: 'Next Group'
     previousGroup: 'Previous Group'
+  rooms:
+    title: 'Rooms'
+  room:
+    back: 'Back to list of Rooms'
+  schedule:
+    title: Schedule
+    selectRoom: 'Select Room'
+  eventActivity:
+    seedResult: Seed Result
+    stationNumber: Station Number
+  rankings:
+    title: Rankings
+    name: Name
+  personalSchedule:
+    registeredEvents: Registered Events
+    viewPersonalRecords: View Personal Records
+    viewResults: View Results
+    noAssignments:
+      line1: No Assignments
+      line2: Check back later for updates!
+    activity: Activity
+    time: Time
+    assignment: Assignment
+    group: Group
+    stage: Stage
+    station: Station
+  personalRecords:
+    viewSchedule: View Personal Assignments
+    type: Type
+    best: Best
+  scramblers:
+    title: Scrambler Schedule
+    rooms: Rooms
+    stage: Stage
+    event: Event
+    scramblers: Scramblers
+disclaimerText: Start times are subject to change and may run ahead or behind schedule. Check with competition organizers for updates.

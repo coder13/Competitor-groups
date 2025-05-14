@@ -1,6 +1,7 @@
 import flatMap from 'lodash.flatmap';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { BreakableActivityName, Container, ErrorFallback } from '@/components';
 import { getAllActivities, getAllRoundActivities, getRooms } from '@/lib/activities';
@@ -10,11 +11,13 @@ import { groupBy } from '@/lib/utils';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export default function ScramblerSchedule() {
+  const { t } = useTranslation();
+
   const { wcif, setTitle } = useWCIF();
 
   useEffect(() => {
-    setTitle('Scramblers');
-  }, [setTitle]);
+    setTitle(t('competition.scramblers.title'));
+  }, [setTitle, t]);
 
   const _rooms = useMemo(() => (wcif ? getRooms(wcif) : []), [wcif]);
 
@@ -69,7 +72,7 @@ export default function ScramblerSchedule() {
     <Container>
       <div className="print:hidden">
         <div className="flex items-center flex-col">
-          <p className="text-xl">Rooms</p>
+          <p className="text-xl">{t('competition.scramblers.rooms')}</p>
           <div className="flex flex-row w-full justify-evenly p-4">
             {_rooms.map((room) => (
               <div key={room.id} className="form-check" onClick={() => setRoomSelector(room.name)}>
@@ -91,13 +94,15 @@ export default function ScramblerSchedule() {
           </div>
         </div>
       </div>
-      <div className="hidden print:flex">Stage: {roomSelector}</div>
+      <div className="hidden print:flex">
+        {t('competition.scramblers.stage')}: {roomSelector}
+      </div>
       <div className="shadow-md print:shadow-none">
         <table className="w-full text-xs md:text-sm">
           <thead>
             <tr>
               <th className="py-2 px-3 text-center w-60">Event</th>
-              <th>Scramblers</th>
+              <th>{t('competition.scramblers.scramblers')}</th>
             </tr>
           </thead>
           <tbody>

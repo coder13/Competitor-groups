@@ -125,25 +125,22 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
           )}>
           <p>
             <Trans
-              i18nKey="common.wca.cutoffTimeLimitPopover.timeLimits"
+              i18nKey="common.cutoffTimeLimitPopover.timeLimits"
               components={{ b: <strong /> }}
             />
           </p>
 
           <p>
-            <Trans
-              i18nKey="common.wca.cutoffTimeLimitPopover.cutoffs"
-              components={{ b: <strong /> }}
-            />
+            <Trans i18nKey="common.cutoffTimeLimitPopover.cutoffs" components={{ b: <strong /> }} />
             <br />
             <i>
               {cutoff &&
-                t('common.wca.cutoffTimeLimitPopover.cutoff', { count: cutoff.numberOfAttempts })}
+                t('common.cutoffTimeLimitPopover.cutoff', { count: cutoff.numberOfAttempts })}
             </i>
           </p>
 
           <p>
-            <Trans i18nKey="common.wca.cutoffTimeLimitPopover.advancement" />
+            <Trans i18nKey="common.cutoffTimeLimitPopover.advancement" />
           </p>
         </div>
       }>
