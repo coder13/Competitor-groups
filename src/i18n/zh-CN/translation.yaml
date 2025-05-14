@@ -1,0 +1,26 @@
+common:
+  wca:
+    event: '项目'
+    round: '轮次'
+    group: '小组'
+    group_other: '小组'
+    attempt: '尝试'
+    events:
+      '222': 二阶
+      '333': 三阶
+      '444': 四阶
+      '555': 五阶
+      '666': 六阶
+      '777': 七阶
+      333bf: 三盲
+      333fm: 最少步
+      333oh: 单手
+      333ft: 脚拧
+      clock: 魔表
+      minx: 五魔方
+      pyram: 金字塔
+      skewb: 斜转
+      sq1: Square-1
+      444bf: 四盲
+      555bf: 五盲
+      333mbf: 多盲
