@@ -121,7 +121,7 @@ home:
   subtitle: 'Apprenez tout ce que vous devez savoir sur les tâches qui vous ont été attribuées aux compétitions WCA !'
   explanation: 'Remarque : Ce site web est un outil pratique pour les organisateurs, délégués et compétiteurs. Les informations fournies sont basées sur le planning prévisionnel. Pensez à consulter régulièrement la page de la compétition pour obtenir les informations les plus récentes. Les horaires de début et de fin peuvent varier.'
   learnMore: 'Comment fonctionne ce site ?'
-  ktlo: 'Contribuez au bon fonctionnement du site!'
+  support: 'Contribuez au bon fonctionnement du site!'
   loadingMore: 'Chargement en cours...'
   myCompetitions: 'Mes compétitions'
   upcomingCompetitions: 'Compétitions à venir'
@@ -170,4 +170,17 @@ competition:
     stage: 'Scène'
     event: 'Épreuve'
     scramblers: 'Mélangeurs'
+  streamSchedule:
+    title: 'Programme de diffusion'
+    subtitle: 'Diffusion en direct'
+    time: 'Heure'
+    featuredCompetitors: 'Concurrents à l`honneur'
+about:
+  title: À propos
+  welcome: Bienvenue sur CompetitionGroups.com !
+  purpose: Le but de ce site est d`afficher les affectations des compétitions WCA. Il peut afficher les affectations des concurrents et du staff pour des compétitions se déroulant sur une ou plusieurs journées, avec une ou plusieurs salles, en mettant à jour les affectations des manches suivantes de la compétition. Ce site présente simplement les affectations *telles quelles*, telles qu'elles sont stockées sur le site de la WCA.
+  startTimes: Les heures de début et de fin sont directement extraites des données WCIF générées, arrondies aux 5 minutes les plus proches, et converties dans les fuseaux horaires respectifs des lieux de compétition.
+  competitionAssignments: Pour afficher les affectations de votre compétition ici, vous devez les générer avec un outil comme <3 to="https://groupifier.jonatanklosko.com/">Groupifier</3>, <6 to="https://delegate-dashboard.netlify.app/">DelegateDashboard</6> ou <9 to="https://goosly.github.io/AGE/">AGE</9>.
+  developer: Si vous êtes développeur et que vous souhaitez en savoir plus sur les données affichées ici, consultez la <2 to="https://github.com/thewca/wcif/blob/master/specification.md">spécification WCIF</2>.
+  peopleCanBe: Les personnes peuvent être affectées à des groupes, à des manches ou à toute activité arbitraire. Si vous souhaitez être créatif avec le site, n'hésitez pas à <2 to="https://github.com/coder13">me contacter</2> !
 disclaimerText: Les horaires de début sont susceptibles de changer et peuvent être en avance ou en retard par rapport au programme. Veuillez vérifier auprès des organisateurs de la compétition pour les mises à jour.

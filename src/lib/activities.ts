@@ -9,13 +9,13 @@ import {
   Venue,
   parseActivityCode,
 } from '@wca/helpers';
-import { formatTime, formatToParts, getNumericDateFormatter } from './time';
-import { ActivityWithRoomOrParent, RoundActivity } from './types';
-import { byDate } from './utils';
 import {
   getNatsHelperGroupExtension,
   getNatsHelperRoomExtension,
 } from '../extensions/org.cubingusa.natshelper.v1';
+import { formatTime, formatToParts, getNumericDateFormatter } from './time';
+import { ActivityWithRoomOrParent, RoundActivity } from './types';
+import { byDate } from './utils';
 
 export const getVenues = (wcif: Competition) => wcif.schedule.venues;
 
@@ -246,7 +246,7 @@ export const getActivitiesWithParsedDate = (wcif: Competition) => {
 
 export const getRoomData = (
   room: Room,
-  activity: Activity
+  activity: Activity,
 ): {
   name: string;
   color: string;
