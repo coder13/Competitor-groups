@@ -27,6 +27,7 @@ common:
       '333mbf': '3x3x3 Multi-Blind'
     timeLimit: 'Time Limit'
     Cutoff: 'Cutoff'
+    cumulativeTimelimit: Time Limit <b>{{time}}</b> with rounds
     advancement:
       ranking: 'Top <b>{{level}}</b> to next round'
       percent: 'Top <b>{{level}}%</b> to next round'
