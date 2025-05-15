@@ -118,7 +118,9 @@ export const PsychSheetEvent = () => {
                 ? t('common.wca.resultType.single')
                 : t('common.wca.resultType.average')}{' '}
             </span>
-            <span className="px-3 py-2.5 text-right font-bold">{t('competition.rankings.WR')}</span>
+            <span className="px-3 py-2.5 text-right font-bold">
+              {t('common.wca.recordType.WR')}
+            </span>
           </div>
         </StickyBox>
 
