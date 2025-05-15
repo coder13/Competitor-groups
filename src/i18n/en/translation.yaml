@@ -27,6 +27,7 @@ common:
       '333mbf': '3x3x3 Multi-Blind'
     timeLimit: 'Time Limit'
     Cutoff: 'Cutoff'
+    cumulativeTimelimit: Time Limit <b>{{time}}</b> with rounds
     advancement:
       ranking: 'Top <b>{{level}}</b> to next round'
       percent: 'Top <b>{{level}}%</b> to next round'
@@ -41,7 +42,7 @@ common:
   cutoffTimeLimitPopover:
     timeLimits: <b>Time limits</b> are established for all rounds, applying to each individual solve. Solves that exceed the limit will be marked as &quot;DNF&quot; and the time will not count.
     cutoffs: Each round may include <bold>cutoffs</bold>, which dictate whether a competitor is eligible to complete all their attempts to finish their average. To qualify, they must achieve a time within the cutoff time during their initial solve or within their first two solves.
-    cutoff: This round requires the condition met in the first {{count}} attempt
+    cutoff: This round requires the condition met in the first attempt
     cutoff_other: This round requires the condition met in the first {{count}} attempts
     advancement:
       At least 25% of competitors must be eliminated before progressing to the next round. The

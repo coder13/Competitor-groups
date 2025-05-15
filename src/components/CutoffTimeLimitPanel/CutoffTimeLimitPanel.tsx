@@ -44,7 +44,12 @@ export function CutoffTimeLimitPanel({
 
           {timeLimit && timeLimit?.cumulativeRoundIds.length > 0 && (
             <div className="px-2">
-              Time limit: {timelimitTime} with{' '}
+              <Trans
+                i18nKey={'common.wca.cumulativeTimelimit'}
+                values={{ time: timelimitTime }}
+                components={{ b: <span className="font-semibold" /> }}
+              />
+              {': '}
               <span>
                 {timeLimit.cumulativeRoundIds
                   .filter((activityCode) => activityCode !== round.id)

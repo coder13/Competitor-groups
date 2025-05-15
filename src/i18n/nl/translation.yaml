@@ -1,0 +1,206 @@
+common:
+  appName: 'Competition Groups'
+  wca:
+    event: 'Onderdeel'
+    round: 'Ronde'
+    group: 'Groep'
+    group_other: 'Groepen'
+    attempt: 'Poging'
+    events:
+      '333': '3x3x3 cube'
+      '222': '2x2x2 cube'
+      '444': '4x4x4 cube'
+      '555': '5x5x5 cube'
+      '666': '6x6x6 cube'
+      '777': '7x7x7 cube'
+      '333bf': '3x3x3 Blindfolded'
+      '333fm': '3x3x3 Fewest Moves'
+      '333oh': '3x3x3 One-Handed'
+      '333ft': '3x3x3 With Feet'
+      'clock': 'Clock'
+      'minx': 'Megaminx'
+      'pyram': 'Pyraminx'
+      'skewb': 'Skewb'
+      'sq1': 'Square-1'
+      '444bf': '4x4x4 Blindfolded'
+      '555bf': '5x5x5 Blindfolded'
+      '333mbf': '3x3x3 Multi-Blind'
+    timeLimit: 'Tijdslimiet'
+    Cutoff: 'Cutoff'
+    advancement:
+      ranking: 'Top <b>{{level}}</b> naar de volgende ronde'
+      percent: 'Top <b>{{level}}%</b> naar de volgende ronde'
+      attemptResult: Resultaat beter dan <b>{level}</b> gaat door naar de volgende ronde. Minimaal 25% van de deelnemers moeten worden geëlimineerd.
+    resultType:
+      single: single
+      average: gemiddelde
+    recordType:
+      WR: WR
+      CR: CR
+      NR: NR
+  cutoffTimeLimitPopover:
+    timeLimits: <b>Tijdslimieten</b> zijn gecreerd voor alle rondes en worden toegepast tot ieder individueel resultaat. Resultaten die de tijdslimiet overschrijden zullen worden gemarkeerd als &quot;DNF&quot; en de tijd zal niet gelden.
+    cutoffs: Iedere ronde kan een <bold>cutoffs</bold> bevatten, deze bepaalt of een deelnemer verder mag met zijn al pogingen om zijn gemiddelde af te maken. Om hiervoor te kwalificeren, moet je de cutoff tijd behalen in de eerste poging of in een van de twee eerste pogingen.
+    cutoff: Deze ronde vereist je de voorwaarde om verder te gaan te behalen in de eerste poging.
+    cutoff_other: Deze ronde vereist je de voorwaarde om verder te gaan in the eerste {{count}} pogingen.
+    advancement: Minimaal 25% van de deelnemers moet geëlimineerd zijn voor de volgende ronde. Het organisatie team zal de criteria voor promoties naar alle volgende rondes bepalen, wijzingingen zijn mogelijk om er zeker van te zijn dat aan alle criteria wordt voldaan.
+  activityCodeToName:
+    round: '$t(common.wca.round) {{roundNumber}}'
+    group: '$t(common.wca.group) {{groupNumber}}'
+    attempt: '$t(common.wca.attempt) {{attemptNumber}}'
+  assignments:
+    competitor:
+      noun: Competitor
+      noun_other: Competitors
+      verb: Compete
+    staff-judge:
+      noun: Judge
+      noun_other: Judges
+      verb: Judge
+    staff-runner:
+      noun: Runner
+      noun_other: Runners
+      verb: Running
+    staff-scrambler:
+      noun: Scrambler
+      noun_other: Scramblers
+      verb: Scrambling
+    staff-delegate:
+      noun: Delegate
+      noun_other: Delegates
+      verb: Delegating
+    staff-dataentry:
+      noun: Data Entry
+      noun_other: Data Entry
+      verb: Entering Data
+    staff-announcer:
+      noun: Announcer
+      noun_other: Announcers
+      verb: Announcing
+    staff-stagelead:
+      noun: Stage Lead
+      noun_other: Stage Leads
+      verb: In charge
+    staff-showrunner:
+      noun: Showrunner
+      noun_other: Showrunners
+      verb: Running the show
+    staff-other:
+      noun: Staff
+      noun_other: Staff
+      verb: Staff
+    staff-break:
+      noun: Break
+      noun_other: Breaks
+      verb: On break
+    staff-lunch:
+      noun: Lunch
+      noun_other: Lunches
+      verb: On lunch
+    staff-setupteardown:
+      noun: Setup/Teardown
+      noun_other: Setup/Teardowns
+      verb: Setting up/tearing down
+    staff-core:
+      noun: Core Staff
+      noun_other: Core Staff
+      verb: Core Staff
+  lastFetched: 'Last fetched: {{date}}'
+  competitionSelect:
+    placeholder: 'Zoek Competities'
+    noOptions: 'Geen Competities gevonden'
+  competitionList:
+    noneFound: 'Geen Competities gevonden.'
+  loading: 'Laden'
+  search: 'Zoeken'
+  view: 'View'
+  name: Naam
+  stage: Stage
+header:
+  login: 'Login'
+  logout: 'Logout'
+  tabs:
+    groups: 'Groepen'
+    events: 'Onderdelen'
+    schedule: 'Schema'
+    rankings: 'Ranglijsten'
+    scramblers: 'Scramblers'
+    stream: 'Stream'
+home:
+  subtitle: 'Leer alles over je taken op je aankomende WCA competitie weten!'
+  explanation: 'Note: This website exists as a convenience tool for organizers, delegates, and competitors. The information provided is based on scheduled data. Pay close attention to the competition for the most up-to-date information. Start and end times can fluctuate.'
+  learnMore: 'Hoe werkt deze site?'
+  support: 'Houd de lichten aan'
+  loadingMore: 'Meer aan het laden'
+  myCompetitions: 'Mijn Competities'
+  upcomingCompetitions: 'Aankomende Competities'
+  yourCompetitions: 'Jouw Competities'
+competition:
+  competitors:
+    viewCompetitionInformation: 'Bekijk de Competitie Informatie'
+    searchCompetitors: 'Zoek deelnemers'
+  groups:
+    backToEvents: 'Terug naar onderdelen'
+    nextGroup: 'Volgende Groep'
+    previousGroup: 'Vorige Groep'
+  rooms:
+    title: 'Ruimtes'
+  room:
+    back: 'Terug naar de lijst met ruimtes'
+  schedule:
+    title: Schema
+    selectRoom: 'Selecteer Ruimte'
+  eventActivity:
+    seedResult: Seed Resultaat
+    stationNumber: Station nummer
+  rankings:
+    title: Rankings
+    name: Naam
+  personalSchedule:
+    registeredEvents: Registered Events
+    viewPersonalRecords: Zie Persoonlijke Records
+    viewResults: Zie Resultaten
+    noAssignments:
+      line1: No Assignments
+      line2: Check back later for updates!
+    activity: Activity
+    time: Time
+    assignment: Assignment
+    group: Group
+    stage: $t(common.stage)
+    station: Station
+  personalRecords:
+    viewSchedule: Zie persoonlijke taken
+    type: Type
+    best: Record
+  scramblers:
+    title: Scrambler Schedule
+    rooms: Rooms
+    stage: $t(common.stage)
+    event: Event
+    scramblers: Scramblers
+  streamSchedule:
+    title: Stream Schema
+    subtitle: Livestream
+    time: Time
+    event: $t(common.wca.event)
+    round: $t(common.wca.round)
+    group: $t(common.wca.group)
+    stage: $t(common.stage)
+    featuredCompetitors: Featured Competitors
+about:
+  title: Over
+  welcome: Welkom op CompetitionGroups.com!
+  purpose:
+    Het doel van deze website is on de WCA competitie taken te laten zien. Deze site kan taken laten zien
+    voor competities met 1 ruimte of meerdere ruimtes, voor 1 dag of meerdaagse competities, inclusief updates voor de taken voor de komende rondes.
+    Deze website presenteert de taken zoals ze zijn opgeslagen op de WCA website.
+  startTimes: Starttijden en eindtijden zijn overgenomen van de WCIF informatie zoals die is gegenereerd, afgerond op de dichtsbijzijnde 5 minuten, en omgezet naar de tijdszone van de locatie van de competitie.
+  competitionAssignments:
+    Om de taken van je competitie hier te zien moet je ze genereren via een tool zoals
+    <3 to="https://groupifier.jonatanklosko.com/">Groupifier</3>,
+    <6 to="https://delegate-dashboard.netlify.app/">DelegateDashboard</6>, or
+    <9 to="https://goosly.github.io/AGE/">AGE</9>.
+  developer: Als je een software ontwikkelaar bent en je meer wilt leren over de informatie die je hier ziet, kijk dan op <2 to="https://github.com/thewca/wcif/blob/master/specification.md">WCIF specification</2>.
+  peopleCanBe: Mensen kunnen worden aangewezen tot groepen, rondes, of een andere willekeurige activiteit. Als je creatief wilt worden met de website, voel je vrij contact op te nemen. <2 to="https://github.com/coder13"></2>!
+disclaimerText: Starttijden kunnen worden gewijzigd. De competitie kan voor of achter liggen op het schema. Check met de organisatie voor updates.
