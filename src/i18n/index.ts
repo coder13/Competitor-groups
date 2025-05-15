@@ -5,6 +5,7 @@ import es from './es/translation.yaml';
 import fr from './fr/translation.yaml';
 import ja from './ja/translation.yaml';
 import ko from './ko/translation.yaml';
+import nl from './nl/translation.yaml';
 import zhCN from './zh-CN/translation.yaml';
 
 const resources = {
@@ -13,6 +14,7 @@ const resources = {
   es: { translation: es },
   ja: { translation: ja },
   ko: { translation: ko },
+  nk: { translation: nl },
   'zh-CN': { translation: zhCN },
 };
 
