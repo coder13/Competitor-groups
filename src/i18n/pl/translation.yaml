@@ -1,0 +1,186 @@
+common:
+  appName: 'Competition Groups'
+  wca:
+    event: 'Konkurencja'
+    round: 'Runda'
+    group: 'Grupa'
+    group_other: 'Grupy'
+    attempt: 'Próba'
+    events:
+      '333': 'Kostka 3x3x3'
+      '222': 'Kostka 2x2x2'
+      '444': 'Kostka 4x4x4'
+      '555': 'Kostka 5x5x5'
+      '666': 'Kostka 6x6x6'
+      '777': 'Kostka 7x7x7'
+      '333bf': '3x3x3 Bez patrzenia'
+      '333fm': '3x3x3 Najmniejszą liczbą ruchów'
+      '333oh': '3x3x3 Jedną ręką'
+      '333ft': '3x3x3 Stopami'
+      'clock': 'Clock'
+      'minx': 'Megaminx'
+      'pyram': 'Pyraminx'
+      'skewb': 'Skewb'
+      'sq1': 'Square-1'
+      '444bf': '4x4x4 Bez patrzenia'
+      '555bf': '5x5x5 Bez patrzenia'
+      '333mbf': '3x3x3 Wiele kostek bez patrzenia'
+    timeLimit: 'Limit czasowy'
+    Cutoff: 'Cutoff'
+    advancement:
+      ranking: 'Najlepsze <b>{{level}}</b> osób awansuje do następnej rundy'
+      percent: 'Najlepsze <b>{{level}}%</b> osób awansuje do następnej rundy'
+      attemptResult: 'Wynik lepszy niż <b>{{level}}</b> awansuje do następnej rundy. Minimum 25% zawodników musi zostać wyeliminowanych.'
+    resultType:
+      single: 'Najlepsze'
+      average: 'Średnia'
+    recordType:
+      WR: WR
+      CR: CR
+      NR: NR
+  cutoffTimeLimitPopover:
+    timeLimits: <b>Limity czasowe</b> są ustalane dla wszystkich rund, są stosowane do każdego pojedynczego ułożenia. Ułożenia, które przekraczają limit, będą oznaczone jako &quot;DNF&quot;, a czas nie będzie liczony.
+    cutoffs: Each round may include <bold>cutoffs</bold>, which dictate whether a competitor is eligible to complete all their attempts to finish their average. To qualify, they must achieve a time within the cutoff time during their initial solve or within their first two solves.
+    cutoffs: Każda runda może mieć <bold>cutoff</bold>, który określa, czy zawodnik jest uprawniony do ukończenia wszystkich prób w celu zakończenia średniej. Aby zakwalifikować się, musi osiągnąć czas poniżej cutoffa podczas swojego pierwszego lub drugiego ułożenia.
+    cutoff: This round requires the condition met in the first {{count}} attempt
+    cutoff: Ta runda wymaga zrobienia cutoffa w {{count}} ułożeniu.
+    cutoff_other: Ta runda wymaga zrobienia cutoffa w pierwszych {{count}} ułożeniach.
+    advancement:
+      Co najmniej 25% zawodników musi zostać eliinowanych przed przejściem do następnej rundy. Zespół 
+      organizacyjny ustali kryteria awansu dla każdej rundy, ale mogą być konieczne dostosowania,
+      aby zapewnić spełnienie tego minimalnego progu eliminacji.
+  activityCodeToName:
+    round: '$t(common.wca.round) {{roundNumber}}'
+    group: '$t(common.wca.group) {{groupNumber}}'
+    attempt: '$t(common.wca.attempt) {{attemptNumber}}'
+  assignments:
+    competitor:
+      noun: Zawodnik
+      noun_other: Zawodnicy
+      verb: Competing
+    staff-judge:
+      noun: Sędzia
+      noun_other: Sędziowie
+      verb: Judging
+    staff-runner:
+      noun: Biegacz
+      noun_other: Biegacze
+      verb: Running
+    staff-scrambler:
+      noun: Mieszacz
+      noun_other: Mieszacze
+      verb: Scrambling
+    staff-delegate:
+      noun: Delegat
+      noun_other: Delegaci
+      verb: Delegating
+    staff-dataentry:
+      noun: Rejestrator wyników
+      noun_other: Rejestratorzy wyników
+      verb: Entering Data
+    staff-announcer:
+      noun: Konferansjer
+      noun_other: Konferansjerzy
+      verb: Announcing
+    staff-stagelead:
+      noun: Lider sceny
+      noun_other: Liderzy sceny
+      verb: In charge
+    staff-showrunner:
+      noun: Showrunner
+      noun_other: Showrunners
+      verb: Running the show
+    staff-other:
+      noun: Obsługa
+      noun_other: Obsługa
+      verb: Staff
+    staff-break:
+      noun: Przerwa
+      noun_other: Przerwy
+      verb: On break
+    staff-lunch:
+      noun: Lunch
+      noun_other: Lunches
+      verb: On lunch
+    staff-setupteardown:
+      noun: Przygotowanie/sprzątanie
+      noun_other: Przygotowanie/sprzątanie
+      verb: Setting up/tearing down
+    staff-core:
+      noun: Główna obsługa
+      noun_other: Główna obsługa
+      verb: Core Staff
+  lastFetched: 'Ostatnio pobrane: {{date}}'
+  competitionSelect:
+    placeholder: 'Wyszukaj zawody'
+    noOptions: 'Nie znaleziono zawodów'
+  competitionList:
+    noneFound: 'Nie znaleziono zawodów'
+  loading: 'Ładowanie...'
+  search: 'Szukaj'
+  view: 'Widok'
+  name: Name
+header:
+  login: 'Zaloguj się'
+  logout: 'Wyloguj się'
+  tabs:
+    groups: 'Grupy'
+    events: 'Konkurencje'
+    schedule: 'Harmonogram'
+    rankings: 'Rankingi'
+    scramblers: 'Mieszacze'
+    stream: 'Stream'
+home:
+  subtitle: 'Naucz się wszystkiego, co potrzebne o zadaniach na zawodach WCA!'
+  explanation: 'Informacja: Ta strona jest narzędziem pomocniczym dla organizatorów, delegatów i zawodników. Informacje są oparte na danych z harmonogramu. Zwróć uwagę na komunikaty na miejscu zawodów, aby uzyskać najbardziej aktualne informacje. Godziny rozpoczęcia i zakończenia mogą się zmieniać.'
+  learnMore: 'Jak działa ta strona?'
+  ktlo: 'Keep the lights on'
+  loadingMore: 'Ładowanie...'
+  myCompetitions: 'Moje zawody'
+  upcomingCompetitions: 'Nadchodzące zawody'
+  yourCompetitions: 'Twoje zawody'
+competition:
+  competitors:
+    viewCompetitionInformation: 'Wyświetl informacje o zawodach'
+    searchCompetitors: 'Wyszukaj zawodników'
+  groups:
+    backToEvents: 'Wróc do konkurencji'
+    nextGroup: 'Następna grupa'
+    previousGroup: 'Poprzednia grupa'
+  rooms:
+    title: 'Pomieszczenia'
+  room:
+    back: 'Wróć do listy pomieszczeń'
+  schedule:
+    title: Harmonogram
+    selectRoom: 'Wybierz pomieszczenie'
+  eventActivity:
+    seedResult: 'Wynik kwalifikacyjny'
+    stationNumber: 'Numer stanowiska'
+  rankings:
+    title: Rankingi
+    name: 'Imię i nazwisko'
+  personalSchedule:
+    registeredEvents: Konkurencje, na które się zarejestrowałeś
+    viewPersonalRecords: Zobacz swoje rekordy
+    viewResults: Zobacz swoje wyniki
+    noAssignments:
+      line1: Brak przypisanych zadań
+      line2: Sprawdź później!
+    activity: Aktywność
+    time: Czas
+    assignment: Zadanie
+    group: Grupa
+    stage: Scena
+    station: Stanowisko
+  personalRecords:
+    viewSchedule: Sprawdź swoje zadania
+    type: Typ
+    best: Najlepsze
+  scramblers:
+    title: Mieszacze
+    rooms: Pomieszczenia
+    stage: Scena
+    event: Konkurencja
+    scramblers: Mieszacze
+disclaimerText: Godziny rozpoczęcia są orientacyjne i mogą się zmieniać. Zapytaj organizatorów zawodów, aby uzyskać aktualne informacje.
