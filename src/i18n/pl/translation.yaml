@@ -115,11 +115,12 @@ common:
     placeholder: 'Wyszukaj zawody'
     noOptions: 'Nie znaleziono zawodów'
   competitionList:
-    noneFound: 'Nie znaleziono zawodów'
-  loading: 'Ładowanie...'
-  search: 'Szukaj'
-  view: 'Widok'
+    noneFound: Nie znaleziono zawodów
+  loading: Ładowanie...
+  search: Szukaj
+  view: Widok
   name: Name
+  stage: Scena
 header:
   login: 'Zaloguj się'
   logout: 'Wyloguj się'
@@ -183,4 +184,32 @@ competition:
     stage: Scena
     event: Konkurencja
     scramblers: Mieszacze
-disclaimerText: Godziny rozpoczęcia są orientacyjne i mogą się zmieniać. Zapytaj organizatorów zawodów, aby uzyskać aktualne informacje.
+  streamSchedule:
+    title: Harmonogram transmisji
+    subtitle: Transmisja na żywo
+    time: Czas
+    event: $t(common.wca.event)
+    round: $t(common.wca.round)
+    group: $t(common.wca.group)
+    stage: $t(common.stage)
+    featuredCompetitors: Wybrani zawodnicy
+about:
+  title: O nas
+  welcome: Witaj na CompetitionGroups.com!
+  purpose: Celem tej strony jest pokazanie przypisanych zadań na zawodach WCA. Ta strona może pokazać
+    zadania dla zawodników i sędziów dla zawodów z 1 lub więcej pomieszczeniami przez
+    1 dzień lub wielodniowe zawody, aktualizując wszystkie następne zadania rundy
+    zawodów. Ta strona po prostu przedstawia zadania *takimi, jakie są* z tego, jak
+    są one przechowywane na stronie WCA.
+  startTimes: Godziny rozpoczęcia i zakończenia są pobierane bezpośrednio z danych WCIF, zaokrąglone
+    do najbliższych 5 minut i przeliczone na strefy czasowe odpowiednich pomieszczeń.
+  competitionAssignments: Aby wygenerować zadania dla zawodników, które będą tutaj pokazywane 
+    musisz użyć narzędzia takiego jak <3 to="https://groupifier.jonatanklosko.com/">Groupifier</3>,
+    <6 to="https://delegate-dashboard.netlify.app/">DelegateDashboard</6> lub <9 to="https://goosly.github.io/AGE/">AGE</9>.
+  developer: Jeśli jesteś programistą i chcesz dowiedzieć się wiecej na temat pokazywanych tu danych sprawdź 
+    <2 to="https://github.com/thewca/wcif/blob/master/specification.md">specyfikację WCIF</2>.
+  peopleCanBe: Zawodnicy mogą być przypisywani do grup, rund albo innych aktywności. Jeśli chcesz być kreatywny i zrobić coś ciekawego, 
+  nie bój się do <2 to="https://github.com/coder13">mnie
+    napisać</2>!
+disclaimerText: Godziny rozpoczęcia są orientacyjne i mogą się zmieniać. Zapytaj organizatorów
+  zawodów, aby uzyskać aktualne informacje.
