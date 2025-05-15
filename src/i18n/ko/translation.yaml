@@ -127,7 +127,7 @@ header:
     stream: 스트리밍
 home:
   subtitle: WCA 대회에 대한 모든 정보를 알아보세요!
-  explanation: '참고: 이 웹사이트는 주최자, 파견위원 및 선수를 위한 편의 도구로서 존재합니다. 제공된 정보는 일정에 따라 예정된 데이터를 기반으로 합니다. 가장 최신 정보를 얻으려면 대회에 주의를 기울여 주세요. 시작 및 종료 시각은 변동될 수 있습니다.'
+  explanation: '참고: 이 웹사이트는 주최자, 파견위원 및 선수를 위한 편의 도구로써 존재합니다. 제공된 정보는 일정에 따라 예정된 데이터를 기반으로 합니다. 가장 최신 정보를 얻으려면 대회에 주의를 기울여 주세요. 시작 및 종료 시각은 변동될 수 있습니다.'
   learnMore: 이 사이트는 어떻게 작동하나요?
   support: 이 사이트가 계속 운영될 수 있도록 도와주세요!
   loadingMore: 더 불러오는 중...
@@ -193,9 +193,9 @@ about:
   purpose: 이 사이트는 WCA 대회에 대한 참가 조 및 배정된 업무를 표시하는 것을 목적으로 합니다. 이 사이트는 하루짜리 대회든 여러 날에 걸친 대회든, 1개 이상의 공간이 있는 대회에 대해 선수 및 스태프 배정 결과를 보여줄 수 있으며, 각 대회의 다음 라운드 배정 결과가 계속 업데이트됩니다. 이 사이트는 WCA 웹사이트에 저장된 내용을 *있는 그대로* 보여줍니다.
   startTimes: 시작 시간과 종료 시간은 생성된 WCIF 데이터에서 직접 가져오며, 가장 가까운 5분 단위로 반올림되고 해당 대회장의 시간대에 맞게 변환됩니다.
   competitionAssignments:
-    이 사이트에 귀하의 대회에 대한 배정 결과를 표시하려면, <3 to="https://groupifier.jonatanklosko.com/">Groupifier</3>,
+    이 사이트에 귀하의 대회의 배정 결과를 표시하려면, <3 to="https://groupifier.jonatanklosko.com/">Groupifier</3>,
     <6 to="https://delegate-dashboard.netlify.app/">DelegateDashboard</6>, 혹은
     <9 to="https://goosly.github.io/AGE/">AGE</9>와 같은 도구를 사용하여 배정 정보를 생성해야 합니다.
   developer: 당신이 개발자이고 이곳에 표시되는 데이터에 대해 더 알고 싶다면, <2 to=“https://github.com/thewca/wcif/blob/master/specification.md”>WCIF 명세서</2>를 확인하십시오.
   peopleCanBe: 사람들은 그룹, 라운드, 또는 임의의 활동에 배정될 수 있습니다. 이 웹사이트를 창의적으로 활용해보고 싶다면, 언제든지 <2 to=“https://github.com/coder13”>저에게 연락</2>하십시오!
-disclaimerText: 시작 시간은 변경될 수 있으며, 일정보다 앞당겨지거나 지연될 수 있습니다. 최신 정보는 대회 주최자에게 확인하십시오.
+disclaimerText: 시작 시간은 변경될 수 있으며, 일정보다 앞당겨지거나 지연될 수 있습니다. 최신 정보는 대회 주최자를 통해 확인하십시오.
