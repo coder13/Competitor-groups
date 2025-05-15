@@ -16,7 +16,7 @@ common:
       333oh: 3x3x3 à une main
       333ft: 3x3x3 avec les pieds
       clock: Clock
-      minx: Megaminx
+      minx: Mégaminx
       pyram: Pyraminx
       skewb: Skewb
       sq1: Square-1
@@ -26,63 +26,63 @@ common:
     timeLimit: Limite de temps
     cutoff: Cutoff
     advancement:
-      ranking: Top <b>{{level}}</b> pour le tour suivant
-      percent: Top <b>{{level}}%</b> pour le tour suivant
-      attemptResult: Résultat meilleur que <b>{{level}}</b> avance au tour suivant. Un minimum de 25 % des compétiteurs doivent être éliminés.
+      ranking: Top <b>{{level}}</b> qualifiés pour le tour suivant
+      percent: Top <b>{{level}}%</b> qualifiés pour le tour suivant
+      attemptResult: Un résultat meilleur que <b>{{level}}</b> avance au tour suivant. Un minimum de 25 % des compétiteurs doivent être éliminés.
     resultType:
-      single: Simple
+      single: Single
       average: Moyenne
     recordType:
       WR: WR
       CR: CR
       NR: NR
-  cutoffTimeLimitPopover:
-    timeLimits: <bold>Les limites de temps</bold> sont établies pour tous les tours, s'appliquant à chaque essai individuel. Les essais qui dépassent la limite seront marqués comme "DNF" et le temps ne comptera pas.
-    cutoffs: Chaque tour peut inclure des <bold>cutoffs</bold>, qui dictent si un compétiteur est éligible pour compléter tous ses essais pour terminer sa moyenne. Pour se qualifier, il doit réaliser un temps dans la limite de cutoff lors de son essai initial ou dans ses deux premiers essais.
-    cutoff: 'Cette manche exige que la condition soit remplie lors de la première tentative'
-    cutoff_other: 'Cette manche exige que la condition soit remplie lors des {{count}} premières tentatives'
-    advancement: Au moins 25 % des compétiteurs doivent être éliminés avant de progresser au tour suivant. L'équipe d'organisation établira les critères d'avancement pour chaque tour, mais des ajustements peuvent être nécessaires pour garantir que ce seuil d'élimination minimum soit respecté.
+    cutoffTimeLimitPopover:
+      timeLimits: <bold>Les limites de temps</bold> sont établies pour tous les tours, s'appliquant à chaque essai individuel. Les essais qui dépassent la limite seront marqués comme "DNF" et le temps ne comptera pas.
+      cutoffs: Chaque tour peut inclure des <bold>cutoffs</bold>, qui dictent si un compétiteur est éligible pour compléter tous ses essais pour terminer sa moyenne. Pour se qualifier, il doit réaliser un temps strictement inférieur à la cutoff lors de son premier essai ou lors de l'un de ses deux premiers essais.
+      advancement: Au moins 25 % des compétiteurs doivent être éliminés avant de progresser au tour suivant. L'équipe d'organisation établira les critères de qualifications pour chaque tour, mais des ajustements peuvent être nécessaires pour garantir que le seuil d'élimination minimum soit re
+      cutoff: 'Cette manche exige que la condition soit remplie lors de la première tentative'
+      cutoff_other: 'Cette manche exige que la condition soit remplie lors des {{count}} premières tentatives'
   assignments:
     competitor:
-      noun: Concurrent
-      noun_other: Concurrents
-      verb: Participe
+      noun: Compétiteur
+      noun_other: Compétiteurs
+      verb: Participer
     staff-judge:
-      noun: Arbitre
-      noun_other: Arbitres
-      verb: Arbitre
+      noun: Juge
+      noun_other: Juges
+      verb: Juger
     staff-runner:
       noun: Coureur
       noun_other: Coureurs
-      verb: Court
+      verb: Courir
     staff-scrambler:
       noun: Mélangeur
       noun_other: Mélangeurs
-      verb: Mélange
+      verb: Mélanger
     staff-delegate:
       noun: Délégué
       noun_other: Délégués
-      verb: Délègue
+      verb: Déléguer
     staff-dataentry:
       noun: Saisie de données
       noun_other: Saisie de données
-      verb: Saisie de données
+      verb: Saisir des données
     staff-announcer:
       noun: Annonceur
       noun_other: Annonceurs
-      verb: Annonce
+      verb: Annoncer
     staff-stagelead:
       noun: Responsable de scène
       noun_other: Responsables de scène
-      verb: Supervise la scène
+      verb: Superviser la scène
     staff-showrunner:
-      noun: Directeur de l`événement
-      noun_other: Directeurs de l`événement
-      verb: Dirige l`événement
+      noun: Directeur de l’événement
+      noun_other: Directeurs de l’événement
+      verb: Diriger l’événement
     staff-other:
-      noun: Équipe
-      noun_other: Équipe
-      verb: Membre de l`équipe
+      noun: Staff
+      noun_other: Staffs
+      verb: Staffer
     staff-break:
       noun: Pause
       noun_other: Pauses
@@ -90,16 +90,16 @@ common:
     staff-lunch:
       noun: Déjeuner
       noun_other: Déjeuners
-      verb: En déjeuner
+      verb: Déjeuner
     staff-setupteardown:
       noun: Installation/Démontage
       noun_other: Installations/Démontages
-      verb: Installe/démonte
+      verb: Installer/démonter
     staff-core:
       noun: Équipe principale
-      noun_other: Équipe principale
+      noun_other: Équipes principales
       verb: Équipe principale
-  lastFetched: 'Dernière récupération: {{date}}'
+  lastFetched: 'Dernière mise à jour: {{date}}'
   competitionSelect:
     placeholder: 'Rechercher des compétitions'
     noOptions: 'Aucune compétition trouvée'
@@ -112,16 +112,16 @@ header:
   logout: 'Déconnexion'
   tabs:
     groups: 'Groupes'
-    events: 'Événements'
-    schedule: 'Programme'
+    events: 'Épreuves'
+    schedule: 'Planning'
     rankings: 'Classements'
     scramblers: 'Mélangeurs'
-    stream: 'Diffusion'
+    stream: 'Stream'
 home:
-  subtitle: 'Apprenez tout ce que vous devez savoir sur vos affectations aux compétitions WCA !'
-  explanation: 'Remarque : Ce site web est un outil pratique pour les organisateurs, délégués et compétiteurs. Les informations fournies sont basées sur les données planifiées. Faites attention à la compétition pour obtenir les informations les plus récentes. Les horaires de début et de fin peuvent varier.'
+  subtitle: 'Apprenez tout ce que vous devez savoir sur les tâches qui vous ont été attribuées aux compétitions WCA !'
+  explanation: 'Remarque : Ce site web est un outil pratique pour les organisateurs, délégués et compétiteurs. Les informations fournies sont basées sur le planning prévisionnel. Pensez à consulter régulièrement la page de la compétition pour obtenir les informations les plus récentes. Les horaires de début et de fin peuvent varier.'
   learnMore: 'Comment fonctionne ce site ?'
-  support: 'Gardez les lumières allumées'
+  support: 'Contribuez au bon fonctionnement du site!'
   loadingMore: 'Chargement en cours...'
   myCompetitions: 'Mes compétitions'
   upcomingCompetitions: 'Compétitions à venir'
@@ -131,7 +131,7 @@ competition:
     viewCompetitionInformation: 'Voir les informations sur la compétition'
     searchCompetitors: 'Rechercher des compétiteurs'
   groups:
-    backToEvents: 'Retour aux événements'
+    backToEvents: 'Retour aux épreuves'
     nextGroup: 'Groupe suivant'
     previousGroup: 'Groupe précédent'
   rooms:
@@ -143,7 +143,7 @@ competition:
     selectRoom: 'Sélectionner une salle'
   eventActivity:
     seedResult: 'Résultat de classement'
-    stationNumber: 'Numéro de poste'
+    stationNumber: 'Numéro de station'
   rankings:
     title: 'Classements'
     name: 'Nom'
@@ -174,13 +174,13 @@ competition:
     title: 'Programme de diffusion'
     subtitle: 'Diffusion en direct'
     time: 'Heure'
-    featuredCompetitors: 'Concurrents à l`honneur'
+    featuredCompetitors: 'Compétiteurs à l`honneur'
 about:
   title: À propos
   welcome: Bienvenue sur CompetitionGroups.com !
-  purpose: Le but de ce site est d`afficher les affectations des compétitions WCA. Il peut afficher les affectations des concurrents et du staff pour des compétitions se déroulant sur une ou plusieurs journées, avec une ou plusieurs salles, en mettant à jour les affectations des manches suivantes de la compétition. Ce site présente simplement les affectations *telles quelles*, telles qu'elles sont stockées sur le site de la WCA.
+  purpose: Le but de ce site est d`afficher les tâches qui vous ont été attribuées des compétitions WCA. Il peut afficher les affectations des compétiteurs et du staff pour des compétitions se déroulant sur une ou plusieurs journées, avec une ou plusieurs salles, en mettant à jour les affectations des tours suivants de la compétition. Ce site présente simplement les affectations *telles quelles*, telles qu'elles sont stockées sur le site de la WCA.
   startTimes: Les heures de début et de fin sont directement extraites des données WCIF générées, arrondies aux 5 minutes les plus proches, et converties dans les fuseaux horaires respectifs des lieux de compétition.
   competitionAssignments: Pour afficher les affectations de votre compétition ici, vous devez les générer avec un outil comme <3 to="https://groupifier.jonatanklosko.com/">Groupifier</3>, <6 to="https://delegate-dashboard.netlify.app/">DelegateDashboard</6> ou <9 to="https://goosly.github.io/AGE/">AGE</9>.
   developer: Si vous êtes développeur et que vous souhaitez en savoir plus sur les données affichées ici, consultez la <2 to="https://github.com/thewca/wcif/blob/master/specification.md">spécification WCIF</2>.
-  peopleCanBe: Les personnes peuvent être affectées à des groupes, à des manches ou à toute activité arbitraire. Si vous souhaitez être créatif avec le site, n'hésitez pas à <2 to="https://github.com/coder13">me contacter</2> !
+  peopleCanBe: Les personnes peuvent être affectées à des groupes, à des tours ou à toute activité. Si vous souhaitez être créatif avec le site, n'hésitez pas à <2 to="https://github.com/coder13">me contacter</2> !
 disclaimerText: Les horaires de début sont susceptibles de changer et peuvent être en avance ou en retard par rapport au programme. Veuillez vérifier auprès des organisateurs de la compétition pour les mises à jour.
