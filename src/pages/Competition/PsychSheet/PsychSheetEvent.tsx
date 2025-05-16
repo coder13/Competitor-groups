@@ -4,7 +4,6 @@ import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import StickyBox from 'react-sticky-box';
 import { Container } from '@/components/Container';
 import { activityCodeToName } from '@/lib/activityCodes';
 import { acceptedRegistration, isRegisteredForEvent } from '@/lib/person';
@@ -67,7 +66,7 @@ export const PsychSheetEvent = () => {
     [sortedPersons],
   );
 
-  const gridCss = 'grid grid-cols-[3em_2em_1fr_min-content_7em] grid-rows-10';
+  const gridCss = 'grid grid-cols-[3em_2em_1fr_min-content_7em]';
 
   const handleEventChange = useCallback(
     (newEventId: EventId) => {
@@ -106,14 +105,17 @@ export const PsychSheetEvent = () => {
             <option value="single">{t('common.wca.resultType.single')}</option>
           </select>
         </div>
-        <StickyBox offsetTop={0} offsetBottom={0}>
-          <div className={classNames('bg-green-300 w-full', gridCss)} role="rowheader">
+
+        <div className={gridCss}>
+          <div
+            className={'[&>span]:bg-green-300 stickyGridHeader contents absolute'}
+            role="rowheader">
             <span className="px-3 py-2.5 text-right font-bold">#</span>
-            <span className="px-3 py-2.5 text-left"></span>
+            <span className="px-3 py-2.5 text-left" />
             <span className="px-3 py-2.5 text-left font-bold">
               {t('competition.rankings.name')}
             </span>
-            <span className="px-3 py-2.5 text-right font-bold">
+            <span className="px-3 py-2.5 text-right font-bold whitespace-nowrap">
               {resultType === 'single'
                 ? t('common.wca.resultType.single')
                 : t('common.wca.resultType.average')}{' '}
@@ -122,42 +124,41 @@ export const PsychSheetEvent = () => {
               {t('common.wca.recordType.WR')}
             </span>
           </div>
-        </StickyBox>
+          <div className="contents striped">
+            {sortedPersons?.map((person) => {
+              const rank =
+                (rankings?.findIndex((i) => i === person.pr?.worldRanking) >= 0
+                  ? rankings?.findIndex((i) => i === person.pr?.worldRanking)
+                  : rankings.length) + 1;
 
-        <div className={classNames(gridCss, 'striped')}>
-          {sortedPersons?.map((person) => {
-            const rank =
-              (rankings?.findIndex((i) => i === person.pr?.worldRanking) >= 0
-                ? rankings?.findIndex((i) => i === person.pr?.worldRanking)
-                : rankings.length) + 1;
+              const prAverage = person.personalBests?.find(
+                (pr) => pr.eventId === eventId && pr.type === 'average',
+              );
 
-            const prAverage = person.personalBests?.find(
-              (pr) => pr.eventId === eventId && pr.type === 'average',
-            );
-
-            return (
-              <Link
-                key={person.registrantId}
-                className="contents"
-                to={`/competitions/${wcif?.id}/personal-bests/${person.wcaId}`}>
-                <span className="px-3 py-2.5 text-right flex items-center [font-variant-numeric:tabular-nums]">
-                  {rank}
-                </span>
-                <span className="px-3 py-2.5 text-left flex items-center w-full">
-                  {getUnicodeFlagIcon(person.countryIso2)}
-                </span>
-                <span className="px-3 py-2.5 text-left truncate">{person.name}</span>
-                <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
-                  {prAverage ? renderResultByEventId(eventId, 'average', prAverage.best) : ''}
-                </span>
-                <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
-                  {prAverage
-                    ? `${prAverage.worldRanking.toLocaleString([...navigator.languages])}`
-                    : ''}
-                </span>
-              </Link>
-            );
-          })}
+              return (
+                <Link
+                  key={person.registrantId}
+                  className="contents"
+                  to={`/competitions/${wcif?.id}/personal-bests/${person.wcaId}`}>
+                  <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
+                    {rank}
+                  </span>
+                  <span className="px-3 py-2.5 text-left flex items-center w-full">
+                    {getUnicodeFlagIcon(person.countryIso2)}
+                  </span>
+                  <span className="px-3 py-2.5 text-left truncate">{person.name}</span>
+                  <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
+                    {prAverage ? renderResultByEventId(eventId, 'average', prAverage.best) : ''}
+                  </span>
+                  <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
+                    {prAverage
+                      ? `${prAverage.worldRanking.toLocaleString([...navigator.languages])}`
+                      : ''}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
     </Container>

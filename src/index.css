@@ -17,3 +17,7 @@
     @apply bg-green-50;
   }
 }
+
+.stickyGridHeader > * {
+  @apply sticky top-0;
+}
