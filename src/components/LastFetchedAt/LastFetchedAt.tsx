@@ -11,7 +11,9 @@ export const LastFetchedAt = ({ lastFetchedAt }: LastFetchAtProps) => {
   return (
     <div className="w-full text-xs text-gray-500 text-right">
       {t('common.lastFetched', {
-        date: intlFormatDistance(lastFetchedAt, new Date()),
+        date: intlFormatDistance(lastFetchedAt, new Date(), {
+          locale: navigator.language,
+        }),
       })}
     </div>
   );

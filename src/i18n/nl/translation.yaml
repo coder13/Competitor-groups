@@ -39,7 +39,7 @@ common:
       CR: CR
       NR: NR
   cutoffTimeLimitPopover:
-    timeLimits: <b>Tijdslimieten</b> zijn gecreerd voor alle rondes en worden toegepast tot ieder individueel resultaat. Resultaten die de tijdslimiet overschrijden zullen worden gemarkeerd als &quot;DNF&quot; en de tijd zal niet gelden.
+    timeLimits: <b>Tijdslimieten</b> zijn gecreerd voor alle rondes en worden toegepast tot ieder individueel resultaat. Resultaten die de tijdslimiet overschrijden zullen worden gemarkeerd als "DNF" en de tijd zal niet gelden.
     cutoffs: Iedere ronde kan een <bold>cutoffs</bold> bevatten, deze bepaalt of een deelnemer verder mag met zijn al pogingen om zijn gemiddelde af te maken. Om hiervoor te kwalificeren, moet je de cutoff tijd behalen in de eerste poging of in een van de twee eerste pogingen.
     cutoff: Deze ronde vereist je de voorwaarde om verder te gaan te behalen in de eerste poging.
     cutoff_other: Deze ronde vereist je de voorwaarde om verder te gaan in the eerste {{count}} pogingen.

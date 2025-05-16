@@ -39,7 +39,7 @@ common:
       CR: CR
       NR: NR
   cutoffTimeLimitPopover:
-    timeLimits: <b>Limity czasowe</b> są ustalane dla wszystkich rund, są stosowane do każdego pojedynczego ułożenia. Ułożenia, które przekraczają limit, będą oznaczone jako &quot;DNF&quot;, a czas nie będzie liczony.
+    timeLimits: <b>Limity czasowe</b> są ustalane dla wszystkich rund, są stosowane do każdego pojedynczego ułożenia. Ułożenia, które przekraczają limit, będą oznaczone jako "DNF", a czas nie będzie liczony.
     cutoffs: Każda runda może mieć <bold>cutoff</bold>, który określa, czy zawodnik jest uprawniony do ukończenia wszystkich prób w celu zakończenia średniej. Aby zakwalifikować się, musi osiągnąć czas poniżej cutoffa podczas swojego pierwszego lub drugiego ułożenia.
     cutoff: Ta runda wymaga zrobienia cutoffa w {{count}} ułożeniu.
     cutoff_other: Ta runda wymaga zrobienia cutoffa w pierwszych {{count}} ułożeniach.
