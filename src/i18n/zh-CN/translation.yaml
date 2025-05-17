@@ -1,4 +1,5 @@
 common:
+  appName: '比赛组别'
   wca:
     event: '项目'
     round: '轮次'
@@ -6,21 +7,203 @@ common:
     group_other: '小组'
     attempt: '尝试'
     events:
-      '222': 二阶
       '333': 三阶
+      '222': 二阶
       '444': 四阶
       '555': 五阶
       '666': 六阶
       '777': 七阶
-      333bf: 三盲
-      333fm: 最少步
-      333oh: 单手
-      333ft: 脚拧
-      clock: 魔表
-      minx: 五魔方
-      pyram: 金字塔
-      skewb: 斜转
-      sq1: Square-1
-      444bf: 四盲
-      555bf: 五盲
-      333mbf: 多盲
+      '333bf': 三盲
+      '333fm': 最少步
+      '333oh': 单手
+      '333ft': 脚拧
+      'clock': 魔表
+      'minx': 五魔方
+      'pyram': 金字塔
+      'skewb': 斜转
+      'sq1': Square-1
+      '444bf': 四盲
+      '555bf': 五盲
+      '333mbf': 多盲
+    timeLimit: '时间限制'
+    Cutoff: '截线'
+    cumulativeTimelimit: 时间限制 <b>{{time}}</b> 与轮次
+    advancement:
+      ranking: '前 <b>{{level}}</b> 名晋级下一轮'
+      percent: '前 <b>{{level}}%</b> 晋级下一轮'
+      attemptResult: 成绩优于 <b>{level}</b> 晋级下一轮。至少淘汰 25% 的选手。
+    resultType:
+      single: 单次
+      average: 平均
+    recordType:
+      WR: 世界纪录
+      CR: 大洲纪录
+      NR: 国家纪录
+  cutoffTimeLimitPopover:
+    timeLimits: <b>时间限制</b> 适用于所有轮次，超时记为"DNF"，不计成绩。
+    cutoffs: 每轮可能包含 <bold>截线</bold>，决定选手是否有资格完成全部尝试以计算平均。需在初始尝试或前两次内达到截线时间。
+    cutoff: 本轮需在第一次尝试满足条件
+    cutoff_other: 本轮需在前 {{count}} 次尝试满足条件
+    advancement:
+      至少淘汰 25% 的选手才能进入下一轮。组织团队将设定每轮晋级标准，但可能需要调整以确保达到淘汰比例。
+  activityCodeToName:
+    round: '$t(common.wca.round) {{roundNumber}}'
+    group: '$t(common.wca.group) {{groupNumber}}'
+    attempt: '$t(common.wca.attempt) {{attemptNumber}}'
+  assignments:
+    competitor:
+      noun: 参赛者
+      noun_other: 参赛者
+      verb: 参赛
+    staff-judge:
+      noun: 裁判
+      noun_other: 裁判
+      verb: 裁判
+    staff-runner:
+      noun: 传递员
+      noun_other: 传递员
+      verb: 传递
+    staff-scrambler:
+      noun: 打乱员
+      noun_other: 打乱员
+      verb: 打乱
+    staff-delegate:
+      noun: 协调员
+      noun_other: 协调员
+      verb: 协调
+    staff-dataentry:
+      noun: 数据录入
+      noun_other: 数据录入
+      verb: 录入
+    staff-announcer:
+      noun: 宣布员
+      noun_other: 宣布员
+      verb: 宣布
+    staff-stagelead:
+      noun: 场地负责人
+      noun_other: 场地负责人
+      verb: 负责
+    staff-showrunner:
+      noun: 主持人
+      noun_other: 主持人
+      verb: 主持
+    staff-other:
+      noun: 工作人员
+      noun_other: 工作人员
+      verb: 工作
+    staff-break:
+      noun: 休息
+      noun_other: 休息
+      verb: 休息
+    staff-lunch:
+      noun: 午餐
+      noun_other: 午餐
+      verb: 午餐
+    staff-setupteardown:
+      noun: 搭建/拆除
+      noun_other: 搭建/拆除
+      verb: 搭建或拆除
+    staff-core:
+      noun: 核心工作人员
+      noun_other: 核心工作人员
+      verb: 核心工作人员
+  lastFetched: '最近获取：{{date}}'
+  competitionSelect:
+    placeholder: '搜索比赛'
+    noOptions: '未找到比赛'
+  competitionList:
+    noneFound: '未找到比赛。'
+  loading: '加载中...'
+  search: '搜索'
+  view: '查看'
+  name: 名称
+  stage: 舞台
+header:
+  login: '登录'
+  logout: '退出'
+  tabs:
+    groups: '小组'
+    events: '项目'
+    schedule: '日程'
+    rankings: '排名'
+    scramblers: '打乱安排'
+    stream: '直播'
+home:
+  subtitle: '了解你在 WCA 比赛中的全部任务!'
+  explanation: '注意：该网站作为组织者、代表和选手的便利工具，信息来自计划数据。请关注比赛现场以获取最新信息，开始和结束时间可能会变动。'
+  learnMore: '这个网站如何运作？'
+  support: '保持网站运行'
+  loadingMore: '加载更多...'
+  myCompetitions: '我的比赛'
+  upcomingCompetitions: '即将到来的比赛'
+  yourCompetitions: '你的比赛'
+competition:
+  competitors:
+    viewCompetitionInformation: '查看比赛信息'
+    searchCompetitors: '搜索选手'
+  groups:
+    backToEvents: '返回项目'
+    nextGroup: '下一小组'
+    previousGroup: '上一小组'
+  rooms:
+    title: '房间'
+  room:
+    back: '返回房间列表'
+  schedule:
+    title: 日程
+    selectRoom: '选择房间'
+  eventActivity:
+    seedResult: 编排结果
+    stationNumber: 台号
+  rankings:
+    title: 排名
+    name: 名称
+  personalSchedule:
+    registeredEvents: 已报名项目
+    viewPersonalRecords: 查看个人记录
+    viewResults: 查看成绩
+    noAssignments:
+      line1: 无分配
+      line2: 请稍后查看更新！
+    activity: 活动
+    time: 时间
+    assignment: 任务
+    group: 小组
+    stage: $t(common.stage)
+    station: 台号
+  personalRecords:
+    viewSchedule: 查看个人任务
+    type: 类型
+    best: 最好
+  scramblers:
+    title: 打乱时间表
+    rooms: 房间
+    stage: $t(common.stage)
+    event: 项目
+    scramblers: 打乱者
+  streamSchedule:
+    title: 直播时间表
+    subtitle: 直播
+    time: 时间
+    event: $t(common.wca.event)
+    round: $t(common.wca.round)
+    group: $t(common.wca.group)
+    stage: $t(common.stage)
+    featuredCompetitors: 重点选手
+about:
+  title: 关于
+  welcome: 欢迎来到 CompetitionGroups.com!
+  purpose: 本网站用于展示 WCA 比赛分配情况。可以显示
+    单日或多日比赛的参赛和工作人员分配，
+    包括下一轮分组。本站仅按 WCA 网站中存储的内容原样呈现这些分配。
+  startTimes:
+    开始和结束时间直接取自 WCIF 数据，四舍五入到最接近的 5 分钟，并转换为相应场地时区。
+  competitionAssignments:
+    如果想让你比赛的分配显示在这里，必须使用诸如
+    <3 to="https://groupifier.jonatanklosko.com/">Groupifier</3>、
+    <6 to="https://delegate-dashboard.netlify.app/">DelegateDashboard</6> 或
+    <9 to="https://goosly.github.io/AGE/">AGE</9> 等工具生成。
+  developer: 如果你是开发者并想了解这里显示的数据详情，请查看 <2 to="https://github.com/thewca/wcif/blob/master/specification.md">WCIF 规范</2>。
+  peopleCanBe:
+    人员可以被分配到小组、轮次或任意活动。如果你想对网站进行创意改进，欢迎 <2 to="https://github.com/coder13">联系我</2>！
+disclaimerText: 开始时间可能变化，可能提前或延迟。请与比赛组织者确认最新信息。
