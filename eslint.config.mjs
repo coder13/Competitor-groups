@@ -5,11 +5,16 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
 
 export default [
-  { files: ['**/*.{ts,tsx}'] },
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  eslintPluginPrettierRecommended,
   {
+    files: ['**/*.js', '**/*.jsx'],
+    parser: 'espree',
+    parserOptions: { sourceType: 'module' },
+  },
+  ...tseslint.configs.recommended,
+  {
+    ...eslint.configs.recommended,
+    ...eslintPluginPrettierRecommended,
+    files: ['**/*.{ts,tsx}'],
     plugins: {
       react: reactPlugin,
       'react-hooks': reactHooksPlugin,

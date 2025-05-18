@@ -1,0 +1,133 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components/AssignmentLabel should render correctly when assignmentCode is "competitor" 1`] = `
+<body>
+  <div>
+    <span
+      class="bg-green-200 px-[6px] py-[4px] rounded-md bg-blue-100"
+    >
+      competitor
+    </span>
+  </div>
+</body>
+`;
+
+exports[`components/AssignmentLabel should render correctly when assignmentCode is "non-standard" 1`] = `
+<body>
+  <div>
+    <span
+      class="bg-cyan-200 px-[6px] py-[4px] rounded-md bg-blue-100"
+    >
+      dataentry
+    </span>
+  </div>
+</body>
+`;
+
+exports[`components/AssignmentLabel should render correctly when assignmentCode is "staff-announcer" 1`] = `
+<body>
+  <div>
+    <span
+      class="bg-violet-200 px-[6px] py-[4px] rounded-md bg-blue-100"
+    >
+      announcer
+    </span>
+  </div>
+</body>
+`;
+
+exports[`components/AssignmentLabel should render correctly when assignmentCode is "staff-dataentry" 1`] = `
+<body>
+  <div>
+    <span
+      class="bg-cyan-200 px-[6px] py-[4px] rounded-md bg-blue-100"
+    >
+      dataentry
+    </span>
+  </div>
+</body>
+`;
+
+exports[`components/AssignmentLabel should render correctly when assignmentCode is "staff-delegate" 1`] = `
+<body>
+  <div>
+    <span
+      class="bg-purple-200 px-[6px] py-[4px] rounded-md bg-blue-100"
+    >
+      delegate
+    </span>
+  </div>
+</body>
+`;
+
+exports[`components/AssignmentLabel should render correctly when assignmentCode is "staff-judge" 1`] = `
+<body>
+  <div>
+    <span
+      class="bg-blue-200 px-[6px] py-[4px] rounded-md bg-blue-100"
+    >
+      judge
+    </span>
+  </div>
+</body>
+`;
+
+exports[`components/AssignmentLabel should render correctly when assignmentCode is "staff-other" 1`] = `
+<body>
+  <div>
+    <span
+      class="undefined px-[6px] py-[4px] rounded-md bg-blue-100"
+    >
+      other
+    </span>
+  </div>
+</body>
+`;
+
+exports[`components/AssignmentLabel should render correctly when assignmentCode is "staff-runner" 1`] = `
+<body>
+  <div>
+    <span
+      class="bg-orange-200 px-[6px] py-[4px] rounded-md bg-blue-100"
+    >
+      runner
+    </span>
+  </div>
+</body>
+`;
+
+exports[`components/AssignmentLabel should render correctly when assignmentCode is "staff-scrambler" 1`] = `
+<body>
+  <div>
+    <span
+      class="bg-yellow-200 px-[6px] py-[4px] rounded-md bg-blue-100"
+    >
+      scrambler
+    </span>
+  </div>
+</body>
+`;
+
+exports[`components/AssignmentLabel should render correctly when assignmentCode is "staff-stagelead" 1`] = `
+<body>
+  <div>
+    <span
+      class="bg-purple-800 px-[6px] py-[4px] rounded-md bg-blue-100"
+    >
+      stagelead
+    </span>
+  </div>
+</body>
+`;
+
+exports[`components/AssignmentLabel should render correctly when assignmentCode is non-standard 1`] = `
+<body>
+  <div>
+    <span
+      class="bg-cyan-200 px-[6px] py-[4px] rounded-md bg-blue-100"
+    >
+      dataentry
+    </span>
+  </div>
+</body>
+`;
