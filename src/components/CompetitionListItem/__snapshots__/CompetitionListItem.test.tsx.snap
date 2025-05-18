@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CompetitionListItem matches snapshot (default) 1`] = `
+<body>
+  <div>
+    <a
+      href="/competitions/123"
+    >
+      <li
+        class="border bg-white list-none rounded-md px-2 py-2 flex cursor-pointer hover:bg-slate-100 group transition-colors my-1 flex-row opacity-50"
+      >
+        <div
+          class="flex flex-shrink mr-2 text-2xl"
+        >
+           
+          🇺🇸
+           
+        </div>
+        <div
+          class="flex-1"
+        >
+          <p
+            class="font-normal leading-1"
+          >
+             
+            Test Competition
+             
+          </p>
+           
+          <p
+            class="text-gray-600 text-sm leading-1"
+          >
+            Jan 1 – 2, 2024
+              
+            –
+              
+            New York
+          </p>
+        </div>
+      </li>
+    </a>
+  </div>
+</body>
+`;
+
+exports[`CompetitionListItem renders with all props (live and bookmarked) 1`] = `
+<body>
+  <div>
+    <a
+      href="/competitions/123"
+    >
+      <li
+        class="border bg-white list-none rounded-md px-2 py-2 flex cursor-pointer hover:bg-slate-100 group transition-colors my-1 flex-row opacity-50"
+      >
+        <div
+          class="flex flex-shrink mr-2 text-2xl"
+        >
+           
+          🇺🇸
+           
+        </div>
+        <div
+          class="flex-1"
+        >
+          <p
+            class="font-normal leading-1"
+          >
+             
+            Test Competition
+             
+          </p>
+           
+          <p
+            class="text-gray-600 text-sm leading-1"
+          >
+            Jan 1 – 2, 2024
+              
+            –
+              
+            New York
+          </p>
+        </div>
+        <div
+          class="flex flex-shrink text-2xl items-center px-2"
+        >
+          <span
+            class="fa fa-tower-broadcast text-green-500"
+          />
+        </div>
+      </li>
+    </a>
+  </div>
+</body>
+`;
