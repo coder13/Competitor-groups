@@ -2,7 +2,7 @@ import { Competition, Person } from '@wca/helpers';
 import { Fragment, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCollapse } from '@/hooks/UseCollapse';
-import { useNow } from '@/hooks/useNow';
+import { useNow } from '@/hooks/useNow/useNow';
 import { parseActivityCodeFlexible } from '@/lib/activityCodes';
 import { isActivityWithRoomOrParent } from '@/lib/typeguards';
 import { byDate, roundTime } from '@/lib/utils';

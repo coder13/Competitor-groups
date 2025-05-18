@@ -2,7 +2,7 @@ import { ApolloProvider } from '@apollo/client';
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
 import client from './apolloClient';
-import usePageTracking from './hooks/usePageTracking';
+import { usePageTracking } from './hooks/usePageTracking';
 import { CompetitionLayout } from './layouts/CompetitionLayout';
 import { RootLayout } from './layouts/RootLayout';
 import About from './pages/About';

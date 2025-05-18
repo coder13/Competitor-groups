@@ -2,7 +2,7 @@ import { formatDuration, intervalToDuration } from 'date-fns';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
-import { useNow } from '@/hooks/useNow';
+import { useNow } from '@/hooks/useNow/useNow';
 import { useOngoingActivities } from '@/hooks/useOngoingActivities';
 import { getAllChildActivities, getAllRoundActivities, getRooms } from '@/lib/activities';
 import { formatTime } from '@/lib/time';

@@ -12,18 +12,6 @@ exports[`components/AssignmentLabel should render correctly when assignmentCode 
 </body>
 `;
 
-exports[`components/AssignmentLabel should render correctly when assignmentCode is "non-standard" 1`] = `
-<body>
-  <div>
-    <span
-      class="bg-cyan-200 px-[6px] py-[4px] rounded-md bg-blue-100"
-    >
-      dataentry
-    </span>
-  </div>
-</body>
-`;
-
 exports[`components/AssignmentLabel should render correctly when assignmentCode is "staff-announcer" 1`] = `
 <body>
   <div>
@@ -115,18 +103,6 @@ exports[`components/AssignmentLabel should render correctly when assignmentCode 
       class="bg-purple-800 px-[6px] py-[4px] rounded-md bg-blue-100"
     >
       stagelead
-    </span>
-  </div>
-</body>
-`;
-
-exports[`components/AssignmentLabel should render correctly when assignmentCode is non-standard 1`] = `
-<body>
-  <div>
-    <span
-      class="bg-cyan-200 px-[6px] py-[4px] rounded-md bg-blue-100"
-    >
-      dataentry
     </span>
   </div>
 </body>

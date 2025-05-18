@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { getAllActivities } from '@/lib/activities';
-import { useWCIF } from '../providers/WCIFProvider';
-import { ActivitiesSubscriptionDocument, NotifyCompActivity, useActivitiesQuery } from '../queries';
+import { useWCIF } from '@/providers/WCIFProvider';
+import { ActivitiesSubscriptionDocument, NotifyCompActivity, useActivitiesQuery } from '@/queries';
 
 export const useOngoingActivities = (competitionId: string) => {
   const { wcif } = useWCIF();

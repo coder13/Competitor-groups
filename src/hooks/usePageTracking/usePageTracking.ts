@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { useLocation } from 'react-router-dom';
-import { useAuth } from '../providers/AuthProvider';
+import { useAuth } from '@/providers/AuthProvider';
 
-const usePageTracking = (trackingCode) => {
+export const usePageTracking = (trackingCode) => {
   const location = useLocation();
   const { user } = useAuth();
 
@@ -56,5 +56,3 @@ const usePageTracking = (trackingCode) => {
     }
   }, [location]);
 };
-
-export default usePageTracking;
