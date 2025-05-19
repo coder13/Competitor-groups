@@ -1,25 +1,44 @@
 common:
   wca:
-    event: Prueba
-    round: Ronda
-    group: Grupo
-    group_other: Grupos
+    event: 'Categoría'
+    round: 'Ronda'
+    group: 'Grupo'
+    group_other: 'Grupos'
     events:
-      '222': Cubo 2x2x2
-      '333': Cubo 3x3x3
-      '444': Cubo 4x4x4
-      '555': Cubo 5x5x5
-      '666': Cubo 6x6x6
-      '777': Cubo 7x7x7
-      333bf: 3x3x3 Ciega
-      333fm: 3x3x3 Menos Movimientos
-      333oh: 3x3x3 Una Mano
-      333ft: 3x3x3 Pies
-      clock: Clock
-      minx: Megaminx
-      pyram: Pyraminx
-      skewb: Skewb
-      sq1: Square-1
-      444bf: 4x4x4 Ciega
-      555bf: 5x5x5 Ciega
-      333mbf: 3x3x3 Multi Ciega
+      '222': 'Cubo 2x2x2'
+      '333': 'Cubo 3x3x3'
+      '444': 'Cubo 4x4x4'
+      '555': 'Cubo 5x5x5'
+      '666': 'Cubo 6x6x6'
+      '777': 'Cubo 7x7x7'
+      333bf: '3x3x3 a Ciegas'
+      333fm: '3x3x3 Menos Movimientos'
+      333oh: '3x3x3 A Una Mano'
+      333ft: '3x3x3 Con Pies'
+      clock: 'Clock'
+      minx: 'Megaminx'
+      pyram: 'Pyraminx'
+      skewb: 'Skewb'
+      sq1: 'Square-1'
+      444bf: '4x4x4 A Ciegas'
+      555bf: '5x5x5 A Ciegas'
+      333mbf: 'Multi 3x3x3 A Ciegas'
+    timeLimit: 'Límite'
+    Cutoff: 'Corte'
+    advancement:
+      ranking: 'Top <b>{{level}}</b> a la siguiente ronda'
+      percent: 'Top <b>{{level}}%</b> a la siguiente ronda'
+      attemptResult: 'Resultado mejor que <b>{level}</b> pasa a la ronda siguiente. Al menos hay que eliminar el 25% de los competidores.'
+    resultType:
+      single: 'single'
+      average: 'Media'
+    recordType:
+      WR: 'WR'
+      CR: 'CR'
+      NR: 'NR'
+  cutoffTimeLimitPopover:
+    timeLimits: '<b>Se establecen límites para todas las rondas, y aplican a cada solve. Los solves que superan el límite serán marcados como $quot;DNF$quot; y no valdrán.'
+    cutoffs: 'Cada ronda puede incluir cortes, los cuales indican si un competitor tendrá la oportunidad para completar todos sus intentos para terminar su media. Para lo dicho, hay que salir un tiempo bajo el corte durante los primeros dos intentos."
+    cutoff: 'Esta ronda demanda que el requisito se cumpla en el primer intento.'
+    cutoff_other: 'Esta ronda demanda que el requisito se cumpla en los primeros {{count}} intentos.'
+    
