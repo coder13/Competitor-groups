@@ -44,7 +44,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
 
   const acceptedUnpinnedPersons = everyoneButMe.filter(
     (person) =>
-      !person.pinned && (!input || person.name.toLowerCase().includes(input.toLowerCase().trim())),
+      !person.pinned && (!input || person.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim())),
   );
 
   return (
