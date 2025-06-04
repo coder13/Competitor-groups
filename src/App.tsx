@@ -66,7 +66,7 @@ const PsychSheet = () => {
   const { wcif } = useWCIF();
 
   useEffect(() => {
-    if (wcif) {
+    if (wcif && wcif.events?.length > 0) {
       navigate(`/competitions/${competitionId}/psych-sheet/${wcif.events[0].id}`, {
         replace: true,
       });

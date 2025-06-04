@@ -46,7 +46,7 @@ export const PsychSheetEvent = () => {
   const sortedPersons = useMemo(
     () =>
       eventId &&
-      persons.sort(byWorldRanking(eventId)).map((person) => {
+      persons.sort(byWorldRanking(eventId, resultType)).map((person) => {
         return {
           ...person,
           pr: person.personalBests?.find(
@@ -132,7 +132,7 @@ export const PsychSheetEvent = () => {
                   : rankings.length) + 1;
 
               const prAverage = person.personalBests?.find(
-                (pr) => pr.eventId === eventId && pr.type === 'average',
+                (pr) => pr.eventId === eventId && pr.type === resultType,
               );
 
               return (
@@ -148,7 +148,7 @@ export const PsychSheetEvent = () => {
                   </span>
                   <span className="px-3 py-2.5 text-left truncate">{person.name}</span>
                   <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
-                    {prAverage ? renderResultByEventId(eventId, 'average', prAverage.best) : ''}
+                    {prAverage ? renderResultByEventId(eventId, resultType, prAverage.best) : ''}
                   </span>
                   <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
                     {prAverage
