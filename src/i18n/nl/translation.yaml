@@ -116,8 +116,8 @@ common:
   view: 'View'
   name: Naam
   stage: Stage
-header:
   login: 'Login'
+header:
   logout: 'Logout'
   tabs:
     groups: 'Groepen'

@@ -89,7 +89,6 @@ export function Assignments({ wcif, person, showRoom, showStationNumber }: Assig
                         className="font-bold text-base md:text-lg bg-slate-50 select-none cursor-pointer">
                         <div className="flex justify-between">
                           <span className="p-2 w-full text-center">
-                            Assignments for{' '}
                             {dateParts.find((i) => i.type === 'weekday')?.value || date}
                           </span>
                           <span className="p-2 flex-end">{collapsed ? ' ▼' : ' ▲'}</span>
