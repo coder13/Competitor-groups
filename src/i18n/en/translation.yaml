@@ -120,8 +120,9 @@ common:
   view: 'View'
   name: Name
   stage: Stage
-header:
   login: 'Login'
+header:
+  login: $t(common.login)
   logout: 'Logout'
   tabs:
     groups: 'Groups'

@@ -119,8 +119,8 @@ common:
   view: Widok
   name: Name
   stage: Scena
-header:
   login: 'Zaloguj się'
+header:
   logout: 'Wyloguj się'
   tabs:
     groups: 'Grupy'

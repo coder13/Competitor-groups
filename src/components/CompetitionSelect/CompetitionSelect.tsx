@@ -38,6 +38,7 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
       cacheOptions
       loadOptions={loadOptions}
       placeholder={t('common.competitionSelect.placeholder')}
+      noOptionsMessage={() => t('common.competitionSelect.noOptions')}
       components={{
         Option: CompetitionOption,
       }}

@@ -107,8 +107,8 @@ common:
   search: 'Rechercher'
   view: 'Afficher'
   name: 'Nom'
-header:
   login: 'Connexion'
+header:
   logout: 'Déconnexion'
   tabs:
     groups: 'Groupes'
