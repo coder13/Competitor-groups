@@ -25,7 +25,7 @@ common:
       555bf: 5x5x5 블라인드
       333mbf: 3x3x3 멀티 블라인드
     timeLimit: 기록 제한
-    Cutoff: 컷오프
+    cutoff: 컷오프
     advancement:
       ranking: 상위 <b>{{level}}</b>명이 다음 라운드로 진출
       percent: 상위 <b>{{level}}%</b>가 다음 라운드로 진출
