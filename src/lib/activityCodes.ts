@@ -1,12 +1,8 @@
-import {
-  Competition,
-  EventId,
-  ParsedActivityCode,
-  parseActivityCode as wcaHelperParseActivityCode,
-} from '@wca/helpers';
+import { Competition, parseActivityCode, ParsedActivityCode } from '@wca/helpers';
+import { CompetitionEvent } from '@/extensions/com.delegatedashboard.unofficialEvents';
 import i18n from '@/i18n';
 import { getAllRoundActivities } from './activities';
-import { eventNameById } from './events';
+import { getEventName, isOfficialEventId } from './events';
 import { isValidNumber } from './time';
 
 export const allUniqueActivityCodes = (wcif) => {
@@ -30,72 +26,63 @@ export const nextActivityCode = (wcif: Competition, activityCode: string) => {
   return activityCodes?.[index + 1];
 };
 
-export const parseActivityCode = (activityCode: string): ParsedActivityCode => {
-  if (activityCode.startsWith('other')) {
-    return parseActivityCodeFlexible(activityCode) as ParsedActivityCode;
-  }
-
-  try {
-    return wcaHelperParseActivityCode(activityCode);
-  } catch (_) {
-    console.error(new Error(`Invalid activity code: ${activityCode}`));
-
-    return parseActivityCodeTryReallyHard(activityCode);
-  }
+export type UnofficialParsedActivityCode = {
+  rawEventId: string;
+  eventId: string;
+  roundNumber: number | null;
+  groupNumber: number | null;
+  attemptNumber: number | null;
 };
 
-const regex = /other-(?:(\w+))?(?:-g(\d+))?/;
+export const isUnofficialParsedActivityCode = (
+  parsed: ParsedActivityCode | UnofficialParsedActivityCode,
+): parsed is UnofficialParsedActivityCode => {
+  return (
+    'rawEventId' in parsed &&
+    'eventId' in parsed &&
+    'roundNumber' in parsed &&
+    'groupNumber' in parsed &&
+    'attemptNumber' in parsed
+  );
+};
+
 export const parseActivityCodeFlexible = (
   activityCode: string,
-):
-  | ParsedActivityCode
-  | {
-      eventId: string;
-      roundNumber: 1;
-      groupNumber: number | null;
-      attemptNumber: null;
-    } => {
-  if (activityCode.startsWith('other')) {
-    const [, e, g] = activityCode.match(regex) as string[];
-
-    return {
-      eventId: `other-${e}`,
-      roundNumber: 1,
-      groupNumber: g ? parseInt(g, 10) : null,
-      attemptNumber: null,
-    };
+): ParsedActivityCode | UnofficialParsedActivityCode => {
+  const eventId = activityCode.split('-')[0];
+  if (activityCode.startsWith('other') || !isOfficialEventId(eventId)) {
+    return parseUnofficialActivityCode(activityCode);
   }
 
   return parseActivityCode(activityCode);
 };
 
-export const parseActivityCodeTryReallyHard = (activityCode: string): ParsedActivityCode => {
-  const trimmedInput = activityCode.trim();
-  const parts = trimmedInput.split('-');
-  const eventId = parts[0];
-  const roundNumberPart = parts.find((part) => part.startsWith('r'))?.slice(1);
-  const groupNumberPart = parts.find((part) => part.startsWith('g'))?.slice(1);
-  const attemptNumberPart = parts.find((part) => part.startsWith('a'))?.slice(1);
+const normalizeEventId = (eventId: string): string =>
+  eventId.replace('other-', '').replace('unofficial-', '');
 
-  const roundNumber =
-    roundNumberPart && !isNaN(+roundNumberPart) ? parseInt(roundNumberPart, 10) : null;
-  const groupNumber =
-    groupNumberPart && !isNaN(+groupNumberPart) ? parseInt(groupNumberPart, 10) : null;
-  const attemptNumber =
-    attemptNumberPart && !isNaN(+attemptNumberPart) ? parseInt(attemptNumberPart, 10) : null;
+export const parseUnofficialActivityCode = (activityCode: string): UnofficialParsedActivityCode => {
+  const regex = /^([\w-]+?)(?:-r(\d+))?(?:-g(\d+))?(?:-a(\d+))?$/;
+  const matches = activityCode.match(regex);
+  if (!matches) {
+    throw new Error(`Invalid activity code: ${activityCode}`);
+  }
+
+  const [_, e, r, g, a] = matches;
 
   return {
-    eventId: eventId as EventId,
-    roundNumber,
-    groupNumber,
-    attemptNumber,
+    rawEventId: e,
+    eventId: normalizeEventId(e),
+    roundNumber: r ? parseInt(r, 10) : null,
+    groupNumber: g ? parseInt(g, 10) : null,
+    attemptNumber: a ? parseInt(a, 10) : null,
   };
 };
 
-export const activityCodeToName = (activityCode: string) => {
-  const { eventId, roundNumber, groupNumber, attemptNumber } = parseActivityCode(activityCode);
+export const activityCodeToName = (activityCode: string, event?: CompetitionEvent) => {
+  const { eventId, roundNumber, groupNumber, attemptNumber } =
+    parseActivityCodeFlexible(activityCode);
   return [
-    eventId && eventNameById(eventId as EventId),
+    eventId && getEventName(eventId, event),
     isValidNumber(roundNumber) && i18n.t('common.activityCodeToName.round', { roundNumber }),
     isValidNumber(groupNumber) && i18n.t('common.activityCodeToName.group', { groupNumber }),
     isValidNumber(attemptNumber) && i18n.t('common.activityCodeToName.attempt', { attemptNumber }),

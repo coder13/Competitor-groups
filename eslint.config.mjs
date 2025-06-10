@@ -38,6 +38,7 @@ export default [
           ignoreRestSiblings: true,
         },
       ],
+      'react/prop-types': 'off',
     },
     settings: {
       react: {

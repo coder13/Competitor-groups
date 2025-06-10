@@ -9,6 +9,7 @@ import About from './pages/About';
 import CompetitionEvents from './pages/Competition/ByGroup/Events';
 import CompetitionGroup from './pages/Competition/ByGroup/Group';
 import CompetitionGroupList from './pages/Competition/ByGroup/GroupList';
+import CompetitionCompareSchedules from './pages/Competition/CompareSchedules';
 import CompetitionGroupsOverview from './pages/Competition/GroupsOverview';
 import CompetitionGroupsSchedule from './pages/Competition/GroupsSchedule';
 import CompetitionHome from './pages/Competition/Home';
@@ -90,6 +91,7 @@ const Navigation = () => {
           <Route path="persons/:registrantId" element={<CompetitionPerson />} />
           <Route path="personal-bests/:wcaId" element={<CompetitionPersonalBests />} />
           <Route path="personal-records/:wcaId" element={<CompetitionPersonalBests />} />
+          <Route path="compare-schedules" element={<CompetitionCompareSchedules />} />
 
           <Route path="events" element={<CompetitionEvents />} />
           <Route path="events/:roundId" element={<CompetitionGroupList />} />

@@ -1,5 +1,5 @@
 import { Competition } from '@wca/helpers';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import ReactGA from 'react-ga4';
 import { prefetchCompetition } from '@/hooks/queries/useCompetition';
 import { useWcif } from '@/hooks/queries/useWcif';
@@ -46,8 +46,16 @@ export function WCIFProvider({ competitionId, children }: WCIFProviderProps) {
     };
   }, [wcif, title, competitionId]);
 
+  const value = useMemo(() => {
+    return {
+      competitionId: wcif?.id || competitionId || '',
+      wcif: wcif as Competition,
+      setTitle,
+    };
+  }, [competitionId, wcif]);
+
   return (
-    <WCIFContext.Provider value={{ wcif: wcif as Competition, setTitle }}>
+    <WCIFContext.Provider value={value}>
       {error && (
         <div className="flex">
           <p>Error loading competition: </p>

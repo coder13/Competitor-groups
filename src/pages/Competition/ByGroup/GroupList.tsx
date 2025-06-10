@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Container } from '@/components/Container';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { activityCodeToName } from '@/lib/activityCodes';
+import { getAllEvents } from '@/lib/events';
 import { formatDateTimeRange } from '@/lib/time';
 import { useWCIF, useWcifUtils } from '@/providers/WCIFProvider';
 
@@ -23,10 +24,10 @@ export default function GroupList() {
     setTitle(activityCodeToName(roundId));
   }, [roundId, setTitle]);
 
-  const round = useMemo(
-    () => wcif?.events?.flatMap((e) => e.rounds).find((r) => r.id === roundId),
-    [roundId, wcif?.events],
-  );
+  const round = useMemo(() => {
+    const events = wcif && getAllEvents(wcif);
+    return events?.flatMap((e) => e.rounds).find((r) => r.id === roundId);
+  }, [roundId, wcif]);
 
   const rounds = roundActivies.filter((ra) => ra.activityCode === roundId);
   const groups = rounds.flatMap((r) => r.childActivities);

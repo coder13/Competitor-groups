@@ -1,10 +1,10 @@
 import { parseActivityCode } from '@wca/helpers';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Container } from '@/components/Container';
 import { groupActivitiesByRound } from '@/lib/activities';
-import { eventNameById } from '@/lib/events';
+import { getAllEvents, getEventName } from '@/lib/events';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 function onlyUnique(value, index, self) {
@@ -14,7 +14,7 @@ function onlyUnique(value, index, self) {
 const Events = () => {
   const { t } = useTranslation();
 
-  const { wcif, setTitle } = useWCIF();
+  const { wcif, setTitle, competitionId } = useWCIF();
   const navigate = useNavigate();
 
   const uniqueGroupCountForRound = useCallback(
@@ -27,12 +27,14 @@ const Events = () => {
     [wcif],
   );
 
+  const events = useMemo(() => (wcif ? getAllEvents(wcif) : []), [wcif]);
+
   useEffect(() => {
     setTitle('Events');
   }, [setTitle]);
 
   return (
-    <Container className="">
+    <Container>
       <div className="flex flex-col w-full">
         <br />
         <div className="shadow-md border-slate-300 rounded-md">
@@ -48,16 +50,16 @@ const Events = () => {
               </tr>
             </thead>
             <tbody>
-              {wcif?.events.map((event) =>
+              {events.map((event) =>
                 event.rounds?.map((round, index) => {
-                  const url = `/competitions/${wcif.id}/events/${round.id}`;
+                  const url = `/competitions/${competitionId}/events/${round.id}`;
 
                   return (
                     <tr
                       key={round.id}
                       className="hover:bg-blue-100 border even:bg-slate-50 cursor-pointer"
                       onClick={() => navigate(url)}>
-                      <td className="px-5 py-3">{index === 0 ? eventNameById(event.id) : ''}</td>
+                      <td className="px-5 py-3">{index === 0 ? getEventName(event.id) : ''}</td>
                       <td className="px-5 py-3 text-center">
                         {parseActivityCode(round.id).roundNumber}
                       </td>

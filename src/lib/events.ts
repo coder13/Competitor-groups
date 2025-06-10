@@ -1,4 +1,9 @@
-import { EventId } from '@wca/helpers';
+import { Competition, EventId, Round } from '@wca/helpers';
+import {
+  CompetitionEvent,
+  getUnofficialEventsExtension,
+  isUnofficialEvent,
+} from '@/extensions/com.delegatedashboard.unofficialEvents';
 import i18n from '@/i18n';
 
 export const events: {
@@ -43,3 +48,57 @@ export const shortEventNameById = (eventId: EventId | string, name?: string) =>
 
 const propertyById = (property: string, eventId: EventId) =>
   events.find((event) => event.id === eventId)?.[property];
+
+export const getAllEvents = (wcif: Competition): CompetitionEvent[] => {
+  const events = wcif.events;
+
+  const unofficialEvents = getUnofficialEventsExtension(wcif.extensions).events;
+
+  return [...events, ...unofficialEvents];
+};
+
+export const getAllRounds = (wcif: Competition): Round[] => {
+  const events = getAllEvents(wcif);
+
+  return events.flatMap((event) => event.rounds);
+};
+
+export const getEventName = (eventId: string | EventId, event?: CompetitionEvent) => {
+  if (isOfficialEventId(eventId)) {
+    return i18n.t(`common.wca.events.${eventId}`);
+  }
+
+  if (event && isUnofficialEvent(event)) {
+    return event.name;
+  }
+  return eventId.toUpperCase();
+};
+
+export const getEventShortName = (event: CompetitionEvent) => {
+  if (isUnofficialEvent(event)) {
+    return event.shortName || event.name;
+  }
+
+  return events[event.id].shortName;
+};
+
+export const isOfficialEventId = (eventId: string | EventId): eventId is EventId =>
+  [
+    '333',
+    '222',
+    '444',
+    '555',
+    '666',
+    '777',
+    '333bf',
+    '333fm',
+    '333oh',
+    'minx',
+    'pyram',
+    'clock',
+    'skewb',
+    'sq1',
+    '444bf',
+    '555bf',
+    '333mbf',
+  ].includes(eventId);

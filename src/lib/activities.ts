@@ -15,7 +15,7 @@ import {
 } from '../extensions/org.cubingusa.natshelper.v1';
 import { formatTime, formatToParts, getNumericDateFormatter } from './time';
 import { ActivityWithRoomOrParent, RoundActivity } from './types';
-import { byDate } from './utils';
+import { byDate, unique } from './utils';
 
 export const getVenues = (wcif: Competition) => wcif.schedule.venues;
 
@@ -264,4 +264,34 @@ export const getRoomData = (
   }
 
   return stage;
+};
+
+export const getUniqueStartTimes = (activities: Activity[]) => {
+  const startTimes = activities.map((i) => i.startTime);
+  return startTimes.filter(unique);
+};
+
+export const getUniqueActivityTimes = (activities: Activity[]) => {
+  const startTimes = activities.map((i) => i.startTime);
+  const uniqueStartTimes = startTimes.filter(unique).toSorted();
+
+  return uniqueStartTimes.map((time) => {
+    const activitiesAtStartTime = activities.filter((i) => i.startTime === time);
+
+    return {
+      startTime: time,
+      activities: activitiesAtStartTime,
+    };
+  });
+};
+
+export const doesActivityOverlapInterval = (
+  activity: Activity,
+  startTime: string,
+  endTime: string,
+) => {
+  return (
+    (activity.endTime > startTime && activity.endTime <= endTime) ||
+    (activity.startTime < startTime && activity.endTime > endTime)
+  );
 };

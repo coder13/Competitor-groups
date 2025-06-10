@@ -2,11 +2,13 @@ import { Competition } from '@wca/helpers';
 import { createContext, useContext } from 'react';
 
 export interface IWCIFContextType {
+  competitionId: string;
   wcif?: Competition;
   setTitle: (title: string) => void;
 }
 
 export const WCIFContext = createContext<IWCIFContextType>({
+  competitionId: '',
   wcif: {
     formatVersion: '1.0',
     id: '',

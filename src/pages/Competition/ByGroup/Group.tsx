@@ -9,6 +9,7 @@ import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { getAllRoundActivities, getRooms } from '@/lib/activities';
 import { activityCodeToName, nextActivityCode, prevActivityCode } from '@/lib/activityCodes';
 import { SupportedAssignmentCode } from '@/lib/assignments';
+import { getAllEvents } from '@/lib/events';
 import { formatDateTimeRange } from '@/lib/time';
 import { byName } from '@/lib/utils';
 import { useWCIF } from '@/providers/WCIFProvider';
@@ -18,7 +19,9 @@ const useCommon = () => {
   const { roundId, groupNumber } = useParams();
   const activityCode = `${roundId}-g${groupNumber}` as ActivityCode;
 
-  const round = wcif?.events?.flatMap((e) => e.rounds).find((r) => r.id === roundId);
+  const events = wcif ? getAllEvents(wcif) : [];
+
+  const round = events.flatMap((e) => e.rounds).find((r) => r.id === roundId);
 
   const stages = wcif ? getRooms(wcif) : [];
   const roundActivies = wcif ? getAllRoundActivities(wcif) : [];

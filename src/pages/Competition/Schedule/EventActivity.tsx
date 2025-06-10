@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { getRoomData, getRooms } from '@/lib/activities';
 import { activityCodeToName } from '@/lib/activityCodes';
-import { isRankedBySingle } from '@/lib/events';
+import { getAllEvents, isRankedBySingle } from '@/lib/events';
 import { renderResultByEventId } from '@/lib/results';
 import { formatDateTimeRange } from '@/lib/time';
 import { useWCIF } from '@/providers/WCIFProvider';
@@ -25,7 +25,8 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
 
   const { setTitle, wcif } = useWCIF();
   const { eventId, roundNumber } = parseActivityCode(activity?.activityCode || '');
-  const event = useMemo(() => wcif?.events.find((e) => e.id === eventId), [eventId, wcif?.events]);
+  const events = useMemo(() => (wcif ? getAllEvents(wcif) : []), [wcif]);
+  const event = useMemo(() => events.find((e) => e.id === eventId), [eventId, events]);
 
   const round = useMemo(() => {
     if (!event) {
