@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { getRoomData, getRooms } from '@/lib/activities';
-import { activityCodeToName } from '@/lib/activityCodes';
-import { getAllEvents, isRankedBySingle } from '@/lib/events';
+import { activityCodeToName, parseActivityCodeFlexible } from '@/lib/activityCodes';
+import { getAllEvents, isOfficialEventId, isRankedBySingle } from '@/lib/events';
 import { renderResultByEventId } from '@/lib/results';
 import { formatDateTimeRange } from '@/lib/time';
 import { useWCIF } from '@/providers/WCIFProvider';
@@ -24,7 +24,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
   const { t } = useTranslation();
 
   const { setTitle, wcif } = useWCIF();
-  const { eventId, roundNumber } = parseActivityCode(activity?.activityCode || '');
+  const { eventId, roundNumber } = parseActivityCodeFlexible(activity?.activityCode || '');
   const events = useMemo(() => (wcif ? getAllEvents(wcif) : []), [wcif]);
   const event = useMemo(() => events.find((e) => e.id === eventId), [eventId, events]);
 
@@ -98,6 +98,10 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
 
   const seedResult = useCallback(
     (person) => {
+      if (!isOfficialEventId(eventId)) {
+        return '';
+      }
+
       if (prevRound) {
         const prevRoundResults = prevRound.results?.find(
           (r) => r.personId?.toString() === person.registrantId?.toString(),
@@ -131,6 +135,10 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
 
   const seedRank = useCallback(
     (person) => {
+      if (!isOfficialEventId(eventId)) {
+        return '';
+      }
+
       if (prevRound) {
         const prevRoundResults = prevRound.results?.find(
           (r) => r.personId?.toString() === person.registrantId?.toString(),

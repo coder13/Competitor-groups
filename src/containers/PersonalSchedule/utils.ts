@@ -1,8 +1,15 @@
 import { Activity, Assignment, Competition, Person } from '@wca/helpers';
 import { getWorldAssignmentsExtension } from '@/extensions/com.competitiongroups.worldsassignments';
+import { isUnofficialEvent } from '@/extensions/com.delegatedashboard.unofficialEvents';
 import { getAllActivities, getRooms } from '@/lib/activities';
-import { parseActivityCodeFlexible } from '@/lib/activityCodes';
-import { shortEventNameById } from '@/lib/events';
+import { isUnofficialParsedActivityCode, parseActivityCodeFlexible } from '@/lib/activityCodes';
+import {
+  eventById,
+  events,
+  getEventShortName,
+  isOfficialEventId,
+  shortEventNameById,
+} from '@/lib/events';
 import { formatNumericDate, getNumericDateFormatter } from '@/lib/time';
 import { byDate } from '@/lib/utils';
 
@@ -163,15 +170,26 @@ export const getAssignmentsWithParsedDate = (wcif: Competition, person: Person) 
 };
 
 export const formatBriefActivityName = (activity: Activity) => {
-  const { eventId, roundNumber, attemptNumber } = parseActivityCodeFlexible(activity.activityCode);
+  const parsed = parseActivityCodeFlexible(activity.activityCode);
+  const { eventId, roundNumber, attemptNumber } = parsed;
 
-  return activity.activityCode.startsWith('other')
-    ? activity.name
-    : [
-        `${shortEventNameById(eventId)}`,
-        `${roundNumber && roundNumber > 1 ? `R${roundNumber}` : ''}`,
-        `${attemptNumber ? `A${attemptNumber}` : ''}`,
-      ]
-        .filter(Boolean)
-        .join(' ');
+  if (isOfficialEventId(eventId)) {
+    const event = eventById(eventId);
+    return _formatBriefActivityName(event.shortName, roundNumber, attemptNumber);
+  } else if (isUnofficialParsedActivityCode(parsed)) {
+    return _formatBriefActivityName(eventId.toUpperCase(), roundNumber, attemptNumber);
+  }
+
+  return activity.name;
+};
+
+const _formatBriefActivityName = (
+  eventId: string,
+  roundNumber: number | null,
+  attemptNumber: number | null,
+) => {
+  return [eventId, roundNumber ? `R${roundNumber}` : '', attemptNumber ? `A${attemptNumber}` : '']
+    .filter(Boolean)
+    .join(' ')
+    .trim();
 };

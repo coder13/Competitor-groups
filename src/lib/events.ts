@@ -30,6 +30,29 @@ export const events: {
   { id: '333mbf', name: '3x3x3 Multi-Blind', shortName: 'MBLD' },
 ];
 
+export const isOfficialEventId = (eventId: string | EventId): eventId is EventId =>
+  [
+    '333',
+    '222',
+    '444',
+    '555',
+    '666',
+    '777',
+    '333bf',
+    '333fm',
+    '333oh',
+    'minx',
+    'pyram',
+    'clock',
+    'skewb',
+    'sq1',
+    '444bf',
+    '555bf',
+    '333mbf',
+  ].includes(eventId);
+
+export const eventById = (eventId: EventId) => events.find((event) => event.id === eventId)!;
+
 export const isRankedBySingle = (eventId: EventId) =>
   ['333bf', '444bf', '555bf', '333mbf'].includes(eventId);
 
@@ -74,31 +97,14 @@ export const getEventName = (eventId: string | EventId, event?: CompetitionEvent
   return eventId.toUpperCase();
 };
 
-export const getEventShortName = (event: CompetitionEvent) => {
+export const getEventShortName = (event: CompetitionEvent | EventId) => {
+  if (typeof event === 'string' && isOfficialEventId(event)) {
+    return events[event].shortName;
+  }
+
   if (isUnofficialEvent(event)) {
     return event.shortName || event.name;
   }
 
   return events[event.id].shortName;
 };
-
-export const isOfficialEventId = (eventId: string | EventId): eventId is EventId =>
-  [
-    '333',
-    '222',
-    '444',
-    '555',
-    '666',
-    '777',
-    '333bf',
-    '333fm',
-    '333oh',
-    'minx',
-    'pyram',
-    'clock',
-    'skewb',
-    'sq1',
-    '444bf',
-    '555bf',
-    '333mbf',
-  ].includes(eventId);
