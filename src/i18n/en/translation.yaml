@@ -26,7 +26,7 @@ common:
       '555bf': '5x5x5 Blindfolded'
       '333mbf': '3x3x3 Multi-Blind'
     timeLimit: 'Time Limit'
-    Cutoff: 'Cutoff'
+    cutoff: 'Cutoff'
     cumulativeTimelimit: Time Limit <b>{{time}}</b> with rounds
     advancement:
       ranking: 'Top <b>{{level}}</b> to next round'

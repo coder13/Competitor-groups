@@ -1,10 +1,13 @@
-import { parseActivityCode } from '@wca/helpers';
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { Container } from '@/components/Container';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
-import { activityCodeToName } from '@/lib/activityCodes';
+import {
+  activityCodeToName,
+  parseActivityCodeFlexible,
+  toRoundAttemptId,
+} from '@/lib/activityCodes';
 import { getAllEvents } from '@/lib/events';
 import { formatDateTimeRange } from '@/lib/time';
 import { useWCIF, useWcifUtils } from '@/providers/WCIFProvider';
@@ -29,7 +32,7 @@ export default function GroupList() {
     return events?.flatMap((e) => e.rounds).find((r) => r.id === roundId);
   }, [roundId, wcif]);
 
-  const rounds = roundActivies.filter((ra) => ra.activityCode === roundId);
+  const rounds = roundActivies.filter((ra) => toRoundAttemptId(ra.activityCode) === roundId);
   const groups = rounds.flatMap((r) => r.childActivities);
   const uniqueGroupCodes = [...new Set(groups.map((g) => g.activityCode))];
 
@@ -43,7 +46,7 @@ export default function GroupList() {
       </div>
       <ul className="space-y-2 flex flex-col p-2">
         {[...uniqueGroupCodes.values()].map((value) => {
-          const { groupNumber } = parseActivityCode(value);
+          const { groupNumber } = parseActivityCodeFlexible(value);
           const activities = groups.filter((g) => g.activityCode === value);
           const minStartTime = activities.map((a) => a.startTime).sort()[0];
           const maxEndTime = activities.map((a) => a.endTime).sort()[activities.length - 1];

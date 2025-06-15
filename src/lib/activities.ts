@@ -295,3 +295,6 @@ export const doesActivityOverlapInterval = (
     (activity.startTime < startTime && activity.endTime > endTime)
   );
 };
+
+export const hasActivities = (activityCode: string) => (stage: { activities: Activity[] }) =>
+  stage.activities.some((a) => a.childActivities.some((ca) => ca.activityCode === activityCode));

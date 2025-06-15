@@ -6,8 +6,14 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
 import { Container } from '@/components/Container';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
-import { getAllRoundActivities, getRooms } from '@/lib/activities';
-import { activityCodeToName, nextActivityCode, prevActivityCode } from '@/lib/activityCodes';
+import { getAllRoundActivities, getRooms, hasActivities } from '@/lib/activities';
+import {
+  activityCodeToName,
+  matchesActivityCode,
+  nextActivityCode,
+  prevActivityCode,
+  toRoundId,
+} from '@/lib/activityCodes';
 import { SupportedAssignmentCode } from '@/lib/assignments';
 import { getAllEvents } from '@/lib/events';
 import { formatDateTimeRange } from '@/lib/time';
@@ -24,13 +30,14 @@ const useCommon = () => {
   const round = events.flatMap((e) => e.rounds).find((r) => r.id === roundId);
 
   const stages = wcif ? getRooms(wcif) : [];
-  const roundActivies = wcif ? getAllRoundActivities(wcif) : [];
+  const AllRoundActivities = wcif ? getAllRoundActivities(wcif) : [];
   const multistage = stages.length > 1;
 
   // All activities that relate to the activityCode
-  const childActivities = roundActivies
-    ?.flatMap((activity) => activity.childActivities)
-    .filter((ca) => ca.activityCode === activityCode);
+  const childActivities = AllRoundActivities?.flatMap(
+    (activity) => activity.childActivities,
+  ).filter((ca) => matchesActivityCode(activityCode)(ca.activityCode));
+
   const childActivityIds = childActivities.map((ca) => ca.id);
 
   const personsInActivity = wcif?.persons
@@ -62,7 +69,6 @@ const useCommon = () => {
     groupNumber,
     activityCode,
     stages,
-    roundActivies,
     multistage,
     childActivities,
     personsInActivity,
@@ -103,31 +109,24 @@ export const GroupHeader = () => {
         style={{
           gridTemplateRows: 'auto',
         }}>
-        {stages
-          ?.filter(
-            (stage) =>
-              !!stage.activities.find((a) =>
-                a.childActivities.some((ca) => ca.activityCode === activityCode),
-              ),
-          )
-          .map((stage) => {
-            const activity = stage.activities.find((a) =>
-              a.childActivities.some((ca) => ca.activityCode === activityCode),
-            );
+        {stages?.filter(hasActivities(activityCode)).map((stage) => {
+          const activity = stage.activities.find((a) =>
+            a.childActivities.some((ca) => ca.activityCode === activityCode),
+          );
 
-            return (
-              <Fragment key={stage.id}>
-                {multistage && <div className="col-span-1">{stage.name}:</div>}
-                <div
-                  className={classNames({
-                    'col-span-2': multistage,
-                    'col-span-full': !multistage,
-                  })}>
-                  {activity && formatDateTimeRange(minStartTime, maxEndTime)}
-                </div>
-              </Fragment>
-            );
-          })}
+          return (
+            <Fragment key={stage.id}>
+              {multistage && <div className="col-span-1">{stage.name}:</div>}
+              <div
+                className={classNames({
+                  'col-span-2': multistage,
+                  'col-span-full': !multistage,
+                })}>
+                {activity && formatDateTimeRange(minStartTime, maxEndTime)}
+              </div>
+            </Fragment>
+          );
+        })}
       </div>
       <div className="flex flex-col space-y-1 mt-4">
         {round && <CutoffTimeLimitPanel round={round} className="-m-2" />}

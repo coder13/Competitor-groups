@@ -1,4 +1,4 @@
-import { Competition, parseActivityCode, ParsedActivityCode } from '@wca/helpers';
+import { ActivityCode, Competition, parseActivityCode, ParsedActivityCode } from '@wca/helpers';
 import { CompetitionEvent } from '@/extensions/com.delegatedashboard.unofficialEvents';
 import i18n from '@/i18n';
 import { getAllRoundActivities } from './activities';
@@ -10,7 +10,9 @@ export const allUniqueActivityCodes = (wcif) => {
   const childActivities = roundActivities
     .flatMap((a) => a.childActivities)
     .sort((a, b) => a.startTime.localeCompare(b.startTime));
-  const activityCodes = Array.from(new Set(childActivities.map((a) => a.activityCode)));
+  const activityCodes = Array.from(
+    new Set(childActivities.map((a) => normalizeActivityCode(a.activityCode))),
+  );
   return activityCodes;
 };
 
@@ -89,4 +91,39 @@ export const activityCodeToName = (activityCode: string, event?: CompetitionEven
   ]
     .filter((x) => x)
     .join(', ');
+};
+
+export const toRoundId = (activityCode: ActivityCode | string): string => {
+  const parsedActivityCode = parseActivityCodeFlexible(activityCode);
+  const { eventId, roundNumber } = parsedActivityCode;
+
+  const normalizedEventId = eventId.replace('other-', '').replace('unofficial-', '');
+
+  return `${normalizedEventId}-r${roundNumber}`;
+};
+
+export const toRoundAttemptId = (activityCode: ActivityCode | string): string => {
+  const parsedActivityCode = parseActivityCodeFlexible(activityCode);
+  const { eventId, roundNumber, attemptNumber } = parsedActivityCode;
+
+  const normalizedEventId = eventId.replace('other-', '').replace('unofficial-', '');
+
+  return `${normalizedEventId}-r${roundNumber}${attemptNumber ? `-a${attemptNumber}` : ''}`;
+};
+
+export const normalizeActivityCode = (activityCode: ActivityCode | string): string => {
+  const { eventId, roundNumber, groupNumber, attemptNumber } =
+    parseActivityCodeFlexible(activityCode);
+  return [
+    eventId,
+    isValidNumber(roundNumber) ? `r${roundNumber}` : '',
+    isValidNumber(groupNumber) ? `g${groupNumber}` : '',
+    isValidNumber(attemptNumber) ? `a${attemptNumber}` : '',
+  ]
+    .filter(Boolean)
+    .join('-');
+};
+
+export const matchesActivityCode = (a: ActivityCode | string) => (b: ActivityCode | string) => {
+  return normalizeActivityCode(a) === normalizeActivityCode(b);
 };
