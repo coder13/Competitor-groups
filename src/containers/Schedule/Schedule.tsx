@@ -2,7 +2,7 @@ import { Competition } from '@wca/helpers';
 import { useCallback, useEffect, useMemo } from 'react';
 import { ActivityRow } from '@/components';
 import { useCollapse } from '@/hooks/UseCollapse';
-import { getRooms, getScheduledDays, getVenueForActivity } from '@/lib/activities';
+import { getRoomData, getRooms, getScheduledDays, getVenueForActivity } from '@/lib/activities';
 import { ActivityWithRoomOrParent } from '@/lib/types';
 
 const key = (compId: string) => `${compId}-schedule`;
@@ -41,13 +41,15 @@ const ScheduleDay = ({
         {(collapsed ? [] : activities).map((activity) => {
           const venue = findVenue()(activity);
           const timeZone = venue?.timezone ?? wcif.schedule.venues?.[0]?.timezone ?? '';
+          const room = activity?.parent?.parent?.room || activity?.parent?.room || activity?.room;
+          const stage = room ? getRoomData(room, activity) : undefined;
 
           return (
             <ActivityRow
               key={activity.id}
               activity={activity}
               timeZone={timeZone}
-              room={activity?.parent?.parent?.room || activity?.parent?.room || activity?.room}
+              stage={stage || room}
               showRoom={showRoom}
             />
           );

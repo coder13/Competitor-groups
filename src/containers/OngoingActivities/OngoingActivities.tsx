@@ -61,7 +61,7 @@ export const OngoingActivities = ({ competitionId }: OngoingActivitiesProps) => 
               key={a.id}
               activity={a}
               timeZone={timeZone}
-              room={a?.parent?.parent?.room || a?.parent?.room || a?.room}
+              stage={a?.parent?.parent?.room || a?.parent?.room || a?.room}
               showRoom={false}
             />
           );

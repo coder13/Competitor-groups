@@ -2,18 +2,19 @@ import { Activity, Room, Venue } from '@wca/helpers';
 import classNames from 'classnames';
 import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { Stage } from '@/extensions/org.cubingusa.natshelper.v1/types';
 import { useNow } from '@/hooks/useNow';
 import { activityCodeToName } from '@/lib/activityCodes';
 import { formatTimeRange } from '@/lib/time';
 
 interface ActivityRowProps {
   activity: Activity;
-  room?: Room;
+  stage?: Pick<Stage | Room, 'name' | 'color'>;
   timeZone: Venue['timezone'];
   showRoom?: boolean;
 }
 
-export function ActivityRow({ activity, room, timeZone, showRoom = true }: ActivityRowProps) {
+export function ActivityRow({ activity, stage, timeZone, showRoom = true }: ActivityRowProps) {
   const { competitionId } = useParams();
   const now = useNow();
 
@@ -41,9 +42,9 @@ export function ActivityRow({ activity, room, timeZone, showRoom = true }: Activ
           <span
             className="mr-2 px-1 rounded"
             style={{
-              backgroundColor: `${room?.color}70`,
+              backgroundColor: `${stage?.color}70`,
             }}>
-            {room?.name}
+            {stage?.name}
           </span>
         )}
         <span>{formatTimeRange(activity.startTime, activity.endTime, 5, timeZone)}</span>
