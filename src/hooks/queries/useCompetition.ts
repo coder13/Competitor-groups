@@ -11,7 +11,8 @@ export const useCompetition = (competitionId?: string) => {
   return useQuery<ApiCompetition>({
     ...competitionQuery(competitionId ?? ''),
     networkMode: 'offlineFirst',
-    gcTime: 1000 * 60 * 5,
+    staleTime: 60 * 60 * 1000, // 1 hour
+    gcTime: 24 * 60 * 60 * 1000, // 24 hours
     enabled: !!competitionId,
   });
 };

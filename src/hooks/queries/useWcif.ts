@@ -6,8 +6,16 @@ import { queryClient } from '@/providers/QueryProvider';
 export const useWcif = (competitionId?: string) =>
   useQuery<Competition>({
     queryKey: ['wcif', competitionId],
-    queryFn: () => fetchWcif(competitionId!),
-    initialData: () => {
+    queryFn: () => {
+      return fetchWcif(competitionId!);
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 24 * 60 * 60 * 1000, // 24 hours
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: 5 * 60 * 1000, // 5 minutes
+    refetchOnReconnect: true,
+    placeholderData: () => {
       const upcomingComps =
         queryClient
           .getQueryData<InfiniteData<CondensedApiCompetiton[]>>(['upcomingCompetitions'])
