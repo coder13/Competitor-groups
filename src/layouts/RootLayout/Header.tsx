@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
 import { useCompetition } from '@/hooks/queries/useCompetition';
 import { useAuth } from '@/providers/AuthProvider';
 
 export default function Header() {
+  const { t } = useTranslation();
   const { user, signIn, signOut } = useAuth();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -49,7 +51,7 @@ export default function Header() {
         </Popover>
       ) : (
         <button onClick={signIn} className="text-blue-500 mx-2">
-          Login
+          {t('common.login')}
         </button>
       )}
     </header>

@@ -10,7 +10,7 @@ export default function Home() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    document.title = t('common.title');
+    document.title = t('common.appName');
   }, [t]);
 
   return (

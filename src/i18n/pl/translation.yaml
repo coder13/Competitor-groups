@@ -26,7 +26,7 @@ common:
       '555bf': '5x5x5 Bez patrzenia'
       '333mbf': '3x3x3 Wiele kostek bez patrzenia'
     timeLimit: 'Limit czasowy'
-    Cutoff: 'Cutoff'
+    cutoff: 'Cutoff'
     advancement:
       ranking: 'Najlepsze <b>{{level}}</b> osób awansuje do następnej rundy'
       percent: 'Najlepsze <b>{{level}}%</b> osób awansuje do następnej rundy'
@@ -119,8 +119,8 @@ common:
   view: Widok
   name: Name
   stage: Scena
-header:
   login: 'Zaloguj się'
+header:
   logout: 'Wyloguj się'
   tabs:
     groups: 'Grupy'
