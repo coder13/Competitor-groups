@@ -1,9 +1,6 @@
 import { AssignmentCode } from '@wca/helpers';
 import { useTranslation } from 'react-i18next';
-
-const Container = ({ children, className }: React.PropsWithChildren<{ className?: string }>) => (
-  <span className={`${className} px-[6px] py-[4px] rounded-md bg-blue-100`}>{children}</span>
-);
+import { Pill } from '../Pill';
 
 interface AssignmentLabelProps {
   assignmentCode: AssignmentCode;
@@ -14,11 +11,11 @@ export function AssignmentLabel({ assignmentCode }: AssignmentLabelProps) {
 
   if (assignmentCode.match(/judge/i)) {
     return (
-      <Container className="bg-blue-200">
+      <Pill className="bg-blue-200">
         {t('common.assignments.staff-judge.noun', {
           defaultValue: assignmentCode.replace('staff-', ''),
         })}
-      </Container>
+      </Pill>
     );
   }
 
@@ -28,20 +25,20 @@ export function AssignmentLabel({ assignmentCode }: AssignmentLabelProps) {
 
   switch (assignmentCode) {
     case 'competitor':
-      return <Container className="bg-green-200">{name}</Container>;
+      return <Pill className="bg-green-200">{name}</Pill>;
     case 'staff-scrambler':
-      return <Container className="bg-yellow-200">{name}</Container>;
+      return <Pill className="bg-yellow-200">{name}</Pill>;
     case 'staff-runner':
-      return <Container className="bg-orange-200">{name}</Container>;
+      return <Pill className="bg-orange-200">{name}</Pill>;
     case 'staff-dataentry':
-      return <Container className="bg-cyan-200">{name}</Container>;
+      return <Pill className="bg-cyan-200">{name}</Pill>;
     case 'staff-announcer':
-      return <Container className="bg-violet-200">{name}</Container>;
+      return <Pill className="bg-violet-200">{name}</Pill>;
     case 'staff-delegate':
-      return <Container className="bg-purple-200">{name}</Container>;
+      return <Pill className="bg-purple-200">{name}</Pill>;
     case 'staff-stagelead':
-      return <Container className="bg-purple-800">{name}</Container>;
+      return <Pill className="bg-purple-800">{name}</Pill>;
     default:
-      return <Container>{name}</Container>;
+      return <Pill className="bg-blue-100">{name}</Pill>;
   }
 }

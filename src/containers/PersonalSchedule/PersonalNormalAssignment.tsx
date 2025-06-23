@@ -2,6 +2,7 @@ import { Assignment } from '@wca/helpers';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { AssignmentLabel } from '@/components';
+import { Pill } from '@/components/Pill';
 import { parseActivityCodeFlexible } from '@/lib/activityCodes';
 import { ActivityWithRoomOrParent } from '@/lib/types';
 import { roundTime } from '@/lib/utils';
@@ -42,7 +43,7 @@ export const PersonalNormalAssignment = ({
 }: PersonalNormalAssignmentProps) => {
   const roundedStartTime = roundTime(new Date(activity?.startTime || 0), 5);
 
-  const formattedStartTime = roundedStartTime.toLocaleTimeString([], {
+  const formattedStartTime = roundedStartTime.toLocaleTimeString(navigator.language, {
     hour: '2-digit',
     minute: '2-digit',
     timeZone,
@@ -70,24 +71,20 @@ export const PersonalNormalAssignment = ({
           {formatBriefActivityName(activity)}
         </td>
       )}
-      <td className="py-2 text-center">{formattedStartTime}</td>
-      <td className="py-2 text-center">
+      <td className="py-2 text-center min-w-[5em]">{formattedStartTime}</td>
+      <td className="py-2 text-center text-xs sm:text-sm">
         <AssignmentLabel assignmentCode={assignment.assignmentCode} />
       </td>
       <td className="py-2 text-center text-base sm:text-lg">{groupNumber}</td>
       {showRoom && (
-        <td
-          className="py-2 text-center"
-          style={{
-            lineHeight: 2,
-          }}>
-          <span
-            className="px-[6px]  py-[4px]  rounded-md"
+        <td className="py-2 text-center text-xs sm:text-sm" style={{}}>
+          <Pill
+            className="min-w-[7em]"
             style={{
               backgroundColor: room.color ? `${room.color}70` : 'inherit',
             }}>
             {room.name}
-          </span>
+          </Pill>
         </td>
       )}
       {showStationNumber && <td className="py-2 text-center">{assignment.stationNumber}</td>}

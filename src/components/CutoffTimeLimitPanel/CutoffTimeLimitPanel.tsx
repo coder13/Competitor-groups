@@ -27,8 +27,8 @@ export function CutoffTimeLimitPanel({
 
   return (
     <div className={classNames('flex w-full', className)}>
-      <div className="flex flex-col space-y-1 flex-1">
-        <div className="divide-x-2 divide-gray-100">
+      <div className="flex flex-col space-y-1 flex-1 -mx-2">
+        <div className="divide-x-2 divide-gray-100 flex">
           {cutoff && (
             <span className="px-2">
               {t('common.wca.cutoff')}:{' '}

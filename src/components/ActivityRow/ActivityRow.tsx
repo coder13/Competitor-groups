@@ -6,6 +6,7 @@ import { Stage } from '@/extensions/org.cubingusa.natshelper.v1/types';
 import { useNow } from '@/hooks/useNow';
 import { activityCodeToName } from '@/lib/activityCodes';
 import { formatTimeRange } from '@/lib/time';
+import { Pill } from '../Pill';
 
 interface ActivityRowProps {
   activity: Activity;
@@ -38,14 +39,14 @@ export function ActivityRow({ activity, stage, timeZone, showRoom = true }: Acti
       to={`/competitions/${competitionId}/activities/${activity.id}`}>
       <span>{activityName}</span>
       <span className="text-xs md:text-sm font-light flex justify-between">
-        {showRoom && (
-          <span
+        {showRoom && stage && (
+          <Pill
             className="mr-2 px-1 rounded"
             style={{
-              backgroundColor: `${stage?.color}70`,
+              backgroundColor: `${stage.color}70`,
             }}>
-            {stage?.name}
-          </span>
+            {stage.name}
+          </Pill>
         )}
         <span>{formatTimeRange(activity.startTime, activity.endTime, 5, timeZone)}</span>
       </span>

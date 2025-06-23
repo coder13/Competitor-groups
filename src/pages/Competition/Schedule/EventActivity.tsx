@@ -1,7 +1,8 @@
-import { Activity, AssignmentCode, parseActivityCode, Person } from '@wca/helpers';
+import { Activity, AssignmentCode, Person } from '@wca/helpers';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { getRoomData, getRooms } from '@/lib/activities';
 import { activityCodeToName, parseActivityCodeFlexible } from '@/lib/activityCodes';
@@ -25,8 +26,10 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
 
   const { setTitle, wcif } = useWCIF();
   const { eventId, roundNumber } = parseActivityCodeFlexible(activity?.activityCode || '');
-  const events = useMemo(() => (wcif ? getAllEvents(wcif) : []), [wcif]);
-  const event = useMemo(() => events.find((e) => e.id === eventId), [eventId, events]);
+  const event = useMemo(
+    () => wcif && getAllEvents(wcif).find((e) => e.id === eventId),
+    [eventId, wcif],
+  );
 
   const round = useMemo(() => {
     if (!event) {
@@ -176,30 +179,34 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
   const anyCompetitorHasStationNumber = competitors.some(stationNumber('competitor'));
 
   const activityName = activityCodeToName(activity.activityCode);
-  const activityNameSplit = activityName.split(', ');
 
-  const roundName = activityNameSplit.slice(0, 2).join(', ');
-  const groupName = activityNameSplit.slice(-1);
+  const groupNumber = parseActivityCodeFlexible(activity.activityCode).groupNumber;
 
   return (
     <>
       {wcif && (
-        <div className="p-2 space-y-2">
-          <h3 className="font-bold" style={{ lineHeight: 2 }}>
-            <Link
-              className="px-3 py-2 rounded mr-2 hover:underline"
-              style={{
-                backgroundColor: `${roomData?.color}70`,
-              }}
-              to={`/competitions/${wcif.id}/rooms/${room?.id}`}>
-              {roomData?.name}
-            </Link>
-            <Link to={`/competitions/${wcif.id}/events/${round?.id}`} className="hover:underline">
-              {roundName}
-            </Link>
-            {', '}
-            <span>{groupName}</span>
-          </h3>
+        <div className="p-2 space-y-2 text-sm">
+          <Breadcrumbs
+            breadcrumbs={[
+              {
+                href: `/competitions/${wcif.id}/rooms/${room?.id}`,
+                label: roomData?.name || '',
+                pillProps: { style: { backgroundColor: `${roomData?.color}70` } },
+              },
+              ...(round
+                ? [
+                    {
+                      href: `/competitions/${wcif.id}/events/${round.id}/${groupNumber}`,
+                      label: activityName,
+                    },
+                  ]
+                : [
+                    {
+                      label: activityName,
+                    },
+                  ]),
+            ]}
+          />
           <div className="space-y-1">
             <span className="px-2">
               {formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}
@@ -209,46 +216,48 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
         </div>
       )}
       <hr className="mb-2" />
-      <div>
-        <h4 className="bg-green-200 pb-1 text-lg font-bold text-center shadow-md py-3 px-6">
-          {t('common.assignments.competitor.noun')}{' '}
-          <span className="text-sm">({competitors.length})</span>
-        </h4>
-        <table className="w-full text-left">
-          <thead>
-            <tr className="text-xs lg:text-sm bg-green-200 shadow-md">
-              <th className="pt-1 pb-3 px-6">{t('common.name')}</th>
-              <th className="pt-1 pb-3 px-6">{t('competition.eventActivity.seedResult')}</th>
-              {anyCompetitorHasStationNumber && (
-                <th className="pt-1 pb-3 px-6">{t('competition.eventActivity.stationNumber')}</th>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {competitors
-              .map((person) => ({
-                ...person,
-                seedResult: seedResult(person),
-                seedRank: seedRank(person),
-              }))
-              .sort((a, b) => {
-                return (a.seedRank || 999999999) - (b.seedRank || 999999999);
-              })
-              .map((person) => (
-                <Link
-                  key={person.registrantId}
-                  className="table-row even:bg-green-50 hover:opacity-80"
-                  to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
-                  <td className="py-3 px-6">{person.name}</td>
-                  <td className="py-3 px-6">{person.seedResult}</td>
-                  {anyCompetitorHasStationNumber && (
-                    <td className="py-3 px-6">{stationNumber('competitor')(person)}</td>
-                  )}
-                </Link>
-              ))}
-          </tbody>
-        </table>
-      </div>
+      {competitors.length > 0 && (
+        <div>
+          <h4 className="bg-green-200 pb-1 text-lg font-bold text-center shadow-md py-3 px-6">
+            {t('common.assignments.competitor.noun')}{' '}
+            <span className="text-sm">({competitors.length})</span>
+          </h4>
+          <table className="w-full text-left">
+            <thead>
+              <tr className="text-xs lg:text-sm bg-green-200 shadow-md">
+                <th className="pt-1 pb-3 px-6">{t('common.name')}</th>
+                <th className="pt-1 pb-3 px-6">{t('competition.eventActivity.seedResult')}</th>
+                {anyCompetitorHasStationNumber && (
+                  <th className="pt-1 pb-3 px-6">{t('competition.eventActivity.stationNumber')}</th>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {competitors
+                .map((person) => ({
+                  ...person,
+                  seedResult: seedResult(person),
+                  seedRank: seedRank(person),
+                }))
+                .sort((a, b) => {
+                  return (a.seedRank || 999999999) - (b.seedRank || 999999999);
+                })
+                .map((person) => (
+                  <Link
+                    key={person.registrantId}
+                    className="table-row even:bg-green-50 hover:opacity-80"
+                    to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
+                    <td className="py-3 px-6">{person.name}</td>
+                    <td className="py-3 px-6">{person.seedResult}</td>
+                    {anyCompetitorHasStationNumber && (
+                      <td className="py-3 px-6">{stationNumber('competitor')(person)}</td>
+                    )}
+                  </Link>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      )}
       <PeopleList
         competitionId={competitionId}
         activity={activity}

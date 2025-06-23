@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
+import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
 import { Container } from '@/components/Container';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import {
@@ -38,10 +39,16 @@ export default function GroupList() {
 
   return (
     <Container className="">
-      <div className="p-2 space-y-3">
-        <h3 className="text-2xl">{roundId && activityCodeToName(roundId)}</h3>
+      <div className="p-2 space-y-2">
+        <Breadcrumbs
+          breadcrumbs={[
+            {
+              label: roundId ? activityCodeToName(roundId) : t('competition.groups.allGroups'),
+            },
+          ]}
+        />
         <div className="flex flex-col space-y-1">
-          {round && <CutoffTimeLimitPanel round={round} className="-m-2" />}
+          {round && <CutoffTimeLimitPanel round={round} className="" />}
         </div>
       </div>
       <ul className="space-y-2 flex flex-col p-2">
@@ -57,10 +64,10 @@ export default function GroupList() {
               className=" border bg-white list-none rounded-md px-3 py-2 flex cursor-pointer hover:bg-blue-200 group transition-colors flex-row"
               key={value}>
               <li className="flex flex-col">
-                <span className="text-xl">
+                <span className="text-lg">
                   {t('common.activityCodeToName.group', { groupNumber })}
                 </span>
-                <span className="text-sm">{formatDateTimeRange(minStartTime, maxEndTime)}</span>
+                <span className="text-xs">{formatDateTimeRange(minStartTime, maxEndTime)}</span>
               </li>
             </Link>
           );

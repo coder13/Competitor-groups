@@ -3,18 +3,25 @@ import classNames from 'classnames';
 import { Fragment, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { ActivityRow } from '@/components';
 import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
+import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
 import { Container } from '@/components/Container';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
-import { getAllRoundActivities, getRooms, hasActivities } from '@/lib/activities';
+import {
+  getAllRoundActivities,
+  getRooms,
+  getVenueForActivity,
+  hasActivities,
+} from '@/lib/activities';
 import {
   activityCodeToName,
   matchesActivityCode,
   nextActivityCode,
   prevActivityCode,
-  toRoundId,
+  toRoundAttemptId,
 } from '@/lib/activityCodes';
-import { SupportedAssignmentCode } from '@/lib/assignments';
+import { GroupAssignmentCodeRank } from '@/lib/constants';
 import { getAllEvents } from '@/lib/events';
 import { formatDateTimeRange } from '@/lib/time';
 import { byName } from '@/lib/utils';
@@ -27,10 +34,19 @@ const useCommon = () => {
 
   const events = wcif ? getAllEvents(wcif) : [];
 
-  const round = events.flatMap((e) => e.rounds).find((r) => r.id === roundId);
+  const rounds = events.flatMap((e) => e.rounds);
+  const round = rounds.find((r) => r.id === roundId);
 
-  const stages = wcif ? getRooms(wcif) : [];
-  const AllRoundActivities = wcif ? getAllRoundActivities(wcif) : [];
+  const AllRoundActivities = wcif
+    ? getAllRoundActivities(wcif).filter((a) => {
+        return !!rounds.some((r) => r.id === toRoundAttemptId(a.activityCode));
+      })
+    : [];
+  const stages = wcif
+    ? getRooms(wcif).filter((room) =>
+        room.activities.some((a) => AllRoundActivities.some((b) => a.id === b.id)),
+      )
+    : [];
   const multistage = stages.length > 1;
 
   // All activities that relate to the activityCode
@@ -75,18 +91,6 @@ const useCommon = () => {
   };
 };
 
-export const GroupAssignmentCodeRank: SupportedAssignmentCode[] = [
-  'staff-delegate',
-  'staff-announcer',
-  'staff-stagelead',
-  'staff-dataentry',
-  'staff-scrambler',
-  'staff-runner',
-  'staff-judge',
-  'staff-other',
-  'competitor',
-];
-
 export default function Group() {
   return (
     <>
@@ -97,39 +101,63 @@ export default function Group() {
 }
 
 export const GroupHeader = () => {
+  const { wcif, competitionId } = useWCIF();
   const { round, activityCode, multistage, stages, childActivities } = useCommon();
   const minStartTime = childActivities?.map((a) => a.startTime).sort()[0];
   const maxEndTime = childActivities?.map((a) => a.endTime).sort()[childActivities.length - 1];
 
+  const activityName = activityCodeToName(activityCode);
+  const activityNameSplit = activityName.split(', ');
+
+  const roundName = activityNameSplit.slice(0, 2).join(', ');
+  const groupName = activityNameSplit ? activityNameSplit.slice(-1).join('') : undefined;
+  const getVenue = wcif && getVenueForActivity(wcif);
+
   return (
-    <div className="p-2">
-      <h3 className="text-2xl">{activityCodeToName(activityCode)}</h3>
-      <div
-        className="grid grid-cols-3"
-        style={{
-          gridTemplateRows: 'auto',
-        }}>
+    <div className="p-2 space-y-2">
+      <div className="space-x-1">
+        <Breadcrumbs
+          breadcrumbs={[
+            {
+              href: `/competitions/${competitionId}/events/${round?.id}`,
+              label: roundName || '',
+            },
+            {
+              label: groupName || '',
+            },
+          ]}
+        />
+      </div>
+
+      <GroupButtonMenu />
+      <div className="flex flex-col space-y-1">
+        {round && <CutoffTimeLimitPanel round={round} className="" />}
+      </div>
+      <div className="flex flex-col -mx-2">
         {stages?.filter(hasActivities(activityCode)).map((stage) => {
           const activity = stage.activities.find((a) =>
             a.childActivities.some((ca) => ca.activityCode === activityCode),
           );
+          if (!activity) {
+            return null;
+          }
+          const venue = stage.venue;
+          const timeZone = venue.timezone;
 
           return (
             <Fragment key={stage.id}>
-              {multistage && <div className="col-span-1">{stage.name}:</div>}
+              {/* {multistage && <div className="col-span-1">{stage.name}:</div>}
               <div
                 className={classNames({
                   'col-span-2': multistage,
                   'col-span-full': !multistage,
                 })}>
                 {activity && formatDateTimeRange(minStartTime, maxEndTime)}
-              </div>
+              </div> */}
+              <ActivityRow activity={activity} stage={stage} timeZone={timeZone} />
             </Fragment>
           );
         })}
-      </div>
-      <div className="flex flex-col space-y-1 mt-4">
-        {round && <CutoffTimeLimitPanel round={round} className="-m-2" />}
       </div>
     </div>
   );
@@ -139,10 +167,9 @@ export const MobileGroupView = () => {
   const { wcif, personsInActivity, multistage } = useCommon();
 
   return (
-    <Container className="space-y-2 md:hidden flex flex-col">
+    <Container className="space-y-2 md:hidden flex flex-col ">
       <GroupHeader />
-      <GroupButtonMenu />
-      <div className="">
+      <div>
         {GroupAssignmentCodeRank.filter((assignmentCode) =>
           personsInActivity?.some((person) => person.assignment?.assignmentCode === assignmentCode),
         ).map((assignmentCode) => {
@@ -153,39 +180,41 @@ export const MobileGroupView = () => {
 
           return (
             <Fragment key={assignmentCode}>
-              <div className="col-span-3 flex flex-col">
-                <AssignmentCodeCell
-                  as="div"
-                  border
-                  assignmentCode={assignmentCode}
-                  count={personsInActivityWithAssignment.length}
-                  className="p-1 mt-2 drop-shadow-lg font-bold"
-                />
-                <div className="">
-                  {personsInActivityWithAssignment
-                    .sort((a, b) => {
-                      const stageSort = (a.stage?.name || '').localeCompare(b.stage?.name || '');
-                      return stageSort !== 0 ? stageSort : byName(a, b);
-                    })
-                    ?.map((person) => (
-                      <Link
-                        key={person.registrantId}
-                        to={`/competitions/${wcif?.id}/persons/${person.registrantId}`}
-                        className="grid grid-cols-3 grid-rows-1 hover:opacity-80">
-                        <div className="col-span-2 p-1">{person.name}</div>
-                        {multistage && (
-                          <div
-                            className="col-span-1 p-1"
-                            style={{
-                              backgroundColor: person.stage?.color
-                                ? `${person.stage?.color}7f`
-                                : undefined,
-                            }}>
-                            {person.stage && person.stage.name}
-                          </div>
-                        )}
-                      </Link>
-                    ))}
+              <div className="flex flex-col space-y-2">
+                <div>
+                  <AssignmentCodeCell
+                    as="div"
+                    border
+                    assignmentCode={assignmentCode}
+                    count={personsInActivityWithAssignment.length}
+                    className="p-1 drop-shadow-lg font-bold"
+                  />
+                  <div>
+                    {personsInActivityWithAssignment
+                      .sort((a, b) => {
+                        const stageSort = (a.stage?.name || '').localeCompare(b.stage?.name || '');
+                        return stageSort !== 0 ? stageSort : byName(a, b);
+                      })
+                      ?.map((person) => (
+                        <Link
+                          key={person.registrantId}
+                          to={`/competitions/${wcif?.id}/persons/${person.registrantId}`}
+                          className="grid grid-cols-3 grid-rows-1 hover:opacity-80">
+                          <div className="col-span-2 p-1">{person.name}</div>
+                          {multistage && (
+                            <div
+                              className="col-span-1 p-1"
+                              style={{
+                                backgroundColor: person.stage?.color
+                                  ? `${person.stage?.color}7f`
+                                  : undefined,
+                              }}>
+                              {person.stage && person.stage.name}
+                            </div>
+                          )}
+                        </Link>
+                      ))}
+                  </div>
                 </div>
               </div>
             </Fragment>
@@ -202,7 +231,6 @@ const DesktopGroupView = () => {
   return (
     <Container className="space-y-2 md:w-2/3 hidden md:flex flex-col" fullWidth>
       <GroupHeader />
-      <GroupButtonMenu />
       <div
         className="grid"
         style={{
@@ -305,7 +333,7 @@ export const GroupButtonMenu = () => {
   }, [wcif, activityCode, goToPrev, goToNext]);
 
   return (
-    <div className="px-2 flex space-x-2">
+    <div className="flex space-x-2">
       <Link
         to={prevUrl || ''}
         className={classNames(

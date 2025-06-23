@@ -5,8 +5,8 @@ import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
 import { useNow } from '@/hooks/useNow/useNow';
 import { useOngoingActivities } from '@/hooks/useOngoingActivities';
 import { getAllChildActivities, getAllRoundActivities, getRooms } from '@/lib/activities';
+import { GroupAssignmentCodeRank } from '@/lib/constants';
 import { formatTime } from '@/lib/time';
-import { GroupAssignmentCodeRank } from '@/pages/Competition/ByGroup/Group';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 const useCommon = (competitionId: string) => {

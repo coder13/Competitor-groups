@@ -12,7 +12,7 @@ export const Container = ({ children, className, fullWidth = false }: ContainerP
       className={classNames(
         'flex flex-col w-full h-max',
         {
-          'lg:w-1/2 md:w-2/3': !fullWidth,
+          'max-w-screen-md': !fullWidth,
         },
         className,
       )}>

@@ -3,10 +3,9 @@ import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container } from '@/components/Container';
 import { getAllActivities } from '@/lib/activities';
-import { activityCodeToName, parseActivityCodeFlexible } from '@/lib/activityCodes';
+import { activityCodeToName } from '@/lib/activityCodes';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { EventActivity } from './EventActivity';
-import { OtherActivity } from './OtherActivity';
 
 export function CompetitionActivity() {
   const { wcif } = useWCIF();
@@ -33,7 +32,11 @@ export function CompetitionActivity() {
     [wcif, activityId],
   );
 
-  if (!activity) {
+  if (!wcif) {
+    <Container />;
+  }
+
+  if (wcif && !activity) {
     return (
       <Container>
         <h2>Activity not found</h2>
@@ -41,15 +44,10 @@ export function CompetitionActivity() {
     );
   }
 
-  const { eventId } = parseActivityCodeFlexible(activity.activityCode);
-
-  const isEventGroup = !eventId?.startsWith('other');
-  const GroupComponent = isEventGroup ? EventActivity : OtherActivity;
-
   return (
     <Container>
       {wcif?.id && activity && everyoneInActivity && (
-        <GroupComponent competitionId={wcif.id} activity={activity} persons={everyoneInActivity} />
+        <EventActivity competitionId={wcif.id} activity={activity} persons={everyoneInActivity} />
       )}
     </Container>
   );

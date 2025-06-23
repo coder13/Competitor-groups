@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { ActivityRow, Container } from '@/components';
-import { getAllChildActivities } from '@/lib/activities';
+import { getAllChildActivities, getRoomData } from '@/lib/activities';
 import { formatToParts } from '@/lib/time';
 import { byDate } from '@/lib/utils';
 import { useWCIF } from '@/providers/WCIFProvider';
@@ -116,13 +116,14 @@ export function CompetitionRoom() {
             <p className="w-full text-center bg-slate-50 font-bold text-lg mb-1">{day.date}</p>
             <div className="flex flex-col">
               {getActivitiesByDate(day.date).map((activity) => {
+                const stage = room && getRoomData(room, activity);
                 return (
                   <ActivityRow
                     key={activity.id}
                     activity={activity}
                     timeZone={timeZone}
-                    room={room}
-                    showRoom={false}
+                    stage={stage}
+                    showRoom={!!stage}
                   />
                 );
               })}
