@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
 import { useCompetition } from '@/hooks/queries/useCompetition';
 import { useAuth } from '@/providers/AuthProvider';
+import { useWCIF } from '@/providers/WCIFProvider';
 
 export default function Header() {
   const { t } = useTranslation();
@@ -11,7 +13,35 @@ export default function Header() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const { competitionId } = useParams();
+
+  const queryClient = useQueryClient();
+
   const { data: comp } = useCompetition(competitionId);
+  const { wcif } = useWCIF();
+
+  const competitioName = useMemo(() => {
+    if (comp?.name) {
+      return comp.name;
+    }
+    if (wcif?.name) {
+      return wcif.name;
+    }
+
+    const upcomingCompetitions =
+      queryClient.getQueryData<CondensedApiCompetiton[]>(['upcomingCompetitions']) ?? [];
+    const myCompetitions =
+      queryClient.getQueryData<CondensedApiCompetiton[]>(['userCompetitions']) ?? [];
+
+    const competition =
+      upcomingCompetitions?.find((c) => c.id === competitionId) ||
+      myCompetitions?.find((c) => c.id === competitionId);
+
+    if (competition) {
+      return competition.name;
+    }
+
+    return undefined;
+  }, [comp, competitionId, queryClient, wcif]);
 
   return (
     <header className="flex w-full shadow-md p-2 h-12 items-center print:hidden z-20 bg-white">
@@ -21,7 +51,7 @@ export default function Header() {
         </Link>
         <span>{' / '}</span>
         <Link to={`/competitions/${comp?.id || competitionId}`} className="text-blue-500">
-          {comp?.short_name}
+          {competitioName}
         </Link>
       </div>
       <div className="flex flex-1" />

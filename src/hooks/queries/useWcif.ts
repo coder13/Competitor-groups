@@ -9,11 +9,12 @@ export const useWcif = (competitionId?: string) =>
     queryFn: () => {
       return fetchWcif(competitionId!);
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    // staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 24 * 60 * 60 * 1000, // 24 hours
-    refetchInterval: 5 * 60 * 1000, // 5 minutes
+    // refetchInterval: 5 * 60 * 1000, // 5 minutes
     refetchOnMount: true,
     refetchOnWindowFocus: true,
+    networkMode: 'always',
     refetchOnReconnect: true,
     placeholderData: () => {
       const upcomingComps =
