@@ -11,9 +11,9 @@ export const useWcif = (competitionId?: string) =>
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 24 * 60 * 60 * 1000, // 24 hours
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
     refetchInterval: 5 * 60 * 1000, // 5 minutes
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     placeholderData: () => {
       const upcomingComps =
