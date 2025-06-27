@@ -21,7 +21,7 @@ export function PersonalScheduleContainer({ person }: PersonalScheduleContainerP
       <PersonHeader competitionId={competitionId} person={person} />
 
       <hr className="my-2" />
-      <DisclaimerText />
+      <DisclaimerText className="mx-1" />
       <hr className="my-2" />
 
       {wcif && (

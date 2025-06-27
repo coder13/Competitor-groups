@@ -1,4 +1,6 @@
 export const UserRow = ({ user }: { user: User }) => {
+  const avatarUrl = user.avatar?.thumb_url;
+
   return (
     <li className="w-full rounded flex border border-slate-400 space-x-2 justify-between hover:bg-slate-100 hover:border-slate-500 shadow transition-all">
       <a
@@ -7,7 +9,7 @@ export const UserRow = ({ user }: { user: User }) => {
         href={user.wca_id && `https://www.worldcubeassociation.org/persons/${user.wca_id}`}
         target="_blank"
         rel="noreferrer">
-        <img className="w-16 h-16 rounded-l" src={user.avatar?.thumb_url} alt={user.name} />
+        <img className="w-16 h-16 rounded-l object-contain" src={avatarUrl} alt={user.name} />
         <div className="flex flex-1 flex-col px-2">
           <span className="text-xl">{user.name}</span>
           <span className="text-xs">{user.wca_id}</span>
