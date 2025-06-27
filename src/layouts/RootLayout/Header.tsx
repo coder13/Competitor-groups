@@ -27,14 +27,19 @@ export default function Header() {
       return wcif.name;
     }
 
-    const upcomingCompetitions =
-      queryClient.getQueryData<CondensedApiCompetiton[]>(['upcomingCompetitions']) ?? [];
-    const myCompetitions =
-      queryClient.getQueryData<CondensedApiCompetiton[]>(['userCompetitions']) ?? [];
+    const upcomingCompetitions = queryClient.getQueryData<{ pages: CondensedApiCompetiton[][] }>([
+      'upcomingCompetitions',
+    ]);
+    const myCompetitions = queryClient.getQueryData<{ pages: CondensedApiCompetiton[][] }>([
+      'userCompetitions',
+    ]);
 
-    const competition =
-      upcomingCompetitions?.find((c) => c.id === competitionId) ||
-      myCompetitions?.find((c) => c.id === competitionId);
+    const allCompetitions = [
+      ...(upcomingCompetitions?.pages?.flat() || []),
+      ...(myCompetitions?.pages?.flat() || []),
+    ];
+
+    const competition = allCompetitions?.find((c) => c.id === competitionId);
 
     if (competition) {
       return competition.name;
@@ -49,7 +54,7 @@ export default function Header() {
         <Link to="/" className="text-blue-500">
           <i className="fa fa-home" />
         </Link>
-        <span>{' / '}</span>
+        {competitionId && <span>{' / '}</span>}
         <Link to={`/competitions/${comp?.id || competitionId}`} className="text-blue-500">
           {competitioName}
         </Link>

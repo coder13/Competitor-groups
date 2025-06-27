@@ -37,7 +37,7 @@ export default function PersonPage() {
 
   return (
     <Container>
-      <PersonalScheduleContainer wcif={wcif} person={person} />
+      <PersonalScheduleContainer person={person} />
     </Container>
   );
 }

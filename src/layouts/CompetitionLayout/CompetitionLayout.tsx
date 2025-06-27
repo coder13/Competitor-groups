@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { useEffect, useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Outlet, useLocation, useParams } from 'react-router-dom';
@@ -33,7 +34,14 @@ export function CompetitionLayout() {
       <Container className="md:flex-row justify-between">
         <div className="flex">
           {tabs.map((i) => (
-            <StyledNavLink key={i.href} to={i.href} text={i.text} />
+            <StyledNavLink
+              key={i.href}
+              className={classNames({
+                'hidden md:block': i.hiddenOnMobile,
+              })}
+              to={i.href}
+              text={i.text}
+            />
           ))}
         </div>
       </Container>

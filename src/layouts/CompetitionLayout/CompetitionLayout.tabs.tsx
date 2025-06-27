@@ -22,14 +22,14 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
     const _tabs: {
       href: string;
       text: string;
+      hiddenOnMobile?: boolean;
     }[] = [];
 
-    if (!isPersonStaff) {
-      _tabs.push({
-        href: `/competitions/${competitionId}`,
-        text: t('header.tabs.groups'),
-      });
-    }
+    _tabs.push({
+      href: `/competitions/${competitionId}`,
+      text: t('header.tabs.groups'),
+      hiddenOnMobile: true,
+    });
 
     _tabs.push(
       {
