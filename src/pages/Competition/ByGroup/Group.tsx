@@ -135,9 +135,10 @@ export const GroupHeader = () => {
       </div>
       <div className="flex flex-col -mx-2">
         {stages?.filter(hasActivities(activityCode)).map((stage) => {
-          const activity = stage.activities.find((a) =>
-            a.childActivities.some((ca) => ca.activityCode === activityCode),
-          );
+          const activity = stage.activities
+            .flatMap((ra) => ra.childActivities)
+            .find((a) => a.activityCode === activityCode);
+
           if (!activity) {
             return null;
           }
