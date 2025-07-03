@@ -12,7 +12,7 @@ export function RootLayout() {
       <Header />
       {updateAvailable && (
         <div className="p-2 flex justify-center">
-          <Button className="bg-green-300 text-black min-h-10" onClick={() => updateSW(true)}>
+          <Button className="bg-blue-300 text-black min-h-10" onClick={() => updateSW(true)}>
             Update available - Click to refresh
           </Button>
         </div>
