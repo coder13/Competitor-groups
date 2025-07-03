@@ -10,6 +10,7 @@ export const LastFetchedAt = ({ lastFetchedAt }: LastFetchAtProps) => {
 
   return (
     <div className="w-full text-xs text-gray-500 text-right">
+      2{' '}
       {t('common.lastFetched', {
         date: intlFormatDistance(lastFetchedAt, new Date(), {
           locale: navigator.language,
