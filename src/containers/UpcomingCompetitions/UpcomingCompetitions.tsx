@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInView } from 'react-intersection-observer';
 import { BarLoader } from 'react-spinners';
-import { NoteBox, LastFetchedAt, CompetitionListFragment } from '@/components';
+import { NoteBox, LastFetchedAt, CompetitionListFragment, Container } from '@/components';
 import { useInfiniteCompetitions } from '@/hooks/queries/useInfiniteCompetitions';
 import { useApp } from '@/providers/AppProvider';
 import { useCompetitionsQuery } from '@/queries';
@@ -62,9 +62,13 @@ export default function UpcomingCompetitions() {
 
       {isFetchingNextPage && <BarLoader width="100%" />}
 
-      <div className="px-2">
-        {!!dataUpdatedAt && <LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
-      </div>
+      <Container className="p-2">
+        <div className="flex space-x-2">
+          <div className="text-xs text-gray-500">{__GIT_COMMIT__}</div>
+          <div className="flex flex-grow" />
+          {<LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
+        </div>
+      </Container>
     </div>
   );
 }

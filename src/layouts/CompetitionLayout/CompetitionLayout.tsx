@@ -71,8 +71,12 @@ export function CompetitionLayout() {
             <Outlet />
           </ErrorBoundary>
           {!!dataUpdatedAt && (
-            <Container className="py-2 px-1">
-              {<LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
+            <Container className="p-2">
+              <div className="flex space-x-2">
+                <div className="text-xs text-gray-500">{__GIT_COMMIT__}</div>
+                <div className="flex flex-grow" />
+                {<LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
+              </div>
             </Container>
           )}
         </div>
