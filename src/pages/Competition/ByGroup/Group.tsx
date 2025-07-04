@@ -8,12 +8,7 @@ import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
 import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
 import { Container } from '@/components/Container';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
-import {
-  getAllRoundActivities,
-  getRooms,
-  getVenueForActivity,
-  hasActivities,
-} from '@/lib/activities';
+import { getAllRoundActivities, getRoomData, getRooms, hasActivities } from '@/lib/activities';
 import {
   activityCodeToName,
   matchesActivityCode,
@@ -23,7 +18,6 @@ import {
 } from '@/lib/activityCodes';
 import { GroupAssignmentCodeRank } from '@/lib/constants';
 import { getAllEvents } from '@/lib/events';
-import { formatDateTimeRange } from '@/lib/time';
 import { byName } from '@/lib/utils';
 import { useWCIF } from '@/providers/WCIFProvider';
 
@@ -42,12 +36,12 @@ const useCommon = () => {
         return !!rounds.some((r) => r.id === toRoundAttemptId(a.activityCode));
       })
     : [];
-  const stages = wcif
+  const rooms = wcif
     ? getRooms(wcif).filter((room) =>
         room.activities.some((a) => AllRoundActivities.some((b) => a.id === b.id)),
       )
     : [];
-  const multistage = stages.length > 1;
+  const multistage = rooms.length > 1;
 
   // All activities that relate to the activityCode
   const childActivities = AllRoundActivities?.flatMap(
@@ -65,15 +59,17 @@ const useCommon = () => {
     .map((person) => {
       const assignment = person.assignments?.find((a) => childActivityIds.includes(a.activityId));
       const activity = childActivities.find((ca) => ca.id === assignment?.activityId);
-      const stage = stages.find((stage) =>
-        stage.activities.some((a) => a.childActivities.some((ca) => ca.id === activity?.id)),
+      const room = rooms.find((room) =>
+        room.activities.some((a) => a.childActivities.some((ca) => ca.id === activity?.id)),
       );
+      const stage = room && activity && getRoomData(room, activity);
 
       return {
         wcif,
         ...person,
         assignment,
         activity,
+        room,
         stage,
       };
     });
@@ -84,7 +80,7 @@ const useCommon = () => {
     roundId,
     groupNumber,
     activityCode,
-    stages,
+    rooms,
     multistage,
     childActivities,
     personsInActivity,
@@ -101,17 +97,14 @@ export default function Group() {
 }
 
 export const GroupHeader = () => {
-  const { wcif, competitionId } = useWCIF();
-  const { round, activityCode, multistage, stages, childActivities } = useCommon();
-  const minStartTime = childActivities?.map((a) => a.startTime).sort()[0];
-  const maxEndTime = childActivities?.map((a) => a.endTime).sort()[childActivities.length - 1];
+  const { competitionId } = useWCIF();
+  const { round, activityCode, rooms } = useCommon();
 
   const activityName = activityCodeToName(activityCode);
   const activityNameSplit = activityName.split(', ');
 
   const roundName = activityNameSplit.slice(0, 2).join(', ');
   const groupName = activityNameSplit ? activityNameSplit.slice(-1).join('') : undefined;
-  const getVenue = wcif && getVenueForActivity(wcif);
 
   return (
     <div className="p-2 space-y-2">
@@ -134,19 +127,19 @@ export const GroupHeader = () => {
         {round && <CutoffTimeLimitPanel round={round} className="" />}
       </div>
       <div className="flex flex-col -mx-2">
-        {stages?.filter(hasActivities(activityCode)).map((stage) => {
-          const activity = stage.activities
+        {rooms?.filter(hasActivities(activityCode)).map((room) => {
+          const activity = room.activities
             .flatMap((ra) => ra.childActivities)
             .find((a) => a.activityCode === activityCode);
 
           if (!activity) {
             return null;
           }
-          const venue = stage.venue;
+          const venue = room.venue;
           const timeZone = venue.timezone;
 
           return (
-            <Fragment key={stage.id}>
+            <Fragment key={room.id}>
               {/* {multistage && <div className="col-span-1">{stage.name}:</div>}
               <div
                 className={classNames({
@@ -155,7 +148,7 @@ export const GroupHeader = () => {
                 })}>
                 {activity && formatDateTimeRange(minStartTime, maxEndTime)}
               </div> */}
-              <ActivityRow activity={activity} stage={stage} timeZone={timeZone} />
+              <ActivityRow activity={activity} stage={room} timeZone={timeZone} />
             </Fragment>
           );
         })}
@@ -227,7 +220,7 @@ export const MobileGroupView = () => {
 };
 
 const DesktopGroupView = () => {
-  const { stages, personsInActivity } = useCommon();
+  const { rooms, personsInActivity } = useCommon();
 
   return (
     <Container className="space-y-2 md:w-2/3 hidden md:flex flex-col" fullWidth>
@@ -235,9 +228,9 @@ const DesktopGroupView = () => {
       <div
         className="grid"
         style={{
-          gridTemplateColumns: `repeat(${stages.length}, 1fr)`,
+          gridTemplateColumns: `repeat(${rooms.length}, 1fr)`,
         }}>
-        {stages.map((stage) => (
+        {rooms.map((stage) => (
           <div
             key={stage.id}
             className="py-3 px-2 text-center flex-1 col-span-1"
@@ -264,10 +257,10 @@ const DesktopGroupView = () => {
                 className="p-1 col-span-full drop-shadow-lg font-bold mt-4"
               />
 
-              {stages.map((stage) => (
-                <div key={stage.id} className="col-span-1 grid grid-cols-2 gap-x-4 gap-y-1">
+              {rooms.map((room) => (
+                <div key={room.id} className="col-span-1 grid grid-cols-2 gap-x-4 gap-y-1">
                   {personsInActivityWithAssignment
-                    ?.filter((person) => person.stage?.id === stage.id)
+                    ?.filter((person) => person.room?.id === room.id)
                     ?.sort(byName)
                     .map((person) => (
                       <Link
