@@ -1,7 +1,8 @@
 import { Activity, AssignmentCode, Person } from '@wca/helpers';
+import classNames from 'classnames';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { getRoomData, getRooms } from '@/lib/activities';
@@ -24,6 +25,7 @@ interface EventGroupProps {
 export function EventActivity({ competitionId, activity, persons }: EventGroupProps) {
   const { t } = useTranslation();
 
+  const navigate = useNavigate();
   const { setTitle, wcif } = useWCIF();
   const { eventId, roundNumber } = parseActivityCodeFlexible(activity?.activityCode || '');
   const event = useMemo(
@@ -182,6 +184,76 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
 
   const groupNumber = parseActivityCodeFlexible(activity.activityCode).groupNumber;
 
+  const allActivitiesInStage = useMemo(
+    () =>
+      room?.activities
+        .flatMap((i) => i.childActivities)
+        .filter((i) => {
+          const stage = getRoomData(room, i);
+          if (stage && roomData) {
+            return stage?.name === roomData?.name;
+          }
+
+          return true;
+        })
+        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()),
+    [room, roomData],
+  );
+
+  const currentIndex = useMemo(() => {
+    return allActivitiesInStage?.findIndex((i) => i.id === activity.id);
+  }, [activity.id, allActivitiesInStage]);
+
+  const prev = useMemo(
+    () =>
+      allActivitiesInStage && currentIndex !== undefined
+        ? allActivitiesInStage[currentIndex - 1]
+        : undefined,
+    [allActivitiesInStage, currentIndex],
+  );
+  const next = useMemo(
+    () =>
+      allActivitiesInStage && currentIndex !== undefined
+        ? allActivitiesInStage[currentIndex + 1]
+        : undefined,
+    [allActivitiesInStage, currentIndex],
+  );
+
+  const prevUrl = prev && `/competitions/${competitionId}/activities/${prev?.id}`;
+  const nextUrl = next && `/competitions/${competitionId}/activities/${next?.id}`;
+
+  const goToPrev = useCallback(() => {
+    if (prevUrl) {
+      navigate(prevUrl);
+    }
+  }, [navigate, prevUrl]);
+
+  const goToNext = useCallback(() => {
+    if (nextUrl) {
+      navigate(nextUrl);
+    }
+  }, [navigate, nextUrl]);
+
+  useEffect(() => {
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft') {
+        goToPrev();
+      }
+
+      if (event.key === 'ArrowRight') {
+        goToNext();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeydown);
+    };
+  }, [wcif, activity, goToPrev, goToNext]);
+
+  console.log({ prev, next });
+
   return (
     <>
       {wcif && (
@@ -207,6 +279,33 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
                   ]),
             ]}
           />
+          <div className="flex space-x-2">
+            <Link
+              to={prevUrl || ''}
+              className={classNames(
+                'w-full border rounded-md p-2 px-2 flex cursor-pointer transition-colors my-1 justify-end',
+                {
+                  'pointer-events-none opacity-25': !prev,
+                  'hover:bg-slate-100 group cursor-pointer': prev,
+                },
+              )}>
+              <span className="fa fa-arrow-left self-center mr-2 group-hover:-translate-x-2 transition-all" />
+              {t('competition.groups.previousGroup')}
+            </Link>
+            <Link
+              to={nextUrl || ''}
+              className={classNames(
+                'w-full border rounded-md p-2 px-2 flex cursor-pointer group hover:bg-slate-100 transition-colors my-1',
+                {
+                  'pointer-events-none opacity-25': !next,
+                  'hover:bg-slate-100 group': next,
+                },
+              )}>
+              {t('competition.groups.nextGroup')}
+              <span className="fa fa-arrow-right self-center ml-2 group-hover:translate-x-2 transition-all" />
+            </Link>
+          </div>
+
           <div className="space-y-1">
             <span className="px-2">
               {formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}
