@@ -1,15 +1,15 @@
-import { Event, EventId } from '@wca/helpers';
+import { Event, EventId, Person, PersonalBest } from '@wca/helpers';
 import classNames from 'classnames';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Container } from '@/components/Container';
+import { findPR } from '@/lib/activities';
 import { activityCodeToName } from '@/lib/activityCodes';
 import { acceptedRegistration, isRegisteredForEvent } from '@/lib/person';
 import { renderResultByEventId } from '@/lib/results';
 import { byWorldRanking } from '@/lib/sort';
-import { unique } from '@/lib/utils';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export const PsychSheetEvent = () => {
@@ -43,30 +43,53 @@ export const PsychSheetEvent = () => {
   );
 
   // Creates a proper psychsheet with support for tied rankings
-  const sortedPersons = useMemo(
-    () =>
-      eventId &&
-      persons.sort(byWorldRanking(eventId, resultType)).map((person) => {
-        return {
-          ...person,
-          pr: person.personalBests?.find(
-            (pr) => pr.eventId === eventId && pr.type === (resultType || 'average'),
-          ),
-        };
-      }),
-    [eventId, persons, resultType],
-  );
+  const sortedPersons = useMemo(() => {
+    if (!eventId || !persons.length) {
+      return [];
+    }
 
-  const rankings = useMemo(
-    () =>
-      sortedPersons
-        ?.map((person) => person.pr?.worldRanking ?? 0)
-        .filter((i) => i > 0)
-        .filter(unique) ?? [],
-    [sortedPersons],
-  );
+    const _findPr = findPR(eventId);
+    return persons.sort(byWorldRanking(eventId, resultType)).reduce(
+      (
+        persons: (Person & {
+          rank: number;
+          mainRank: number;
+          subRank: number;
+          pr?: PersonalBest;
+        })[],
+        person,
+        index,
+      ) => {
+        const lastPerson = index > 0 ? persons[index - 1] : undefined;
 
-  const gridCss = 'grid grid-cols-[3em_2em_1fr_min-content_7em]';
+        const avgPr = _findPr(person.personalBests || [], 'average');
+        const singlePr = _findPr(person.personalBests || [], 'single');
+
+        const mainRank =
+          (resultType === 'average' ? avgPr?.worldRanking : singlePr?.worldRanking) ?? 0;
+        const subRank = singlePr?.worldRanking ?? 0;
+
+        const rank =
+          lastPerson && mainRank === lastPerson.mainRank && subRank === lastPerson.subRank
+            ? lastPerson.rank
+            : index + 1;
+
+        return [
+          ...persons,
+          {
+            ...person,
+            mainRank,
+            subRank,
+            rank: rank,
+            pr: resultType === 'average' ? avgPr : singlePr,
+          },
+        ];
+      },
+      [],
+    );
+  }, [eventId, persons, resultType]);
+
+  const gridCss = 'grid grid-cols-[3.5em_2em_1fr_min-content_7em]';
 
   const handleEventChange = useCallback(
     (newEventId: EventId) => {
@@ -126,11 +149,6 @@ export const PsychSheetEvent = () => {
           </div>
           <div className="contents striped">
             {sortedPersons?.map((person) => {
-              const rank =
-                (rankings?.findIndex((i) => i === person.pr?.worldRanking) >= 0
-                  ? rankings?.findIndex((i) => i === person.pr?.worldRanking)
-                  : rankings.length) + 1;
-
               const prAverage = person.personalBests?.find(
                 (pr) => pr.eventId === eventId && pr.type === resultType,
               );
@@ -141,7 +159,7 @@ export const PsychSheetEvent = () => {
                   className="contents"
                   to={`/competitions/${wcif?.id}/personal-bests/${person.wcaId}`}>
                   <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
-                    {rank}
+                    {person.rank}
                   </span>
                   <span className="px-3 py-2.5 text-left flex items-center w-full">
                     {getUnicodeFlagIcon(person.countryIso2)}
