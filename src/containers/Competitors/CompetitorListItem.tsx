@@ -1,4 +1,5 @@
 import { Person } from '@wca/helpers';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
 
@@ -15,6 +16,8 @@ export const CompetitorListItem = ({
   highlight = false,
   bookmarked = false,
 }: CompetitorListItemProps) => {
+  const { t } = useTranslation();
+
   return (
     <Link key={person.registrantId} to={`persons/${person.registrantId}`}>
       <li className="border bg-white list-none rounded-md flex justify-between cursor-pointer hover:bg-blue-200 group transition-colors my-1 flex-row min-h-[40px] items-center">
@@ -33,7 +36,8 @@ export const CompetitorListItem = ({
             <span className="text-lg">{person.name}</span>
             {highlight && (
               <span className="text-sm">
-                View My Assignments <i className="text-xs fa fa-chevron-right" />
+                {t('competition.competitors.viewMyAssignments')}{' '}
+                <i className="text-xs fa fa-chevron-right" />
               </span>
             )}
           </div>
