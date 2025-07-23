@@ -1,15 +1,9 @@
 import { Activity, Assignment, Competition, Person } from '@wca/helpers';
 import { getWorldAssignmentsExtension } from '@/extensions/com.competitiongroups.worldsassignments';
-import { isUnofficialEvent } from '@/extensions/com.delegatedashboard.unofficialEvents';
+import i18n from '@/i18n';
 import { getAllActivities, getRooms } from '@/lib/activities';
 import { isUnofficialParsedActivityCode, parseActivityCodeFlexible } from '@/lib/activityCodes';
-import {
-  eventById,
-  events,
-  getEventShortName,
-  isOfficialEventId,
-  shortEventNameById,
-} from '@/lib/events';
+import { eventById, isOfficialEventId } from '@/lib/events';
 import { formatNumericDate, getNumericDateFormatter } from '@/lib/time';
 import { byDate } from '@/lib/utils';
 
@@ -23,6 +17,13 @@ export const getNormalAssignments = (wcif: Competition, person: Person) => {
           ...assignment,
           activity: allActivities.find(({ id }) => id === assignment.activityId),
         }))
+        .filter(
+          (assignment) =>
+            !(
+              assignment.activity?.activityCode === 'other-multi' &&
+              assignment.assignmentCode === 'competitor'
+            ),
+        )
         .sort((a, b) => byDate(a.activity, b.activity))
     : [];
 
@@ -57,13 +58,43 @@ const getExtraAssignments = (person: Person) => {
   );
 };
 
+const getCubeSubmissionAssignments = (wcif: Competition, person: Person) => {
+  const allActivities = getAllActivities(wcif);
+
+  if (!person.registration?.eventIds.includes('333mbf')) {
+    return [];
+  }
+
+  const cubeSubmissionAssignments = allActivities.filter(
+    (activity) => activity.activityCode === 'other-multi',
+  );
+
+  return cubeSubmissionAssignments.map(
+    (
+      activity,
+    ): Assignment & {
+      type: 'extra';
+      activity: Activity;
+    } => ({
+      type: 'extra',
+      assignmentCode: i18n.t('competition.personalSchedule.submitMultiCubes'),
+      activityId: activity.id,
+      stationNumber: null,
+      activity,
+    }),
+  );
+};
+
 export const getAllAssignments = (wcif: Competition, person: Person) => {
   const normalAssignments = getNormalAssignments(wcif, person);
   const extraAssignments = getExtraAssignments(person);
+  const mbldCubeSubmissionAssignments = getCubeSubmissionAssignments(wcif, person);
 
-  const allAssignments = [...normalAssignments, ...extraAssignments].sort((a, b) =>
-    byDate(a.activity, b.activity),
-  );
+  const allAssignments = [
+    ...normalAssignments,
+    ...extraAssignments,
+    ...mbldCubeSubmissionAssignments,
+  ].sort((a, b) => byDate(a.activity, b.activity));
 
   return allAssignments;
 };
@@ -173,6 +204,9 @@ export const formatBriefActivityName = (activity: Activity) => {
   const parsed = parseActivityCodeFlexible(activity.activityCode);
   const { eventId, roundNumber, attemptNumber } = parsed;
 
+  if (activity.activityCode === 'other-multi') {
+    return i18n.t('common.wca.events.other-mbld');
+  }
   if (isOfficialEventId(eventId)) {
     const event = eventById(eventId);
     return _formatBriefActivityName(event.shortName, roundNumber, attemptNumber);

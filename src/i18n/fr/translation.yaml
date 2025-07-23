@@ -23,6 +23,7 @@ common:
       444bf: Cube 4x4x4 à l'aveugle
       555bf: Cube 5x5x5 à l'aveugle
       333mbf: 3x3x3 résolutions multiples à l'aveugle
+      other-mbld: Soumission Multi
     timeLimit: Limite de temps
     cutoff: Cutoff
     advancement:
@@ -161,6 +162,7 @@ competition:
     group: 'Groupe'
     stage: 'Scène'
     station: 'Station'
+    submitMultiCubes: 'Soumettre cubes de multi'
   personalRecords:
     viewSchedule: 'Voir les affectations personnelles'
     type: 'Type'

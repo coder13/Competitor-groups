@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { Pill } from '@/components/Pill';
 import { worldsAssignmentMap } from './constants';
 
 export interface ExtraAssignmentProps {
@@ -9,6 +10,10 @@ export interface ExtraAssignmentProps {
   isCurrent: boolean;
   startTime: Date;
   endTime: Date;
+  room?: {
+    name: string;
+    color: string;
+  };
   timeZone?: string;
 }
 
@@ -18,6 +23,7 @@ export const ExtraAssignment = ({
   isCurrent,
   startTime,
   endTime,
+  room,
   timeZone,
 }: ExtraAssignmentProps) => {
   const formattedStartTime = startTime.toLocaleTimeString([], {
@@ -44,7 +50,19 @@ export const ExtraAssignment = ({
         {worldsAssignmentMap[assignment.assignmentCode] || assignment.assignmentCode}
       </td>
       <td></td>
-      <td></td>
+      {room ? (
+        <td className="py-2 text-center text-xs sm:text-sm" style={{}}>
+          <Pill
+            className="min-w-[7em]"
+            style={{
+              backgroundColor: room.color ? `${room.color}70` : 'inherit',
+            }}>
+            {room.name}
+          </Pill>
+        </td>
+      ) : (
+        <td />
+      )}
     </tr>
   );
 };

@@ -111,10 +111,13 @@ export function Assignments({ wcif, person, showStationNumber }: AssignmentsProp
                       const isOver = now > roundedEndTime;
                       const isCurrent = now > roundedStartTime && now < roundedEndTime;
 
-                      if (
-                        assignment.type === 'extra' ||
-                        !('room' in activity || 'parent' in activity)
-                      ) {
+                      const room =
+                        'room' in activity
+                          ? activity.room
+                          : 'parent' in activity
+                            ? activity.parent?.room
+                            : undefined;
+                      if (assignment.type === 'extra') {
                         return (
                           <ExtraAssignment
                             key={`${date}-${roundedStartTime.toLocaleString()}-${
@@ -125,6 +128,7 @@ export function Assignments({ wcif, person, showStationNumber }: AssignmentsProp
                             isCurrent={isCurrent}
                             startTime={roundedStartTime}
                             endTime={roundedEndTime}
+                            room={room}
                             timeZone={wcif.schedule.venues[0]?.timezone}
                           />
                         );
@@ -134,28 +138,18 @@ export function Assignments({ wcif, person, showStationNumber }: AssignmentsProp
                         return null;
                       }
 
+                      if (!room) {
+                        return null;
+                      }
+
                       const { eventId, roundNumber, attemptNumber } = parseActivityCodeFlexible(
                         assignment.activity?.activityCode || '',
                       );
 
                       const venue = wcif?.schedule.venues?.find((v) =>
-                        v.rooms.some((r) => {
-                          if (activity.room) {
-                            return r.id === activity.room.id;
-                          } else if (activity.parent?.room) {
-                            return r.id === activity.parent.room.id;
-                          }
-
-                          return false;
-                        }),
+                        v.rooms.some((r) => r.id === room.id),
                       );
                       const timeZone = venue?.timezone || 'UTC';
-
-                      const room = activity?.room || activity?.parent?.room;
-
-                      if (!room) {
-                        return null;
-                      }
 
                       const stage = getRoomData(room, activity);
 

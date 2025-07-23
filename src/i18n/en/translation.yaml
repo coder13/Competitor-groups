@@ -25,6 +25,7 @@ common:
       '444bf': '4x4x4 Blindfolded'
       '555bf': '5x5x5 Blindfolded'
       '333mbf': '3x3x3 Multi-Blind'
+      'other-mbld': 'MBLD Submission'
     timeLimit: 'Time Limit'
     cutoff: 'Cutoff'
     cumulativeTimelimit: Time Limit <b>{{time}}</b> with rounds
@@ -175,6 +176,7 @@ competition:
     group: Group
     stage: $t(common.stage)
     station: Station
+    submitMultiCubes: Submit Multi Cubes
   personalRecords:
     viewSchedule: View Personal Assignments
     type: Type
