@@ -28,7 +28,8 @@ common:
       'other-mbld': 'MBLD Submission'
     timeLimit: 'Time Limit'
     cutoff: 'Cutoff'
-    cumulativeTimelimit: Time Limit <b>{{time}}</b> with rounds
+    cumulativeTimelimit: 'Time Limit: <b>{{time}} Cumulative</b>'
+    cumulativeTimelimitWithrounds: 'Time Limit: <b>{{time}} Total</b> with: '
     advancement:
       ranking: 'Top <b>{{level}}</b> to next round'
       percent: 'Top <b>{{level}}%</b> to next round'
