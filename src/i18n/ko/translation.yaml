@@ -27,7 +27,8 @@ common:
       other-mbld: 멀티 블라인드 큐브 제출
     timeLimit: 기록 제한
     cutoff: 컷오프
-    cumulativeTimelimit: '누적 기록 제한: <b>{{time}}</b>'
+    cumulativeTimelimit: '기록 제한: <b>누적 {{time}}</b>'
+    cumulativeTimelimitWithrounds: '기록 제한: <b>총 {{time}}</b>, 대상 라운드: '
     advancement:
       ranking: 상위 <b>{{level}}</b>명이 다음 라운드로 진출
       percent: 상위 <b>{{level}}%</b>가 다음 라운드로 진출
