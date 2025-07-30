@@ -42,34 +42,49 @@ export function CutoffTimeLimitPanel({
             </span>
           )}
 
-          {timeLimit && timeLimit?.cumulativeRoundIds.length > 0 && (
-            <div className="px-2">
-              <Trans
-                i18nKey={'common.wca.cumulativeTimelimit'}
-                values={{ time: timelimitTime }}
-                components={{ b: <span className="font-semibold" /> }}
-              />
-              {': '}
-              <span>
-                {timeLimit.cumulativeRoundIds
-                  .filter((activityCode) => activityCode !== round.id)
-                  .map((activityCode, i, arry) => {
-                    const { eventId, roundNumber } = parseActivityCode(activityCode);
-                    return (
-                      <Link
-                        key={activityCode}
-                        to={`/competitions/${wcif?.id}/events/${activityCode}`}>
-                        <span
-                          className={`cubing-icon event-${eventId} mx-1 before:-ml-1 before:mr-2`}>
-                          {t('common.activityCodeToName.round', { roundNumber })}
-                          {i < arry.length - 1 ? ', ' : ''}
-                        </span>
-                      </Link>
-                    );
-                  })}
+          {timeLimit &&
+            timeLimit?.cumulativeRoundIds.length > 0 &&
+            timeLimit.cumulativeRoundIds.filter((activityCode) => activityCode !== round.id)
+              .length === 0 && (
+              <span className="px-2">
+                <Trans
+                  i18nKey={'common.wca.cumulativeTimelimit'}
+                  values={{ time: timelimitTime }}
+                  components={{ b: <span className="font-semibold" /> }}
+                />
               </span>
-            </div>
-          )}
+            )}
+
+          {timeLimit &&
+            timeLimit?.cumulativeRoundIds.length > 0 &&
+            timeLimit.cumulativeRoundIds.filter((activityCode) => activityCode !== round.id)
+              .length > 0 && (
+              <div className="px-2">
+                <span>
+                  <Trans
+                    i18nKey={'common.wca.cumulativeTimelimitWithrounds'}
+                    values={{ time: timelimitTime }}
+                    components={{ b: <span className="font-semibold" /> }}
+                  />
+                  {timeLimit.cumulativeRoundIds
+                    .filter((activityCode) => activityCode !== round.id)
+                    .map((activityCode, i, arry) => {
+                      const { eventId, roundNumber } = parseActivityCode(activityCode);
+                      return (
+                        <Link
+                          key={activityCode}
+                          to={`/competitions/${wcif?.id}/events/${activityCode}`}>
+                          <span
+                            className={`cubing-icon event-${eventId} mx-1 before:-ml-1 before:mr-2`}>
+                            {t('common.activityCodeToName.round', { roundNumber })}
+                            {i < arry.length - 1 ? ', ' : ''}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                </span>
+              </div>
+            )}
         </div>
         {round.advancementCondition && (
           <div>

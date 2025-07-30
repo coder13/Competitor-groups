@@ -24,8 +24,11 @@ common:
       444bf: 4x4x4 블라인드
       555bf: 5x5x5 블라인드
       333mbf: 3x3x3 멀티 블라인드
+      other-mbld: 멀티 블라인드 큐브 제출
     timeLimit: 기록 제한
     cutoff: 컷오프
+    cumulativeTimelimit: '기록 제한: <b>누적 {{time}}</b>'
+    cumulativeTimelimitWithrounds: '기록 제한: <b>총 {{time}}</b>, 대상 라운드: '
     advancement:
       ranking: 상위 <b>{{level}}</b>명이 다음 라운드로 진출
       percent: 상위 <b>{{level}}%</b>가 다음 라운드로 진출
@@ -101,10 +104,10 @@ common:
       noun_other: 사전 준비/행사 정리
       verb: 사전 준비 중/행사 정리 중
     staff-core:
-      noun: 핵심 스태프
-      noun_other: 핵심 스태프
-      verb: 핵심 스태프
-  lastFetched: '최근 가져오기: {{date}}'
+      noun: 코어 스태프
+      noun_other: 코어 스태프
+      verb: 코어 스태프
+  lastFetched: '최근 업데이트: {{date}}'
   competitionSelect:
     placeholder: 대회 검색
     noOptions: 검색된 대회 없음
@@ -136,6 +139,7 @@ home:
   yourCompetitions: 귀하의 대회
 competition:
   competitors:
+    viewMyAssignments: 나의 배정 보기
     viewCompetitionInformation: 대회 정보 보기
     searchCompetitors: 선수 검색
   groups:
@@ -156,11 +160,11 @@ competition:
     title: 순위
     name: 성명
   personalSchedule:
-    registeredEvents: 신청한 종목
+    registeredEvents: 신청된 종목
     viewPersonalRecords: 개인 기록 보기
     viewResults: 결과 보기
     noAssignments:
-      line1: 업무 없음
+      line1: 배정 없음
       line2: 나중에 다시 확인해 주세요!
     activity: 활동
     time: 시간
@@ -168,8 +172,9 @@ competition:
     group: 그룹
     stage: $t(common.stage)
     station: 스테이션
+    submitMultiCubes: MBLD 제출
   personalRecords:
-    viewSchedule: 개인 배정 업무 보기
+    viewSchedule: 개인 배정 보기
     type: 유형
     best: 최고 기록
   scramblers:
@@ -179,7 +184,7 @@ competition:
     event: 종목
     scramblers: 스크램블러
   streamSchedule:
-    title: 스트리밍 스케쥴
+    title: 스트리밍 일정
     subtitle: 생중계
     time: 시간
     event: $t(common.wca.event)

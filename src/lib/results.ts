@@ -29,15 +29,17 @@ export const renderCutoff = (cutoff: Cutoff) => {
     return '-';
   }
 
-  return `${formatCentiseconds(cutoff.attemptResult).replace(/\.00+$/, '')}`;
+  return `${formatCentiseconds(cutoff.attemptResult)}`;
 };
 
 export const renderCentiseconds = (centiseconds: number) => {
-  if (centiseconds >= 60000) {
+  if (centiseconds >= 360000) {
     const hours = Math.floor(centiseconds / 360000);
-    const centi = formatCentiseconds(centiseconds - hours * 360000).replace(/\.00+$/, '');
-    return hours ? `${hours}:${centi}` : centi;
+    const minutes = Math.floor((centiseconds % 360000) / 6000);
+    const seconds = Math.floor((centiseconds % 6000) / 100);
+    const centis = centiseconds % 100;
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${centis.toString().padStart(2, '0')}`;
   }
 
-  return formatCentiseconds(centiseconds).replace(/\.00+$/, '');
+  return formatCentiseconds(centiseconds);
 };
