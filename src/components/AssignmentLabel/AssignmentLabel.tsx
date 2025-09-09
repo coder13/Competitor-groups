@@ -11,7 +11,7 @@ export function AssignmentLabel({ assignmentCode }: AssignmentLabelProps) {
 
   if (assignmentCode.match(/judge/i)) {
     return (
-      <Pill className="bg-blue-200">
+      <Pill className="bg-sky-300">
         {t('common.assignments.staff-judge.noun', {
           defaultValue: assignmentCode.replace('staff-', ''),
         })}
@@ -25,20 +25,20 @@ export function AssignmentLabel({ assignmentCode }: AssignmentLabelProps) {
 
   switch (assignmentCode) {
     case 'competitor':
-      return <Pill className="bg-green-200">{name}</Pill>;
+      return <Pill className="bg-green-300">{name}</Pill>;
     case 'staff-scrambler':
-      return <Pill className="bg-yellow-200">{name}</Pill>;
+      return <Pill className="bg-amber-300">{name}</Pill>;
     case 'staff-runner':
-      return <Pill className="bg-orange-200">{name}</Pill>;
+      return <Pill className="bg-orange-300">{name}</Pill>;
     case 'staff-dataentry':
-      return <Pill className="bg-cyan-200">{name}</Pill>;
+      return <Pill className="bg-lime-300">{name}</Pill>;
     case 'staff-announcer':
-      return <Pill className="bg-violet-200">{name}</Pill>;
+      return <Pill className="bg-red-300">{name}</Pill>;
     case 'staff-delegate':
-      return <Pill className="bg-purple-200">{name}</Pill>;
+      return <Pill className="bg-indigo-300">{name}</Pill>;
     case 'staff-stagelead':
-      return <Pill className="bg-pink-200">{name}</Pill>;
+      return <Pill className="bg-pink-300">{name}</Pill>;
     default:
-      return <Pill className="bg-blue-100">{name}</Pill>;
+      return <Pill className="bg-neutral-100">{name}</Pill>;
   }
 }
