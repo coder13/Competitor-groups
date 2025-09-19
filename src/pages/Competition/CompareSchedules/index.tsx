@@ -1,7 +1,10 @@
 import { AssignmentCode, Person } from '@wca/helpers';
-import { Fragment, HtmlHTMLAttributes, useMemo, useRef } from 'react';
+import { Fragment, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { Container } from '@/components/Container';
 import { Grid } from '@/components/Grid/Grid';
+import { PersonSelector } from '@/components/PersonSelector';
 import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
 import {
   doesActivityOverlapInterval,
@@ -14,9 +17,11 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export default function CompareSchedules() {
+  const { t } = useTranslation();
   const headerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { wcif, competitionId } = useWCIF();
+  const [showPersonSelector, setShowPersonSelector] = useState(false);
 
   const me = wcif?.persons.find((i) => i.wcaUserId === user?.id);
   const { pinnedPersons: pinnedRegistrantIds } = usePinnedPersons(competitionId);
@@ -35,8 +40,45 @@ export default function CompareSchedules() {
     [headerRef],
   );
 
+  if (!wcif) {
+    return <Container>Loading...</Container>;
+  }
+
+  if (persons.length === 0) {
+    return (
+      <Container className="space-y-4 pt-4">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">{t('competition.compareSchedules.title')}</h2>
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4">
+            <p className="text-blue-800 mb-2">{t('competition.compareSchedules.helpText')}</p>
+            <p className="text-blue-700">{t('competition.compareSchedules.instructions')}</p>
+          </div>
+        </div>
+        <PersonSelector />
+      </Container>
+    );
+  }
+
   return (
-    <div>
+    <Container className="pt-4">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold">{t('competition.compareSchedules.title')}</h2>
+        <button
+          onClick={() => setShowPersonSelector(!showPersonSelector)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
+          {showPersonSelector ? 'Hide Person Selector' : 'Add/Remove People'}
+        </button>
+      </div>
+
+      {showPersonSelector && (
+        <div className="mb-4 p-4 border border-gray-200 rounded-md bg-gray-50">
+          <PersonSelector />
+        </div>
+      )}
+
+      <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
+        <p className="text-blue-800 text-sm">{t('competition.compareSchedules.helpText')}</p>
+      </div>
       <Grid
         columnWidths={columnWidths}
         className="[&>div]:py-2 [&>div]:px-3 [&>div]:text-center sticky top-0"
@@ -110,6 +152,6 @@ export default function CompareSchedules() {
           );
         })}
       </Grid>
-    </div>
+    </Container>
   );
 }

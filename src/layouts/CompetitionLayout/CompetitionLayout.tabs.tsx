@@ -41,6 +41,10 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
         text: t('header.tabs.schedule'),
       },
       {
+        href: `/competitions/${competitionId}/compare-schedules`,
+        text: t('header.tabs.compareSchedules'),
+      },
+      {
         href: `/competitions/${competitionId}/psych-sheet`,
         text: t('header.tabs.rankings'),
       },
