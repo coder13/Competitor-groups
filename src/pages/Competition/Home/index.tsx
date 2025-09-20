@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import { CompareSchedulesButton } from '@/components/CompareSchedulesButton';
 import { Container } from '@/components/Container';
 import { LinkButton } from '@/components/LinkButton';
 import { PinCompetitionButton } from '@/components/PinCompetitionButton';
@@ -28,7 +29,14 @@ export default function CompetitionHome() {
         <PinCompetitionButton competitionId={competitionId} />
       </div>
       <OngoingActivities competitionId={competitionId!} />
-      {wcif && <Competitors wcif={wcif} />}
+      {wcif && (
+        <>
+          <div className="flex justify-center py-2">
+            <CompareSchedulesButton size="sm" className="text-xs" />
+          </div>
+          <Competitors wcif={wcif} />
+        </>
+      )}
     </Container>
   );
 }
