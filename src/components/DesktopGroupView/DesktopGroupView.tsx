@@ -1,14 +1,15 @@
-import { Person, Room } from '@wca/helpers';
+import { Room } from '@wca/helpers';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
 import { Container } from '@/components/Container';
 import { GroupAssignmentCodeRank } from '@/lib/constants';
 import { byName } from '@/lib/utils';
+import { ExtendedPerson } from '@/types/group.types';
 
 interface DesktopGroupViewProps {
   rooms: Room[];
-  personsInActivity: Person[];
+  personsInActivity: ExtendedPerson[];
   children?: React.ReactNode;
 }
 

@@ -1,14 +1,15 @@
-import { Competition, Person } from '@wca/helpers';
+import { Competition } from '@wca/helpers';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
 import { Container } from '@/components/Container';
 import { GroupAssignmentCodeRank } from '@/lib/constants';
 import { byName } from '@/lib/utils';
+import { ExtendedPerson } from '@/types/group.types';
 
 interface MobileGroupViewProps {
   wcif?: Competition;
-  personsInActivity: Person[];
+  personsInActivity: ExtendedPerson[];
   multistage: boolean;
   children?: React.ReactNode;
 }

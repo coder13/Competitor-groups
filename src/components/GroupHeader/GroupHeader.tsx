@@ -1,4 +1,4 @@
-import { Room, Round } from '@wca/helpers';
+import { Room, Round, Venue } from '@wca/helpers';
 import { Fragment } from 'react';
 import { ActivityRow } from '@/components';
 import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
@@ -10,7 +10,7 @@ import { useWCIF } from '@/providers/WCIFProvider';
 interface GroupHeaderProps {
   round?: Round;
   activityCode: string;
-  rooms: Room[];
+  rooms: (Room & { venue: Venue })[];
   children?: React.ReactNode;
 }
 
