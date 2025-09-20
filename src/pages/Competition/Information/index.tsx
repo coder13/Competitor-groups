@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, ExternalLink } from '@/components';
+import { Container, ExternalLink, UserRow } from '@/components';
 import { useCompetition } from '@/hooks/queries/useCompetition';
 import { useWCIF } from '@/providers/WCIFProvider';
-import { UserRow } from './UserRow';
 
 export default function Information() {
   const { setTitle, wcif } = useWCIF();
