@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Container } from '@/components/Container';
 import { Grid } from '@/components/Grid/Grid';
+import { Modal } from '@/components/Modal';
 import { PersonSelector } from '@/components/PersonSelector';
 import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
 import {
@@ -21,7 +22,7 @@ export default function CompareSchedules() {
   const headerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { wcif, competitionId } = useWCIF();
-  const [showPersonSelector, setShowPersonSelector] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const me = wcif?.persons.find((i) => i.wcaUserId === user?.id);
   const { pinnedPersons: pinnedRegistrantIds } = usePinnedPersons(competitionId);
@@ -53,8 +54,25 @@ export default function CompareSchedules() {
             <p className="text-blue-800 mb-2">{t('competition.compareSchedules.helpText')}</p>
             <p className="text-blue-700">{t('competition.compareSchedules.instructions')}</p>
           </div>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+            <span className="fa fa-users mr-2" />
+            {t('competition.compareSchedules.selectPeople')}
+          </button>
         </div>
-        <PersonSelector />
+
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title={t('competition.compareSchedules.selectPeople')}>
+          <div className="space-y-3">
+            <p className="text-sm text-gray-600 mb-4">
+              {t('competition.compareSchedules.selectPeopleInstructions')}
+            </p>
+            <PersonSelector showCurrentUser />
+          </div>
+        </Modal>
       </Container>
     );
   }
@@ -64,17 +82,24 @@ export default function CompareSchedules() {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-bold">{t('competition.compareSchedules.title')}</h2>
         <button
-          onClick={() => setShowPersonSelector(!showPersonSelector)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
-          {showPersonSelector ? 'Hide Person Selector' : 'Add/Remove People'}
+          onClick={() => setIsModalOpen(true)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm">
+          <span className="fa fa-users mr-1" />
+          Manage People
         </button>
       </div>
 
-      {showPersonSelector && (
-        <div className="mb-4 p-4 border border-gray-200 rounded-md bg-gray-50">
-          <PersonSelector />
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={t('competition.compareSchedules.selectPeople')}>
+        <div className="space-y-3">
+          <p className="text-sm text-gray-600 mb-4">
+            {t('competition.compareSchedules.selectPeopleInstructions')}
+          </p>
+          <PersonSelector showCurrentUser />
         </div>
-      )}
+      </Modal>
 
       <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
         <p className="text-blue-800 text-sm">{t('competition.compareSchedules.helpText')}</p>

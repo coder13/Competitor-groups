@@ -1,6 +1,7 @@
 import { Person } from '@wca/helpers';
 import { useTranslation } from 'react-i18next';
 import { DisclaimerText } from '@/components';
+import { CompareSchedulesButton } from '@/components/CompareSchedulesButton';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { Assignments } from './Assignments';
 import { PersonHeader } from './PersonHeader';
@@ -20,6 +21,10 @@ export function PersonalScheduleContainer({ person }: PersonalScheduleContainerP
     <div className="flex flex-col pt-1">
       <PersonHeader competitionId={competitionId} person={person} />
 
+      <hr className="my-2" />
+      <div className="flex justify-center py-2">
+        <CompareSchedulesButton size="sm" />
+      </div>
       <hr className="my-2" />
       <DisclaimerText className="mx-1" />
       <hr className="my-2" />

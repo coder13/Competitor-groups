@@ -150,6 +150,9 @@ competition:
     searchCompetitors: 'Search Competitors'
   compareSchedules:
     title: 'Compare Schedules'
+    buttonText: 'Compare Schedules'
+    selectPeople: 'Select People to Compare'
+    selectPeopleInstructions: 'Select people you want to compare schedules with by clicking the bookmark icon.'
     searchPersons: 'Search people to compare schedules'
     noPersonsFound: 'No people found matching your search'
     noPersonsAvailable: 'No people available to compare'
