@@ -2,12 +2,12 @@ import { Competition, Person } from '@wca/helpers';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import { CompetitorListItem } from '@/components';
 import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
 import { useOngoingActivities } from '@/hooks/useOngoingActivities';
 import { acceptedRegistration } from '@/lib/person';
 import { byName } from '@/lib/utils';
 import { useAuth } from '@/providers/AuthProvider';
-import { CompetitorListItem } from './CompetitorListItem';
 
 export const Competitors = ({ wcif }: { wcif: Competition }) => {
   const { t } = useTranslation();

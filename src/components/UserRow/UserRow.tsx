@@ -1,4 +1,8 @@
-export const UserRow = ({ user }: { user: User }) => {
+interface UserRowProps {
+  user: User;
+}
+
+export const UserRow = ({ user }: UserRowProps) => {
   const avatarUrl = user.avatar?.thumb_url;
 
   return (
