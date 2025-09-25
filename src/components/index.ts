@@ -15,3 +15,4 @@ export * from './LastFetchedAt';
 export * from './LinkButton';
 export * from './Notebox';
 export * from './PinCompetitionButton';
+export * from './PeopleList';

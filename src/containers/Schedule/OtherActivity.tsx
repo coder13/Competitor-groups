@@ -1,10 +1,10 @@
 import { Activity, AssignmentCode, Person } from '@wca/helpers';
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { PeopleList } from '@/components/PeopleList';
 import { getRooms } from '@/lib/activities';
 import { formatDateTimeRange } from '@/lib/time';
 import { useWCIF } from '@/providers/WCIFProvider';
-import { PeopleList } from './PeopleList';
 
 interface OtherGroupProps {
   competitionId: string;
