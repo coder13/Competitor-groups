@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
+import { useCompareSchedulesState } from '@/hooks/useCompareSchedulesState';
 import { useAuth } from '@/providers/AuthProvider';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { PersonSelector } from './PersonSelector';
 
 // Mock the hooks and providers
-jest.mock('@/hooks/UsePinnedPersons', () => ({
-  usePinnedPersons: jest.fn(),
+jest.mock('@/hooks/useCompareSchedulesState', () => ({
+  useCompareSchedulesState: jest.fn(),
 }));
 
 jest.mock('@/providers/WCIFProvider', () => ({
@@ -25,7 +25,9 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-const mockUsePinnedPersons = usePinnedPersons as jest.MockedFunction<typeof usePinnedPersons>;
+const mockUseCompareSchedulesState = useCompareSchedulesState as jest.MockedFunction<
+  typeof useCompareSchedulesState
+>;
 const mockUseWCIF = useWCIF as jest.MockedFunction<typeof useWCIF>;
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 
@@ -46,13 +48,11 @@ const mockPersons = [
   },
 ];
 
-const mockPinPerson = jest.fn();
-const mockUnpinPerson = jest.fn();
+const mockTogglePerson = jest.fn();
 
 describe('PersonSelector', () => {
   beforeEach(() => {
-    mockPinPerson.mockClear();
-    mockUnpinPerson.mockClear();
+    mockTogglePerson.mockClear();
 
     mockUseWCIF.mockReturnValue({
       wcif: {
@@ -61,7 +61,7 @@ describe('PersonSelector', () => {
         id: 'test-comp',
         name: 'Test Competition',
         shortName: 'Test',
-      } as any,
+      } as never,
       competitionId: 'test-comp',
       setTitle: jest.fn(),
     });
@@ -80,10 +80,12 @@ describe('PersonSelector', () => {
       signInAs: jest.fn(),
     });
 
-    mockUsePinnedPersons.mockReturnValue({
-      pinnedPersons: [],
-      pinPerson: mockPinPerson,
-      unpinPerson: mockUnpinPerson,
+    mockUseCompareSchedulesState.mockReturnValue({
+      selectedPersonIds: [],
+      addPerson: jest.fn(),
+      removePerson: jest.fn(),
+      togglePerson: mockTogglePerson,
+      clearAll: jest.fn(),
     });
   });
 
@@ -112,7 +114,7 @@ describe('PersonSelector', () => {
     expect(screen.queryByText('Jane Smith')).not.toBeInTheDocument();
   });
 
-  it('calls pinPerson when unpinned person is clicked', () => {
+  it('calls togglePerson when unpinned person is clicked', () => {
     render(<PersonSelector showCurrentUser />);
 
     const janeButton = screen.getByText('Jane Smith').closest('div');
@@ -120,14 +122,16 @@ describe('PersonSelector', () => {
       fireEvent.click(janeButton);
     }
 
-    expect(mockPinPerson).toHaveBeenCalledWith(2);
+    expect(mockTogglePerson).toHaveBeenCalledWith(2);
   });
 
-  it('calls unpinPerson when pinned person is clicked', () => {
-    mockUsePinnedPersons.mockReturnValue({
-      pinnedPersons: [2],
-      pinPerson: mockPinPerson,
-      unpinPerson: mockUnpinPerson,
+  it('calls togglePerson when pinned person is clicked', () => {
+    mockUseCompareSchedulesState.mockReturnValue({
+      selectedPersonIds: [2],
+      addPerson: jest.fn(),
+      removePerson: jest.fn(),
+      togglePerson: mockTogglePerson,
+      clearAll: jest.fn(),
     });
 
     render(<PersonSelector showCurrentUser />);
@@ -137,7 +141,7 @@ describe('PersonSelector', () => {
       fireEvent.click(janeButton);
     }
 
-    expect(mockUnpinPerson).toHaveBeenCalledWith(2);
+    expect(mockTogglePerson).toHaveBeenCalledWith(2);
   });
 
   it('shows no persons message when wcif is empty', () => {
@@ -148,7 +152,7 @@ describe('PersonSelector', () => {
         id: 'test-comp',
         name: 'Test Competition',
         shortName: 'Test',
-      } as any,
+      } as never,
       competitionId: 'test-comp',
       setTitle: jest.fn(),
     });
@@ -179,7 +183,7 @@ describe('PersonSelector', () => {
     expect(mockCallback).toHaveBeenCalledWith(
       expect.objectContaining({
         ...mockPersons[1],
-        isPinned: false,
+        isSelected: false,
       }),
       true,
     );

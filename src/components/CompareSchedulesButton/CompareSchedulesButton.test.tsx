@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
+import { useCompareSchedulesState } from '@/hooks/useCompareSchedulesState';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { CompareSchedulesButton } from './CompareSchedulesButton';
 
 // Mock the hooks and providers
-jest.mock('@/hooks/UsePinnedPersons', () => ({
-  usePinnedPersons: jest.fn(),
+jest.mock('@/hooks/useCompareSchedulesState', () => ({
+  useCompareSchedulesState: jest.fn(),
 }));
 
 jest.mock('@/providers/WCIFProvider', () => ({
@@ -36,7 +36,9 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const mockUsePinnedPersons = usePinnedPersons as jest.MockedFunction<typeof usePinnedPersons>;
+const mockUseCompareSchedulesState = useCompareSchedulesState as jest.MockedFunction<
+  typeof useCompareSchedulesState
+>;
 const mockUseWCIF = useWCIF as jest.MockedFunction<typeof useWCIF>;
 
 function renderWithRouter(ui: React.ReactElement) {
@@ -56,10 +58,12 @@ describe('CompareSchedulesButton', () => {
   });
 
   it('renders with default props', () => {
-    mockUsePinnedPersons.mockReturnValue({
-      pinnedPersons: [],
-      pinPerson: jest.fn(),
-      unpinPerson: jest.fn(),
+    mockUseCompareSchedulesState.mockReturnValue({
+      selectedPersonIds: [],
+      addPerson: jest.fn(),
+      removePerson: jest.fn(),
+      togglePerson: jest.fn(),
+      clearAll: jest.fn(),
     });
 
     renderWithRouter(<CompareSchedulesButton />);
@@ -68,11 +72,13 @@ describe('CompareSchedulesButton', () => {
     expect(screen.getByRole('button')).toBeInTheDocument();
   });
 
-  it('opens modal when clicked and no pinned persons', () => {
-    mockUsePinnedPersons.mockReturnValue({
-      pinnedPersons: [],
-      pinPerson: jest.fn(),
-      unpinPerson: jest.fn(),
+  it('opens modal when clicked and no selected persons', () => {
+    mockUseCompareSchedulesState.mockReturnValue({
+      selectedPersonIds: [],
+      addPerson: jest.fn(),
+      removePerson: jest.fn(),
+      togglePerson: jest.fn(),
+      clearAll: jest.fn(),
     });
 
     renderWithRouter(<CompareSchedulesButton />);
@@ -84,11 +90,13 @@ describe('CompareSchedulesButton', () => {
     expect(screen.getByTestId('person-selector')).toBeInTheDocument();
   });
 
-  it('navigates directly when clicked and has pinned persons', () => {
-    mockUsePinnedPersons.mockReturnValue({
-      pinnedPersons: [1, 2],
-      pinPerson: jest.fn(),
-      unpinPerson: jest.fn(),
+  it('navigates directly when clicked and has selected persons', () => {
+    mockUseCompareSchedulesState.mockReturnValue({
+      selectedPersonIds: [1, 2],
+      addPerson: jest.fn(),
+      removePerson: jest.fn(),
+      togglePerson: jest.fn(),
+      clearAll: jest.fn(),
     });
 
     renderWithRouter(<CompareSchedulesButton />);
@@ -100,10 +108,12 @@ describe('CompareSchedulesButton', () => {
   });
 
   it('renders with different variants and sizes', () => {
-    mockUsePinnedPersons.mockReturnValue({
-      pinnedPersons: [],
-      pinPerson: jest.fn(),
-      unpinPerson: jest.fn(),
+    mockUseCompareSchedulesState.mockReturnValue({
+      selectedPersonIds: [],
+      addPerson: jest.fn(),
+      removePerson: jest.fn(),
+      togglePerson: jest.fn(),
+      clearAll: jest.fn(),
     });
 
     const { rerender } = renderWithRouter(<CompareSchedulesButton variant="primary" size="lg" />);

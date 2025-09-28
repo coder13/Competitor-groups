@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '@/components/Modal';
 import { PersonSelector } from '@/components/PersonSelector';
-import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
+import { useCompareSchedulesState } from '@/hooks/useCompareSchedulesState';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export interface CompareSchedulesButtonProps {
@@ -20,11 +20,11 @@ export const CompareSchedulesButton = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { competitionId } = useWCIF();
-  const { pinnedPersons } = usePinnedPersons(competitionId);
+  const { selectedPersonIds } = useCompareSchedulesState();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleClick = () => {
-    if (pinnedPersons.length === 0) {
+    if (selectedPersonIds.length === 0) {
       // Open modal to select people first
       setIsModalOpen(true);
     } else {
@@ -39,7 +39,7 @@ export const CompareSchedulesButton = ({
 
   const handlePersonToggle = () => {
     // After selecting people, navigate to compare schedules
-    if (pinnedPersons.length > 0) {
+    if (selectedPersonIds.length > 0) {
       setIsModalOpen(false);
       navigate(`/competitions/${competitionId}/compare-schedules`);
     }

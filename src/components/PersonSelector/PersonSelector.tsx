@@ -1,14 +1,14 @@
 import { Person } from '@wca/helpers';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
+import { useCompareSchedulesState } from '@/hooks/useCompareSchedulesState';
 import { acceptedRegistration } from '@/lib/person';
 import { byName } from '@/lib/utils';
 import { useAuth } from '@/providers/AuthProvider';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export interface PersonSelectorProps {
-  onPersonToggle?: (person: Person, isPinned: boolean) => void;
+  onPersonToggle?: (person: Person, isSelected: boolean) => void;
   showCurrentUser?: boolean;
   placeholder?: string;
 }
@@ -19,9 +19,9 @@ export const PersonSelector = ({
   placeholder,
 }: PersonSelectorProps) => {
   const { t } = useTranslation();
-  const { wcif, competitionId } = useWCIF();
+  const { wcif } = useWCIF();
   const { user } = useAuth();
-  const { pinnedPersons, pinPerson, unpinPerson } = usePinnedPersons(competitionId);
+  const { selectedPersonIds, togglePerson } = useCompareSchedulesState();
   const [searchInput, setSearchInput] = useState('');
 
   const persons = useMemo(() => {
@@ -33,10 +33,10 @@ export const PersonSelector = ({
       .filter((person) => showCurrentUser || person.wcaUserId !== user?.id)
       .map((person) => ({
         ...person,
-        isPinned: pinnedPersons.includes(person.registrantId),
+        isSelected: selectedPersonIds.includes(person.registrantId),
       }))
       .sort(byName);
-  }, [wcif, pinnedPersons, user?.id, showCurrentUser]);
+  }, [wcif, selectedPersonIds, user?.id, showCurrentUser]);
 
   const filteredPersons = useMemo(() => {
     if (!searchInput.trim()) return persons;
@@ -45,13 +45,9 @@ export const PersonSelector = ({
     );
   }, [persons, searchInput]);
 
-  const handleTogglePerson = (person: Person, isPinned: boolean) => {
-    if (isPinned) {
-      unpinPerson(person.registrantId);
-    } else {
-      pinPerson(person.registrantId);
-    }
-    onPersonToggle?.(person, !isPinned);
+  const handleTogglePerson = (person: Person, isSelected: boolean) => {
+    togglePerson(person.registrantId);
+    onPersonToggle?.(person, !isSelected);
   };
 
   return (
@@ -79,8 +75,8 @@ export const PersonSelector = ({
               <PersonSelectorItem
                 key={person.registrantId}
                 person={person}
-                isPinned={person.isPinned}
-                onToggle={() => handleTogglePerson(person, person.isPinned)}
+                isPinned={person.isSelected}
+                onToggle={() => handleTogglePerson(person, person.isSelected)}
               />
             ))}
           </div>
@@ -104,14 +100,14 @@ const PersonSelectorItem = ({ person, isPinned, onToggle }: PersonSelectorItemPr
       <div className="flex items-center space-x-2">
         <div className="flex flex-col">
           <span className="font-medium">{person.name}</span>
-          <span className="text-sm text-gray-500">#{person.registrantId}</span>
+          <span className="text-sm text-gray-500">
+            {person.wcaId ? person.wcaId : `#${person.registrantId}`}
+          </span>
         </div>
       </div>
       <button
         className={`p-1 rounded ${
-          isPinned
-            ? 'text-yellow-500 hover:text-yellow-600'
-            : 'text-gray-400 hover:text-gray-600'
+          isPinned ? 'text-yellow-500 hover:text-yellow-600' : 'text-gray-400 hover:text-gray-600'
         }`}
         onClick={(e) => {
           e.stopPropagation();
