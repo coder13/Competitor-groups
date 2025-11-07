@@ -38,6 +38,10 @@ export function AssignmentLabel({ assignmentCode }: AssignmentLabelProps) {
       return <Pill className="bg-purple-200">{name}</Pill>;
     case 'staff-stagelead':
       return <Pill className="bg-fuchsia-200">{name}</Pill>;
+    case 'staff-stream':
+      return <Pill className="bg-pink-300">{name}</Pill>;
+    case 'staff-photo':
+      return <Pill className="bg-amber-500">{name}</Pill>;
     default:
       return <Pill className="bg-blue-100">{name}</Pill>;
   }

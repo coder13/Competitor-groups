@@ -7,6 +7,8 @@ export const GroupAssignmentCodeRank: SupportedAssignmentCode[] = [
   'staff-announcer',
   'staff-stagelead',
   'staff-dataentry',
+  'staff-stream',
+  'staff-photo',
   'staff-scrambler',
   'staff-runner',
   'staff-judge',
