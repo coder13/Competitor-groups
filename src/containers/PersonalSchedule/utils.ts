@@ -210,6 +210,8 @@ export const formatBriefActivityName = (activity: Activity) => {
   if (isOfficialEventId(eventId)) {
     const event = eventById(eventId);
     return _formatBriefActivityName(event.shortName, roundNumber, attemptNumber);
+  } else if (activity.activityCode === 'other-misc') {
+    return activity.name;
   } else if (isUnofficialParsedActivityCode(parsed)) {
     return _formatBriefActivityName(eventId.toUpperCase(), roundNumber, attemptNumber);
   }
