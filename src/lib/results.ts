@@ -13,6 +13,11 @@ export const renderResultByEventId = (
   rankingType: RankingType,
   result: AttemptResult,
 ) => {
+  // Return empty string if result is null, undefined, or NaN
+  if (result == null || (typeof result === 'number' && isNaN(result))) {
+    return '';
+  }
+
   if (eventId === '333fm') {
     return rankingType === 'average' ? ((result as number) / 100).toFixed(2).toString() : result;
   }
