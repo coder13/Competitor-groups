@@ -12,6 +12,7 @@ import { renderResultByEventId } from '@/lib/results';
 import { formatDateTimeRange } from '@/lib/time';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { PeopleList } from './PeopleList';
+import { niceActivityName } from './Activity';
 
 const isAssignment = (assignment) => (a) =>
   a.assignments.some(({ assignmentCode }) => assignmentCode === assignment);
@@ -48,7 +49,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
 
   useEffect(() => {
     if (activity) {
-      setTitle(activityCodeToName(activity.activityCode));
+      setTitle(niceActivityName(activity));
     }
   }, [activity, setTitle]);
 
@@ -180,7 +181,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
 
   const anyCompetitorHasStationNumber = competitors.some(stationNumber('competitor'));
 
-  const activityName = activityCodeToName(activity.activityCode);
+  const activityName = niceActivityName(activity);
 
   const groupNumber = parseActivityCodeFlexible(activity.activityCode).groupNumber;
 
