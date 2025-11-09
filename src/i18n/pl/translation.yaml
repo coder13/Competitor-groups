@@ -72,6 +72,14 @@ common:
       noun: Delegat
       noun_other: Delegaci
       verb: Delegating
+    staff-stream:
+      noun: Transmisja na żywo
+      noun_other: Transmisje na żywo
+      verb: Streaming
+    staff-photo:
+      noun: Fotograf
+      noun_other: Fotografowie
+      verb: Photographing
     staff-dataentry:
       noun: Rejestrator wyników
       noun_other: Rejestratorzy wyników

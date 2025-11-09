@@ -16,6 +16,8 @@ export type SupportedAssignmentCode =
   | 'staff-break'
   | 'staff-core'
   | 'staff-setupteardown'
+  | 'staff-stream'
+  | 'staff-photo'
   | 'staff-other';
 
 export type AssignmentConfig = {
@@ -113,6 +115,18 @@ const Assignments: Array<AssignmentConfig> = [
     colorClass: tailwindColors.rose,
     key: 'c',
   },
+  {
+    id: 'staff-stream',
+    color: colors.pink,
+    colorClass: tailwindColors.pink,
+    key: 'm',
+  },
+  {
+    id: 'staff-photo',
+    color: colors.amber,
+    colorClass: tailwindColors.amber,
+    key: 'p',
+  }
 ];
 
 export const AssignmentsMap = Assignments.reduce(
@@ -134,6 +148,8 @@ export const AssignmentCodeRank: AssignmentCode[] = [
   'staff-stagelead',
   'staff-delegate',
   'staff-dataentry',
+  'staff-stream',
+  'staff-photo',
   'staff-setupteardown',
   'staff-core',
   'staff-break',

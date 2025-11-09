@@ -75,6 +75,14 @@ common:
       noun: Delegate
       noun_other: Delegates
       verb: Delegating
+    staff-stream:
+      noun: Livestream
+      noun_other: Livestream
+      verb: Streaming
+    staff-photo:
+      noun: Photographer
+      noun_other: Photographers
+      verb: Photographing
     staff-dataentry:
       noun: Data Entry
       noun_other: Data Entry
