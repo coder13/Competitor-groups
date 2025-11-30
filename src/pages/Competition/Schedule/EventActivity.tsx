@@ -117,10 +117,18 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
         }
 
         if (['a', 'm'].includes(prevRound.format)) {
-          return renderResultByEventId(eventId, 'average', prevRoundResults.average);
+          const averageResult = prevRoundResults.average;
+          if (averageResult == null) {
+            return '';
+          }
+          return renderResultByEventId(eventId, 'average', averageResult);
         }
 
-        return renderResultByEventId(eventId, 'single', prevRoundResults.best);
+        const bestResult = prevRoundResults.best;
+        if (bestResult == null) {
+          return '';
+        }
+        return renderResultByEventId(eventId, 'single', bestResult);
       }
 
       const averagePr = person.prAverage?.best;
@@ -130,10 +138,15 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
         return '';
       }
 
+      const resultValue = shouldShowAveragePr ? averagePr : singlePr;
+      if (resultValue == null) {
+        return '';
+      }
+
       return renderResultByEventId(
         eventId,
         shouldShowAveragePr ? 'average' : 'single',
-        shouldShowAveragePr ? averagePr : singlePr,
+        resultValue,
       );
     },
     [eventId, prevRound],
