@@ -8,7 +8,7 @@ export function RootLayout() {
   const { updateAvailable, updateSW } = usePWAUpdate();
 
   return (
-    <div className="flex flex-col flex-1 full-viewport-height overflow-hidden">
+    <div className="flex flex-col flex-1 full-viewport-height overflow-hidden bg-white dark:bg-gray-900">
       <Header />
       {updateAvailable && (
         <div className="p-2 flex justify-center">

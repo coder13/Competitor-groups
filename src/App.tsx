@@ -28,12 +28,14 @@ import CompetitionScramblerSchedule from './pages/Competition/ScramblerSchedule'
 import CompetitionStats from './pages/Competition/Stats';
 import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
 import Home from './pages/Home';
+import Settings from './pages/Settings';
 import Support from './pages/Support';
 import Test from './pages/Test';
 import UserLogin from './pages/UserLogin';
 import { AppProvider } from './providers/AppProvider';
 import { AuthProvider, useAuth } from './providers/AuthProvider';
 import { QueryProvider } from './providers/QueryProvider/QueryProvider';
+import { UserSettingsProvider } from './providers/UserSettingsProvider';
 import { useWCIF } from './providers/WCIFProvider';
 
 const PersonalSchedule = () => {
@@ -119,6 +121,7 @@ const Navigation = () => {
         </Route>
         <Route path="/users/:userId" element={<UserLogin />} />
         <Route path="about" element={<About />} />
+        <Route path="settings" element={<Settings />} />
         <Route path="support" element={<Support />} />
       </Route>
       <Route path="test" element={<Test />} />
@@ -129,15 +132,17 @@ const Navigation = () => {
 
 const App = () => (
   <AppProvider>
-    <QueryProvider>
-      <ApolloProvider client={client}>
-        <BrowserRouter>
-          <AuthProvider>
-            <Navigation />
-          </AuthProvider>
-        </BrowserRouter>
-      </ApolloProvider>
-    </QueryProvider>
+    <UserSettingsProvider>
+      <QueryProvider>
+        <ApolloProvider client={client}>
+          <BrowserRouter>
+            <AuthProvider>
+              <Navigation />
+            </AuthProvider>
+          </BrowserRouter>
+        </ApolloProvider>
+      </QueryProvider>
+    </UserSettingsProvider>
   </AppProvider>
 );
 
