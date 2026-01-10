@@ -7,7 +7,7 @@ exports[`CompetitionListItem matches snapshot (default) 1`] = `
       href="/competitions/123"
     >
       <li
-        class="border bg-white list-none rounded-md px-2 py-2 flex cursor-pointer hover:bg-slate-100 group transition-colors my-1 flex-row opacity-50"
+        class="border bg-white dark:bg-gray-800 dark:border-gray-700 list-none rounded-md px-2 py-2 flex cursor-pointer hover:bg-slate-100 dark:hover:bg-gray-700 group transition-colors my-1 flex-row opacity-50"
       >
         <div
           class="flex flex-shrink mr-2 text-2xl"
@@ -20,7 +20,7 @@ exports[`CompetitionListItem matches snapshot (default) 1`] = `
           class="flex-1"
         >
           <p
-            class="font-normal leading-1"
+            class="font-normal leading-1 dark:text-white"
           >
              
             Test Competition
@@ -28,7 +28,7 @@ exports[`CompetitionListItem matches snapshot (default) 1`] = `
           </p>
            
           <p
-            class="text-gray-600 text-sm leading-1"
+            class="text-gray-600 dark:text-gray-400 text-sm leading-1"
           >
             Jan 1 – 2, 2024
               
@@ -50,7 +50,7 @@ exports[`CompetitionListItem renders with all props (live and bookmarked) 1`] = 
       href="/competitions/123"
     >
       <li
-        class="border bg-white list-none rounded-md px-2 py-2 flex cursor-pointer hover:bg-slate-100 group transition-colors my-1 flex-row opacity-50"
+        class="border bg-white dark:bg-gray-800 dark:border-gray-700 list-none rounded-md px-2 py-2 flex cursor-pointer hover:bg-slate-100 dark:hover:bg-gray-700 group transition-colors my-1 flex-row opacity-50"
       >
         <div
           class="flex flex-shrink mr-2 text-2xl"
@@ -63,7 +63,7 @@ exports[`CompetitionListItem renders with all props (live and bookmarked) 1`] = 
           class="flex-1"
         >
           <p
-            class="font-normal leading-1"
+            class="font-normal leading-1 dark:text-white"
           >
              
             Test Competition
@@ -71,7 +71,7 @@ exports[`CompetitionListItem renders with all props (live and bookmarked) 1`] = 
           </p>
            
           <p
-            class="text-gray-600 text-sm leading-1"
+            class="text-gray-600 dark:text-gray-400 text-sm leading-1"
           >
             Jan 1 – 2, 2024
               

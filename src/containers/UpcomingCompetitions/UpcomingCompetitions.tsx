@@ -40,7 +40,7 @@ export default function UpcomingCompetitions() {
           prefix=""
         />
       )}
-      {status === 'error' && <div>Error: {error?.toString()}</div>}
+      {status === 'error' && <div className="dark:text-red-400">Error: {error?.toString()}</div>}
 
       <CompetitionListFragment
         title={t('home.upcomingCompetitions')}
@@ -54,7 +54,8 @@ export default function UpcomingCompetitions() {
           <button
             ref={ref}
             onClick={() => fetchNextPage()}
-            disabled={!hasNextPage || isFetchingNextPage}>
+            disabled={!hasNextPage || isFetchingNextPage}
+            className="dark:text-gray-300">
             {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load Newer' : ''}
           </button>
         </div>
@@ -64,7 +65,7 @@ export default function UpcomingCompetitions() {
 
       <Container className="p-2">
         <div className="flex space-x-2">
-          <div className="text-xs text-gray-500">{__GIT_COMMIT__}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">{__GIT_COMMIT__}</div>
           <div className="flex flex-grow" />
           {<LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
         </div>

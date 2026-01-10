@@ -33,7 +33,7 @@ export const CompetitionListItem = ({
     <Link to={`/competitions/${id}`}>
       <li
         className={classNames(
-          'border bg-white list-none rounded-md px-2 py-2 flex cursor-pointer hover:bg-slate-100 group transition-colors my-1 flex-row',
+          'border bg-white dark:bg-gray-800 dark:border-gray-700 list-none rounded-md px-2 py-2 flex cursor-pointer hover:bg-slate-100 dark:hover:bg-gray-700 group transition-colors my-1 flex-row',
           {
             'opacity-50': endDate < new Date(Date.now() - 1000 * 60 * 60 * 24),
           },
@@ -42,8 +42,8 @@ export const CompetitionListItem = ({
           <div className="flex flex-shrink mr-2 text-2xl"> {getUnicodeFlagIcon(country_iso2)} </div>
         )}
         <div className="flex-1">
-          <p className="font-normal leading-1"> {name} </p>{' '}
-          <p className="text-gray-600 text-sm leading-1">
+          <p className="font-normal leading-1 dark:text-white"> {name} </p>{' '}
+          <p className="text-gray-600 dark:text-gray-400 text-sm leading-1">
             {formatDateRange(start_date, end_date)}
             {'  '}&#8211;{'  '}
             {city}
