@@ -50,7 +50,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
   );
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 text-gray-900 dark:text-white">
       {me && (
         <CompetitorListItem
           highlight
@@ -61,14 +61,16 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
       <CompetitorList persons={acceptedPinnedPersons} />
 
       <div className="w-full">
-        <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">
+        <label
+          htmlFor="default-search"
+          className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
           {t('common.search')}
         </label>
         <div className="relative">
           <input
             type="search"
             id="competitor-search"
-            className="block w-full p-3  h-[40px] ps-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 "
+            className="block w-full p-3 h-[40px] ps-2 text-sm text-gray-900 dark:text-white placeholder-gray-600 dark:placeholder-gray-400 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
             placeholder={t('competition.competitors.searchCompetitors')}
             value={input}
             onChange={(e) => setInput(e.target.value)}

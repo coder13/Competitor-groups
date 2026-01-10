@@ -126,7 +126,7 @@ const Assignments: Array<AssignmentConfig> = [
     color: colors.amber,
     colorClass: tailwindColors.amber,
     key: 'p',
-  }
+  },
 ];
 
 export const AssignmentsMap = Assignments.reduce(

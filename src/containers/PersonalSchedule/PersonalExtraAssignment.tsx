@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { Pill } from '@/components/Pill';
+import { BaseAssignmentPill } from '@/components/Pill';
 import { worldsAssignmentMap } from './constants';
 
 export interface ExtraAssignmentProps {
@@ -39,10 +39,13 @@ export const ExtraAssignment = ({
 
   return (
     <tr
-      className={classNames('table-row text-xs sm:text-sm hover:bg-slate-100 border-y', {
-        'opacity-40': isOver,
-        'bg-op': isCurrent,
-      })}>
+      className={classNames(
+        'table-row text-xs sm:text-sm hover:bg-slate-100 dark:hover:bg-gray-700 border-y border-gray-200 dark:border-gray-700',
+        {
+          'opacity-40': isOver,
+          'bg-op': isCurrent,
+        },
+      )}>
       <td colSpan={2} className="py-2 text-center">
         {formattedStartTime} - {formattedEndTime}
       </td>
@@ -51,14 +54,14 @@ export const ExtraAssignment = ({
       </td>
       <td></td>
       {room ? (
-        <td className="py-2 text-center text-xs sm:text-sm" style={{}}>
-          <Pill
+        <td className="py-2 text-xs text-center sm:text-sm" style={{}}>
+          <BaseAssignmentPill
             className="min-w-[7em]"
             style={{
               backgroundColor: room.color ? `${room.color}70` : 'inherit',
             }}>
             {room.name}
-          </Pill>
+          </BaseAssignmentPill>
         </td>
       ) : (
         <td />

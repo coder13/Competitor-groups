@@ -117,7 +117,8 @@ export const PsychSheetEvent = () => {
 
   return (
     <Container className="w-full h-full">
-      <div className={classNames('w-full h-full text-sm sm:text-base')}>
+      <div
+        className={classNames('w-full h-full text-sm sm:text-base text-gray-900 dark:text-white')}>
         <div className="flex p-1 space-x-2">
           <EventSelector value={eventId} events={wcif?.events || []} onChange={handleEventChange} />
           <select
@@ -131,7 +132,9 @@ export const PsychSheetEvent = () => {
 
         <div className={gridCss}>
           <div
-            className={'[&>span]:bg-green-300 stickyGridHeader contents absolute'}
+            className={
+              '[&>span]:bg-green-300 [&>span]:dark:bg-green-900 [&>span]:dark:text-white stickyGridHeader contents absolute'
+            }
             role="rowheader">
             <span className="px-3 py-2.5 text-right font-bold">#</span>
             <span className="px-3 py-2.5 text-left" />

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Pill, PillProps } from '../Pill';
+import { BreadcrumbPill, Pill, PillProps } from '../Pill';
 
 export type Breadcrumb =
   | {
@@ -25,14 +25,14 @@ export const Breadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
           {index > 0 && <span className="text-gray-500 dark:text-gray-400">·</span>}
           {'href' in breadcrumb ? (
             <Link to={breadcrumb.href}>
-              <Pill
+              <BreadcrumbPill
                 {...breadcrumb.pillProps}
                 className={classNames(
                   'min-h-[40px] hover:ring-2',
                   breadcrumb.pillProps?.className,
                 )}>
                 {label}
-              </Pill>
+              </BreadcrumbPill>
             </Link>
           ) : (
             <span key={label}>{label}</span>

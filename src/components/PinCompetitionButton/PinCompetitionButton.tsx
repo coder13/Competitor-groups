@@ -11,7 +11,7 @@ export const PinCompetitionButton = ({ competitionId }: { competitionId: string 
   return (
     <div>
       <Button
-        className="bg-blue-200"
+        variant="light"
         onClick={() => {
           if (isPinned) {
             unpinCompetition(competitionId);

@@ -31,7 +31,7 @@ export function ActivityRow({ activity, stage, timeZone, showRoom = true }: Acti
     <Link
       key={activity.id}
       className={classNames(
-        'flex flex-col w-full p-2 even:bg-slate-50 hover:bg-slate-100 even:hover:bg-slate-200',
+        'flex flex-col w-full p-2 text-gray-900 dark:text-white even:bg-slate-50 even:dark:bg-gray-800 hover:bg-slate-100 dark:hover:bg-gray-700 even:hover:bg-slate-200 even:dark:hover:bg-gray-600',
         {
           'opacity-50': isOver,
         },

@@ -15,7 +15,7 @@ export function ExternalLink({
       target="_blank"
       rel="noreferrer"
       className={classNames(
-        'flex align-center justify-between w-full bg-blue-200 px-4 py-2 rounded hover:opacity-80',
+        'flex align-center justify-between w-full bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 px-4 py-2 rounded hover:opacity-80',
         className,
       )}>
       {children}

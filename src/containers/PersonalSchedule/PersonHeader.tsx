@@ -46,11 +46,11 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
 
   const avatarUrl = person?.avatar?.thumbUrl || person?.avatar?.url || fallbackAvatarUrl;
 
-  const avatar = <img src={avatarUrl} alt={person.name} className="w-24 h-24 object-contain" />;
+  const avatar = <img src={avatarUrl} alt={person.name} className="object-contain w-24 h-24" />;
 
   return (
     <>
-      <div className="flex space-x-1 px-1">
+      <div className="flex px-1 space-x-1">
         {person.wcaId ? (
           <Link to={`https://worldcubeassociation.org/persons/${person.wcaId}`} target="_blank">
             {avatar}
@@ -59,12 +59,13 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
           avatar
         )}
         <div className="flex flex-col w-full">
-          <div className="flex flex-shrink items-center w-full space-x-1">
+          <div className="flex items-center flex-shrink w-full space-x-1">
             <h3 className="text-xl sm:text-2xl">{person.name}</h3>
             <div className="flex-grow" />
             <span className="text-xl sm:text-2xl">{person.registrantId}</span>
             <Button
-              className="bg-blue-200 min-h-10"
+              variant="blue"
+              className="min-h-10"
               onClick={() => {
                 if (isPinned) {
                   unpinPerson(person.registrantId);
@@ -82,7 +83,7 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
               </div>
             )}
 
-            {person.wcaId && <span className="text-sm sm:text-md my-1">{person.wcaId}</span>}
+            {person.wcaId && <span className="my-1 text-sm sm:text-md">{person.wcaId}</span>}
           </div>
           <div className="px-1">
             <p className="text-sm sm:text-md">
@@ -96,11 +97,10 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
       </div>
       {person.wcaId && (
         <>
-          <hr className="my-2" />
-          <div className="px-1 flex flex-col space-y-2">
+          <hr className="my-2 border-gray-200 dark:border-gray-700" />
+          <div className="flex flex-col px-1 space-y-2">
             <LinkButton
-              className=""
-              color="green"
+              variant="green"
               title={t('competition.personalSchedule.viewPersonalRecords')}
               to={`/competitions/${competitionId}/personal-records/${person.wcaId}`}
             />

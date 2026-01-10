@@ -2,20 +2,20 @@ export const UserRow = ({ user }: { user: User }) => {
   const avatarUrl = user.avatar?.thumb_url;
 
   return (
-    <li className="w-full rounded flex border border-slate-400 space-x-2 justify-between hover:bg-slate-100 hover:border-slate-500 shadow transition-all">
+    <li className="flex justify-between w-full space-x-2 transition-all border rounded shadow border-slate-400 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-500 dark:hover:border-gray-600 dark:shadow-gray-800">
       <a
         key={user.id}
-        className="w-full flex"
+        className="flex w-full"
         href={user.wca_id && `https://www.worldcubeassociation.org/persons/${user.wca_id}`}
         target="_blank"
         rel="noreferrer">
-        <img className="w-16 h-16 rounded-l object-contain" src={avatarUrl} alt={user.name} />
-        <div className="flex flex-1 flex-col px-2">
-          <span className="text-xl">{user.name}</span>
-          <span className="text-xs">{user.wca_id}</span>
+        <img className="object-contain w-16 h-16 rounded-l" src={avatarUrl} alt={user.name} />
+        <div className="flex flex-col flex-1 px-2">
+          <span className="text-xl text-gray-900 dark:text-white">{user.name}</span>
+          <span className="text-xs text-gray-600 dark:text-gray-400">{user.wca_id}</span>
         </div>
         {user.wca_id && (
-          <div className="p-2 flex items-center">
+          <div className="flex items-center p-2">
             <i className="m-0 fa fa-solid fa-arrow-up-right-from-square" />
           </div>
         )}

@@ -9,17 +9,17 @@ export default function Support() {
   return (
     <Container className="overflow-auto">
       <div className="flex flex-col items-center">
-        <div className="flex flex-col max-w- pt-2 w-full text-sm md:text-base p-2 md:px-0  text-gray-800 space-y-4">
+        <div className="flex flex-col w-full p-2 pt-2 space-y-4 text-sm text-gray-800 max-w- md:text-base md:px-0 dark:text-gray-100">
           <p>Thanks for being a user of Competition Groups!</p>
           <p>
-            This website is a passion project by Cailyn Hoover.
+            This website is a passion project by Cailyn Sinclair.
             <br />I do not receive any compensation for developing this platform, and if you find
             this website useful, please consider supporting me by buying me a coffee
           </p>
           <iframe
             id="kofiframe"
             src="https://ko-fi.com/klynh/?hidefeed=true&widget=true&embed=true&preview=true"
-            className="border-none w-full p-2"
+            className="w-full p-2 border-none"
             height="800"
             title="klynh"
           />

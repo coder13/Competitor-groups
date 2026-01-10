@@ -25,7 +25,7 @@ export function Schedule() {
           <LinkButton
             to={`/competitions/${compId}/rooms`}
             title={t('competition.schedule.selectRoom')}
-            color="blue"
+            variant="blue"
           />
         </div>
         <hr className="" />

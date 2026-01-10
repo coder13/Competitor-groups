@@ -59,11 +59,11 @@ export function Assignments({ wcif, person, showStationNumber }: AssignmentsProp
 
   return (
     <>
-      <div className="shadow-md">
+      <div className="shadow-md dark:shadow-gray-800">
         <table className="w-full text-xs sm:text-sm">
           <thead>
-            <tr className="bg-slate-100 shadow-sm">
-              <th className="py-2 text-center w-20">
+            <tr className="shadow-sm bg-slate-100 dark:bg-gray-700">
+              <th className="w-20 py-2 text-center">
                 {t('competition.personalSchedule.activity')}
               </th>
               <th className="py-2 text-center">{t('competition.personalSchedule.time')}</th>
@@ -87,9 +87,9 @@ export function Assignments({ wcif, person, showStationNumber }: AssignmentsProp
                     <tr onClick={() => toggleDate(date)}>
                       <td
                         colSpan={6}
-                        className="font-bold text-base md:text-lg bg-slate-50 select-none cursor-pointer">
+                        className="text-base font-bold cursor-pointer select-none md:text-lg bg-slate-50 dark:bg-gray-800">
                         <div className="flex justify-between">
-                          <span className="p-2 w-full text-center">
+                          <span className="w-full p-2 text-center">
                             {dateParts.find((i) => i.type === 'weekday')?.value || date}
                           </span>
                           <span className="p-2 flex-end">{collapsed ? ' ▼' : ' ▲'}</span>

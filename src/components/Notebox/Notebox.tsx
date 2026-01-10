@@ -10,7 +10,7 @@ export function NoteBox({ text, prefix = 'Note', className }: NoteBoxProps) {
   return (
     <p
       className={classNames(
-        'bg-yellow-100 p-2 border-b-1 rounded-md text-gray-800 text-xs',
+        ' p-2 rounded-md border-b-1 text-xs bg-yellow-100 dark:bg-yellow-900 text-gray-800 dark:text-white',
         className,
       )}>
       {prefix && <b>{prefix}: </b>}

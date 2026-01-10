@@ -23,7 +23,7 @@ export default function CompetitionHome() {
         <LinkButton
           to="information"
           title={t('competition.competitors.viewCompetitionInformation')}
-          color="green"
+          variant="green"
         />
         <PinCompetitionButton competitionId={competitionId} />
       </div>

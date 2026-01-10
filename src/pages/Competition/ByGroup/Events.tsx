@@ -34,12 +34,11 @@ const Events = () => {
   }, [setTitle]);
 
   return (
-    <Container>
+    <Container className="pt-4">
       <div className="flex flex-col w-full">
-        <br />
-        <div className="shadow-md border-slate-300 rounded-md">
-          <table className="w-full text-left">
-            <thead className="bg-slate-200">
+        <div className="border rounded-md shadow-md dark:shadow-gray-800 border-slate-300 dark:border-gray-700">
+          <table className="w-full text-left text-gray-900 dark:text-white">
+            <thead className="bg-slate-200 dark:bg-gray-800">
               <tr>
                 <th className="px-6 py-3">{t('common.wca.event')}</th>
                 <th className="px-6 py-3 text-center">{t('common.wca.round')}</th>
@@ -57,7 +56,7 @@ const Events = () => {
                   return (
                     <tr
                       key={round.id}
-                      className="hover:bg-blue-100 border even:bg-slate-50 cursor-pointer"
+                      className="border border-gray-200 cursor-pointer dark:border-gray-700 hover:bg-blue-100 dark:hover:bg-gray-700 even:bg-slate-50 even:dark:bg-gray-800"
                       onClick={() => navigate(url)}>
                       <td className="px-5 py-3">{index === 0 ? getEventName(event.id) : ''}</td>
                       <td className="px-5 py-3 text-center">

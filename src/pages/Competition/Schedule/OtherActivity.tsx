@@ -55,10 +55,10 @@ export function OtherActivity({ competitionId, activity, persons }: OtherGroupPr
 
   return (
     <>
-      <div className="p-2">
+      <div className="p-2 text-gray-900 dark:text-white">
         <h3 className="font-bold">
           <Link
-            className="px-3 py-2 rounded mr-2"
+            className="px-3 py-2 mr-2 rounded"
             style={{
               backgroundColor: `${room?.color}70`,
             }}

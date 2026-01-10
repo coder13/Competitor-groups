@@ -30,7 +30,7 @@ export function CompetitionLayout() {
   }, [pathname]);
 
   const Header = (
-    <nav className="flex shadow-md print:hidden w-full justify-center z-10">
+    <nav className="flex shadow-md dark:shadow-gray-800 print:hidden w-full justify-center z-10 bg-white dark:bg-gray-800">
       <Container className="md:flex-row justify-between">
         <div className="flex">
           {tabs.map((i) => (
@@ -73,7 +73,7 @@ export function CompetitionLayout() {
           {!!dataUpdatedAt && (
             <Container className="p-2">
               <div className="flex space-x-2">
-                <div className="text-xs text-gray-500">{__GIT_COMMIT__}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">{__GIT_COMMIT__}</div>
                 <div className="flex flex-grow" />
                 {<LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
               </div>

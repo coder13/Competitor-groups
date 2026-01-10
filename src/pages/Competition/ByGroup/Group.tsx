@@ -107,7 +107,7 @@ export const GroupHeader = () => {
   const groupName = activityNameSplit ? activityNameSplit.slice(-1).join('') : undefined;
 
   return (
-    <div className="p-2 space-y-2">
+    <div className="p-2 space-y-2 text-gray-900 dark:text-white">
       <div className="space-x-1">
         <Breadcrumbs
           breadcrumbs={[
@@ -161,7 +161,7 @@ export const MobileGroupView = () => {
   const { wcif, personsInActivity, multistage } = useCommon();
 
   return (
-    <Container className="space-y-2 md:hidden flex flex-col ">
+    <Container className="flex flex-col space-y-2 md:hidden">
       <GroupHeader />
       <div>
         {GroupAssignmentCodeRank.filter((assignmentCode) =>
@@ -174,14 +174,14 @@ export const MobileGroupView = () => {
 
           return (
             <Fragment key={assignmentCode}>
-              <div className="flex flex-col space-y-2">
+              <div className="flex flex-col space-y-2 dark:text-white">
                 <div>
                   <AssignmentCodeCell
                     as="div"
                     border
                     assignmentCode={assignmentCode}
                     count={personsInActivityWithAssignment.length}
-                    className="p-1 drop-shadow-lg font-bold"
+                    className="p-1 font-bold drop-shadow-lg"
                   />
                   <div>
                     {personsInActivityWithAssignment
@@ -193,7 +193,7 @@ export const MobileGroupView = () => {
                         <Link
                           key={person.registrantId}
                           to={`/competitions/${wcif?.id}/persons/${person.registrantId}`}
-                          className="grid grid-cols-3 grid-rows-1 hover:opacity-80">
+                          className="grid grid-cols-3 grid-rows-1 hover:bg-gray-100 dark:hover:bg-gray-700">
                           <div className="col-span-2 p-1">{person.name}</div>
                           {multistage && (
                             <div
@@ -223,7 +223,7 @@ const DesktopGroupView = () => {
   const { rooms, personsInActivity } = useCommon();
 
   return (
-    <Container className="space-y-2 md:w-2/3 hidden md:flex flex-col" fullWidth>
+    <Container className="flex-col hidden space-y-2 md:w-2/3 md:flex" fullWidth>
       <GroupHeader />
       <div
         className="grid"
@@ -233,7 +233,7 @@ const DesktopGroupView = () => {
         {rooms.map((stage) => (
           <div
             key={stage.id}
-            className="py-3 px-2 text-center flex-1 col-span-1"
+            className="flex-1 col-span-1 px-2 py-3 text-center dark:text-white"
             style={{
               backgroundColor: `${stage.color}4f`,
             }}>
@@ -254,11 +254,11 @@ const DesktopGroupView = () => {
                 border
                 assignmentCode={assignmentCode}
                 count={personsInActivityWithAssignment.length}
-                className="p-1 col-span-full drop-shadow-lg font-bold mt-4"
+                className="p-1 mt-4 font-bold col-span-full drop-shadow-lg dark:text-white"
               />
 
               {rooms.map((room) => (
-                <div key={room.id} className="col-span-1 grid grid-cols-2 gap-x-4 gap-y-1">
+                <div key={room.id} className="grid grid-cols-2 col-span-1 gap-x-4 gap-y-1">
                   {personsInActivityWithAssignment
                     ?.filter((person) => person.room?.id === room.id)
                     ?.sort(byName)
@@ -266,7 +266,7 @@ const DesktopGroupView = () => {
                       <Link
                         key={person.registrantId}
                         to={`/competitions/${person.wcif?.id}/persons/${person.registrantId}`}
-                        className="hover:opacity-80 hover:bg-slate-100 col-span-1 p-1 transition-colors duration-150">
+                        className="col-span-1 p-1 transition-colors duration-150 hover:opacity-80 hover:bg-slate-100 dark:hover:bg-gray-700 dark:text-white">
                         {person.name}
                       </Link>
                     ))}
@@ -331,26 +331,26 @@ export const GroupButtonMenu = () => {
       <Link
         to={prevUrl || ''}
         className={classNames(
-          'w-full border rounded-md p-2 px-2 flex cursor-pointer transition-colors my-1 justify-end',
+          'w-full border border-gray-200 dark:border-gray-700 rounded-md p-2 px-2 flex cursor-pointer transition-colors my-1 justify-end',
           {
             'pointer-events-none opacity-25': !prev,
-            'hover:bg-slate-100 group cursor-pointer': prev,
+            'hover:bg-slate-100 dark:hover:bg-gray-700 group cursor-pointer': prev,
           },
         )}>
-        <span className="fa fa-arrow-left self-center mr-2 group-hover:-translate-x-2 transition-all" />
+        <span className="self-center mr-2 transition-all fa fa-arrow-left group-hover:-translate-x-2" />
         {t('competition.groups.previousGroup')}
       </Link>
       <Link
         to={nextUrl || ''}
         className={classNames(
-          'w-full border rounded-md p-2 px-2 flex cursor-pointer group hover:bg-slate-100 transition-colors my-1',
+          'w-full border border-gray-200 dark:border-gray-700 rounded-md p-2 px-2 flex cursor-pointer group hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors my-1',
           {
             'pointer-events-none opacity-25': !next,
-            'hover:bg-slate-100 group': next,
+            'hover:bg-slate-100 dark:hover:bg-gray-700 group': next,
           },
         )}>
         {t('competition.groups.nextGroup')}
-        <span className="fa fa-arrow-right self-center ml-2 group-hover:translate-x-2 transition-all" />
+        <span className="self-center ml-2 transition-all fa fa-arrow-right group-hover:translate-x-2" />
       </Link>
     </div>
   );

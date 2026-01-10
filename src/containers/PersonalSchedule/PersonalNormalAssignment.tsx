@@ -2,7 +2,7 @@ import { Assignment } from '@wca/helpers';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { AssignmentLabel } from '@/components';
-import { Pill } from '@/components/Pill';
+import { BaseAssignmentPill, Pill } from '@/components/Pill';
 import { parseActivityCodeFlexible } from '@/lib/activityCodes';
 import { ActivityWithRoomOrParent } from '@/lib/types';
 import { roundTime } from '@/lib/utils';
@@ -59,32 +59,35 @@ export const PersonalNormalAssignment = ({
           backgroundColor: `${room.color}25`,
         }),
       }}
-      className={classNames('table-row text-xs sm:text-sm hover:bg-slate-100', {
-        'opacity-40': isOver,
-        'bg-op': isCurrent,
-        'border-t': showTopBorder,
-        'border-b': showBottomBorder,
-      })}
+      className={classNames(
+        'table-row text-xs sm:text-sm hover:bg-slate-100 dark:hover:bg-gray-700',
+        {
+          'opacity-40': isOver,
+          'bg-op': isCurrent,
+          'border-t border-gray-200 dark:border-gray-700': showTopBorder,
+          'border-b border-gray-200 dark:border-gray-700': showBottomBorder,
+        },
+      )}
       to={`/competitions/${competitionId}/activities/${assignment.activityId}`}>
       {showTopBorder && (
-        <td className="py-2 text-center justify-center" rowSpan={rowSpan + 1}>
+        <td className="justify-center py-2 text-center" rowSpan={rowSpan + 1}>
           {formatBriefActivityName(activity)}
         </td>
       )}
       <td className="py-2 text-center min-w-[5em]">{formattedStartTime}</td>
-      <td className="py-2 text-center text-xs sm:text-sm">
+      <td className="py-2 text-xs text-center sm:text-sm">
         <AssignmentLabel assignmentCode={assignment.assignmentCode} />
       </td>
-      <td className="py-2 text-center text-base sm:text-lg">{groupNumber}</td>
+      <td className="py-2 text-base text-center sm:text-lg">{groupNumber}</td>
       {showRoom && (
-        <td className="py-2 text-center text-xs sm:text-sm" style={{}}>
-          <Pill
+        <td className="py-2 text-xs text-center sm:text-sm" style={{}}>
+          <BaseAssignmentPill
             className="min-w-[7em]"
             style={{
               backgroundColor: room.color ? `${room.color}70` : 'inherit',
             }}>
             {room.name}
-          </Pill>
+          </BaseAssignmentPill>
         </td>
       )}
       {showStationNumber && <td className="py-2 text-center">{assignment.stationNumber}</td>}

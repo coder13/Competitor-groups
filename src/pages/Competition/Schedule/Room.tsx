@@ -105,7 +105,7 @@ export function CompetitionRoom() {
 
   return (
     <Container>
-      <div className="flex w-full flex-col text-sm md:text-base py-2 px-1">
+      <div className="flex w-full flex-col text-sm md:text-base py-2 px-1 text-gray-900 dark:text-white">
         <div className="p-2">
           <h3 className="font-bold text-lg -mb-2">{room?.name}</h3>
           <span className="text-xs">{venue?.name}</span>
@@ -113,7 +113,9 @@ export function CompetitionRoom() {
 
         {scheduleDays.map((day) => (
           <div key={day.date} className="flex flex-col">
-            <p className="w-full text-center bg-slate-50 font-bold text-lg mb-1">{day.date}</p>
+            <p className="w-full text-center bg-slate-50 dark:bg-gray-800 font-bold text-lg mb-1">
+              {day.date}
+            </p>
             <div className="flex flex-col">
               {getActivitiesByDate(day.date).map((activity) => {
                 const stage = room && getRoomData(room, activity);
@@ -130,11 +132,11 @@ export function CompetitionRoom() {
             </div>
           </div>
         ))}
-        <hr className="my-2" />
+        <hr className="my-2 border-t border-gray-200 dark:border-gray-700" />
         <div className="flex flex-row justify-between">
           <Link
             to={`/competitions/${wcif?.id}/rooms`}
-            className="w-full border bg-blue-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row">
+            className="w-full border border-gray-200 dark:border-gray-700 bg-blue-200 dark:bg-blue-700 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 dark:hover:bg-blue-600 group transition-colors my-1 flex-row">
             {t('competition.room.back')}
           </Link>
         </div>

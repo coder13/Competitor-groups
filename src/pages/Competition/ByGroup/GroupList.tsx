@@ -39,7 +39,7 @@ export default function GroupList() {
 
   return (
     <Container className="">
-      <div className="p-2 space-y-2">
+      <div className="p-2 space-y-2 text-gray-900 dark:text-white">
         <Breadcrumbs
           breadcrumbs={[
             {
@@ -51,7 +51,7 @@ export default function GroupList() {
           {round && <CutoffTimeLimitPanel round={round} className="" />}
         </div>
       </div>
-      <ul className="space-y-2 flex flex-col p-2">
+      <ul className="flex flex-col p-2 space-y-2">
         {[...uniqueGroupCodes.values()].map((value) => {
           const { groupNumber } = parseActivityCodeFlexible(value);
           const activities = groups.filter((g) => g.activityCode === value);
@@ -61,7 +61,7 @@ export default function GroupList() {
           return (
             <Link
               to={`/competitions/${competitionId!}/events/${roundId}/${groupNumber}`}
-              className=" border bg-white list-none rounded-md px-3 py-2 flex cursor-pointer hover:bg-blue-200 group transition-colors flex-row"
+              className="flex flex-row px-3 py-2 list-none transition-colors bg-white border border-gray-200 rounded-md cursor-pointer dark:border-gray-700 dark:bg-gray-800 hover:bg-blue-200 dark:hover:bg-blue-900 group dark:text-white"
               key={value}>
               <li className="flex flex-col">
                 <span className="text-lg">
@@ -76,7 +76,7 @@ export default function GroupList() {
       <div className="p-2">
         <Link
           to={`/competitions/${competitionId}/events/`}
-          className="w-full border bg-blue-200 rounded-md p-2 px-1 flex cursor-pointer hover:bg-blue-400 group transition-colors my-1 flex-row">
+          className="flex flex-row w-full p-2 px-1 my-1 transition-colors bg-blue-200 border border-gray-200 rounded-md cursor-pointer dark:border-gray-700 dark:bg-blue-700 hover:bg-blue-400 dark:hover:bg-blue-600 group dark:text-gray-100">
           {t('competition.groups.backToEvents')}
         </Link>
       </div>

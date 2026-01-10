@@ -18,7 +18,7 @@ export default function About() {
   return (
     <Container className="overflow-auto">
       <div className="flex flex-col items-center">
-        <div className="flex flex-col pt-2 text-sm md:text-base p-2 md:px-0  text-gray-800 space-y-4">
+        <div className="flex flex-col p-2 pt-2 space-y-4 text-sm text-gray-800 md:text-base md:px-0 dark:text-white">
           <p>{t('about.welcome')}</p>
           <p className="leading-relaxed">{t('about.purpose')} </p>
           <p className="leading-relaxed">{t('about.startTimes')} </p>
