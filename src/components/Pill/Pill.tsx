@@ -37,3 +37,15 @@ export const BaseAssignmentPill = ({ className, ...props }: PillProps) => {
     />
   );
 };
+
+export const RoomPill = ({ className, ...props }: PillProps) => {
+  return (
+    <span
+      className={classNames(
+        `inline-flex justify-center items-center px-2 py-1 ring-1 ring-inset font-medium rounded-md bg-gray-100 text-gray-800 shadow-sm dark:ring-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:shadow-gray-800`,
+        className,
+      )}
+      {...props}
+    />
+  );
+};
