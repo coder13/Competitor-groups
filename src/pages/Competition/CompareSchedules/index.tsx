@@ -1,5 +1,5 @@
 import { AssignmentCode, Person } from '@wca/helpers';
-import { Fragment, HtmlHTMLAttributes, useMemo, useRef } from 'react';
+import { Fragment, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Grid } from '@/components/Grid/Grid';
 import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
@@ -41,9 +41,9 @@ export default function CompareSchedules() {
         columnWidths={columnWidths}
         className="[&>div]:py-2 [&>div]:px-3 [&>div]:text-center sticky top-0"
         ref={headerRef}>
-        <div className="font-bold bg-gray-100 text-center z-50">Time</div>
+        <div className="z-50 font-bold text-center bg-gray-100">Time</div>
         {persons.map((p) => (
-          <div key={p.wcaUserId} className="bg-gray-100 sticky top-0 z-50">
+          <div key={p.wcaUserId} className="sticky top-0 z-50 bg-gray-100">
             <Link
               to={`/competitions/${competitionId}/persons/${p.registrantId}`}
               className="font-bold">
@@ -59,7 +59,7 @@ export default function CompareSchedules() {
           return (
             <Fragment key={day.date}>
               <div
-                className="col-span-full font-bold bg-gray-100 sticky"
+                className="sticky font-bold bg-gray-100 col-span-full"
                 style={{
                   top: headerHeight,
                 }}>

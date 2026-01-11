@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { BreadcrumbPill, Pill, PillProps } from '../Pill';
+import { BreadcrumbPill, PillProps } from '../Pill';
 
 export type Breadcrumb =
   | {

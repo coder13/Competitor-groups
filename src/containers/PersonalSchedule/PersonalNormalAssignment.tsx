@@ -2,7 +2,7 @@ import { Assignment } from '@wca/helpers';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { AssignmentLabel } from '@/components';
-import { BaseAssignmentPill, Pill } from '@/components/Pill';
+import { BaseAssignmentPill } from '@/components/Pill';
 import { parseActivityCodeFlexible } from '@/lib/activityCodes';
 import { ActivityWithRoomOrParent } from '@/lib/types';
 import { roundTime } from '@/lib/utils';
