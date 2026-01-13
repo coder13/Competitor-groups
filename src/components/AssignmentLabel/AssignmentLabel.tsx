@@ -11,7 +11,7 @@ export function AssignmentLabel({ assignmentCode }: AssignmentLabelProps) {
 
   if (assignmentCode.match(/judge/i)) {
     return (
-      <BaseAssignmentPill className="bg-blue-200 dark:bg-blue-900">
+      <BaseAssignmentPill className="bg-primary">
         {t('common.assignments.staff-judge.noun', {
           defaultValue: assignmentCode.replace('staff-', ''),
         })}
@@ -63,8 +63,6 @@ export function AssignmentLabel({ assignmentCode }: AssignmentLabelProps) {
         <BaseAssignmentPill className="bg-amber-500 dark:bg-amber-900">{name}</BaseAssignmentPill>
       );
     default:
-      return (
-        <BaseAssignmentPill className="bg-blue-100 dark:bg-blue-900">{name}</BaseAssignmentPill>
-      );
+      return <BaseAssignmentPill className="bg-primary">{name}</BaseAssignmentPill>;
   }
 }

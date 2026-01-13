@@ -79,7 +79,7 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
       {count ? (
         <>
           {' '}
-          <span className="text-sm">({count})</span>
+          <span className="type-body-sm">({count})</span>
         </>
       ) : null}
     </Component>

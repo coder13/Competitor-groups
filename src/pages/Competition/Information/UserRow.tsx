@@ -11,8 +11,8 @@ export const UserRow = ({ user }: { user: User }) => {
         rel="noreferrer">
         <img className="object-contain w-16 h-16 rounded-l" src={avatarUrl} alt={user.name} />
         <div className="flex flex-col flex-1 px-2">
-          <span className="text-xl text-gray-900 dark:text-white">{user.name}</span>
-          <span className="text-xs text-gray-600 dark:text-gray-400">{user.wca_id}</span>
+          <span className="type-heading">{user.name}</span>
+          <span className="type-meta">{user.wca_id}</span>
         </div>
         {user.wca_id && (
           <div className="flex items-center p-2">

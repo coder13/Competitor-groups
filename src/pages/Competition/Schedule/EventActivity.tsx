@@ -258,7 +258,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
   return (
     <>
       {wcif && (
-        <div className="p-2 space-y-2 text-sm text-gray-900 dark:text-white">
+        <div className="p-2 space-y-2 type-body">
           <Breadcrumbs
             breadcrumbs={[
               {
@@ -280,11 +280,11 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
                   ]),
             ]}
           />
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 type-body">
             <Link
               to={prevUrl || ''}
               className={classNames(
-                'w-full border border-gray-200 dark:border-gray-700 rounded-md p-2 px-2 flex cursor-pointer transition-colors my-1 justify-end',
+                'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer transition-colors my-1 justify-end',
                 {
                   'pointer-events-none opacity-25': !prev,
                   'hover:bg-slate-100 dark:hover:bg-gray-700 group cursor-pointer': prev,
@@ -296,7 +296,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
             <Link
               to={nextUrl || ''}
               className={classNames(
-                'w-full border border-gray-200 dark:border-gray-700 rounded-md p-2 px-2 flex cursor-pointer group hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors my-1',
+                'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer group hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors my-1',
                 {
                   'pointer-events-none opacity-25': !next,
                   'hover:bg-slate-100 dark:hover:bg-gray-700 group': next,
@@ -308,27 +308,29 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
           </div>
 
           <div className="space-y-1">
-            <span className="px-2">
+            <span className="px-2 type-meta">
               {formatDateTimeRange(activity.startTime, activity.endTime, 5, timeZone)}
             </span>
             {round && <CutoffTimeLimitPanel round={round} className="w-full" />}
           </div>
         </div>
       )}
-      <hr className="mb-2 border-t border-gray-200 dark:border-gray-700" />
+      <hr className="mb-2 border-t border-tertiary-weak" />
       {competitors.length > 0 && (
         <div>
-          <h4 className="px-6 py-3 pb-1 text-lg font-bold text-center text-gray-900 bg-green-200 shadow-md dark:bg-green-900/60 dark:text-white">
+          <h4 className="px-6 py-3 pb-1 type-heading text-center bg-green-200 shadow-md dark:bg-green-900/60 dark:text-white">
             {t('common.assignments.competitor.noun')}{' '}
-            <span className="text-sm">({competitors.length})</span>
+            <span className="type-body-sm">({competitors.length})</span>
           </h4>
-          <table className="w-full text-left text-gray-900 dark:text-white">
+          <table className="table-base text-left type-body">
             <thead>
-              <tr className="text-xs bg-green-200 shadow-md lg:text-sm dark:bg-green-900/60 dark:shadow-gray-800/40">
-                <th className="px-6 pt-1 pb-3">{t('common.name')}</th>
-                <th className="px-6 pt-1 pb-3">{t('competition.eventActivity.seedResult')}</th>
+              <tr className="bg-green-200 shadow-md dark:bg-green-900/60 dark:shadow-gray-800/40">
+                <th className="table-header-cell">{t('common.name')}</th>
+                <th className="table-header-cell">{t('competition.eventActivity.seedResult')}</th>
                 {anyCompetitorHasStationNumber && (
-                  <th className="px-6 pt-1 pb-3">{t('competition.eventActivity.stationNumber')}</th>
+                  <th className="table-header-cell">
+                    {t('competition.eventActivity.stationNumber')}
+                  </th>
                 )}
               </tr>
             </thead>
@@ -345,12 +347,14 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
                 .map((person) => (
                   <Link
                     key={person.registrantId}
-                    className="table-row even:bg-green-50 dark:bg-gray-900 even:dark:bg-green-900/50 hover:brightness-150"
+                    className="table-row table-row-hover even:bg-green-50 dark:bg-gray-900 even:dark:bg-green-900/50"
                     to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
-                    <td className="px-6 py-2.5">{person.name}</td>
-                    <td className="px-6 py-2.5">{person.seedResult}</td>
+                    <td className="table-cell type-body-sm">{person.name}</td>
+                    <td className="table-cell type-body-sm">{person.seedResult}</td>
                     {anyCompetitorHasStationNumber && (
-                      <td className="px-6 py-2.5">{stationNumber('competitor')(person)}</td>
+                      <td className="table-cell type-body-sm">
+                        {stationNumber('competitor')(person)}
+                      </td>
                     )}
                   </Link>
                 ))}

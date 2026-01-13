@@ -75,18 +75,18 @@ const GroupsOverview = () => {
 
   return (
     <Container fullWidth className="overflow-x-scroll px-2">
-      <table className="hover-table">
+      <table className="table-base table-row-hover">
         <thead>
           <tr>
-            <td className="p-2 ">Name</td>
-            <td className="p-2 ">WCA ID</td>
+            <td className="p-2 dark:text-white">Name</td>
+            <td className="p-2 dark:text-white">WCA ID</td>
             {wcif?.events.map((event) => (
-              <td key={event.id} className="p-2 bg-green-400">
+              <td key={event.id} className="p-2 bg-green-400 dark:bg-green-700 dark:text-white">
                 {event.id}
               </td>
             ))}
             {wcif?.events.map((event) => (
-              <td key={event.id} className="p-2 bg-blue-400">
+              <td key={event.id} className="p-2 bg-blue-400 dark:bg-blue-700 dark:text-white">
                 {event.id}
               </td>
             ))}
@@ -102,7 +102,7 @@ const GroupsOverview = () => {
                   style={{
                     backgroundColor: `${stage.color}3f`,
                   }}>
-                  <td colSpan={columns} className="px-3 py-2">
+                  <td colSpan={columns} className="px-3 py-2 dark:text-white">
                     {stage.name}
                   </td>
                 </tr>
@@ -136,8 +136,8 @@ const GroupsOverview = () => {
 
                     return (
                       <tr key={person.registrantId}>
-                        <td className="p-2">{person.name}</td>
-                        <td className="p-2">{person.wcaId}</td>
+                        <td className="p-2 dark:text-white">{person.name}</td>
+                        <td className="p-2 dark:text-white">{person.wcaId}</td>
                         {wcif?.events.map((event) => {
                           const competingAssignment = competingAssignments.find(
                             (a) => a.eventId === event.id && a.roundNumber === 1,
@@ -146,8 +146,8 @@ const GroupsOverview = () => {
                           return (
                             <td
                               key={event.id}
-                              className={classNames('text-center', {
-                                'bg-green-200': !!competingAssignment,
+                              className={classNames('text-center p-2 dark:text-white', {
+                                'bg-green-200 dark:bg-green-800': !!competingAssignment,
                               })}>
                               {competingAssignment?.groupNumber}
                             </td>

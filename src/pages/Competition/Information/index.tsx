@@ -21,12 +21,12 @@ export default function Information() {
 
   return (
     <Container>
-      <div className="flex flex-col w-full p-2 space-y-2 text-slate-800 dark:text-white">
+      <div className="flex flex-col w-full p-2 space-y-2 type-body">
         <ExternalLink href={data?.website || ''}>View WCA competition webpage</ExternalLink>
-        <div className="flex flex-col w-full border border-slate-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-2 rounded">
-          <h2 className="text-2xl font-bold">Venue</h2>
+        <div className="flex flex-col w-full p-2 bg-white border rounded border-slate-100 dark:border-gray-700 dark:bg-gray-800">
+          <h2 className="type-title">Venue</h2>
           <a
-            className="flex align-center justify-between w-full rounded hover:opacity-80 text-blue-600 dark:text-blue-400 hover:underline"
+            className="flex justify-between w-full rounded align-center hover:opacity-80 link-inline"
             href={`https://maps.google.com/maps?q=${wcif?.schedule?.venues?.[0]?.name},${data?.venue_address},${data?.city}`}
             target="_blank"
             rel="noreferrer">
@@ -39,16 +39,16 @@ export default function Information() {
             </span>
             <i className="m-0 fa fa-solid fa-arrow-up-right-from-square" />
           </a>
-          <p>{data?.venue_details}</p>
+          <p className="type-body">{data?.venue_details}</p>
         </div>
         <div>
-          <h2 className="text-2xl font-bold">Organizers</h2>
+          <h2 className="type-title">Organizers</h2>
           <ul className="flex flex-col space-y-2">
             {data?.organizers?.map((user) => <UserRow key={user.id} user={user} />)}
           </ul>
         </div>
         <div>
-          <h2 className="text-2xl font-bold">Delegates</h2>
+          <h2 className="type-title">Delegates</h2>
           <ul className="flex flex-col space-y-2">
             {data?.delegates?.map((user) => <UserRow key={user.id} user={user} />)}
           </ul>

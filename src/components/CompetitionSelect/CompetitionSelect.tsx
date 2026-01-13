@@ -42,9 +42,9 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
         // Base sizing and rounded look
         'min-h-[38px] rounded-md',
         // Backgrounds
-        'bg-white dark:bg-gray-800',
+        'bg-panel',
         // Borders + focus
-        'border border-gray-200 dark:border-gray-700',
+        'border border-tertiary-weak',
         state.isFocused
           ? 'ring-1 ring-blue-500 dark:ring-blue-400 border-blue-500 dark:border-blue-400'
           : '',
@@ -52,24 +52,20 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
     valueContainer: () => 'text-gray-900 dark:text-white',
     singleValue: () => 'text-gray-900 dark:text-white',
     input: () => 'text-gray-900 dark:text-white',
-    placeholder: () => 'text-gray-600 dark:text-gray-400',
-    indicatorsContainer: () => 'text-gray-500 dark:text-gray-400',
+    placeholder: () => 'text-muted',
+    indicatorsContainer: () => 'text-muted',
     dropdownIndicator: (state) =>
-      [
-        'text-gray-500 dark:text-gray-400',
-        state.isFocused ? 'text-blue-600 dark:text-blue-400' : '',
-      ].join(' '),
-    clearIndicator: () =>
-      'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300',
-    menu: () => 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md',
-    menuList: () => 'bg-white dark:bg-gray-800',
+      ['text-muted', state.isFocused ? 'text-blue-600 dark:text-blue-400' : ''].join(' '),
+    clearIndicator: () => 'text-muted hover-text-tertiary',
+    menu: () => 'bg-panel border border-tertiary-weak shadow-md',
+    menuList: () => 'bg-panel',
     option: (state) =>
       [
         'text-gray-900 dark:text-white',
-        state.isFocused ? 'bg-gray-100 dark:bg-gray-700' : '',
+        state.isFocused ? 'bg-tertiary-strong' : '',
         state.isSelected ? 'bg-blue-100 dark:bg-blue-900' : '',
       ].join(' '),
-    noOptionsMessage: () => 'text-gray-600 dark:text-gray-400',
+    noOptionsMessage: () => 'text-muted',
   };
 
   const styles: StylesConfig<ApiCompetition, false> = {

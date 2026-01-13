@@ -1,0 +1,104 @@
+@layer components {
+  /* App & panel background tokens */
+  .bg-app {
+    @apply bg-white dark:bg-gray-900;
+  }
+
+  .bg-panel {
+    @apply bg-white dark:bg-gray-800;
+  }
+
+  /* Primary color tokens (blue) */
+  .bg-primary {
+    @apply bg-blue-200 dark:bg-blue-700;
+  }
+
+  .bg-primary-strong {
+    @apply bg-blue-300 dark:bg-blue-600;
+  }
+
+  .text-primary {
+    @apply text-blue-700 dark:text-blue-300;
+  }
+
+  .border-primary {
+    @apply border-blue-300 dark:border-blue-600;
+  }
+
+  /* Secondary color tokens (green) */
+  .bg-secondary {
+    @apply bg-green-200 dark:bg-green-700;
+  }
+
+  .bg-secondary-strong {
+    @apply bg-green-300 dark:bg-green-600;
+  }
+
+  .text-secondary {
+    @apply text-green-700 dark:text-green-300;
+  }
+
+  .border-secondary {
+    @apply border-green-300 dark:border-green-600;
+  }
+
+  /* Tertiary/neutral color tokens (gray) */
+  .bg-tertiary {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+
+  .bg-tertiary-strong {
+    @apply bg-gray-200 dark:bg-gray-700;
+  }
+
+  .text-tertiary {
+    @apply text-gray-700 dark:text-gray-300;
+  }
+
+  .border-tertiary {
+    @apply border-gray-300 dark:border-gray-600;
+  }
+
+  /* Weaker neutral border token */
+  .border-tertiary-weak {
+    @apply border-gray-200 dark:border-gray-700;
+  }
+
+  /* Muted neutral text token */
+  .text-muted {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+}
+
+@layer utilities {
+  /* Hover tokens for neutral backgrounds/text */
+  .hover-bg-tertiary {
+    @apply hover:bg-gray-200 dark:hover:bg-gray-700;
+  }
+
+  .hover-text-tertiary {
+    @apply hover:text-gray-700 dark:hover:text-gray-300;
+  }
+
+  .hover-text-muted {
+    @apply hover:text-gray-500 dark:hover:text-gray-300;
+  }
+
+  /* Divider, ring, and placeholder neutral tokens */
+  .divide-tertiary-weak {
+    @apply divide-gray-100;
+  }
+
+  .ring-tertiary-weak {
+    @apply ring-gray-100 dark:ring-gray-600;
+  }
+
+  .placeholder-tertiary {
+    @apply dark:placeholder-gray-400;
+  }
+
+  /* Shadow token for dark mode neutrals */
+  .shadow-tertiary-dark {
+    @apply dark:shadow-gray-800;
+  }
+}

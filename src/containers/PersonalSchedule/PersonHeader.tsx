@@ -60,9 +60,9 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
         )}
         <div className="flex flex-col w-full">
           <div className="flex items-center flex-shrink w-full space-x-1">
-            <h3 className="text-xl sm:text-2xl">{person.name}</h3>
+            <h3 className="type-heading sm:type-title">{person.name}</h3>
             <div className="flex-grow" />
-            <span className="text-xl sm:text-2xl">{person.registrantId}</span>
+            <span className="type-heading sm:type-title">{person.registrantId}</span>
             <Button
               variant="blue"
               className="min-h-10"
@@ -78,18 +78,21 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
           </div>
           <div className="flex space-x-1 align-center">
             {hasFlag(person.countryIso2) && (
-              <div className="flex flex-shrink text-lg sm:text-xl">
+              <div className="flex flex-shrink type-body sm:type-heading">
                 {getUnicodeFlagIcon(person.countryIso2)}
               </div>
             )}
 
-            {person.wcaId && <span className="my-1 text-sm sm:text-md">{person.wcaId}</span>}
+            {person.wcaId && <span className="my-1 type-body-sm">{person.wcaId}</span>}
           </div>
           <div className="px-1">
-            <p className="text-sm sm:text-md">
+            <p className="type-body-sm sm:type-body">
               <span>{t('competition.personalSchedule.registeredEvents')}:</span>
               {registeredEventIconClassNames.map((eventId) => (
-                <span key={eventId} className={classNames(`cubing-icon ${eventId} mx-1 text-lg`)} />
+                <span
+                  key={eventId}
+                  className={classNames(`cubing-icon ${eventId} mx-1`, 'type-body sm:type-heading')}
+                />
               ))}
             </p>
           </div>
@@ -97,7 +100,7 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
       </div>
       {person.wcaId && (
         <>
-          <hr className="my-2 border-gray-200 dark:border-gray-700" />
+          <hr className="my-2 border-tertiary-weak" />
           <div className="flex flex-col px-1 space-y-2">
             <LinkButton
               variant="green"

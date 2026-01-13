@@ -117,12 +117,11 @@ export const PsychSheetEvent = () => {
 
   return (
     <Container className="w-full h-full">
-      <div
-        className={classNames('w-full h-full text-sm sm:text-base text-gray-900 dark:text-white')}>
+      <div className={classNames('w-full h-full type-body')}>
         <div className="flex p-1 space-x-2">
           <EventSelector value={eventId} events={wcif?.events || []} onChange={handleEventChange} />
           <select
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-40"
+            className="bg-tertiary border border-tertiary dark:border-gray-600 type-body-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-40"
             value={resultType}
             onChange={(e) => handleResultTypeChange(e.target.value as 'average' | 'single')}>
             <option value="average">{t('common.wca.resultType.average')}</option>
@@ -132,46 +131,46 @@ export const PsychSheetEvent = () => {
 
         <div className={gridCss}>
           <div
-            className={
-              '[&>span]:bg-green-300 [&>span]:dark:bg-green-900 [&>span]:dark:text-white stickyGridHeader contents absolute'
-            }
+            className="stickyGridHeader contents [&>span]:table-bg-header-secondary"
             role="rowheader">
-            <span className="px-3 py-2.5 text-right font-bold">#</span>
-            <span className="px-3 py-2.5 text-left" />
-            <span className="px-3 py-2.5 text-left font-bold">
-              {t('competition.rankings.name')}
-            </span>
-            <span className="px-3 py-2.5 text-right font-bold whitespace-nowrap">
+            <span className="text-right table-header-cell-sm">#</span>
+            <span className="text-left table-header-cell-sm" />
+            <span className="text-left table-header-cell-sm">{t('competition.rankings.name')}</span>
+            <span className="text-right table-header-cell-sm whitespace-nowrap">
               {resultType === 'single'
                 ? t('common.wca.resultType.single')
                 : t('common.wca.resultType.average')}{' '}
             </span>
-            <span className="px-3 py-2.5 text-right font-bold">
-              {t('common.wca.recordType.WR')}
-            </span>
+            <span className="text-right table-header-cell-sm">{t('common.wca.recordType.WR')}</span>
           </div>
-          <div className="contents striped">
-            {sortedPersons?.map((person) => {
+          <div className="contents">
+            {sortedPersons?.map((person, index) => {
               const prAverage = person.personalBests?.find(
                 (pr) => pr.eventId === eventId && pr.type === resultType,
               );
 
+              const isOdd = index % 2 === 0; // 0-indexed, so even index = odd row visually
+
               return (
                 <Link
                   key={person.registrantId}
-                  className="contents"
+                  className={classNames(
+                    'contents [&>span]:transition-colors',
+                    isOdd ? '[&>span]:table-bg-row-alt-secondary' : '[&>span]:table-bg-row',
+                    '[&:hover>span]:table-bg-row-hover-secondary',
+                  )}
                   to={`/competitions/${wcif?.id}/personal-bests/${person.wcaId}`}>
-                  <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
+                  <span className="table-cell-sm text-right [font-variant-numeric:tabular-nums]">
                     {person.rank}
                   </span>
-                  <span className="px-3 py-2.5 text-left flex items-center w-full">
+                  <span className="flex items-center w-full text-left table-cell-sm">
                     {getUnicodeFlagIcon(person.countryIso2)}
                   </span>
-                  <span className="px-3 py-2.5 text-left truncate">{person.name}</span>
-                  <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
+                  <span className="text-left truncate table-cell-sm">{person.name}</span>
+                  <span className="table-cell-sm text-right [font-variant-numeric:tabular-nums]">
                     {prAverage ? renderResultByEventId(eventId, resultType, prAverage.best) : ''}
                   </span>
-                  <span className="px-3 py-2.5 text-right [font-variant-numeric:tabular-nums]">
+                  <span className="table-cell-sm text-right [font-variant-numeric:tabular-nums]">
                     {prAverage
                       ? `${prAverage.worldRanking.toLocaleString([...navigator.languages])}`
                       : ''}
@@ -198,7 +197,7 @@ export const EventSelector = ({
   return (
     <select
       id="events"
-      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      className="bg-gray-50 border border-gray-300 type-body-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       value={value}
       onChange={(e) => onChange(e.target.value as EventId)}>
       {events?.map((event) => (

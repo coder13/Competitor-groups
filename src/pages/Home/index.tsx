@@ -16,16 +16,16 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center w-full overflow-auto">
       <Container>
-        <div className="flex flex-col w-full text-xs md:text-sm py-2 px-2 md:px-0 dark:text-gray-300">
-          <p>{t('home.subtitle')}</p>
-          <p>{t('home.explanation')}</p>
-          <Link to="/about" className="text-blue-700 dark:text-blue-400 underline">
+        <div className="flex flex-col w-full py-2 px-2 md:px-0 type-body">
+          <p className="type-body-sm">{t('home.subtitle')}</p>
+          <p className="type-body-sm">{t('home.explanation')}</p>
+          <Link to="/about" className="link-inline">
             {t('home.learnMore')}
           </Link>
         </div>
         <div className="px-2">
           <Link
-            className="flex w-full py-2.5 px-2 me-2 mb-2 text-sm font-medium text-gray-900 dark:text-white focus:outline-none bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-400"
+            className="flex w-full py-2.5 px-2 me-2 mb-2 type-label focus:outline-none bg-white dark:bg-gray-800 rounded-lg border border-tertiary hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-400"
             to="/support">
             {t('home.support')}
           </Link>

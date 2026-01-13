@@ -22,7 +22,7 @@ export const Breadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
     <div className="flex items-center space-x-1">
       {breadcrumbs.map(({ label, ...breadcrumb }, index) => (
         <Fragment key={label}>
-          {index > 0 && <span className="text-gray-500 dark:text-gray-400">·</span>}
+          {index > 0 && <span className="text-muted">·</span>}
           {'href' in breadcrumb ? (
             <Link to={breadcrumb.href}>
               <BreadcrumbPill

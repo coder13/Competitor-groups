@@ -59,21 +59,31 @@ export function Assignments({ wcif, person, showStationNumber }: AssignmentsProp
 
   return (
     <>
-      <div className="shadow-md dark:shadow-gray-800">
-        <table className="w-full text-xs sm:text-sm">
+      <div className="table-container">
+        <table className="table-base type-body-sm">
           <thead>
-            <tr className="shadow-sm bg-slate-100 dark:bg-gray-700">
-              <th className="w-20 py-2 text-center">
+            <tr className="table-header shadow-sm">
+              <th className="table-header-cell-sm-center w-20">
                 {t('competition.personalSchedule.activity')}
               </th>
-              <th className="py-2 text-center">{t('competition.personalSchedule.time')}</th>
-              <th className="py-2 text-center">{t('competition.personalSchedule.assignment')}</th>
-              <th className="py-2 text-center">{t('competition.personalSchedule.group')}</th>
+              <th className="table-header-cell-sm-center">
+                {t('competition.personalSchedule.time')}
+              </th>
+              <th className="table-header-cell-sm-center">
+                {t('competition.personalSchedule.assignment')}
+              </th>
+              <th className="table-header-cell-sm-center">
+                {t('competition.personalSchedule.group')}
+              </th>
               {showRoom && (
-                <th className="py-2 text-center">{t('competition.personalSchedule.stage')}</th>
+                <th className="table-header-cell-sm-center">
+                  {t('competition.personalSchedule.stage')}
+                </th>
               )}
               {showStationNumber && (
-                <th className="py-2 text-center">{t('competition.personalSchedule.station')}</th>
+                <th className="table-header-cell-sm-center">
+                  {t('competition.personalSchedule.station')}
+                </th>
               )}
             </tr>
           </thead>
@@ -84,10 +94,8 @@ export function Assignments({ wcif, person, showStationNumber }: AssignmentsProp
               return (
                 <Fragment key={date}>
                   {!isSingleDay && (
-                    <tr onClick={() => toggleDate(date)}>
-                      <td
-                        colSpan={6}
-                        className="text-base font-bold cursor-pointer select-none md:text-lg bg-slate-50 dark:bg-gray-800">
+                    <tr onClick={() => toggleDate(date)} className="table-row-hover-bg">
+                      <td colSpan={6} className="table-row-group-header cursor-pointer select-none">
                         <div className="flex justify-between">
                           <span className="w-full p-2 text-center">
                             {dateParts.find((i) => i.type === 'weekday')?.value || date}

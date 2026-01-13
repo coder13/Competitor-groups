@@ -24,7 +24,7 @@ export default function Round() {
 
   return (
     <Container className="space-y-2 p-2">
-      <div className="flex justify-evenly">
+      <div className="flex justify-evenly type-heading">
         <StatsBox title="Competitors" value={acceptedRegistrationsCount} />
         <StatsBox title="Events" value={eventCount} />
       </div>
@@ -35,10 +35,10 @@ export default function Round() {
           gridTemplateColumns: `repeat(${eventCount}, 1fr)`,
         }}>
         {wcif?.events?.map(({ id }) => (
-          <span key={id} className={`cubing-icon event-${id} mx-1 text-xl text-center`} />
+          <span key={id} className={`cubing-icon event-${id} mx-1 type-body`} />
         ))}
         {wcif?.events?.map(({ id }) => (
-          <span key={id} className="text-center">
+          <span key={id} className="text-center type-body-sm">
             {
               acceptedRegistrations?.filter(({ registration }) =>
                 registration?.eventIds.includes(id),

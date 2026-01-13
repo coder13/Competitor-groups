@@ -104,7 +104,7 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
             as="div"
             border
             assignmentCode={assignmentCode}
-            className="px-2 py-1 text-xl drop-shadow-lg font-bold col-span-full"
+            className="px-2 py-1 type-heading drop-shadow-lg font-bold col-span-full"
           />
           {childActivities.map((ca) => {
             const personsInActivity = personsInActivities?.filter(

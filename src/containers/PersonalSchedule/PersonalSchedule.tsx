@@ -17,12 +17,12 @@ export function PersonalScheduleContainer({ person }: PersonalScheduleContainerP
   const anyAssignmentsHasStationNumber = !!person.assignments?.some((a) => a.stationNumber);
 
   return (
-    <div className="flex flex-col pt-1 text-gray-900 dark:text-white">
+    <div className="flex flex-col pt-1 type-body">
       <PersonHeader competitionId={competitionId} person={person} />
 
-      <hr className="my-2 border-gray-200 dark:border-gray-700" />
+      <hr className="my-2 border-tertiary-weak" />
       <DisclaimerText className="mx-1" />
-      <hr className="my-2 border-gray-200 dark:border-gray-700" />
+      <hr className="my-2 border-tertiary-weak" />
 
       {wcif && (
         <>

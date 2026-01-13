@@ -18,7 +18,7 @@ export function Schedule() {
 
   return (
     <Container>
-      <div className="flex w-full flex-col text-sm md:text-base py-2 p-1 sm:p-0 space-y-1">
+      <div className="flex w-full flex-col type-body py-2 p-1 sm:p-0 space-y-1">
         <DisclaimerText className="my-2" />
         <hr className="" />
         <div className="flex flex-row justify-between">

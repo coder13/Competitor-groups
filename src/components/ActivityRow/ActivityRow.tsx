@@ -31,14 +31,14 @@ export function ActivityRow({ activity, stage, timeZone, showRoom = true }: Acti
     <Link
       key={activity.id}
       className={classNames(
-        'flex flex-col w-full p-2 text-gray-900 dark:text-white even:bg-slate-50 even:dark:bg-gray-800 hover:bg-slate-100 dark:hover:bg-gray-700 even:hover:bg-slate-200 even:dark:hover:bg-gray-600',
+        'flex flex-col w-full p-2 type-body even:bg-slate-50 even:dark:bg-gray-800 hover:bg-slate-100 dark:hover:bg-gray-700 even:hover:bg-slate-200 even:dark:hover:bg-gray-600',
         {
           'opacity-50': isOver,
         },
       )}
       to={`/competitions/${competitionId}/activities/${activity.id}`}>
-      <span>{activityName}</span>
-      <span className="flex justify-between text-xs font-light md:text-sm">
+      <span className="type-body">{activityName}</span>
+      <span className="flex justify-between type-meta">
         {showRoom && stage && (
           <RoomPill
             className="px-1 mr-2 rounded"

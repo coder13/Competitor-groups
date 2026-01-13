@@ -76,21 +76,21 @@ export const PeopleList = ({
               <div>
                 <h4
                   className={classNames(
-                    'text-lg font-bold text-center shadow-md py-3 px-6 text-gray-900 dark:text-white dark:shadow-gray-800',
+                    'type-heading font-bold text-center shadow-md py-3 px-6 text-gray-900 dark:text-white dark:shadow-gray-800',
                     headerColorClassName,
                   )}>
-                  {title} <span className="text-sm">({people.length})</span>
+                  {title} <span className="type-body-sm">({people.length})</span>
                 </h4>
                 {anyHasStationNumber ? (
-                  <table className={'w-full text-left text-gray-900 dark:text-white'}>
+                  <table className="table-base text-left type-body">
                     <thead>
                       <tr
                         className={classNames(
-                          'text-sm shadow-md dark:bg-gray-800 dark:text-white',
+                          'type-body-sm shadow-md dark:bg-gray-800 dark:text-white',
                           headerColorClassName,
                         )}>
-                        <th className="px-6 pt-1 pb-3">{t('common.name')}</th>
-                        <th className="px-6 pt-1 pb-3">
+                        <th className="table-header-cell">{t('common.name')}</th>
+                        <th className="table-header-cell">
                           {t('competition.eventActivity.stationNumber')}
                         </th>
                       </tr>
@@ -117,14 +117,14 @@ export const PeopleList = ({
                             key={person.registrantId}
                             className={classNames(
                               'table-row',
-                              'text-gray-900 dark:text-white',
-                              'hover:brightness-125',
+                              'type-body',
+                              'table-row-hover',
                               'dark:bg-gray-900',
                               colorClassName,
                             )}
                             to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
-                            <td className="px-6 py-2.5">{person.name}</td>
-                            <td className="px-6 py-2.5">{person.stationNumber}</td>
+                            <td className="table-cell">{person.name}</td>
+                            <td className="table-cell">{person.stationNumber}</td>
                           </Link>
                         ))}
                     </tbody>
@@ -136,8 +136,8 @@ export const PeopleList = ({
                         key={person.registrantId}
                         className={classNames(
                           'p-2 py-2.5 block',
-                          'text-gray-900 dark:text-white',
-                          'hover:brightness-125',
+                          'type-body',
+                          'table-row-hover',
                           'dark:bg-gray-900',
                           colorClassName,
                         )}

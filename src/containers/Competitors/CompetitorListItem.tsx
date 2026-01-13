@@ -20,7 +20,7 @@ export const CompetitorListItem = ({
 
   return (
     <Link key={person.registrantId} to={`persons/${person.registrantId}`}>
-      <li className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 list-none rounded-md flex justify-between cursor-pointer hover:bg-blue-200 dark:hover:bg-gray-700 group transition-colors my-1 flex-row min-h-[40px] items-center text-gray-900 dark:text-white">
+      <li className="border border-tertiary-weak bg-panel list-none rounded-md flex justify-between cursor-pointer hover:bg-blue-200 dark:hover:bg-gray-700 group transition-colors my-1 flex-row min-h-[40px] items-center text-gray-900 dark:text-white type-body">
         <div className="flex space-x-1">
           {highlight && (
             <div className="flex flex-shrink">
@@ -33,24 +33,24 @@ export const CompetitorListItem = ({
             </div>
           )}
           <div className="flex flex-col justify-center p-1">
-            <span className="text-lg">{person.name}</span>
+            <span className="type-heading">{person.name}</span>
             {highlight && (
-              <span className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="type-body-sm text-muted">
                 {t('competition.competitors.viewMyAssignments')}{' '}
-                <i className="text-xs fa fa-chevron-right" />
+                <i className="type-meta fa fa-chevron-right" />
               </span>
             )}
           </div>
         </div>
         {bookmarked && !currentAssignmentCode && (
-          <div className="flex items-center flex-shrink px-2 text-2xl">
+          <div className="flex items-center flex-shrink px-2 type-title">
             <span className="text-yellow-500 fa fa-bookmark" />
           </div>
         )}
         {currentAssignmentCode ? (
           <AssignmentCodeCell
             as="div"
-            className="p-1 text-sm text-gray-500 rounded-md dark:text-gray-400"
+            className="p-1 type-body-sm text-muted rounded-md"
             assignmentCode={currentAssignmentCode}
             grammar="verb"
           />

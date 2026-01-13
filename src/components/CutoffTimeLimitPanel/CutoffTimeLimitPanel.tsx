@@ -27,8 +27,8 @@ export function CutoffTimeLimitPanel({
 
   return (
     <div className={classNames('flex w-full', className)}>
-      <div className="flex flex-col space-y-1 flex-1 -mx-2">
-        <div className="divide-x-2 divide-gray-100 flex">
+      <div className="flex flex-col flex-1 -mx-2 space-y-1">
+        <div className="flex divide-x-2 divide-tertiary-weak">
           {cutoff && (
             <span className="px-2">
               {t('common.wca.cutoff')}:{' '}
@@ -138,7 +138,7 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
       content={
         <div
           className={classNames(
-            'z-1000 max-w-xs md:max-w-md lg:max-w-lg text-sm  transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-md opacity-0 p-4 space-y-2',
+            'z-1000 max-w-xs md:max-w-md lg:max-w-lg type-body-sm transition-opacity duration-300 bg-white border border-tertiary-weak rounded-lg shadow-md opacity-0 p-4 space-y-2',
             {
               'opacity-100': open,
             },
@@ -165,11 +165,11 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
         </div>
       }>
       <button
-        className="mr-2 px-1"
-        // className="fa-solid fa-question p-2 bg-slate-300 rounded-full px-3 shadow-sm hover:opacity-70 text-sm"
+        className="px-1 mr-2"
+        // className="p-2 px-3 text-sm rounded-full shadow-sm fa-solid fa-question bg-slate-300 hover:opacity-70"
         onClick={() => setOpen((prev) => !prev)}>
         <svg
-          className="w-7 h-7 ms-2 text-gray-400 hover:text-gray-500"
+          className="text-muted w-7 h-7 ms-2 hover-text-muted"
           aria-hidden="true"
           fill="currentColor"
           viewBox="0 0 20 20"

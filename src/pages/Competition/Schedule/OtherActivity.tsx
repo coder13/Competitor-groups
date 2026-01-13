@@ -55,7 +55,7 @@ export function OtherActivity({ competitionId, activity, persons }: OtherGroupPr
 
   return (
     <>
-      <div className="p-2 text-gray-900 dark:text-white">
+      <div className="p-2 type-body">
         <h3 className="font-bold">
           <Link
             className="px-3 py-2 mr-2 rounded"

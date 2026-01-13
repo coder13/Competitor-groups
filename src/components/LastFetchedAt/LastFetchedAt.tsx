@@ -9,7 +9,7 @@ export const LastFetchedAt = ({ lastFetchedAt }: LastFetchAtProps) => {
   const { t } = useTranslation();
 
   return (
-    <div className="text-xs text-gray-500 dark:text-gray-400 text-right">
+    <div className="type-meta text-right">
       {t('common.lastFetched', {
         date: intlFormatDistance(lastFetchedAt, new Date(), {
           locale: navigator.language,

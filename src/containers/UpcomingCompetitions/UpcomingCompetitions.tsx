@@ -55,7 +55,7 @@ export default function UpcomingCompetitions() {
             ref={ref}
             onClick={() => fetchNextPage()}
             disabled={!hasNextPage || isFetchingNextPage}
-            className="dark:text-gray-300">
+            className="text-tertiary">
             {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load Newer' : ''}
           </button>
         </div>
@@ -65,7 +65,7 @@ export default function UpcomingCompetitions() {
 
       <Container className="p-2">
         <div className="flex space-x-2">
-          <div className="text-xs text-gray-500 dark:text-gray-400">{__GIT_COMMIT__}</div>
+          <div className="type-meta">{__GIT_COMMIT__}</div>
           <div className="flex flex-grow" />
           {<LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
         </div>

@@ -31,7 +31,7 @@ export function CompetitionListFragment({
 
   return (
     <div className="w-full p-2">
-      <span className="text-sm text-blue-800 dark:text-blue-400">{title}</span>
+      <span className="type-body-sm text-blue-800 dark:text-blue-400">{title}</span>
       {loading ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
       {!!competitions.length && (
         <ul className="px-0">
@@ -47,9 +47,7 @@ export function CompetitionListFragment({
       )}
       {!!lastFetchedAt && <LastFetchedAt lastFetchedAt={new Date(lastFetchedAt)} />}
       {!loading && !competitions.length && (
-        <div className="text-center text-gray-500 dark:text-gray-400">
-          {t('common.competitionList.noneFound')}
-        </div>
+        <div className="text-center text-muted">{t('common.competitionList.noneFound')}</div>
       )}
     </div>
   );

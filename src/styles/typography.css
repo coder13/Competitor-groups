@@ -1,0 +1,38 @@
+@layer components {
+  /* Typography utilities for consistent text styling */
+  .type-display {
+    @apply text-3xl font-bold leading-tight text-gray-900 dark:text-white;
+  }
+
+  .type-title {
+    @apply text-2xl font-bold leading-tight text-gray-900 dark:text-white;
+  }
+
+  .type-heading {
+    @apply text-xl font-semibold leading-snug text-gray-900 dark:text-white;
+  }
+
+  .type-subheading {
+    @apply text-lg font-semibold leading-snug text-gray-900 dark:text-white;
+  }
+
+  /* Standard body text */
+  .type-body {
+    @apply text-base leading-relaxed text-gray-900 dark:text-white;
+  }
+
+  /* Slightly smaller body text for secondary content */
+  .type-body-sm {
+    @apply text-sm leading-relaxed text-gray-800 dark:text-gray-200;
+  }
+
+  /* Medium-weight text for labels and important inline text */
+  .type-label {
+    @apply text-sm font-medium text-gray-700 dark:text-gray-300;
+  }
+
+  /* Smaller, lighter text for metadata and secondary information */
+  .type-meta {
+    @apply text-xs text-gray-500 dark:text-gray-400;
+  }
+}

@@ -69,17 +69,17 @@ export default function CompetitionStreamSchedule() {
 
   const renderActivities = () => (
     <>
-      <h4 className="text-xl mb-2 text-center">{t('competition.streamSchedule.subtitle')}</h4>
-      <div className="shadow-md">
-        <table className="w-full text-xs md:text-sm">
+      <h4 className="mb-2 text-center type-heading">{t('competition.streamSchedule.subtitle')}</h4>
+      <div className="table-container">
+        <table className="table-base type-body-sm table-striped">
           <thead>
-            <tr className="bg-slate-100 shadow-sm">
-              <th className="py-2 text-center">{t('competition.streamSchedule.time')}</th>
-              <th className="py-2 text-center">{t('competition.streamSchedule.event')}</th>
-              <th className="py-2 text-center">{t('competition.streamSchedule.round')}</th>
-              <th className="py-2 text-center">{t('competition.streamSchedule.group')}</th>
-              <th className="py-2 text-center">{t('competition.streamSchedule.stage')}</th>
-              <th className="py-2 text-center">
+            <tr className="table-header">
+              <th className="table-header-cell">{t('competition.streamSchedule.time')}</th>
+              <th className="table-header-cell">{t('competition.streamSchedule.event')}</th>
+              <th className="table-header-cell">{t('competition.streamSchedule.round')}</th>
+              <th className="table-header-cell">{t('competition.streamSchedule.group')}</th>
+              <th className="table-header-cell">{t('competition.streamSchedule.stage')}</th>
+              <th className="table-header-cell">
                 {t('competition.streamSchedule.featuredCompetitors')}
               </th>
             </tr>
@@ -88,7 +88,7 @@ export default function CompetitionStreamSchedule() {
             {scheduleDays.map(({ date, dateParts }) => (
               <Fragment key={date}>
                 <tr>
-                  <td colSpan={6} className="font-bold text-lg text-center py-2">
+                  <td colSpan={6} className="table-row-group-header">
                     {dateParts.find((i) => i.type === 'weekday')?.value || date}
                   </td>
                 </tr>
@@ -119,15 +119,15 @@ export default function CompetitionStreamSchedule() {
                     return (
                       <Link
                         key={`${activity.id}`}
-                        className="table-row text-xs even:bg-slate-50 hover:bg-slate-100"
+                        className="table-row-link"
                         to={`/competitions/${wcif.id}/activities/${activity.id}`}>
-                        <td className="py-2 text-center">{startTime}</td>
-                        <td className="py-2 text-center">
-                          <span className={`cubing-icon event-${eventId} mx-1 text-xl`} />
+                        <td className="table-cell text-center">{startTime}</td>
+                        <td className="table-cell text-center">
+                          <span className={`cubing-icon event-${eventId} mx-1 type-body`} />
                         </td>
-                        <td className="py-2 text-center">{roundNumber}</td>
-                        <td className="py-2 text-center">{groupNumber || '*'}</td>
-                        <td className="py-2 text-center">
+                        <td className="table-cell text-center">{roundNumber}</td>
+                        <td className="table-cell text-center">{groupNumber || '*'}</td>
+                        <td className="table-cell text-center">
                           <span
                             className="px-[6px]  py-[4px]  rounded-md"
                             style={{
@@ -136,7 +136,7 @@ export default function CompetitionStreamSchedule() {
                             {roomData?.name}
                           </span>
                         </td>
-                        <td className="py-2 text-center">
+                        <td className="table-cell text-center">
                           {streamPersonIds(activity)
                             .map(getPersonById)
                             .filter((person) => !!person)
@@ -156,9 +156,9 @@ export default function CompetitionStreamSchedule() {
   );
 
   return (
-    <div className="flex flex-col p-1">
+    <div className="flex flex-col p-1 bg-app">
       <DisclaimerText />
-      <hr className="my-2" />
+      <hr className="my-2 border-tertiary-weak" />
 
       {activities.length > 0 ? renderActivities() : <div>No Live Stream information</div>}
     </div>

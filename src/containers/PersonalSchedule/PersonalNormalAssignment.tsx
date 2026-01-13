@@ -60,12 +60,12 @@ export const PersonalNormalAssignment = ({
         }),
       }}
       className={classNames(
-        'table-row text-xs sm:text-sm hover:bg-slate-100 dark:hover:bg-gray-700',
+        'table-row type-body-sm sm:type-body-sm hover:bg-slate-100 dark:hover:bg-gray-700',
         {
           'opacity-40': isOver,
           'bg-op': isCurrent,
-          'border-t border-gray-200 dark:border-gray-700': showTopBorder,
-          'border-b border-gray-200 dark:border-gray-700': showBottomBorder,
+          'border-t border-tertiary-weak': showTopBorder,
+          'border-b border-tertiary-weak': showBottomBorder,
         },
       )}
       to={`/competitions/${competitionId}/activities/${assignment.activityId}`}>
@@ -75,12 +75,12 @@ export const PersonalNormalAssignment = ({
         </td>
       )}
       <td className="py-2 text-center min-w-[5em]">{formattedStartTime}</td>
-      <td className="py-2 text-xs text-center sm:text-sm">
+      <td className="py-2 type-body-sm text-center sm:type-body-sm">
         <AssignmentLabel assignmentCode={assignment.assignmentCode} />
       </td>
-      <td className="py-2 text-base text-center sm:text-lg">{groupNumber}</td>
+      <td className="py-2 text-center type-body sm:type-heading">{groupNumber}</td>
       {showRoom && (
-        <td className="py-2 text-xs text-center sm:text-sm" style={{}}>
+        <td className="py-2 type-body-sm text-center sm:type-body-sm" style={{}}>
           <BaseAssignmentPill
             className="min-w-[7em]"
             style={{

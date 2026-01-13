@@ -36,17 +36,21 @@ export default function CompareSchedules() {
   );
 
   return (
-    <div>
+    <div className="type-body">
       <Grid
         columnWidths={columnWidths}
         className="[&>div]:py-2 [&>div]:px-3 [&>div]:text-center sticky top-0"
         ref={headerRef}>
-        <div className="z-50 font-bold text-center bg-gray-100">Time</div>
+        <div className="z-50 text-center bg-gray-100 type-label dark:bg-gray-800 dark:text-white">
+          Time
+        </div>
         {persons.map((p) => (
-          <div key={p.wcaUserId} className="sticky top-0 z-50 bg-gray-100">
+          <div
+            key={p.wcaUserId}
+            className="sticky top-0 z-50 bg-gray-100 dark:bg-gray-800 dark:text-white">
             <Link
               to={`/competitions/${competitionId}/persons/${p.registrantId}`}
-              className="font-bold">
+              className="type-label dark:text-white">
               {p.name}
             </Link>
           </div>
@@ -59,7 +63,7 @@ export default function CompareSchedules() {
           return (
             <Fragment key={day.date}>
               <div
-                className="sticky font-bold bg-gray-100 col-span-full"
+                className="sticky bg-gray-100 type-label dark:bg-gray-800 dark:text-white col-span-full"
                 style={{
                   top: headerHeight,
                 }}>
@@ -78,7 +82,7 @@ export default function CompareSchedules() {
 
                 return (
                   <Fragment key={startTime.startTime}>
-                    <div>{formatTime(startTime.startTime)}</div>
+                    <div className="dark:text-white">{formatTime(startTime.startTime)}</div>
                     {persons.map((p) => {
                       const assignment = p.assignments?.find((a) =>
                         activitiesHappeningDuringStartTime.some(
@@ -88,7 +92,13 @@ export default function CompareSchedules() {
                       const assignmentCode = assignment?.assignmentCode as AssignmentCode;
 
                       if (!assignmentCode) {
-                        return <div key={`${p.wcaUserId}-${startTime.startTime}`}>-</div>;
+                        return (
+                          <div
+                            key={`${p.wcaUserId}-${startTime.startTime}`}
+                            className="dark:text-white">
+                            -
+                          </div>
+                        );
                       }
 
                       const config = Assignments.find((i) => i.id === assignmentCode);
@@ -96,6 +106,7 @@ export default function CompareSchedules() {
                       return (
                         <div
                           key={`${p.wcaUserId}-${startTime.startTime}`}
+                          className="dark:text-white"
                           style={{
                             backgroundColor: config && `${config.color}7f`,
                           }}>

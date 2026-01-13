@@ -1,0 +1,31 @@
+@layer components {
+  /* Base button styles */
+  .btn {
+    @apply inline-flex gap-2 px-4 py-2 text-sm font-medium transition-colors duration-150 border rounded-md shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Full-width block button */
+  .btn-block {
+    @apply w-full min-h-[40px];
+  }
+
+  /* Blue/primary button variant */
+  .btn-blue {
+    @apply text-gray-900 bg-blue-200 border-blue-300 hover:bg-blue-300 dark:bg-blue-700 dark:hover:bg-blue-600 dark:text-white dark:border-blue-600;
+  }
+
+  /* Green/success button variant */
+  .btn-green {
+    @apply text-gray-900 bg-green-200 border-green-300 hover:bg-green-300 dark:bg-green-700 dark:hover:bg-green-600 dark:text-white dark:border-green-600;
+  }
+
+  /* Gray/neutral button variant */
+  .btn-gray {
+    @apply text-gray-900 bg-gray-200 border-gray-300 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white dark:border-gray-600;
+  }
+
+  /* Light/subtle button variant */
+  .btn-light {
+    @apply text-gray-900 bg-gray-100 border-gray-300 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white dark:border-gray-600;
+  }
+}

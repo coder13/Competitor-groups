@@ -39,7 +39,7 @@ export default function GroupList() {
 
   return (
     <Container className="">
-      <div className="p-2 space-y-2 text-gray-900 dark:text-white">
+      <div className="p-2 space-y-2 type-body">
         <Breadcrumbs
           breadcrumbs={[
             {
@@ -61,13 +61,13 @@ export default function GroupList() {
           return (
             <Link
               to={`/competitions/${competitionId!}/events/${roundId}/${groupNumber}`}
-              className="flex flex-row px-3 py-2 list-none transition-colors bg-white border border-gray-200 rounded-md cursor-pointer dark:border-gray-700 dark:bg-gray-800 hover:bg-blue-200 dark:hover:bg-blue-900 group dark:text-white"
+              className="flex flex-row px-3 py-2 list-none transition-colors border rounded-md cursor-pointer border-tertiary bg-tertiary hover:bg-tertiary-strong group dark:text-white"
               key={value}>
               <li className="flex flex-col">
-                <span className="text-lg">
+                <span className="type-heading">
                   {t('common.activityCodeToName.group', { groupNumber })}
                 </span>
-                <span className="text-xs">{formatDateTimeRange(minStartTime, maxEndTime)}</span>
+                <span className="type-meta">{formatDateTimeRange(minStartTime, maxEndTime)}</span>
               </li>
             </Link>
           );
@@ -76,7 +76,7 @@ export default function GroupList() {
       <div className="p-2">
         <Link
           to={`/competitions/${competitionId}/events/`}
-          className="flex flex-row w-full p-2 px-1 my-1 transition-colors bg-blue-200 border border-gray-200 rounded-md cursor-pointer dark:border-gray-700 dark:bg-blue-700 hover:bg-blue-400 dark:hover:bg-blue-600 group dark:text-gray-100">
+          className="flex flex-row w-full p-2 px-1 my-1 transition-colors border rounded-md cursor-pointer border-primary bg-primary hover:bg-primary-strong group dark:text-gray-100">
           {t('competition.groups.backToEvents')}
         </Link>
       </div>

@@ -107,7 +107,7 @@ export const GroupHeader = () => {
   const groupName = activityNameSplit ? activityNameSplit.slice(-1).join('') : undefined;
 
   return (
-    <div className="p-2 space-y-2 text-gray-900 dark:text-white">
+    <div className="p-2 space-y-2 type-body">
       <div className="space-x-1">
         <Breadcrumbs
           breadcrumbs={[
@@ -193,7 +193,7 @@ export const MobileGroupView = () => {
                         <Link
                           key={person.registrantId}
                           to={`/competitions/${wcif?.id}/persons/${person.registrantId}`}
-                          className="grid grid-cols-3 grid-rows-1 hover:bg-gray-100 dark:hover:bg-gray-700">
+                          className="grid grid-cols-3 grid-rows-1 hover:bg-tertiary dark:hover:bg-gray-700">
                           <div className="col-span-2 p-1">{person.name}</div>
                           {multistage && (
                             <div
@@ -331,7 +331,7 @@ export const GroupButtonMenu = () => {
       <Link
         to={prevUrl || ''}
         className={classNames(
-          'w-full border border-gray-200 dark:border-gray-700 rounded-md p-2 px-2 flex cursor-pointer transition-colors my-1 justify-end',
+          'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer transition-colors my-1 justify-end',
           {
             'pointer-events-none opacity-25': !prev,
             'hover:bg-slate-100 dark:hover:bg-gray-700 group cursor-pointer': prev,
@@ -343,7 +343,7 @@ export const GroupButtonMenu = () => {
       <Link
         to={nextUrl || ''}
         className={classNames(
-          'w-full border border-gray-200 dark:border-gray-700 rounded-md p-2 px-2 flex cursor-pointer group hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors my-1',
+          'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer group hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors my-1',
           {
             'pointer-events-none opacity-25': !next,
             'hover:bg-slate-100 dark:hover:bg-gray-700 group': next,

@@ -7,10 +7,10 @@ exports[`CompetitionListItem matches snapshot (default) 1`] = `
       href="/competitions/123"
     >
       <li
-        class="border bg-white dark:bg-gray-800 dark:border-gray-700 list-none rounded-md px-2 py-2 flex cursor-pointer hover:bg-slate-100 dark:hover:bg-gray-700 group transition-colors my-1 flex-row opacity-50"
+        class="link-card list-none flex flex-row cursor-pointer group transition-colors my-1 type-body opacity-50"
       >
         <div
-          class="flex flex-shrink mr-2 text-2xl"
+          class="flex flex-shrink mr-2 type-title"
         >
            
           🇺🇸
@@ -20,7 +20,7 @@ exports[`CompetitionListItem matches snapshot (default) 1`] = `
           class="flex-1"
         >
           <p
-            class="font-normal leading-1 dark:text-white"
+            class="type-heading leading-1 dark:text-white"
           >
              
             Test Competition
@@ -28,7 +28,7 @@ exports[`CompetitionListItem matches snapshot (default) 1`] = `
           </p>
            
           <p
-            class="text-gray-600 dark:text-gray-400 text-sm leading-1"
+            class="type-body-sm text-muted leading-1"
           >
             Jan 1 – 2, 2024
               
@@ -50,10 +50,10 @@ exports[`CompetitionListItem renders with all props (live and bookmarked) 1`] = 
       href="/competitions/123"
     >
       <li
-        class="border bg-white dark:bg-gray-800 dark:border-gray-700 list-none rounded-md px-2 py-2 flex cursor-pointer hover:bg-slate-100 dark:hover:bg-gray-700 group transition-colors my-1 flex-row opacity-50"
+        class="link-card list-none flex flex-row cursor-pointer group transition-colors my-1 type-body opacity-50"
       >
         <div
-          class="flex flex-shrink mr-2 text-2xl"
+          class="flex flex-shrink mr-2 type-title"
         >
            
           🇺🇸
@@ -63,7 +63,7 @@ exports[`CompetitionListItem renders with all props (live and bookmarked) 1`] = 
           class="flex-1"
         >
           <p
-            class="font-normal leading-1 dark:text-white"
+            class="type-heading leading-1 dark:text-white"
           >
              
             Test Competition
@@ -71,7 +71,7 @@ exports[`CompetitionListItem renders with all props (live and bookmarked) 1`] = 
           </p>
            
           <p
-            class="text-gray-600 dark:text-gray-400 text-sm leading-1"
+            class="type-body-sm text-muted leading-1"
           >
             Jan 1 – 2, 2024
               
@@ -81,10 +81,10 @@ exports[`CompetitionListItem renders with all props (live and bookmarked) 1`] = 
           </p>
         </div>
         <div
-          class="flex flex-shrink text-2xl items-center px-2"
+          class="flex items-center flex-shrink px-2 type-title"
         >
           <span
-            class="fa fa-tower-broadcast text-green-500"
+            class="text-green-500 fa fa-tower-broadcast"
           />
         </div>
       </li>

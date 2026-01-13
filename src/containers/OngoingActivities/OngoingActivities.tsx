@@ -41,9 +41,9 @@ export const OngoingActivities = ({ competitionId }: OngoingActivitiesProps) => 
     <div className="my-1 p-2">
       <h1 className="drop-shadow-sm flex justify-between">
         <div>
-          <i className="text-lg fa fa-tower-broadcast mr-1 text-green-500" />
-          <span className="text-xl">Live Activities </span>
-          <span className="text-xs align-super">Powered by NotifyComp</span>
+          <i className="fa fa-tower-broadcast mr-1 text-green-500 type-heading" />
+          <span className="type-heading">Live Activities </span>
+          <span className="type-meta align-super">Powered by NotifyComp</span>
         </div>
         <div>
           <Link to={`/competitions/${competitionId}/live`}>Go to live view</Link>

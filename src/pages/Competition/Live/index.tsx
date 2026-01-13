@@ -7,8 +7,8 @@ export default function LivePage() {
   return (
     <Container>
       <div className="p-2">
-        <i className="text-lg fa fa-tower-broadcast mr-1 text-green-500" />
-        <span className="text-xl">Live Activities </span>
+        <i className="fa fa-tower-broadcast mr-1 text-green-500 type-heading" />
+        <span className="type-heading">Live Activities </span>
       </div>
       <LiveActivities competitionId={competitionId!} />
     </Container>

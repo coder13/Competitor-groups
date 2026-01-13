@@ -22,14 +22,14 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
       <div className="flex items-center justify-between px-1 text-gray-900 min-h-10 dark:text-white">
         <div className="flex items-center flex-shrink w-full space-x-1">
           {hasFlag(person.countryIso2) && (
-            <div className="flex flex-shrink mx-1 text-lg sm:text-xl">
+            <div className="flex flex-shrink mx-1 type-body sm:type-heading">
               {getUnicodeFlagIcon(person.countryIso2)}
             </div>
           )}
-          <h3 className="text-xl sm:text-2xl">{person.name}</h3>
+          <h3 className="type-heading sm:type-title">{person.name}</h3>
         </div>
         <a
-          className="w-48 font-mono text-blue-600 text-md sm:text-lg hover:underline dark:text-blue-400"
+          className="w-48 font-mono text-blue-600 type-body sm:type-heading hover:underline dark:text-blue-400"
           href={`https://www.worldcubeassociation.org/persons/${person.wcaId}`}
           target="_blank"
           rel="noreferrer">
@@ -37,9 +37,9 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
           <i className="ml-2 fa fa-solid fa-arrow-up-right-from-square" />
         </a>
       </div>
-      <hr className="my-2 border-gray-200 dark:border-gray-700" />
+      <hr className="my-2 border-tertiary-weak" />
 
-      <table className="w-full text-sm">
+      <table className="w-full type-body-sm">
         <thead className="bg-green-300 shadow-md dark:bg-green-900/60 dark:shadow-none">
           <tr className="dark:text-gray-100">
             <th className="px-3 py-2">{t('competition.personalRecords.type')}</th>

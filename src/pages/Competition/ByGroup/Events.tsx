@@ -36,14 +36,14 @@ const Events = () => {
   return (
     <Container className="pt-4">
       <div className="flex flex-col w-full">
-        <div className="border rounded-md shadow-md dark:shadow-gray-800 border-slate-300 dark:border-gray-700">
-          <table className="w-full text-left text-gray-900 dark:text-white">
-            <thead className="bg-slate-200 dark:bg-gray-800">
+        <div className="table-container">
+          <table className="text-left table-base table-striped type-body">
+            <thead className="table-header">
               <tr>
-                <th className="px-6 py-3">{t('common.wca.event')}</th>
-                <th className="px-6 py-3 text-center">{t('common.wca.round')}</th>
-                <th className="px-6 py-3 text-center">{t('common.wca.group_other')}</th>
-                <th className="px-6 py-3">
+                <th className="table-header-cell">{t('common.wca.event')}</th>
+                <th className="table-header-cell-center">{t('common.wca.round')}</th>
+                <th className="table-header-cell-center">{t('common.wca.group_other')}</th>
+                <th className="table-header-cell">
                   <span className="sr-only">{t('common.view')}</span>
                 </th>
               </tr>
@@ -56,16 +56,14 @@ const Events = () => {
                   return (
                     <tr
                       key={round.id}
-                      className="border border-gray-200 cursor-pointer dark:border-gray-700 hover:bg-blue-100 dark:hover:bg-gray-700 even:bg-slate-50 even:dark:bg-gray-800"
+                      className="table-row-border-b table-row-hover-bg"
                       onClick={() => navigate(url)}>
-                      <td className="px-5 py-3">{index === 0 ? getEventName(event.id) : ''}</td>
-                      <td className="px-5 py-3 text-center">
+                      <td className="table-cell">{index === 0 ? getEventName(event.id) : ''}</td>
+                      <td className="table-cell-center">
                         {parseActivityCode(round.id).roundNumber}
                       </td>
-                      <td className="px-5 py-3 text-center">
-                        {uniqueGroupCountForRound(round.id)}
-                      </td>
-                      <td className="px-5 py-3 text-right">{t('common.view')}</td>
+                      <td className="table-cell-center">{uniqueGroupCountForRound(round.id)}</td>
+                      <td className="table-cell text-right">{t('common.view')}</td>
                     </tr>
                   );
                 }),

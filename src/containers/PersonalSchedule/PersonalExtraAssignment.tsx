@@ -40,7 +40,7 @@ export const ExtraAssignment = ({
   return (
     <tr
       className={classNames(
-        'table-row text-xs sm:text-sm hover:bg-slate-100 dark:hover:bg-gray-700 border-y border-gray-200 dark:border-gray-700',
+        'table-row type-body-sm sm:type-body-sm hover:bg-slate-100 dark:hover:bg-gray-700 border-y border-tertiary-weak',
         {
           'opacity-40': isOver,
           'bg-op': isCurrent,
@@ -54,7 +54,7 @@ export const ExtraAssignment = ({
       </td>
       <td></td>
       {room ? (
-        <td className="py-2 text-xs text-center sm:text-sm" style={{}}>
+        <td className="py-2 type-body-sm text-center sm:type-body-sm" style={{}}>
           <BaseAssignmentPill
             className="min-w-[7em]"
             style={{

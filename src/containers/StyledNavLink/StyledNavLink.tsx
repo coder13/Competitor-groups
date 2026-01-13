@@ -18,14 +18,10 @@ export const StyledNavLink: React.FC<StyledNavLinkProps> = ({
     end
     to={to}
     className={({ isActive }) =>
-      classNames(
-        `p-2 text-blue-500 dark:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-300 w-full text-center`,
-        className,
-        {
-          'bg-gray-100 dark:bg-gray-700 text-blue-700 dark:text-blue-300 shadow-lg dark:shadow-gray-800':
-            isActive,
-        },
-      )
+      classNames('link-nav', className, {
+        'bg-tertiary-strong text-blue-700 dark:text-blue-300 shadow-lg shadow-tertiary-dark':
+          isActive,
+      })
     }>
     {text}
   </NavLink>
