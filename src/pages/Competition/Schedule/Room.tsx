@@ -105,15 +105,15 @@ export function CompetitionRoom() {
 
   return (
     <Container>
-      <div className="flex w-full flex-col type-body py-2 px-1">
+      <div className="flex flex-col w-full px-1 py-2 type-body">
         <div className="p-2">
-          <h3 className="type-subheading -mb-2">{room?.name}</h3>
+          <h3 className="-mb-2 type-subheading">{room?.name}</h3>
           <span className="type-meta">{venue?.name}</span>
         </div>
 
         {scheduleDays.map((day) => (
           <div key={day.date} className="flex flex-col">
-            <p className="w-full text-center bg-slate-50 dark:bg-gray-800 type-heading mb-1">
+            <p className="w-full mb-1 text-center bg-gray-50 dark:bg-gray-800 type-heading">
               {day.date}
             </p>
             <div className="flex flex-col">
@@ -136,7 +136,7 @@ export function CompetitionRoom() {
         <div className="flex flex-row justify-between">
           <Link
             to={`/competitions/${wcif?.id}/rooms`}
-            className="w-full rounded-md p-2 px-1 flex cursor-pointer group transition-colors my-1 flex-row border border-primary bg-primary hover:bg-primary-strong">
+            className="flex flex-row w-full p-2 px-1 my-1 transition-colors border rounded-md cursor-pointer group border-primary bg-primary hover:bg-primary-strong">
             {t('competition.room.back')}
           </Link>
         </div>

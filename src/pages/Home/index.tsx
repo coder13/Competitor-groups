@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center w-full overflow-auto">
       <Container>
-        <div className="flex flex-col w-full py-2 px-2 md:px-0 type-body">
+        <div className="flex flex-col w-full px-2 py-2 md:px-0 type-body">
           <p className="type-body-sm">{t('home.subtitle')}</p>
           <p className="type-body-sm">{t('home.explanation')}</p>
           <Link to="/about" className="link-inline">
@@ -25,7 +25,7 @@ export default function Home() {
         </div>
         <div className="px-2">
           <Link
-            className="flex w-full py-2.5 px-2 me-2 mb-2 type-label focus:outline-none bg-white dark:bg-gray-800 rounded-lg border border-tertiary hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-400"
+            className="flex w-full py-2.5 px-2 me-2 mb-2 type-label focus:outline-none bg-panel rounded-lg border border-tertiary hover-bg-tertiary hover-text-primary"
             to="/support">
             {t('home.support')}
           </Link>

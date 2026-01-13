@@ -50,7 +50,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
   );
 
   return (
-    <div className="space-y-2 text-gray-900 dark:text-white">
+    <div className="space-y-2">
       {me && (
         <CompetitorListItem
           highlight
@@ -70,7 +70,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
           <input
             type="search"
             id="competitor-search"
-            className="block w-full p-3 h-[40px] ps-2 type-body-sm text-gray-900 dark:text-white placeholder-gray-600 dark:placeholder-gray-400 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
+            className="input h-[40px]"
             placeholder={t('competition.competitors.searchCompetitors')}
             value={input}
             onChange={(e) => setInput(e.target.value)}

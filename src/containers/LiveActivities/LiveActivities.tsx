@@ -68,10 +68,10 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
 
   return (
     <div className="grid grid-cols-12 space-y-2">
-      <div className="col-span-full grid grid-cols-12 gap-x-4">
-        <div className="col-span-6 font-bold p-1">Activity</div>
-        <div className="col-span-3 font-bold p-1">Started</div>
-        <div className="col-span-3 font-bold p-1">Duration</div>
+      <div className="grid grid-cols-12 col-span-full gap-x-4">
+        <div className="col-span-6 p-1 font-bold">Activity</div>
+        <div className="col-span-3 p-1 font-bold">Started</div>
+        <div className="col-span-3 p-1 font-bold">Duration</div>
         {childActivities?.map((activity) => {
           const liveActivity = liveActivities?.find((la) => la.activityId === activity.id);
           if (!liveActivity) {
@@ -86,9 +86,9 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
           return (
             <Fragment key={activity.id}>
               {/* {multistage && <div className="col-span-3">{activity.room?.name}:</div>} */}
-              <div className="p-1 col-span-6">{activity.name}</div>
-              <div className="p-1 col-span-3">{formatTime(liveActivity.startTime!)}</div>
-              <div className="p-1 col-span-3">{minutes ? duration : 'now'}</div>
+              <div className="col-span-6 p-1">{activity.name}</div>
+              <div className="col-span-3 p-1">{formatTime(liveActivity.startTime!)}</div>
+              <div className="col-span-3 p-1">{minutes ? duration : 'now'}</div>
             </Fragment>
           );
         })}
@@ -104,7 +104,7 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
             as="div"
             border
             assignmentCode={assignmentCode}
-            className="px-2 py-1 type-heading drop-shadow-lg font-bold col-span-full"
+            className="px-2 py-1 font-bold type-heading drop-shadow-lg col-span-full"
           />
           {childActivities.map((ca) => {
             const personsInActivity = personsInActivities?.filter(
@@ -118,9 +118,9 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
             }
 
             return (
-              <div key={ca.id} className="col-span-full grid grid-cols-2 group">
+              <div key={ca.id} className="grid grid-cols-2 col-span-full group">
                 <div
-                  className="col-span-1 px-2 py-1 group-hover:bg-slate-100 transition duration-150 ease-in-out transform"
+                  className="col-span-1 px-2 py-1 transition duration-150 ease-in-out transform group-hover:bg-gray-100 dark:group-hover:bg-gray-700"
                   style={{
                     gridRow: `span ${personsInActivity?.length || 0}`,
                   }}>
@@ -135,7 +135,7 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
                       <Link
                         key={ca.id.toString() + assignmentCode + person.registrantId}
                         to={`/competitions/${competitionId}/persons/${person.registrantId}`}
-                        className="col-span-1 px-2 py-1 hover:bg-slate-100 transition duration-150 ease-in-out transform">
+                        className="col-span-1 px-2 py-1 transition duration-150 ease-in-out transform hover:bg-gray-100 dark:hover:bg-gray-700">
                         {person.name}
                       </Link>
                     );
@@ -143,7 +143,7 @@ export const LiveActivities = ({ competitionId }: LiveActivitiesProps) => {
               </div>
             );
           })}
-          <div className="col-span-full w-2" />
+          <div className="w-2 col-span-full" />
         </Fragment>
       ))}
     </div>

@@ -40,8 +40,8 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
       <hr className="my-2 border-tertiary-weak" />
 
       <table className="w-full type-body-sm">
-        <thead className="bg-green-300 shadow-md dark:bg-green-900/60 dark:shadow-none">
-          <tr className="dark:text-gray-100">
+        <thead className="bg-assignment-competitor shadow-md dark:shadow-none">
+          <tr className="text-assignment-competitor">
             <th className="px-3 py-2">{t('competition.personalRecords.type')}</th>
             <th>{t('competition.personalRecords.best')}</th>
             <th>{t('common.wca.recordType.WR')}</th>
@@ -67,7 +67,7 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
                   <tr>
                     <td
                       colSpan={5}
-                      className="px-3 py-2 text-center bg-green-200 dark:bg-green-900/60">
+                      className="px-3 py-2 text-center bg-assignment-competitor-muted">
                       <Link
                         key={eventId}
                         to={`/competitions/${wcif.id}/psych-sheet/${eventId}`}

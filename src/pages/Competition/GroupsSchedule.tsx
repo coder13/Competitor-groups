@@ -10,9 +10,9 @@ const Events = () => {
     <Container>
       <div>
         <br />
-        <div className="shadow-md border border-slate-300 rounded-md">
+        <div className="shadow-md border border-gray-300 rounded-md">
           <table className="w-full text-left">
-            <thead className="bg-slate-200">
+            <thead className="table-header">
               <tr>
                 <th className="px-6 py-3">Stage</th>
                 <th className="px-6 py-3 text-center">Activity</th>

@@ -1,6 +1,8 @@
+import classNames from 'classnames';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AssignmentsMap, SupportedAssignmentCode } from '@/lib/assignments';
+import { getAssignmentColorClasses } from '@/lib/colors';
 
 interface AssignmentCodeCellProps<T extends React.ElementType> {
   children?: React.ReactNode;
@@ -58,22 +60,15 @@ export function AssignmentCodeCell<T extends React.ElementType = 'td'>({
 
   const Component = as || 'td';
 
-  const twColor = assignment?.color;
-  const twBorderColor = assignment?.colorClass?.[300];
+  const colorClasses = assignmentCode ? getAssignmentColorClasses(assignmentCode) : null;
 
   return (
     <Component
-      style={{
-        ...(!border
-          ? {
-              backgroundColor: twColor ? `${twColor}4f` : undefined,
-            }
-          : {
-              borderColor: twBorderColor,
-              borderBottomWidth: 4,
-            }),
-      }}
-      className={className}
+      className={classNames(
+        className,
+        colorClasses && !border && colorClasses.bgMuted,
+        colorClasses && border && [colorClasses.border, 'border-b-4'],
+      )}
       {...props}>
       {content}
       {count ? (

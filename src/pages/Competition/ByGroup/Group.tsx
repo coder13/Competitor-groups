@@ -266,7 +266,7 @@ const DesktopGroupView = () => {
                       <Link
                         key={person.registrantId}
                         to={`/competitions/${person.wcif?.id}/persons/${person.registrantId}`}
-                        className="col-span-1 p-1 transition-colors duration-150 hover:opacity-80 hover:bg-slate-100 dark:hover:bg-gray-700 dark:text-white">
+                        className="col-span-1 p-1 transition-colors duration-150 hover:opacity-80 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
                         {person.name}
                       </Link>
                     ))}
@@ -334,7 +334,7 @@ export const GroupButtonMenu = () => {
           'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer transition-colors my-1 justify-end',
           {
             'pointer-events-none opacity-25': !prev,
-            'hover:bg-slate-100 dark:hover:bg-gray-700 group cursor-pointer': prev,
+            'hover:bg-gray-100 dark:hover:bg-gray-700 group cursor-pointer': prev,
           },
         )}>
         <span className="self-center mr-2 transition-all fa fa-arrow-left group-hover:-translate-x-2" />
@@ -343,10 +343,10 @@ export const GroupButtonMenu = () => {
       <Link
         to={nextUrl || ''}
         className={classNames(
-          'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer group hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors my-1',
+          'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors my-1',
           {
             'pointer-events-none opacity-25': !next,
-            'hover:bg-slate-100 dark:hover:bg-gray-700 group': next,
+            'hover:bg-gray-100 dark:hover:bg-gray-700 group': next,
           },
         )}>
         {t('competition.groups.nextGroup')}

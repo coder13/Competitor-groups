@@ -59,15 +59,12 @@ export const PersonalNormalAssignment = ({
           backgroundColor: `${room.color}25`,
         }),
       }}
-      className={classNames(
-        'table-row type-body-sm sm:type-body-sm hover:bg-slate-100 dark:hover:bg-gray-700',
-        {
-          'opacity-40': isOver,
-          'bg-op': isCurrent,
-          'border-t border-tertiary-weak': showTopBorder,
-          'border-b border-tertiary-weak': showBottomBorder,
-        },
-      )}
+      className={classNames('table-row type-body-sm sm:type-body-sm hover:table-bg-row-hover', {
+        'opacity-40': isOver,
+        'bg-op': isCurrent,
+        'border-t border-tertiary-weak': showTopBorder,
+        'border-b border-tertiary-weak': showBottomBorder,
+      })}
       to={`/competitions/${competitionId}/activities/${assignment.activityId}`}>
       {showTopBorder && (
         <td className="justify-center py-2 text-center" rowSpan={rowSpan + 1}>

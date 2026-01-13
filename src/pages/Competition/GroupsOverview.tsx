@@ -81,12 +81,14 @@ const GroupsOverview = () => {
             <td className="p-2 dark:text-white">Name</td>
             <td className="p-2 dark:text-white">WCA ID</td>
             {wcif?.events.map((event) => (
-              <td key={event.id} className="p-2 bg-green-400 dark:bg-green-700 dark:text-white">
+              <td
+                key={event.id}
+                className="p-2 bg-assignment-competitor text-assignment-competitor">
                 {event.id}
               </td>
             ))}
             {wcif?.events.map((event) => (
-              <td key={event.id} className="p-2 bg-blue-400 dark:bg-blue-700 dark:text-white">
+              <td key={event.id} className="p-2 bg-assignment-judge text-assignment-judge">
                 {event.id}
               </td>
             ))}
@@ -146,8 +148,8 @@ const GroupsOverview = () => {
                           return (
                             <td
                               key={event.id}
-                              className={classNames('text-center p-2 dark:text-white', {
-                                'bg-green-200 dark:bg-green-800': !!competingAssignment,
+                              className={classNames('text-center p-2 text-default', {
+                                'bg-assignment-competitor': !!competingAssignment,
                               })}>
                               {competingAssignment?.groupNumber}
                             </td>

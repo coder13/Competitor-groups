@@ -13,6 +13,7 @@
 @import 'tokens.css';
 @import 'buttons.css';
 @import 'links.css';
+@import 'forms.css';
 @import 'tables.css';
 
 /* Viewport height utility with dynamic viewport support */

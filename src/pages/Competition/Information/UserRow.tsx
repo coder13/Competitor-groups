@@ -2,7 +2,7 @@ export const UserRow = ({ user }: { user: User }) => {
   const avatarUrl = user.avatar?.thumb_url;
 
   return (
-    <li className="flex justify-between w-full space-x-2 transition-all border rounded shadow border-slate-400 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-gray-700 hover:border-slate-500 dark:hover:border-gray-600 dark:shadow-gray-800">
+    <li className="flex justify-between w-full space-x-2 transition-all border rounded shadow border-gray-400 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-gray-500 dark:hover:border-gray-600 dark:shadow-gray-800">
       <a
         key={user.id}
         className="flex w-full"

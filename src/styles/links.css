@@ -11,12 +11,12 @@
 
   /* Navigation link */
   .link-nav {
-    @apply w-full p-2 text-blue-500 dark:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-300;
+    @apply w-full p-2 text-center text-blue-500 dark:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-300;
   }
 
   /* Card-style link */
   .link-card {
-    @apply block w-full px-2 py-2 transition-colors bg-white border rounded-md dark:bg-gray-800 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-gray-700;
+    @apply block w-full px-2 py-2 transition-colors border rounded-md bg-panel border-tertiary-weak hover:bg-gray-100 dark:hover:bg-gray-700;
   }
 
   /* External link with icon space */

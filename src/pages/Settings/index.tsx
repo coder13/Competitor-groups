@@ -14,7 +14,7 @@ export default function Settings() {
     <Container className="px-4 py-8">
       <h1 className="mb-6 type-display">Settings</h1>
 
-      <div className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
+      <div className="p-6 bg-panel rounded-lg shadow-md shadow-tertiary-dark">
         <h2 className="mb-4 type-heading">Appearance</h2>
 
         <div className="space-y-3">
@@ -28,7 +28,7 @@ export default function Settings() {
                 value={option.value}
                 checked={theme === option.value}
                 onChange={() => setTheme(option.value)}
-                className="w-4 h-4 mt-1 text-blue-600 border-gray-300 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+                className="radio mt-1"
               />
               <label htmlFor={`theme-${option.value}`} className="flex-1 ml-3 cursor-pointer">
                 <span className="block type-label">{option.label}</span>

@@ -20,7 +20,7 @@ export const CompetitorListItem = ({
 
   return (
     <Link key={person.registrantId} to={`persons/${person.registrantId}`}>
-      <li className="border border-tertiary-weak bg-panel list-none rounded-md flex justify-between cursor-pointer hover:bg-blue-200 dark:hover:bg-gray-700 group transition-colors my-1 flex-row min-h-[40px] items-center text-gray-900 dark:text-white type-body">
+      <li className="border border-tertiary-weak bg-panel list-none rounded-md flex justify-between cursor-pointer hover:table-bg-row-hover group transition-colors my-1 flex-row min-h-[40px] items-center text-gray-900 dark:text-white type-body">
         <div className="flex space-x-1">
           {highlight && (
             <div className="flex flex-shrink">
