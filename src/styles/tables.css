@@ -32,7 +32,7 @@
 
   /* Header background - secondary themed (uses secondary color tokens) */
   .table-bg-header-secondary {
-    @apply bg-green-300 dark:bg-green-900;
+    @apply bg-green-200 dark:bg-green-900;
   }
 
   /* Row background - normal (even rows) */
@@ -249,13 +249,13 @@
    * ===========================================
    */
 
-  .table-striped tbody tr:nth-child(odd),
-  .table-striped tbody .table-row-link:nth-child(odd) {
+  .table-striped tbody tr:nth-child(even),
+  .table-striped tbody .table-row-link:nth-child(even) {
     @apply table-bg-row-alt;
   }
 
-  .table-striped tbody tr:nth-child(even),
-  .table-striped tbody .table-row-link:nth-child(even) {
+  .table-striped tbody tr:nth-child(odd),
+  .table-striped tbody .table-row-link:nth-child(odd) {
     @apply table-bg-row;
   }
 
@@ -271,13 +271,13 @@
    * ===========================================
    */
 
-  .table-striped-primary tbody tr:nth-child(odd),
-  .table-striped-primary tbody .table-row-link:nth-child(odd) {
+  .table-striped-primary tbody tr:nth-child(even),
+  .table-striped-primary tbody .table-row-link:nth-child(even) {
     @apply table-bg-row-alt-primary;
   }
 
-  .table-striped-primary tbody tr:nth-child(even),
-  .table-striped-primary tbody .table-row-link:nth-child(even) {
+  .table-striped-primary tbody tr:nth-child(odd),
+  .table-striped-primary tbody .table-row-link:nth-child(odd) {
     @apply table-bg-row;
   }
 
@@ -292,13 +292,13 @@
    * ===========================================
    */
 
-  .table-striped-secondary tbody tr:nth-child(odd),
-  .table-striped-secondary tbody .table-row-link:nth-child(odd) {
+  .table-striped-secondary tbody tr:nth-child(even),
+  .table-striped-secondary tbody .table-row-link:nth-child(even) {
     @apply table-bg-row-alt-secondary;
   }
 
-  .table-striped-secondary tbody tr:nth-child(even),
-  .table-striped-secondary tbody .table-row-link:nth-child(even) {
+  .table-striped-secondary tbody tr:nth-child(odd),
+  .table-striped-secondary tbody .table-row-link:nth-child(odd) {
     @apply table-bg-row;
   }
 

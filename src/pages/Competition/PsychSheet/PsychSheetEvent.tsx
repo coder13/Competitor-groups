@@ -149,7 +149,7 @@ export const PsychSheetEvent = () => {
                 (pr) => pr.eventId === eventId && pr.type === resultType,
               );
 
-              const isOdd = index % 2 === 0; // 0-indexed, so even index = odd row visually
+              const isOdd = index % 2 === 1; // 0-indexed, so even index = odd row visually
 
               return (
                 <Link
