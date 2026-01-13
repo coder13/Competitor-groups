@@ -49,7 +49,7 @@ export default function Header() {
   }, [comp, competitionId, queryClient, wcif]);
 
   return (
-    <header className="flex w-full shadow-md p-2 h-12 items-center print:hidden z-20 bg-panel">
+    <header className="z-20 flex items-center w-full h-12 p-2 shadow-md print:hidden bg-panel">
       <div className="flex items-center space-x-1">
         <Link to="/" className="link-inline">
           <i className="fa fa-home" />
@@ -71,20 +71,20 @@ export default function Header() {
           }} // a style object to be applied to the popover container
           content={
             <div
-              className="bg-panel border-2 border-tertiary-weak shadow-xl mt-2 z-50"
+              className="z-50 mt-2 border-2 shadow-xl bg-panel border-tertiary-weak"
               onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-              <Link to="/settings" className="link-inline block px-3 py-2 w-32 hover-bg-tertiary">
+              <Link to="/settings" className="block w-32 px-3 py-2 link-inline hover-bg-tertiary">
                 Settings
               </Link>
               <button
                 onClick={signOut}
-                className="link-inline px-3 py-2 w-32 text-left hover-bg-tertiary">
+                className="w-32 px-3 py-2 text-left link-inline hover-bg-tertiary">
                 Logout
               </button>
             </div>
           }>
           <div
-            className="w-10 h-10 relative flex justify-center items-center rounded-full cursor-pointer"
+            className="relative flex items-center justify-center w-10 h-10 rounded-full cursor-pointer"
             onClick={() => setIsPopoverOpen((prev) => !prev)}>
             <img src={user.avatar?.thumb_url || ''} alt={user.name} className="rounded-full" />
           </div>
@@ -93,8 +93,10 @@ export default function Header() {
         <div className="flex items-center space-x-2">
           <Link to="/settings" className="link-inline">
             <i className="fa fa-gear" />
+            Settings
           </Link>
-          <button onClick={signIn} className="link-inline mx-2">
+          <span>|</span>
+          <button onClick={signIn} className="mx-2 link-inline">
             {t('common.login')}
           </button>
         </div>
