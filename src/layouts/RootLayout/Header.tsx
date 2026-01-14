@@ -94,7 +94,6 @@ export default function Header() {
           <Link to="/settings" className="link-inline">
             <i className="fa fa-gear" />
           </Link>
-          <span>|</span>
           <button onClick={signIn} className="mx-2 link-inline">
             {t('common.login')}
           </button>
