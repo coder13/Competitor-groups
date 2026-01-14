@@ -93,7 +93,6 @@ export default function Header() {
         <div className="flex items-center space-x-2">
           <Link to="/settings" className="link-inline">
             <i className="fa fa-gear" />
-            Settings
           </Link>
           <span>|</span>
           <button onClick={signIn} className="mx-2 link-inline">

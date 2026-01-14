@@ -11,6 +11,9 @@
 # production
 /dist
 
+# vite pwa dev
+/dev-dist
+
 # misc
 .DS_Store
 .env.local
