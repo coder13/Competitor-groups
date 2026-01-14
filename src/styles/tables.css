@@ -316,4 +316,59 @@
    * - .table-bg-row-alt-{name}   - Table row alternate (striped) background
    * - .table-bg-row-hover-{name} - Table row hover background
    */
+
+  /*
+   * ===========================================
+   * PRINT UTILITIES
+   * ===========================================
+   */
+
+  /* Simplified table styles for print - no borders, no backgrounds */
+  @media print {
+    .table-container {
+      @apply border-0 shadow-none print:text-xs;
+    }
+
+    .table-base {
+      @apply bg-transparent;
+    }
+
+    .table-header,
+    .table-header-blue,
+    .table-header-primary,
+    .table-header-secondary {
+      @apply bg-transparent;
+    }
+
+    .table-row-group-header {
+      @apply bg-transparent;
+    }
+
+    .table-striped tbody tr:nth-child(even),
+    .table-striped tbody .table-row-link:nth-child(even),
+    .table-striped tbody tr:nth-child(odd),
+    .table-striped tbody .table-row-link:nth-child(odd) {
+      @apply bg-transparent;
+    }
+
+    .table-striped-primary tbody tr,
+    .table-striped-primary tbody .table-row-link,
+    .table-striped-secondary tbody tr,
+    .table-striped-secondary tbody .table-row-link {
+      @apply bg-transparent;
+    }
+
+    .table-bordered,
+    .table-bordered th,
+    .table-bordered td {
+      @apply border-0;
+    }
+
+    .table-row-border-y,
+    .table-row-border-b,
+    .table-row-border-t,
+    .table-row-link {
+      @apply border-0;
+    }
+  }
 }

@@ -30,8 +30,8 @@ export function CompetitionLayout() {
   }, [pathname]);
 
   const Header = (
-    <nav className="flex shadow-md shadow-tertiary-dark print:hidden w-full justify-center z-10 bg-panel">
-      <Container className="md:flex-row justify-between">
+    <nav className="z-10 flex justify-center w-full shadow-md shadow-tertiary-dark print:hidden bg-panel">
+      <Container className="justify-between md:flex-row">
         <div className="flex">
           {tabs.map((i) => (
             <StyledNavLink
@@ -54,7 +54,7 @@ export function CompetitionLayout() {
         {Header}
 
         {!online && (
-          <div className="flex flex-col w-full items-center my-2">
+          <div className="flex flex-col items-center w-full my-2">
             <Container>
               <NoteBox
                 text="This app is operating in offline mode. Some data may be outdated."
@@ -71,7 +71,7 @@ export function CompetitionLayout() {
             <Outlet />
           </ErrorBoundary>
           {!!dataUpdatedAt && (
-            <Container className="p-2">
+            <Container className="p-2 print:hidden">
               <div className="flex space-x-2">
                 <div className="type-meta">{__GIT_COMMIT__}</div>
                 <div className="flex flex-grow" />

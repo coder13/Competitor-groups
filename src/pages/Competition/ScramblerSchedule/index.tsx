@@ -103,6 +103,7 @@ export default function ScramblerSchedule() {
             <tr className="table-header">
               <th className="table-header-cell-center w-60">Event</th>
               <th className="table-header-cell">{t('competition.scramblers.scramblers')}</th>
+              <th className="w-8 table-header-cell print:hidden"></th>
             </tr>
           </thead>
           <tbody>
@@ -116,7 +117,7 @@ export default function ScramblerSchedule() {
                 {activities.map((activity) => (
                   <>
                     <tr key={activity.id}>
-                      <td colSpan={2} className="table-cell">
+                      <td colSpan={3} className="table-cell">
                         <BreakableActivityName
                           activityCode={activity.activityCode}
                           activityName={activity.name}
@@ -141,6 +142,9 @@ export default function ScramblerSchedule() {
                                 ?.sort((a, b) => a.personName.localeCompare(b.personName))
                                 .map(({ personName }) => personName)
                                 .join(', ')}
+                            </td>
+                            <td className="text-right table-cell-sm print:hidden">
+                              <i className="type-meta fa fa-chevron-right" />
                             </td>
                           </Link>
                         );
