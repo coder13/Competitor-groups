@@ -1,0 +1,55 @@
+@use 'sass:map' as mapForm;
+
+@layer components {
+  $input-size-map: (
+    'sm': (
+      height: 'h-8',
+      spacing: 'px-2 py-1',
+      text: 'text-sm',
+    ),
+    'lg': (
+      height: 'h-12',
+      spacing: 'px-4 py-3',
+      text: 'text-base',
+    ),
+  );
+
+  /* Base input styles */
+  .input {
+    @apply block w-full px-3 py-2 type-body-sm bg-tertiary border border-default rounded-lg
+           text-default placeholder-gray-600 dark:placeholder-gray-400
+           focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
+           focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none;
+  }
+
+  @each $variant, $settings in $input-size-map {
+    .input-#{$variant} {
+      @apply input #{mapForm.get($settings, 'height')} #{mapForm.get($settings, 'spacing')} #{mapForm.get($settings, 'text')};
+    }
+  }
+
+  .select {
+    @apply input appearance-none cursor-pointer;
+  }
+
+  $selection-controls: ('checkbox', 'radio');
+
+  @each $control in $selection-controls {
+    .#{$control} {
+      @apply w-4 h-4 border-default bg-tertiary text-blue-600 dark:text-blue-500
+             focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none;
+    }
+  }
+
+  .form-label {
+    @apply block mb-2 type-label;
+  }
+
+  .form-group {
+    @apply space-y-2;
+  }
+
+  .form-hint {
+    @apply type-meta text-muted;
+  }
+}

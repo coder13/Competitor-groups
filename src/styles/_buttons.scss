@@ -1,0 +1,64 @@
+@use 'sass:map' as mapButton;
+
+@layer components {
+  /* Base button styles */
+  .btn {
+    @apply inline-flex gap-2 px-4 py-2 text-sm font-medium transition-colors duration-150 border rounded-md shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Full-width block button */
+  .btn-block {
+    @apply w-full min-h-[40px];
+  }
+
+  $button-variant-map: (
+    'blue': (
+      text: 'text-gray-900 dark:text-white',
+      bg: 'bg-blue-200 dark:bg-blue-700',
+      border: 'border-blue-300 dark:border-blue-600',
+      hover: 'hover:bg-blue-300 dark:hover:bg-blue-600',
+    ),
+    'green': (
+      text: 'text-gray-900 dark:text-white',
+      bg: 'bg-green-200 dark:bg-green-700',
+      border: 'border-green-300 dark:border-green-600',
+      hover: 'hover:bg-green-300 dark:hover:bg-green-600',
+    ),
+    'gray': (
+      text: 'text-gray-900 dark:text-white',
+      bg: 'bg-gray-200 dark:bg-gray-700',
+      border: 'border-gray-300 dark:border-gray-600',
+      hover: 'hover:bg-gray-300 dark:hover:bg-gray-600',
+    ),
+    'light': (
+      text: 'text-gray-900 dark:text-white',
+      bg: 'bg-gray-100 dark:bg-gray-800',
+      border: 'border-gray-300 dark:border-gray-600',
+      hover: 'hover:bg-gray-200 dark:hover:bg-gray-700',
+    ),
+  );
+
+  @mixin apply-button-variant($settings) {
+    @if mapButton.has-key($settings, 'text') {
+      @apply #{mapButton.get($settings, 'text')};
+    }
+
+    @if mapButton.has-key($settings, 'bg') {
+      @apply #{mapButton.get($settings, 'bg')};
+    }
+
+    @if mapButton.has-key($settings, 'border') {
+      @apply #{mapButton.get($settings, 'border')};
+    }
+
+    @if mapButton.has-key($settings, 'hover') {
+      @apply #{mapButton.get($settings, 'hover')};
+    }
+  }
+
+  @each $variant, $settings in $button-variant-map {
+    .btn-#{$variant} {
+      @include apply-button-variant($settings);
+    }
+  }
+}

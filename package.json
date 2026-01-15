@@ -84,6 +84,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
     "react-test-renderer": "^19.1.0",
+    "sass": "^1.97.2",
     "surge": "^0.23.1",
     "ts-jest": "^29.3.4",
     "ts-node": "^10.9.2",

@@ -4,78 +4,39 @@
  */
 
 @layer utilities {
-  /*
-   * ===========================================
-   * TABLE COLOR TOKENS
-   * Core colors used across all tables:
-   * - Header: Strong background for table headers (default: gray/tertiary)
-   * - Header variants: blue, primary, secondary themed headers
-   * - Row: Normal background for even rows
-   * - Row Alt: Slightly different background for odd rows (striping)
-   * ===========================================
-   */
+  $table-header-bg-map: (
+    'header': 'bg-gray-200 dark:bg-gray-800',
+    'header-blue': 'bg-blue-200 dark:bg-blue-800',
+    'header-primary': 'bg-blue-200 dark:bg-blue-700',
+    'header-secondary': 'bg-green-200 dark:bg-green-900',
+  );
 
-  /* Header background - default gray/tertiary */
-  .table-bg-header {
-    @apply bg-gray-200 dark:bg-gray-800;
+  $table-row-bg-map: (
+    'row': 'bg-white dark:bg-gray-900',
+    'row-alt': 'bg-gray-50 dark:bg-gray-800',
+    'row-alt-primary': 'bg-blue-50 dark:bg-blue-900',
+    'row-alt-secondary': 'bg-green-50 dark:bg-green-900/60',
+  );
+
+  $table-row-hover-map: (
+    'row-hover': 'bg-gray-200 dark:bg-gray-600',
+    'row-hover-primary': 'bg-blue-100 dark:bg-blue-800',
+    'row-hover-secondary': 'bg-green-100 dark:bg-green-900',
+  );
+
+  @mixin table-bg-classes($map) {
+    @each $name, $classes in $map {
+      .table-bg-#{$name} {
+        @apply #{$classes};
+      }
+    }
   }
 
-  /* Header background - blue themed */
-  .table-bg-header-blue {
-    @apply bg-blue-200 dark:bg-blue-800;
-  }
+  @include table-bg-classes($table-header-bg-map);
+  @include table-bg-classes($table-row-bg-map);
+  @include table-bg-classes($table-row-hover-map);
 
-  /* Header background - primary themed (uses primary color tokens) */
-  .table-bg-header-primary {
-    @apply bg-blue-200 dark:bg-blue-700;
-  }
-
-  /* Header background - secondary themed (uses secondary color tokens) */
-  .table-bg-header-secondary {
-    @apply bg-green-200 dark:bg-green-900;
-  }
-
-  /* Row background - normal (even rows) */
-  .table-bg-row {
-    @apply bg-white dark:bg-gray-900;
-  }
-
-  /* Row background - alternate/odd rows (striped) */
-  .table-bg-row-alt {
-    @apply bg-gray-50 dark:bg-gray-800;
-  }
-
-  /* Row background - primary themed alternate (odd rows) */
-  .table-bg-row-alt-primary {
-    @apply bg-blue-50 dark:bg-blue-900;
-  }
-
-  /* Row background - secondary themed alternate (odd rows) */
-  .table-bg-row-alt-secondary {
-    @apply bg-green-50 dark:bg-green-900/60;
-  }
-
-  /* Row hover background - distinct from both row colors */
-  .table-bg-row-hover {
-    @apply bg-gray-200 dark:bg-gray-600;
-  }
-
-  /* Row hover background - primary themed */
-  .table-bg-row-hover-primary {
-    @apply bg-blue-100 dark:bg-blue-800;
-  }
-
-  /* Row hover background - secondary themed */
-  .table-bg-row-hover-secondary {
-    @apply bg-green-100 dark:bg-green-900;
-  }
-
-  /*
-   * ===========================================
-   * CONTAINER UTILITIES
-   * ===========================================
-   */
-
+  /* Container utilities */
   .table-container {
     @apply border border-gray-300 rounded-md shadow-md dark:border-gray-700 dark:shadow-gray-800 print:shadow-none;
   }
@@ -92,48 +53,35 @@
     @apply w-full bg-panel;
   }
 
-  /*
-   * ===========================================
-   * HEADER UTILITIES
-   * ===========================================
-   */
-
-  /* Header row - default (gray/tertiary) */
+  /* Header utilities */
   .table-header {
     @apply table-bg-header;
   }
 
-  /* Header row - blue themed */
   .table-header-blue {
     @apply table-bg-header-blue;
   }
 
-  /* Header row - primary themed */
   .table-header-primary {
     @apply table-bg-header-primary;
   }
 
-  /* Header row - secondary themed */
   .table-header-secondary {
     @apply table-bg-header-secondary;
   }
 
-  /* Header cell - SMALL padding (dense tables) */
   .table-header-cell-sm {
     @apply px-3 py-2 text-gray-900 dark:text-white type-label;
   }
 
-  /* Header cell - MEDIUM padding (standard) */
   .table-header-cell {
     @apply px-6 py-3 text-gray-900 dark:text-white type-label;
   }
 
-  /* Header cell - LARGE padding (spacious) */
   .table-header-cell-lg {
     @apply px-8 py-4 text-gray-900 dark:text-white type-label;
   }
 
-  /* Centered header cell variants */
   .table-header-cell-sm-center {
     @apply text-center table-header-cell-sm;
   }
@@ -146,17 +94,11 @@
     @apply text-center table-header-cell-lg;
   }
 
-  /* Group header (date/section separators) - uses header token */
   .table-row-group-header {
     @apply px-3 py-2 font-bold text-center type-heading table-bg-header;
   }
 
-  /*
-   * ===========================================
-   * CELL UTILITIES
-   * ===========================================
-   */
-
+  /* Cell utilities */
   .table-cell-sm {
     @apply px-3 py-2 text-gray-900 dark:text-white;
   }
@@ -169,7 +111,6 @@
     @apply px-8 py-3.5 text-gray-900 dark:text-white;
   }
 
-  /* Centered cell variants */
   .table-cell-sm-center {
     @apply text-center table-cell-sm;
   }
@@ -182,13 +123,7 @@
     @apply text-center table-cell-lg;
   }
 
-  /*
-   * ===========================================
-   * ROW UTILITIES
-   * ===========================================
-   */
-
-  /* Interactive row with hover */
+  /* Row utilities */
   .table-row-hover {
     @apply transition-all cursor-pointer;
   }
@@ -197,7 +132,6 @@
     @apply table-bg-row-hover;
   }
 
-  /* Link-style row (for <a> or <Link> elements acting as rows) */
   .table-row-link {
     @apply table-row transition-all border-b cursor-pointer border-tertiary-weak;
   }
@@ -206,7 +140,6 @@
     @apply table-bg-row-hover;
   }
 
-  /* Simple hover background utility */
   .table-row-hover-bg {
     @apply transition-colors cursor-pointer;
   }
@@ -215,12 +148,7 @@
     @apply table-bg-row-hover;
   }
 
-  /*
-   * ===========================================
-   * BORDER UTILITIES
-   * ===========================================
-   */
-
+  /* Border utilities */
   .table-row-border-y {
     @apply border-y border-tertiary-weak;
   }
@@ -242,13 +170,7 @@
     @apply border border-tertiary-weak;
   }
 
-  /*
-   * ===========================================
-   * STRIPED TABLE UTILITY
-   * Uses the 3 color tokens for consistent striping
-   * ===========================================
-   */
-
+  /* Striped tables */
   .table-striped tbody tr:nth-child(even),
   .table-striped tbody .table-row-link:nth-child(even) {
     @apply table-bg-row-alt;
@@ -259,17 +181,10 @@
     @apply table-bg-row;
   }
 
-  /* Hover states for striped rows */
   .table-striped tbody tr:hover,
   .table-striped tbody .table-row-link:hover {
     @apply table-bg-row-hover;
   }
-
-  /*
-   * ===========================================
-   * PRIMARY THEMED STRIPED TABLE
-   * ===========================================
-   */
 
   .table-striped-primary tbody tr:nth-child(even),
   .table-striped-primary tbody .table-row-link:nth-child(even) {
@@ -286,12 +201,6 @@
     @apply table-bg-row-hover-primary;
   }
 
-  /*
-   * ===========================================
-   * SECONDARY THEMED STRIPED TABLE
-   * ===========================================
-   */
-
   .table-striped-secondary tbody tr:nth-child(even),
   .table-striped-secondary tbody .table-row-link:nth-child(even) {
     @apply table-bg-row-alt-secondary;
@@ -307,23 +216,9 @@
     @apply table-bg-row-hover-secondary;
   }
 
-  /*
-   * Assignment-themed table row utilities are generated by the Tailwind plugin:
-   * See tailwind/assignment-colors.plugin.js
-   *
-   * Generated classes:
-   * - .table-bg-row-{name}       - Table row background
-   * - .table-bg-row-alt-{name}   - Table row alternate (striped) background
-   * - .table-bg-row-hover-{name} - Table row hover background
-   */
+  /* Assignment-themed rows are generated by the Tailwind plugin */
 
-  /*
-   * ===========================================
-   * PRINT UTILITIES
-   * ===========================================
-   */
-
-  /* Simplified table styles for print - no borders, no backgrounds */
+  /* Print utilities */
   @media print {
     .table-container {
       @apply border-0 shadow-none print:text-xs;
