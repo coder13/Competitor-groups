@@ -40,10 +40,10 @@ export default function Information() {
               ? formatDateRange(data.start_date, data.end_date)
               : undefined
           }
-          competitorLimit={wcif?.competitorLimit}
+          competitorLimit={wcif?.competitorLimit || 0}
         />
         <div>
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-200">
+          <p className="mb-2 text-sm font-semibold tracking-wide uppercase text-slate-700 dark:text-gray-200">
             Venue
           </p>
           <VenueInformation
@@ -55,13 +55,13 @@ export default function Information() {
           />
         </div>
         <div>
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-200">
+          <p className="mb-2 text-sm font-semibold tracking-wide uppercase text-slate-700 dark:text-gray-200">
             Organizers
           </p>
           <UserListSection users={data?.organizers} />
         </div>
         <div>
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-200">
+          <p className="mb-2 text-sm font-semibold tracking-wide uppercase text-slate-700 dark:text-gray-200">
             Delegates
           </p>
           <UserListSection users={data?.delegates} />
