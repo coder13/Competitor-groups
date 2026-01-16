@@ -1,0 +1,73 @@
+@use 'sass:map' as mapType;
+
+@layer components {
+  $typography-scale: (
+    'display': (
+      size: 'text-3xl',
+      weight: 'font-bold',
+      leading: 'leading-tight',
+      color: 'text-default',
+    ),
+    'title': (
+      size: 'text-2xl',
+      weight: 'font-bold',
+      leading: 'leading-tight',
+      color: 'text-default',
+    ),
+    'heading': (
+      size: 'text-xl',
+      weight: 'font-semibold',
+      leading: 'leading-snug',
+      color: 'text-default',
+    ),
+    'subheading': (
+      size: 'text-lg',
+      weight: 'font-semibold',
+      leading: 'leading-snug',
+      color: 'text-default',
+    ),
+    'body': (
+      size: 'text-base',
+      leading: 'leading-relaxed',
+      color: 'text-default',
+    ),
+    'body-sm': (
+      size: 'text-sm',
+      leading: 'leading-relaxed',
+      color: 'text-gray-800 dark:text-gray-200',
+    ),
+    'label': (
+      size: 'text-sm',
+      weight: 'font-medium',
+      color: 'text-gray-700 dark:text-gray-300',
+    ),
+    'meta': (
+      size: 'text-xs',
+      color: 'text-muted',
+    ),
+  );
+
+  @mixin apply-typography($settings) {
+    @if mapType.has-key($settings, 'size') {
+      @apply #{mapType.get($settings, 'size')};
+    }
+
+    @if mapType.has-key($settings, 'weight') {
+      @apply #{mapType.get($settings, 'weight')};
+    }
+
+    @if mapType.has-key($settings, 'leading') {
+      @apply #{mapType.get($settings, 'leading')};
+    }
+
+    @if mapType.has-key($settings, 'color') {
+      @apply #{mapType.get($settings, 'color')};
+    }
+  }
+
+  @each $label, $settings in $typography-scale {
+    .type-#{$label} {
+      @include apply-typography($settings);
+    }
+  }
+}

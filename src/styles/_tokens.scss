@@ -1,0 +1,146 @@
+@use 'sass:map' as mapToken;
+
+$component-token-map: (
+  'bg-app': (
+    bg: 'bg-white dark:bg-gray-900',
+  ),
+  'bg-panel': (
+    bg: 'bg-white dark:bg-gray-800',
+  ),
+  'bg-panel-elevated': (
+    bg: 'bg-gray-50 dark:bg-gray-700',
+  ),
+  'text-default': (
+    text: 'text-gray-900 dark:text-white',
+  ),
+  'text-subtle': (
+    text: 'text-gray-600 dark:text-gray-400',
+  ),
+  'bg-primary': (
+    bg: 'bg-blue-200 dark:bg-blue-700',
+  ),
+  'bg-primary-strong': (
+    bg: 'bg-blue-300 dark:bg-blue-600',
+  ),
+  'text-primary': (
+    text: 'text-blue-700 dark:text-blue-300',
+  ),
+  'border-primary': (
+    border: 'border-blue-300 dark:border-blue-600',
+  ),
+  'bg-secondary': (
+    bg: 'bg-green-200 dark:bg-green-700',
+  ),
+  'bg-secondary-strong': (
+    bg: 'bg-green-300 dark:bg-green-600',
+  ),
+  'text-secondary': (
+    text: 'text-green-700 dark:text-green-300',
+  ),
+  'border-secondary': (
+    border: 'border-green-300 dark:border-green-600',
+  ),
+  'bg-tertiary': (
+    bg: 'bg-gray-100 dark:bg-gray-800',
+  ),
+  'bg-tertiary-strong': (
+    bg: 'bg-gray-200 dark:bg-gray-700',
+  ),
+  'text-tertiary': (
+    text: 'text-gray-700 dark:text-gray-300',
+  ),
+  'border-tertiary': (
+    border: 'border-gray-300 dark:border-gray-600',
+  ),
+  'border-default': (
+    border: 'border-gray-300 dark:border-gray-700',
+  ),
+  'border-strong': (
+    border: 'border-gray-400 dark:border-gray-600',
+  ),
+  'border-tertiary-weak': (
+    border: 'border-gray-200 dark:border-gray-700',
+  ),
+  'text-muted': (
+    text: 'text-gray-500 dark:text-gray-400',
+  ),
+  'bg-active': (
+    bg: 'bg-blue-100 dark:bg-blue-900',
+  ),
+  'disabled-state': (
+    apply: 'opacity-50 cursor-not-allowed',
+  ),
+);
+
+$utility-token-map: (
+  'hover-bg-tertiary': (
+    apply: 'hover:bg-gray-200 dark:hover:bg-gray-700',
+  ),
+  'hover-text-tertiary': (
+    apply: 'hover:text-gray-700 dark:hover:text-gray-300',
+  ),
+  'hover-text-muted': (
+    apply: 'hover:text-gray-500 dark:hover:text-gray-300',
+  ),
+  'hover-bg-primary': (
+    apply: 'hover:bg-blue-300 dark:hover:bg-blue-600',
+  ),
+  'hover-text-primary': (
+    apply: 'hover:text-blue-700 dark:hover:text-blue-300',
+  ),
+  'hover-bg-secondary': (
+    apply: 'hover:bg-green-300 dark:hover:bg-green-600',
+  ),
+  'hover-text-secondary': (
+    apply: 'hover:text-green-700 dark:hover:text-green-300',
+  ),
+  'ring-focus': (
+    apply: 'focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none',
+  ),
+  'divide-tertiary-weak': (
+    apply: 'divide-gray-100',
+  ),
+  'ring-tertiary-weak': (
+    apply: 'ring-gray-100 dark:ring-gray-600',
+  ),
+  'placeholder-tertiary': (
+    apply: 'dark:placeholder-gray-400',
+  ),
+  'shadow-tertiary-dark': (
+    apply: 'dark:shadow-gray-800',
+  ),
+);
+
+@mixin apply-token($settings) {
+  @if mapToken.has-key($settings, 'bg') {
+    @apply #{mapToken.get($settings, 'bg')};
+  }
+
+  @if mapToken.has-key($settings, 'text') {
+    @apply #{mapToken.get($settings, 'text')};
+  }
+
+  @if mapToken.has-key($settings, 'border') {
+    @apply #{mapToken.get($settings, 'border')};
+  }
+
+  @if mapToken.has-key($settings, 'apply') {
+    @apply #{mapToken.get($settings, 'apply')};
+  }
+}
+
+@layer components {
+  @each $class-name, $settings in $component-token-map {
+    .#{$class-name} {
+      @include apply-token($settings);
+    }
+  }
+}
+
+@layer utilities {
+  @each $class-name, $settings in $utility-token-map {
+    .#{$class-name} {
+      @include apply-token($settings);
+    }
+  }
+}
