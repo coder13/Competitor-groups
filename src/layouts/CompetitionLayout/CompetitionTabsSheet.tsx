@@ -1,0 +1,63 @@
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment } from 'react';
+import { Link } from 'react-router-dom';
+
+interface CompetitionTabsSheetProps {
+  open: boolean;
+  onClose: () => void;
+  tabs: {
+    href: string;
+    text: string;
+  }[];
+  title: string;
+}
+
+export const CompetitionTabsSheet = ({ open, onClose, tabs, title }: CompetitionTabsSheetProps) => {
+  return (
+    <Transition show={open} as={Fragment}>
+      <Dialog as="div" className="relative z-50" onClose={onClose}>
+        <Transition.Child
+          as={Fragment}
+          enter="transition-opacity duration-200"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0">
+          <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        </Transition.Child>
+        <div className="fixed inset-x-0 top-12 bottom-0 flex w-full justify-center">
+          <Transition.Child
+            as={Fragment}
+            enter="transition duration-200 ease-out"
+            enterFrom="translate-y-full"
+            enterTo="translate-y-0"
+            leave="transition duration-150 ease-in"
+            leaveFrom="translate-y-0"
+            leaveTo="translate-y-full">
+            <Dialog.Panel className="w-full max-w-screen-md rounded-t-2xl bg-panel p-4 shadow-xl">
+              <div className="flex items-center justify-between pb-2">
+                <Dialog.Title className="text-sm font-semibold text-slate-600 dark:text-gray-300">
+                  {title}
+                </Dialog.Title>
+                <button
+                  type="button"
+                  className="text-sm text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  onClick={onClose}>
+                  Close
+                </button>
+              </div>
+              <div className="flex flex-col gap-2 overflow-y-auto pb-6">
+                {tabs.map((tab) => (
+                  <Link key={tab.href} to={tab.href} className="link-card" onClick={onClose}>
+                    {tab.text}
+                  </Link>
+                ))}
+              </div>
+            </Dialog.Panel>
+          </Transition.Child>
+        </div>
+      </Dialog>
+    </Transition>
+  );
+};

@@ -3,7 +3,7 @@
 @layer components {
   /* Base button styles */
   .btn {
-    @apply inline-flex gap-2 px-4 py-2 text-sm font-medium transition-colors duration-150 border rounded-md shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex gap-2 px-4 py-2 text-sm font-medium transition-colors duration-150 border rounded-md shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:opacity-50 disabled:cursor-not-allowed min-w-[40px] min-h-[40px];
   }
 
   /* Full-width block button */
@@ -35,6 +35,12 @@
       bg: 'bg-gray-100 dark:bg-gray-800',
       border: 'border-gray-300 dark:border-gray-600',
       hover: 'hover:bg-gray-200 dark:hover:bg-gray-700',
+    ),
+    'subtle': (
+      text: 'text-blue-700 dark:text-blue-300',
+      bg: 'bg-blue-50 dark:bg-blue-900/40',
+      border: 'border-blue-200 dark:border-blue-800',
+      hover: 'hover:bg-blue-100 dark:hover:bg-blue-900/60',
     ),
   );
 

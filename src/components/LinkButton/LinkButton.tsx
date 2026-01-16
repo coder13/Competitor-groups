@@ -4,7 +4,7 @@ import { Link, LinkProps } from 'react-router-dom';
 export interface LinkButtonProps {
   to: LinkProps['to'];
   title: string;
-  variant?: 'blue' | 'green' | 'gray' | 'light';
+  variant?: 'blue' | 'green' | 'gray' | 'light' | 'subtle';
   className?: string;
 }
 
@@ -14,6 +14,7 @@ export const LinkButton = ({ to, title, variant = 'blue', className }: LinkButto
     green: 'btn-green',
     gray: 'btn-gray',
     light: 'btn-light',
+    subtle: 'btn-subtle',
   } satisfies Record<NonNullable<LinkButtonProps['variant']>, string>;
 
   return (

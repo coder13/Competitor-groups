@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown, { Components } from 'react-markdown';
 import { Container } from '@/components/Container';
+import { LinkButton } from '@/components/LinkButton';
 import { useCompetitionTabs } from '@/hooks/queries/useCompetitionTabs';
 import { useWCIF } from '@/providers/WCIFProvider';
 
@@ -15,6 +16,32 @@ const slugify = (value: string) =>
     .replace(/[^\p{L}\p{N}\s-]/gu, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
+
+const removeDuplicateTitleLine = (content: string, title: string) => {
+  const lines = content.split(/\r?\n/);
+  const firstContentIndex = lines.findIndex((line) => line.trim().length > 0);
+
+  if (firstContentIndex === -1) {
+    return content;
+  }
+
+  const headingMatch = lines[firstContentIndex].match(/^#{1,6}\s*(.+)$/);
+  if (!headingMatch) {
+    return content;
+  }
+
+  const headingText = headingMatch[1].trim();
+  if (slugify(headingText) !== slugify(title)) {
+    return content;
+  }
+
+  const remainingLines = lines.slice(firstContentIndex + 1);
+  if (remainingLines[0]?.trim() === '') {
+    remainingLines.shift();
+  }
+
+  return remainingLines.join('\n');
+};
 
 const getLinkText = (children: React.ReactNode): string | null => {
   if (typeof children === 'string' || typeof children === 'number') {
@@ -53,7 +80,8 @@ const MarkdownLink = ({ href, children }: { href?: string; children: React.React
     return <span>{children}</span>;
   }
 
-  const preview = getPreviewData(href, children);
+  const showLinkPreview = false;
+  const preview = showLinkPreview ? getPreviewData(href, children) : null;
 
   return (
     <span className="inline-block w-full">
@@ -170,13 +198,20 @@ export default function CompetitionTabs() {
   return (
     <div className="flex w-full justify-center">
       <Container className="p-2 space-y-4">
+        <div className="flex">
+          <LinkButton
+            to={`/competitions/${competitionId}/information`}
+            title={t('competition.competitors.viewCompetitionInformation')}
+            variant="blue"
+          />
+        </div>
         {tabsWithSlugs.map((tab) => (
           <section key={tab.id} id={tab.slug} className="scroll-mt-16" aria-label={tab.name}>
             <div className="flex flex-col p-3 space-y-3 bg-white border rounded border-slate-100 dark:border-gray-700 dark:bg-gray-800">
               <h2 className="type-title">{tab.name}</h2>
               <div className="space-y-3">
                 <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-                  {tab.content}
+                  {removeDuplicateTitleLine(tab.content, tab.name)}
                 </ReactMarkdown>
               </div>
             </div>
