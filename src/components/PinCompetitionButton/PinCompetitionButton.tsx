@@ -12,6 +12,7 @@ export const PinCompetitionButton = ({ competitionId }: { competitionId: string 
     <div>
       <Button
         variant="light"
+        className="flex items-center justify-center"
         onClick={() => {
           if (isPinned) {
             unpinCompetition(competitionId);

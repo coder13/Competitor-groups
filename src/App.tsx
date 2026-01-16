@@ -27,6 +27,7 @@ import {
 import CompetitionScramblerSchedule from './pages/Competition/ScramblerSchedule';
 import CompetitionStats from './pages/Competition/Stats';
 import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
+import CompetitionTabs from './pages/Competition/Tabs';
 import Home from './pages/Home';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
@@ -88,7 +89,8 @@ const Navigation = () => {
         <Route index element={<Home />} />
         <Route path="/competitions" element={<Navigate to="/" />} />
         <Route path="/competitions/:competitionId" element={<CompetitionLayout />}>
-          <Route index element={<CompetitionHome />} />
+          <Route index element={<Navigate to="groups" />} />
+          <Route path="groups" element={<CompetitionHome />} />
 
           <Route path="persons/:registrantId" element={<CompetitionPerson />} />
           <Route path="personal-bests/:wcaId" element={<CompetitionPersonalBests />} />
@@ -110,6 +112,7 @@ const Navigation = () => {
           <Route path="scramblers" element={<CompetitionScramblerSchedule />} />
           <Route path="stream" element={<CompetitionStreamSchedule />} />
           <Route path="information" element={<CompetitionInformation />} />
+          <Route path="tabs" element={<CompetitionTabs />} />
           <Route path="live" element={<CompetitionLive />} />
 
           {/* Following pages are not accessible: */}

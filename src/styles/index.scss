@@ -3,18 +3,18 @@
  * Imports Tailwind and all modular style files
  */
 
-/* Tailwind CSS */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-
 /* Modular style imports (order matters: tokens before components that use them) */
-@import 'typography.css';
-@import 'tokens.css';
-@import 'buttons.css';
-@import 'links.css';
-@import 'forms.css';
-@import 'tables.css';
+@use 'tokens';
+@use 'typography';
+@use 'buttons';
+@use 'links';
+@use 'forms';
+@use 'tables';
+
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Viewport height utility with dynamic viewport support */
 .full-viewport-height {
@@ -29,6 +29,12 @@
 
 /* Base layer overrides */
 @layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
   body {
     @apply type-body;
   }

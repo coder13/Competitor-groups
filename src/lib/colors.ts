@@ -22,7 +22,7 @@ export const colors: Record<string, string> = {
 
 /**
  * Assignment color class mapping
- * Maps assignment codes to their CSS token class names (defined in tokens.css)
+ * Maps assignment codes to their CSS token class names (defined in _tokens.scss)
  * Use these instead of inline styles for proper dark mode support
  */
 export type AssignmentColorClasses = {

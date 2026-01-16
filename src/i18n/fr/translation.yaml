@@ -118,6 +118,10 @@ header:
     rankings: 'Classements'
     scramblers: 'Mélangeurs'
     stream: 'Stream'
+    more: 'More'
+    information: 'Information'
+    extraInfo: 'Extra Info'
+    extraInfoOptions: 'Extra Info'
 home:
   subtitle: 'Apprenez tout ce que vous devez savoir sur les tâches qui vous ont été attribuées aux compétitions WCA !'
   explanation: 'Remarque : Ce site web est un outil pratique pour les organisateurs, délégués et compétiteurs. Les informations fournies sont basées sur le planning prévisionnel. Pensez à consulter régulièrement la page de la compétition pour obtenir les informations les plus récentes. Les horaires de début et de fin peuvent varier.'
@@ -128,6 +132,12 @@ home:
   upcomingCompetitions: 'Compétitions à venir'
   yourCompetitions: 'Vos compétitions'
 competition:
+  tabs:
+    title: Extra Information
+    view: View Competition Tabs
+    error: Unable to load competition tabs.
+    collapseAll: Collapse all
+    expandAll: Expand all
   competitors:
     viewMyAssignments: 'Voir mes affectations'
     viewCompetitionInformation: 'Voir les informations sur la compétition'

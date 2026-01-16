@@ -126,6 +126,10 @@ header:
     rankings: 'Ranglijsten'
     scramblers: 'Scramblers'
     stream: 'Stream'
+    more: 'More'
+    information: 'Information'
+    extraInfo: 'Extra Info'
+    extraInfoOptions: 'Extra Info'
 home:
   subtitle: 'Leer alles over je taken op je aankomende WCA competitie weten!'
   explanation: 'Note: This website exists as a convenience tool for organizers, delegates, and competitors. The information provided is based on scheduled data. Pay close attention to the competition for the most up-to-date information. Start and end times can fluctuate.'
@@ -136,6 +140,12 @@ home:
   upcomingCompetitions: 'Aankomende Competities'
   yourCompetitions: 'Jouw Competities'
 competition:
+  tabs:
+    title: Extra Information
+    view: View Competition Tabs
+    error: Unable to load competition tabs.
+    collapseAll: Collapse all
+    expandAll: Expand all
   competitors:
     viewCompetitionInformation: 'Bekijk de Competitie Informatie'
     searchCompetitors: 'Zoek deelnemers'

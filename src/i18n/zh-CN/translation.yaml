@@ -24,3 +24,22 @@ common:
       444bf: 四盲
       555bf: 五盲
       333mbf: 多盲
+header:
+  tabs:
+    groups: 'Groups'
+    events: 'Events'
+    schedule: 'Schedule'
+    rankings: 'Rankings'
+    scramblers: 'Scramblers'
+    stream: 'Stream'
+    more: 'More'
+    information: 'Information'
+    extraInfo: 'Extra Info'
+    extraInfoOptions: 'Extra Info'
+competition:
+  tabs:
+    title: Extra Information
+    view: View Competition Tabs
+    error: Unable to load competition tabs.
+    collapseAll: Collapse all
+    expandAll: Expand all

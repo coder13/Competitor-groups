@@ -1,0 +1,36 @@
+@use 'sass:map';
+
+@use 'sass:map' as mapLink;
+
+@layer components {
+  $link-variant-map: (
+    'inline': (
+      apply:
+        'text-blue-600 dark:text-blue-400 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500',
+    ),
+    'nav': (
+      apply:
+        'w-full p-2 text-center text-blue-500 dark:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-blue-700 dark:hover:text-blue-300',
+    ),
+    'card': (
+      apply:
+        'block w-full px-2 py-2 transition-colors border rounded-md bg-panel border-tertiary-weak hover:bg-gray-100 dark:hover:bg-gray-700',
+    ),
+    'external': (
+      apply:
+        'inline-flex justify-between w-full gap-2 px-4 py-2 bg-blue-200 rounded-md dark:bg-blue-700 dark:hover:bg-blue-600 hover:opacity-80',
+    ),
+  );
+
+  @mixin apply-link-variant($settings) {
+    @if mapLink.has-key($settings, 'apply') {
+      @apply #{mapLink.get($settings, 'apply')};
+    }
+  }
+
+  @each $variant, $settings in $link-variant-map {
+    .link-#{$variant} {
+      @include apply-link-variant($settings);
+    }
+  }
+}
