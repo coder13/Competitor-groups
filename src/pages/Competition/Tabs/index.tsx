@@ -90,22 +90,6 @@ export default function CompetitionTabs() {
     });
   }, [competitionId, hash, tabsWithSlugs, setOpenTabs]);
 
-  if (isLoading) {
-    return (
-      <Container className="p-2">
-        <p className="type-body">{t('common.loading')}</p>
-      </Container>
-    );
-  }
-
-  if (error || !tabs) {
-    return (
-      <Container className="p-2">
-        <p className="type-body">{t('competition.tabs.error')}</p>
-      </Container>
-    );
-  }
-
   const handleToggle = useCallback(
     (slug: string) => {
       setOpenTabs((prev) => {
@@ -140,6 +124,22 @@ export default function CompetitionTabs() {
       localStorage.setItem(getStorageKey(competitionId), JSON.stringify(nextState));
     }
   }, [competitionId, tabsWithSlugs]);
+
+  if (isLoading) {
+    return (
+      <Container className="p-2">
+        <p className="type-body">{t('common.loading')}</p>
+      </Container>
+    );
+  }
+
+  if (error || !tabs) {
+    return (
+      <Container className="p-2">
+        <p className="type-body">{t('competition.tabs.error')}</p>
+      </Container>
+    );
+  }
 
   return (
     <div className="flex justify-center w-full">
