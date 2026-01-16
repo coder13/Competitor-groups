@@ -109,7 +109,6 @@ This is a React + TypeScript web application for viewing WCA (World Cube Associa
 - **New files:** The agent can create new files for features or tests, but all new code should be covered by tests.
 - **Comments:** Add comments to explain complex logic; maintainability is valued.
 - **Composable components:** Prefer creating small, reusable components over monolithic views.
-- **Translations:** Default to updating only `src/i18n/en/translation.yaml` unless the task explicitly requests other locales.
 - **Keep instructions fresh:** When you discover new working conventions or project expectations, update this `AGENTS.md` to capture them.
 
 ---

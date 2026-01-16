@@ -61,8 +61,13 @@ export const CompetitionTabsSheet = ({
               </div>
               <div className="flex flex-col gap-2 overflow-y-auto pb-6">
                 {tabs.map((tab) => (
-                  <Link key={tab.href} to={tab.href} className="link-card" onClick={onClose}>
-                    {tab.text}
+                  <Link
+                    key={tab.href}
+                    to={tab.href}
+                    className="flex items-center justify-between gap-2 rounded-lg border border-tertiary-weak bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800"
+                    onClick={onClose}>
+                    <span>{tab.text}</span>
+                    <i className="fa fa-chevron-right text-xs text-slate-400" aria-hidden="true" />
                   </Link>
                 ))}
                 {tabPanels && tabPanels.length > 0 && (
@@ -76,9 +81,13 @@ export const CompetitionTabsSheet = ({
                       <Link
                         key={tab.href}
                         to={tab.href}
-                        className="block rounded px-2 py-1 text-slate-600 hover:bg-slate-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                        className="flex items-center justify-between gap-2 rounded-md px-2 py-1 text-slate-600 transition hover:bg-slate-100 dark:text-gray-300 dark:hover:bg-gray-800"
                         onClick={onClose}>
-                        {tab.text}
+                        <span>{tab.text}</span>
+                        <i
+                          className="fa fa-chevron-right text-[10px] text-slate-400"
+                          aria-hidden="true"
+                        />
                       </Link>
                     ))}
                   </div>

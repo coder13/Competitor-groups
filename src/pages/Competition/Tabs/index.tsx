@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { Container, IconButton, MarkdownContent } from '@/components';
+import { Container } from '@/components/Container';
+import { IconButton } from '@/components/IconButton/IconButton';
 import { LinkButton } from '@/components/LinkButton';
+import { MarkdownContent } from '@/components/MarkdownContent';
 import { useCompetitionTabs } from '@/hooks/queries/useCompetitionTabs';
 import {
   TabWithSlug,
@@ -145,11 +147,6 @@ export default function CompetitionTabs() {
     <div className="flex justify-center w-full">
       <Container className="p-2 space-y-4">
         <div className="flex flex-wrap items-center gap-3">
-          <LinkButton
-            to={`/competitions/${competitionId}/information`}
-            title={t('competition.competitors.viewCompetitionInformation')}
-            variant="blue"
-          />
           <div className="flex items-center gap-2 ml-auto">
             <IconButton
               type="button"
@@ -179,6 +176,11 @@ export default function CompetitionTabs() {
             <MarkdownContent content={removeDuplicateTitleLine(tab.content, tab.name)} />
           </TabPanel>
         ))}
+        <LinkButton
+          to={`/competitions/${competitionId}/information`}
+          title={t('competition.competitors.viewCompetitionInformation')}
+          variant="blue"
+        />
       </Container>
     </div>
   );
