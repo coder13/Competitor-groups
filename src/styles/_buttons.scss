@@ -6,6 +6,10 @@
     @apply inline-flex gap-2 px-4 py-2 text-sm font-medium transition-colors duration-150 border rounded-md shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:opacity-50 disabled:cursor-not-allowed min-w-[40px] min-h-[40px];
   }
 
+  .btn-text {
+    @apply border-transparent shadow-none;
+  }
+
   /* Full-width block button */
   .btn-block {
     @apply w-full min-h-[40px];
@@ -36,11 +40,29 @@
       border: 'border-gray-300 dark:border-gray-600',
       hover: 'hover:bg-gray-200 dark:hover:bg-gray-700',
     ),
+    'primary': (
+      text: 'text-gray-900 dark:text-white',
+      bg: 'bg-blue-300 dark:bg-blue-600',
+      border: 'border-blue-400 dark:border-blue-500',
+      hover: 'hover:bg-blue-400 dark:hover:bg-blue-500',
+    ),
+    'secondary': (
+      text: 'text-blue-700 dark:text-blue-300',
+      bg: 'bg-white dark:bg-gray-900',
+      border: 'border-blue-200 dark:border-blue-800',
+      hover: 'hover:bg-blue-50 dark:hover:bg-blue-900/40',
+    ),
     'subtle': (
       text: 'text-blue-700 dark:text-blue-300',
       bg: 'bg-blue-50 dark:bg-blue-900/40',
       border: 'border-blue-200 dark:border-blue-800',
       hover: 'hover:bg-blue-100 dark:hover:bg-blue-900/60',
+    ),
+    'text': (
+      text: 'text-blue-700 dark:text-blue-300',
+      bg: 'bg-transparent',
+      border: 'border-transparent',
+      hover: 'hover:bg-blue-50 dark:hover:bg-blue-900/40',
     ),
   );
 

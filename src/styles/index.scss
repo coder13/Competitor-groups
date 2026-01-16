@@ -29,6 +29,12 @@
 
 /* Base layer overrides */
 @layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
   body {
     @apply type-body;
   }

@@ -26,8 +26,6 @@ describe('CompetitionHomeHeader', () => {
     );
 
     expect(screen.getByText('Pin TestComp')).toBeInTheDocument();
-    expect(screen.getByText('competition.home.summary.dates:')).toBeInTheDocument();
-    expect(screen.getByText('competition.home.summary.venue:')).toBeInTheDocument();
     expect(screen.getByText('City Hall')).toBeInTheDocument();
   });
 });

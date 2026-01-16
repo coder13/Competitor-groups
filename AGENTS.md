@@ -88,7 +88,8 @@ This is a React + TypeScript web application for viewing WCA (World Cube Associa
 - **Internationalization:** Use `i18next` and `react-i18next` for translations.
 - **Documentation:** Update `README.md` and add comments where necessary.
 - **Function and variable names:** Should be clear and descriptive.
-- **Components:** Prefer functional components and hooks.
+- **Components:** Prefer functional components and hooks. Reusable components must live in `src/components/`.
+- **Event handlers:** Define `onClick` handlers with `useCallback` instead of inline lambdas.
 
 ---
 

@@ -37,17 +37,15 @@ export const CompetitionSummary = ({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-base text-slate-600 dark:text-gray-300">
+    <div className="flex flex-col items-start text-base gap-y-1 text-slate-600 dark:text-gray-300">
       {dateRange && (
         <span>
-          <span className="type-meta">{t('competition.home.summary.dates')}: </span>
           <span className="font-semibold text-slate-900 dark:text-gray-100">{dateRange}</span>
         </span>
       )}
       {venueName && (
         <span>
-          <span className="type-meta">{t('competition.home.summary.venue')}: </span>
-          <span className="font-semibold text-slate-900 dark:text-gray-100">{venueName}</span>
+          <span className="text-slate-900 dark:text-gray-100">{venueName}</span>
         </span>
       )}
     </div>

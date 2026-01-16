@@ -10,7 +10,7 @@ interface CompetitionLayoutTabsProps {
   wcif?: Competition;
 }
 
-interface CompetitionLayoutTabItem {
+export interface CompetitionLayoutTabItem {
   href: string;
   text: string;
 }
@@ -35,7 +35,7 @@ export const useCompetitionLayoutTabs = ({
 
     const desktopTabs: CompetitionLayoutTabItem[] = [
       {
-        href: `/competitions/${competitionId}`,
+        href: `/competitions/${competitionId}/groups`,
         text: t('header.tabs.groups'),
       },
       {
@@ -66,20 +66,14 @@ export const useCompetitionLayoutTabs = ({
       });
     }
 
-    desktopTabs.push(
-      {
-        href: `/competitions/${competitionId}/information`,
-        text: t('header.tabs.information'),
-      },
-      {
-        href: `/competitions/${competitionId}/tabs`,
-        text: t('header.tabs.extraInfo'),
-      },
-    );
+    desktopTabs.push({
+      href: `/competitions/${competitionId}/information`,
+      text: t('header.tabs.information'),
+    });
 
     const mobileTabs: CompetitionLayoutTabItem[] = [
       {
-        href: `/competitions/${competitionId}`,
+        href: `/competitions/${competitionId}/groups`,
         text: t('header.tabs.groups'),
       },
       {
@@ -113,17 +107,15 @@ export const useCompetitionLayoutTabs = ({
       });
     }
 
-    overflowTabs.push(
-      {
-        href: `/competitions/${competitionId}/information`,
-        text: t('header.tabs.information'),
-      },
-      {
-        href: `/competitions/${competitionId}/tabs`,
-        text: t('header.tabs.extraInfo'),
-      },
-    );
+    overflowTabs.push({
+      href: `/competitions/${competitionId}/information`,
+      text: t('header.tabs.information'),
+    });
 
-    return { desktopTabs, mobileTabs, overflowTabs };
+    return {
+      desktopTabs,
+      mobileTabs,
+      overflowTabs,
+    };
   }, [wcif, competitionId, user?.id, t]);
 };

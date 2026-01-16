@@ -1,5 +1,6 @@
 import type { UseQueryResult } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import CompetitionTabs from './index';
 
@@ -11,28 +12,30 @@ jest.mock('@/providers/WCIFProvider', () => ({
   useWCIF: jest.fn(),
 }));
 
-jest.mock('remark-gfm', () => () => undefined);
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+
+  return {
+    getItem: jest.fn((key: string) => store[key] || null),
+    setItem: jest.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    clear: jest.fn(() => {
+      store = {};
+    }),
+  };
+})();
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+});
 
 const mockUseCompetitionTabs = jest.requireMock('@/hooks/queries/useCompetitionTabs')
   .useCompetitionTabs as jest.Mock;
 const mockUseWCIF = jest.requireMock('@/providers/WCIFProvider').useWCIF as jest.Mock;
 
-jest.mock('react-markdown', () => ({
-  __esModule: true,
-  default: ({
-    children,
-    components,
-  }: {
-    children?: React.ReactNode;
-    components?: {
-      a?: ({ href, children }: { href?: string; children: React.ReactNode }) => JSX.Element;
-    };
-  }) => (
-    <div>
-      {children}
-      {components?.a?.({ href: 'https://example.com', children: 'Example Link' })}
-    </div>
-  ),
+jest.mock('@/components/MarkdownContent', () => ({
+  MarkdownContent: ({ content }: { content: string }) => <div>{content}</div>,
 }));
 
 jest.mock('react-i18next', () => ({
@@ -42,6 +45,12 @@ jest.mock('react-i18next', () => ({
 }));
 
 describe('CompetitionTabs', () => {
+  beforeEach(() => {
+    localStorageMock.clear();
+    localStorageMock.getItem.mockClear();
+    localStorageMock.setItem.mockClear();
+  });
+
   it('renders markdown content for tabs', () => {
     mockUseWCIF.mockReturnValue({
       competitionId: 'LakewoodFall2025',
@@ -69,10 +78,72 @@ describe('CompetitionTabs', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole('heading', { name: 'Venue' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Venue' })).toBeInTheDocument();
     expect(screen.queryByText(/# Venue/)).not.toBeInTheDocument();
     expect(screen.getByText(/Details and/)).toBeInTheDocument();
-    const link = screen.getByRole('link', { name: 'Example Link' });
-    expect(link).toHaveAttribute('href', 'https://example.com');
+  });
+
+  it('stores accordion state per competition', async () => {
+    mockUseWCIF.mockReturnValue({
+      competitionId: 'LakewoodFall2025',
+      wcif: undefined,
+      setTitle: jest.fn(),
+    });
+
+    mockUseCompetitionTabs.mockReturnValue({
+      data: [
+        {
+          id: 1,
+          competition_id: 'LakewoodFall2025',
+          name: 'Venue',
+          content: 'Details',
+          display_order: 1,
+        },
+      ],
+      isLoading: false,
+      error: null,
+    } as UseQueryResult<ApiCompetitionTab[], Error>);
+
+    render(
+      <MemoryRouter>
+        <CompetitionTabs />
+      </MemoryRouter>,
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: 'Venue' }));
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      'competition-tabs-open-LakewoodFall2025',
+      JSON.stringify({ venue: false }),
+    );
+  });
+
+  it('opens the tab linked by hash', () => {
+    mockUseWCIF.mockReturnValue({
+      competitionId: 'LakewoodFall2025',
+      wcif: undefined,
+      setTitle: jest.fn(),
+    });
+
+    mockUseCompetitionTabs.mockReturnValue({
+      data: [
+        {
+          id: 1,
+          competition_id: 'LakewoodFall2025',
+          name: 'Venue',
+          content: 'Details',
+          display_order: 1,
+        },
+      ],
+      isLoading: false,
+      error: null,
+    } as UseQueryResult<ApiCompetitionTab[], Error>);
+
+    render(
+      <MemoryRouter initialEntries={['/competitions/LakewoodFall2025/tabs#venue']}>
+        <CompetitionTabs />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('Details')).toBeInTheDocument();
   });
 });

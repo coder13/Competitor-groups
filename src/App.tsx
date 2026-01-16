@@ -89,7 +89,8 @@ const Navigation = () => {
         <Route index element={<Home />} />
         <Route path="/competitions" element={<Navigate to="/" />} />
         <Route path="/competitions/:competitionId" element={<CompetitionLayout />}>
-          <Route index element={<CompetitionHome />} />
+          <Route index element={<Navigate to="groups" />} />
+          <Route path="groups" element={<CompetitionHome />} />
 
           <Route path="persons/:registrantId" element={<CompetitionPerson />} />
           <Route path="personal-bests/:wcaId" element={<CompetitionPersonalBests />} />

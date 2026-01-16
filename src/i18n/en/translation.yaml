@@ -144,6 +144,7 @@ header:
     more: 'More'
     information: 'Information'
     extraInfo: 'Extra Info'
+    extraInfoOptions: 'Extra Info'
 home:
   subtitle: 'Learn all you need about your WCA competition assignments!'
   explanation: 'Note: This website exists as a convenience tool for organizers, delegates, and competitors. The information provided is based on scheduled data. Pay close attention to the competition for the most up-to-date information. Start and end times can fluctuate.'
@@ -166,6 +167,8 @@ competition:
     title: Extra Information
     view: View Competition Tabs
     error: Unable to load competition tabs.
+    collapseAll: Collapse all
+    expandAll: Expand all
   groups:
     backToEvents: 'Back to Events'
     nextGroup: 'Next Group'
