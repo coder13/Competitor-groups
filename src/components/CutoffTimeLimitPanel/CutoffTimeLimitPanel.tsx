@@ -138,7 +138,7 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
       content={
         <div
           className={classNames(
-            'z-1000 max-w-xs md:max-w-md lg:max-w-lg type-body-sm transition-opacity duration-300 bg-white border border-tertiary-weak rounded-lg shadow-md opacity-0 p-4 space-y-2',
+            'z-1000 max-w-xs p-4 space-y-2 transition-opacity duration-300 border rounded-lg shadow-md md:max-w-md lg:max-w-lg type-body-sm bg-panel text-default border-tertiary-weak opacity-0',
             {
               'opacity-100': open,
             },
@@ -166,6 +166,7 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
       }>
       <button
         className="px-1 mr-2"
+        aria-label={t('common.help')}
         // className="p-2 px-3 text-sm rounded-full shadow-sm fa-solid fa-question bg-slate-300 hover:opacity-70"
         onClick={() => setOpen((prev) => !prev)}>
         <svg
