@@ -6,7 +6,7 @@ import { useNow } from '@/hooks/useNow/useNow';
 import { parseActivityCodeFlexible } from '@/lib/activityCodes';
 import { isActivityWithRoomOrParent } from '@/lib/typeguards';
 import { byDate, roundTime } from '@/lib/utils';
-import { getRoomData, getRooms } from '../../lib/activities';
+import { getRoomData, hasMultipleScheduleLocations } from '../../lib/activities';
 import { ExtraAssignment } from './PersonalExtraAssignment';
 import { PersonalNormalAssignment } from './PersonalNormalAssignment';
 import { getGroupedAssignmentsByDate } from './utils';
@@ -21,7 +21,7 @@ const key = (compId: string, id) => `${compId}-${id}`;
 export function Assignments({ wcif, person, showStationNumber }: AssignmentsProps) {
   const { t } = useTranslation();
 
-  const showRoom = useMemo(() => wcif && getRooms(wcif).length > 1, [wcif]);
+  const showRoom = useMemo(() => hasMultipleScheduleLocations(wcif), [wcif]);
 
   const { collapsedDates, setCollapsedDates, toggleDate } = useCollapse(
     key(wcif.id, person.registrantId),

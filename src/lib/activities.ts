@@ -31,6 +31,16 @@ export const getRooms = (
     })),
   );
 
+export const hasMultipleScheduleLocations = (wcif: Competition): boolean => {
+  const rooms = getRooms(wcif);
+
+  if (rooms.length > 1) {
+    return true;
+  }
+
+  return rooms.some((room) => (getNatsHelperRoomExtension(room)?.stages?.length || 0) > 1);
+};
+
 /**
  * Returns the activity's child activities with a reference to the parent activity
  */

@@ -2,7 +2,12 @@ import { Competition } from '@wca/helpers';
 import { useCallback, useEffect, useMemo } from 'react';
 import { ActivityRow } from '@/components';
 import { useCollapse } from '@/hooks/UseCollapse';
-import { getRoomData, getRooms, getScheduledDays, getVenueForActivity } from '@/lib/activities';
+import {
+  getRoomData,
+  getScheduledDays,
+  getVenueForActivity,
+  hasMultipleScheduleLocations,
+} from '@/lib/activities';
 import { ActivityWithRoomOrParent } from '@/lib/types';
 
 const key = (compId: string) => `${compId}-schedule`;
@@ -85,7 +90,7 @@ export const ScheduleContainer = ({ wcif }: ScheduleContainerProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scheduleDays]);
 
-  const showRoom = useMemo(() => wcif && getRooms(wcif).length > 1, [wcif]);
+  const showRoom = useMemo(() => hasMultipleScheduleLocations(wcif), [wcif]);
 
   return (
     <div>
