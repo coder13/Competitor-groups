@@ -155,6 +155,10 @@ competition:
     viewMyAssignments: 'View My Assignments'
     viewCompetitionInformation: 'View Competition Information'
     searchCompetitors: 'Search Competitors'
+  tabs:
+    title: Extra Information
+    view: View Competition Tabs
+    error: Unable to load competition tabs.
   groups:
     backToEvents: 'Back to Events'
     nextGroup: 'Next Group'

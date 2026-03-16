@@ -25,6 +25,7 @@ export default function CompetitionHome() {
           title={t('competition.competitors.viewCompetitionInformation')}
           variant="green"
         />
+        <LinkButton to="tabs" title={t('competition.tabs.view')} variant="blue" />
         <PinCompetitionButton competitionId={competitionId} />
       </div>
       <OngoingActivities competitionId={competitionId!} />

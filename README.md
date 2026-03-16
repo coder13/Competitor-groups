@@ -4,7 +4,7 @@
 
 ## Summary
 
-View WCA Competition groups digitally.
+View WCA Competition groups and extra information tabs digitally.
 
 ## Development
 
