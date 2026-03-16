@@ -137,6 +137,10 @@ header:
     rankings: 'Rankingi'
     scramblers: 'Mieszacze'
     stream: 'Stream'
+    more: 'More'
+    information: 'Information'
+    extraInfo: 'Extra Info'
+    extraInfoOptions: 'Extra Info'
 home:
   subtitle: 'Naucz się wszystkiego, co potrzebne o zadaniach na zawodach WCA!'
   explanation: 'Informacja: Ta strona jest narzędziem pomocniczym dla organizatorów, delegatów i zawodników. Informacje są oparte na danych z harmonogramu. Zwróć uwagę na komunikaty na miejscu zawodów, aby uzyskać najbardziej aktualne informacje. Godziny rozpoczęcia i zakończenia mogą się zmieniać.'
@@ -147,6 +151,12 @@ home:
   upcomingCompetitions: 'Nadchodzące zawody'
   yourCompetitions: 'Twoje zawody'
 competition:
+  tabs:
+    title: Extra Information
+    view: View Competition Tabs
+    error: Unable to load competition tabs.
+    collapseAll: Collapse all
+    expandAll: Expand all
   competitors:
     viewCompetitionInformation: 'Wyświetl informacje o zawodach'
     searchCompetitors: 'Wyszukaj zawodników'

@@ -50,15 +50,17 @@ export default function Header() {
 
   return (
     <header className="z-20 flex items-center w-full h-12 p-2 shadow-md print:hidden bg-panel">
-      <div className="flex items-center space-x-1">
-        <Link to="/" className="link-inline">
+      <div className="flex items-center space-x-2">
+        <Link to="/" className="inline-flex items-center space-x-2 link-inline">
           <i className="fa fa-home" />
+          <span className="hidden sm:inline">Home</span>
         </Link>
         {competitionId && <span className="text-tertiary">{' / '}</span>}
         <Link to={`/competitions/${comp?.id || competitionId}`} className="link-inline">
           {competitioName}
         </Link>
       </div>
+
       <div className="flex flex-1" />
       {user ? (
         <Popover

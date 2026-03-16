@@ -10,7 +10,21 @@ interface CompetitionLayoutTabsProps {
   wcif?: Competition;
 }
 
-export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLayoutTabsProps) => {
+export interface CompetitionLayoutTabItem {
+  href: string;
+  text: string;
+}
+
+interface CompetitionLayoutTabsResult {
+  desktopTabs: CompetitionLayoutTabItem[];
+  mobileTabs: CompetitionLayoutTabItem[];
+  overflowTabs: CompetitionLayoutTabItem[];
+}
+
+export const useCompetitionLayoutTabs = ({
+  competitionId,
+  wcif,
+}: CompetitionLayoutTabsProps): CompetitionLayoutTabsResult => {
   const { t } = useTranslation();
   const { user } = useAuth();
 
@@ -19,19 +33,11 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
     const person = wcif?.persons.find((p) => p.wcaUserId === user?.id);
     const isPersonStaff = person && isStaff(person);
 
-    const _tabs: {
-      href: string;
-      text: string;
-      hiddenOnMobile?: boolean;
-    }[] = [];
-
-    _tabs.push({
-      href: `/competitions/${competitionId}`,
-      text: t('header.tabs.groups'),
-      hiddenOnMobile: true,
-    });
-
-    _tabs.push(
+    const desktopTabs: CompetitionLayoutTabItem[] = [
+      {
+        href: `/competitions/${competitionId}/groups`,
+        text: t('header.tabs.groups'),
+      },
       {
         href: `/competitions/${competitionId}/events`,
         text: t('header.tabs.events'),
@@ -44,22 +50,72 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
         href: `/competitions/${competitionId}/psych-sheet`,
         text: t('header.tabs.rankings'),
       },
-    );
+    ];
 
     if (isPersonStaff) {
-      _tabs.push({
+      desktopTabs.push({
         href: `/competitions/${competitionId}/scramblers`,
         text: t('header.tabs.scramblers'),
       });
     }
 
     if (hasStream) {
-      _tabs.push({
+      desktopTabs.push({
         href: `/competitions/${competitionId}/stream`,
         text: t('header.tabs.stream'),
       });
     }
 
-    return _tabs;
+    desktopTabs.push({
+      href: `/competitions/${competitionId}/information`,
+      text: t('header.tabs.information'),
+    });
+
+    const mobileTabs: CompetitionLayoutTabItem[] = [
+      {
+        href: `/competitions/${competitionId}/groups`,
+        text: t('header.tabs.groups'),
+      },
+      {
+        href: `/competitions/${competitionId}/events`,
+        text: t('header.tabs.events'),
+      },
+      {
+        href: `/competitions/${competitionId}/activities`,
+        text: t('header.tabs.schedule'),
+      },
+    ];
+
+    const overflowTabs: CompetitionLayoutTabItem[] = [
+      {
+        href: `/competitions/${competitionId}/psych-sheet`,
+        text: t('header.tabs.rankings'),
+      },
+    ];
+
+    if (isPersonStaff) {
+      overflowTabs.push({
+        href: `/competitions/${competitionId}/scramblers`,
+        text: t('header.tabs.scramblers'),
+      });
+    }
+
+    if (hasStream) {
+      overflowTabs.push({
+        href: `/competitions/${competitionId}/stream`,
+        text: t('header.tabs.stream'),
+      });
+    }
+
+    overflowTabs.push({
+      href: `/competitions/${competitionId}/information`,
+      text: t('header.tabs.information'),
+    });
+
+    return {
+      desktopTabs,
+      mobileTabs,
+      overflowTabs,
+    };
   }, [wcif, competitionId, user?.id, t]);
 };

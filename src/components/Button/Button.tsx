@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { ButtonHTMLAttributes, PropsWithChildren } from 'react';
 
-export type ButtonVariant = 'blue' | 'green' | 'gray' | 'light';
+export type ButtonVariant = 'blue' | 'green' | 'gray' | 'light' | 'primary' | 'secondary' | 'text';
 
 export interface ButtonProps extends PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>> {
   className?: string;
@@ -13,6 +13,9 @@ const variantClasses: Record<ButtonVariant, string> = {
   green: 'btn-green',
   gray: 'btn-gray',
   light: 'btn-light',
+  primary: 'btn-primary',
+  secondary: 'btn-secondary',
+  text: 'btn-text',
 };
 
 export const Button = ({ className, variant = 'blue', ...props }: ButtonProps) => {

@@ -88,7 +88,8 @@ This is a React + TypeScript web application for viewing WCA (World Cube Associa
 - **Internationalization:** Use `i18next` and `react-i18next` for translations.
 - **Documentation:** Update `README.md` and add comments where necessary.
 - **Function and variable names:** Should be clear and descriptive.
-- **Components:** Prefer functional components and hooks.
+- **Components:** Prefer functional components and hooks. Reusable components must live in `src/components/`.
+- **Event handlers:** Define `onClick` handlers with `useCallback` instead of inline lambdas.
 
 ---
 
@@ -107,6 +108,8 @@ This is a React + TypeScript web application for viewing WCA (World Cube Associa
 - **New libraries:** Prefer existing dependencies or standard approaches first.
 - **New files:** The agent can create new files for features or tests, but all new code should be covered by tests.
 - **Comments:** Add comments to explain complex logic; maintainability is valued.
+- **Composable components:** Prefer creating small, reusable components over monolithic views.
+- **Keep instructions fresh:** When you discover new working conventions or project expectations, update this `AGENTS.md` to capture them.
 
 ---
 

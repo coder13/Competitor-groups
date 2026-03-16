@@ -30,6 +30,14 @@ interface ApiCompetition {
   delegates: User[];
 }
 
+interface ApiCompetitionTab {
+  id: number;
+  competition_id: string;
+  name: string;
+  content: string;
+  display_order: number;
+}
+
 type CondensedApiCompetiton = Pick<
   ApiCompetition,
   'name' | 'id' | 'start_date' | 'end_date' | 'city' | 'country_iso2' | 'short_name'

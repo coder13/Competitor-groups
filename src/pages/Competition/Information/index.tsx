@@ -1,11 +1,16 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { Container, ExternalLink } from '@/components';
+import { Container, ExternalLink, LinkButton } from '@/components';
 import { useCompetition } from '@/hooks/queries/useCompetition';
+import { formatDateRange } from '@/lib/time';
 import { useWCIF } from '@/providers/WCIFProvider';
-import { UserRow } from './UserRow';
+import { CompetitionFacts } from './CompetitionFacts';
+import { UserListSection } from './UserListSection';
+import { VenueInformation } from './VenueInformation';
 
 export default function Information() {
+  const { t } = useTranslation();
   const { setTitle, wcif } = useWCIF();
   const { competitionId = '' } = useParams<{ competitionId: string }>();
 
@@ -22,37 +27,48 @@ export default function Information() {
   return (
     <Container>
       <div className="flex flex-col w-full p-2 space-y-2 type-body">
-        <ExternalLink href={data?.website || ''}>View WCA competition webpage</ExternalLink>
-        <div className="flex flex-col w-full p-2 bg-white border rounded border-slate-100 dark:border-gray-700 dark:bg-gray-800">
-          <h2 className="type-title">Venue</h2>
-          <a
-            className="flex justify-between w-full rounded align-center hover:opacity-80 link-inline"
-            href={`https://maps.google.com/maps?q=${wcif?.schedule?.venues?.[0]?.name},${data?.venue_address},${data?.city}`}
-            target="_blank"
-            rel="noreferrer">
-            <span>
-              {wcif?.schedule?.venues?.[0]?.name}
-              <br />
-              {data?.venue_address}
-              <br />
-              {data?.city}
-            </span>
-            <i className="m-0 fa fa-solid fa-arrow-up-right-from-square" />
-          </a>
-          <p className="type-body">{data?.venue_details}</p>
+        <div className="flex">
+          <LinkButton
+            to={`/competitions/${competitionId}/tabs`}
+            title={t('competition.tabs.view')}
+            variant="blue"
+          />
+        </div>
+        <CompetitionFacts
+          dateRange={
+            data?.start_date && data?.end_date
+              ? formatDateRange(data.start_date, data.end_date)
+              : undefined
+          }
+          competitorLimit={wcif?.competitorLimit || 0}
+        />
+        <div>
+          <p className="mb-2 text-sm font-semibold tracking-wide uppercase text-slate-700 dark:text-gray-200">
+            Venue
+          </p>
+          <VenueInformation
+            name={wcif?.schedule?.venues?.[0]?.name}
+            address={data?.venue_address}
+            city={data?.city}
+            details={data?.venue_details}
+            mapUrl={`https://maps.google.com/maps?q=${wcif?.schedule?.venues?.[0]?.name},${data?.venue_address},${data?.city}`}
+          />
         </div>
         <div>
-          <h2 className="type-title">Organizers</h2>
-          <ul className="flex flex-col space-y-2">
-            {data?.organizers?.map((user) => <UserRow key={user.id} user={user} />)}
-          </ul>
+          <p className="mb-2 text-sm font-semibold tracking-wide uppercase text-slate-700 dark:text-gray-200">
+            Organizers
+          </p>
+          <UserListSection users={data?.organizers} />
         </div>
         <div>
-          <h2 className="type-title">Delegates</h2>
-          <ul className="flex flex-col space-y-2">
-            {data?.delegates?.map((user) => <UserRow key={user.id} user={user} />)}
-          </ul>
+          <p className="mb-2 text-sm font-semibold tracking-wide uppercase text-slate-700 dark:text-gray-200">
+            Delegates
+          </p>
+          <UserListSection users={data?.delegates} />
         </div>
+        <ExternalLink className="mt-2" href={data?.website || ''}>
+          View WCA competition webpage
+        </ExternalLink>
       </div>
     </Container>
   );

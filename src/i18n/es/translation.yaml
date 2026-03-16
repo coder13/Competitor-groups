@@ -23,3 +23,22 @@ common:
       444bf: 4x4x4 Ciega
       555bf: 5x5x5 Ciega
       333mbf: 3x3x3 Multi Ciega
+header:
+  tabs:
+    groups: 'Groups'
+    events: 'Events'
+    schedule: 'Schedule'
+    rankings: 'Rankings'
+    scramblers: 'Scramblers'
+    stream: 'Stream'
+    more: 'More'
+    information: 'Information'
+    extraInfo: 'Extra Info'
+    extraInfoOptions: 'Extra Info'
+competition:
+  tabs:
+    title: Extra Information
+    view: View Competition Tabs
+    error: Unable to load competition tabs.
+    collapseAll: Collapse all
+    expandAll: Expand all

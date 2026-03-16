@@ -141,6 +141,10 @@ header:
     rankings: 'Rankings'
     scramblers: 'Scramblers'
     stream: 'Stream'
+    more: 'More'
+    information: 'Information'
+    extraInfo: 'Extra Info'
+    extraInfoOptions: 'Extra Info'
 home:
   subtitle: 'Learn all you need about your WCA competition assignments!'
   explanation: 'Note: This website exists as a convenience tool for organizers, delegates, and competitors. The information provided is based on scheduled data. Pay close attention to the competition for the most up-to-date information. Start and end times can fluctuate.'
@@ -151,10 +155,20 @@ home:
   upcomingCompetitions: 'Upcoming Competitions'
   yourCompetitions: 'Your Competitions'
 competition:
+  home:
+    summary:
+      dates: Dates
+      venue: Venue
   competitors:
     viewMyAssignments: 'View My Assignments'
     viewCompetitionInformation: 'View Competition Information'
     searchCompetitors: 'Search Competitors'
+  tabs:
+    title: Extra Information
+    view: View Competition Tabs
+    error: Unable to load competition tabs.
+    collapseAll: Collapse all
+    expandAll: Expand all
   groups:
     backToEvents: 'Back to Events'
     nextGroup: 'Next Group'
