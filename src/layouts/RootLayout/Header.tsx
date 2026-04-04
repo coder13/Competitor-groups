@@ -91,12 +91,12 @@ export default function Header() {
         </Popover>
       ) : (
         <div className="flex items-center space-x-2">
+          <button onClick={signIn} className="link-inline type-label text-primary">
+            {t('common.login')}
+          </button>
           <Link to="/settings" className="link-inline">
             <i className="fa fa-gear" />
           </Link>
-          <button onClick={signIn} className="mx-2 link-inline">
-            {t('common.login')}
-          </button>
         </div>
       )}
     </header>

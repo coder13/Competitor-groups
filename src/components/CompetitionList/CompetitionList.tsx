@@ -30,8 +30,8 @@ export function CompetitionListFragment({
   }
 
   return (
-    <div className="w-full p-2">
-      <span className="type-body-sm text-blue-800 dark:text-blue-400">{title}</span>
+    <div className="w-full px-2">
+      <span className="text-blue-800 type-body-sm dark:text-blue-400">{title}</span>
       {loading ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
       {!!competitions.length && (
         <ul className="px-0">

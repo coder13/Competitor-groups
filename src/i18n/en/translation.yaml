@@ -143,9 +143,13 @@ header:
     stream: 'Stream'
 home:
   subtitle: 'Learn all you need about your WCA competition assignments!'
-  explanation: 'Note: This website exists as a convenience tool for organizers, delegates, and competitors. The information provided is based on scheduled data. Pay close attention to the competition for the most up-to-date information. Start and end times can fluctuate.'
+  explanation: 'Note: This site is a convenience tool for organizers, delegates, and competitors. It uses scheduled data, so check with organizers for the latest details. Start and end times may change.'
   learnMore: 'How does this site work?'
   support: 'Keep the lights on'
+  loggedOutCard:
+    eyebrow: 'Personalized view'
+    title: 'Log in to see your competitions'
+    description: 'Sign in with your WCA account to load your competition list and personalized schedule'
   loadingMore: 'Loading more...'
   myCompetitions: 'My Competitions'
   upcomingCompetitions: 'Upcoming Competitions'

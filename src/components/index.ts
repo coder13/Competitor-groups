@@ -13,5 +13,6 @@ export * from './ErrorFallback';
 export * from './ExternalLink';
 export * from './LastFetchedAt';
 export * from './LinkButton';
+export * from './LoggedOutPromptCard';
 export * from './Notebox';
 export * from './PinCompetitionButton';

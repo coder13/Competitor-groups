@@ -45,6 +45,7 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
         'bg-panel',
         // Borders + focus
         'border border-tertiary-weak',
+        'px-1.5',
         state.isFocused
           ? 'ring-1 ring-blue-500 dark:ring-blue-400 border-blue-500 dark:border-blue-400'
           : '',
