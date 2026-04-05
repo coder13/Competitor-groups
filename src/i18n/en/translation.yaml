@@ -131,6 +131,10 @@ common:
   name: Name
   stage: Stage
   login: 'Login'
+appUpdate:
+  title: 'Update available'
+  description: 'A new version of the app is ready. Update to load the latest cached files.'
+  action: 'Update app'
 header:
   login: $t(common.login)
   logout: 'Logout'

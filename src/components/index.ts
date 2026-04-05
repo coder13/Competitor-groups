@@ -1,4 +1,5 @@
 export * from './ActivityRow';
+export * from './AppUpdatePrompt';
 export * from './AssignmentCodeCell';
 export * from './AssignmentLabel';
 export * from './BreakableActivityName';

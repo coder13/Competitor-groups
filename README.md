@@ -8,15 +8,19 @@ View WCA Competition groups digitally.
 
 ## Development
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is built with Vite, React, and TypeScript.
 
 ```bash
 git clone git@github.com/coder13/competitor-groups && cd competitor-groups
 
 # this project uses yarn
 yarn
-yarn start
+yarn dev
 
 # testing
 yarn test
+
+# component and page development
+yarn storybook
+yarn build-storybook
 ```

@@ -16,9 +16,9 @@ export function LoggedOutPromptCard({ onLogin }: LoggedOutPromptCardProps) {
           <p className="type-body-sm text-subtle">{t('home.loggedOutCard.description')}</p>
         </div>
         <div>
-          <Button className="justify-center w-full sm:w-auto" onClick={onLogin}>
+          <Button className="items-center justify-center w-full sm:w-auto" onClick={onLogin}>
             <i className="fa fa-user" aria-hidden="true" />
-            <span>{t('common.login')}</span>
+            <span className="leading-none">{t('common.login')}</span>
           </Button>
         </div>
       </div>

@@ -132,7 +132,7 @@ function useDebounced<Input, Output>(
   fn: (arg: Input) => Promise<Output>,
   delay: number,
 ): (arg: Input) => Promise<Output> {
-  const timeout = useRef<number | null>(null);
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   return useCallback(
     (arg: Input) => {
