@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import Support from './index';
+import { AboutContainer } from './About';
 
 const meta = {
-  title: 'Pages/Support',
-  component: Support,
+  title: 'Containers/App/About',
+  component: AboutContainer,
   parameters: {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof Support>;
+} satisfies Meta<typeof AboutContainer>;
 
 export default meta;
 
