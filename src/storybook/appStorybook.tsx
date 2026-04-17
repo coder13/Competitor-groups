@@ -24,6 +24,7 @@ interface AppStorybookOptions {
   currentUser?: User | null;
   online?: boolean;
   pinnedCompetitions?: ApiCompetition[];
+  competitionDetails?: ApiCompetition[];
   userCompetitions?: {
     upcoming_competitions: ApiCompetition[];
     ongoing_competitions: ApiCompetition[];
@@ -42,6 +43,7 @@ interface AppStorybookOptions {
 type AppStorybookParameters = AppStorybookOptions;
 
 const buildStorybookQueryClient = ({
+  competitionDetails,
   currentUser,
   userCompetitions,
   upcomingCompetitionsPages,
@@ -62,6 +64,10 @@ const buildStorybookQueryClient = ({
     });
   }
 
+  competitionDetails?.forEach((competition) => {
+    queryClient.setQueryData(['competition', competition.id], competition);
+  });
+
   if (upcomingCompetitionsPages) {
     queryClient.setQueryData(['upcomingCompetitions'], {
       pages: upcomingCompetitionsPages,
@@ -76,6 +82,7 @@ function AppStorybookProviders({
   currentUser,
   online,
   pinnedCompetitions,
+  competitionDetails,
   userCompetitions,
   notifyCompetitions,
   upcomingCompetitionsPages,
@@ -84,11 +91,12 @@ function AppStorybookProviders({
   const queryClient = useMemo(
     () =>
       buildStorybookQueryClient({
+        competitionDetails,
         currentUser,
         userCompetitions,
         upcomingCompetitionsPages,
       }),
-    [currentUser, upcomingCompetitionsPages, userCompetitions],
+    [competitionDetails, currentUser, upcomingCompetitionsPages, userCompetitions],
   );
 
   const competitionMocks = useMemo(
@@ -251,6 +259,7 @@ export const makeAppContainerDecorator = ({
   currentUser = storybookAppUser,
   online = true,
   pinnedCompetitions = storybookPinnedCompetitions,
+  competitionDetails = storybookPinnedCompetitions,
   userCompetitions = storybookUserCompetitions,
   notifyCompetitions = storybookNotifyCompetitions,
   upcomingCompetitionsPages = storybookUpcomingCompetitionsPages,
@@ -263,6 +272,7 @@ export const makeAppContainerDecorator = ({
         currentUser={parameters.currentUser ?? currentUser}
         online={parameters.online ?? online}
         pinnedCompetitions={parameters.pinnedCompetitions || pinnedCompetitions}
+        competitionDetails={parameters.competitionDetails || competitionDetails}
         userCompetitions={parameters.userCompetitions || userCompetitions}
         notifyCompetitions={parameters.notifyCompetitions || notifyCompetitions}
         upcomingCompetitionsPages={
