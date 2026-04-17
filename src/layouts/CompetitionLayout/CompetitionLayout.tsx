@@ -5,7 +5,7 @@ import { Outlet, useLocation, useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import { ErrorFallback, LastFetchedAt, NoteBox } from '@/components';
 import { Container } from '@/components/Container';
-import { StyledNavLink } from '@/containers/StyledNavLink/StyledNavLink';
+import { StyledNavLink } from '@/components/StyledNavLink/StyledNavLink';
 import { useWcif } from '@/hooks/queries/useWcif';
 import { useApp } from '@/providers/AppProvider';
 import { WCIFProvider } from '@/providers/WCIFProvider';

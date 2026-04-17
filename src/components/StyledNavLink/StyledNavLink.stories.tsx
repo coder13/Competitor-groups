@@ -3,7 +3,7 @@ import { makeRouteDecorator } from '@/storybook/competitionStorybook';
 import { StyledNavLink } from './StyledNavLink';
 
 const meta = {
-  title: 'Containers/Nav/StyledNavLink',
+  title: 'Components/App/StyledNavLink',
   component: StyledNavLink,
   decorators: [
     makeRouteDecorator({
