@@ -3,7 +3,8 @@ import { MockedProvider } from '@apollo/client/testing';
 import type { Decorator } from '@storybook/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Competition } from '@wca/helpers';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useEffect, useMemo } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { AppContext } from '@/providers/AppProvider';
 import { AuthContext } from '@/providers/AuthProvider';
 import { WCIFContext } from '@/providers/WCIFProvider';
@@ -152,3 +153,38 @@ export const makeCompetitionContainerDecorator = ({
       </StorybookCompetitionProviders>
     );
   }) satisfies Decorator;
+
+function StorybookRouteDecorator({
+  initialPath,
+  routePath,
+  children,
+}: {
+  initialPath: string;
+  routePath: string;
+  children: ReactNode;
+}) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate(initialPath, { replace: true });
+  }, [initialPath, navigate]);
+
+  return (
+    <Routes>
+      <Route path={routePath} element={<>{children}</>} />
+    </Routes>
+  );
+}
+
+export const makeRouteDecorator = ({
+  initialPath,
+  routePath,
+}: {
+  initialPath: string;
+  routePath: string;
+}) =>
+  ((Story, context) => (
+    <StorybookRouteDecorator initialPath={initialPath} routePath={routePath}>
+      <Story args={context.args} />
+    </StorybookRouteDecorator>
+  )) satisfies Decorator;
