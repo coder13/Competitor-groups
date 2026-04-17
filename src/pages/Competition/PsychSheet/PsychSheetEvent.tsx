@@ -1,95 +1,22 @@
-import { Event, EventId, Person, PersonalBest } from '@wca/helpers';
-import classNames from 'classnames';
-import getUnicodeFlagIcon from 'country-flag-icons/unicode';
+import { EventId } from '@wca/helpers';
 import { useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Container } from '@/components/Container';
-import { findPR } from '@/lib/activities';
-import { activityCodeToName } from '@/lib/activityCodes';
-import { acceptedRegistration, isRegisteredForEvent } from '@/lib/person';
-import { renderResultByEventId } from '@/lib/results';
-import { byWorldRanking } from '@/lib/sort';
-import { useWCIF } from '@/providers/WCIFProvider';
+import { CompetitionPsychSheetEventContainer } from '@/containers/CompetitionPsychSheetEvent';
 
 export const PsychSheetEvent = () => {
-  const { t } = useTranslation();
   const { competitionId, eventId } = useParams<{
     competitionId: string;
     eventId: EventId;
   }>();
-
-  const { wcif } = useWCIF();
   const navigate = useNavigate();
-
-  const psychSheetBaseUrl = `/competitions/${competitionId}/psych-sheet`;
-
   const [urlSearchParams, setUrlSearchParams] = useSearchParams({
     resultType: 'average',
   });
-
+  const psychSheetBaseUrl = `/competitions/${competitionId}/psych-sheet`;
   const resultType = useMemo(
     () => urlSearchParams.get('resultType') as 'average' | 'single',
     [urlSearchParams],
   );
-
-  const persons = useMemo(
-    () =>
-      wcif?.persons.filter(
-        (person) =>
-          eventId && acceptedRegistration(person) && isRegisteredForEvent(eventId)(person),
-      ) || [],
-    [wcif, eventId],
-  );
-
-  // Creates a proper psychsheet with support for tied rankings
-  const sortedPersons = useMemo(() => {
-    if (!eventId || !persons.length) {
-      return [];
-    }
-
-    const _findPr = findPR(eventId);
-    return persons.sort(byWorldRanking(eventId, resultType)).reduce(
-      (
-        persons: (Person & {
-          rank: number;
-          mainRank: number;
-          subRank: number;
-          pr?: PersonalBest;
-        })[],
-        person,
-        index,
-      ) => {
-        const lastPerson = index > 0 ? persons[index - 1] : undefined;
-
-        const avgPr = _findPr(person.personalBests || [], 'average');
-        const singlePr = _findPr(person.personalBests || [], 'single');
-
-        const mainRank =
-          (resultType === 'average' ? avgPr?.worldRanking : singlePr?.worldRanking) ?? 0;
-        const subRank = singlePr?.worldRanking ?? 0;
-
-        const rank =
-          lastPerson && mainRank === lastPerson.mainRank && subRank === lastPerson.subRank
-            ? lastPerson.rank
-            : index + 1;
-
-        return [
-          ...persons,
-          {
-            ...person,
-            mainRank,
-            subRank,
-            rank: rank,
-            pr: resultType === 'average' ? avgPr : singlePr,
-          },
-        ];
-      },
-      [],
-    );
-  }, [eventId, persons, resultType]);
-
-  const gridCss = 'grid grid-cols-[3.5em_2em_1fr_min-content_7em]';
 
   const handleEventChange = useCallback(
     (newEventId: EventId) => {
@@ -111,100 +38,18 @@ export const PsychSheetEvent = () => {
     [setUrlSearchParams],
   );
 
-  if (!eventId) {
+  if (!competitionId || !eventId) {
     return null;
   }
 
   return (
-    <Container className="w-full h-full">
-      <div className={classNames('w-full h-full type-body')}>
-        <div className="flex p-1 space-x-2">
-          <EventSelector value={eventId} events={wcif?.events || []} onChange={handleEventChange} />
-          <select
-            className="bg-tertiary border border-tertiary dark:border-gray-600 type-body-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-40"
-            value={resultType}
-            onChange={(e) => handleResultTypeChange(e.target.value as 'average' | 'single')}>
-            <option value="average">{t('common.wca.resultType.average')}</option>
-            <option value="single">{t('common.wca.resultType.single')}</option>
-          </select>
-        </div>
-
-        <div className={gridCss}>
-          <div
-            className="stickyGridHeader contents [&>span]:table-bg-header-secondary"
-            role="rowheader">
-            <span className="text-right table-header-cell-sm">#</span>
-            <span className="text-left table-header-cell-sm" />
-            <span className="text-left table-header-cell-sm">{t('competition.rankings.name')}</span>
-            <span className="text-right table-header-cell-sm whitespace-nowrap">
-              {resultType === 'single'
-                ? t('common.wca.resultType.single')
-                : t('common.wca.resultType.average')}{' '}
-            </span>
-            <span className="text-right table-header-cell-sm">{t('common.wca.recordType.WR')}</span>
-          </div>
-          <div className="contents">
-            {sortedPersons?.map((person, index) => {
-              const prAverage = person.personalBests?.find(
-                (pr) => pr.eventId === eventId && pr.type === resultType,
-              );
-
-              const isOdd = index % 2 === 1; // 0-indexed, so even index = odd row visually
-
-              return (
-                <Link
-                  key={person.registrantId}
-                  className={classNames(
-                    'contents [&>span]:transition-colors',
-                    isOdd ? '[&>span]:table-bg-row-alt-secondary' : '[&>span]:table-bg-row',
-                    '[&:hover>span]:table-bg-row-hover-secondary',
-                  )}
-                  to={`/competitions/${wcif?.id}/personal-bests/${person.wcaId}`}>
-                  <span className="table-cell-sm text-right [font-variant-numeric:tabular-nums]">
-                    {person.rank}
-                  </span>
-                  <span className="flex items-center w-full text-left table-cell-sm">
-                    {getUnicodeFlagIcon(person.countryIso2)}
-                  </span>
-                  <span className="text-left truncate table-cell-sm">{person.name}</span>
-                  <span className="table-cell-sm text-right [font-variant-numeric:tabular-nums]">
-                    {prAverage ? renderResultByEventId(eventId, resultType, prAverage.best) : ''}
-                  </span>
-                  <span className="table-cell-sm text-right [font-variant-numeric:tabular-nums]">
-                    {prAverage
-                      ? `${prAverage.worldRanking.toLocaleString([...navigator.languages])}`
-                      : ''}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </Container>
-  );
-};
-
-export const EventSelector = ({
-  value,
-  events,
-  onChange,
-}: {
-  value: EventId;
-  events: Event[];
-  onChange: (eventId: EventId) => void;
-}) => {
-  return (
-    <select
-      id="events"
-      className="bg-gray-50 border border-gray-300 type-body-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-      value={value}
-      onChange={(e) => onChange(e.target.value as EventId)}>
-      {events?.map((event) => (
-        <option key={event.id} value={event.id}>
-          {activityCodeToName(event.id)}
-        </option>
-      ))}
-    </select>
+    <CompetitionPsychSheetEventContainer
+      competitionId={competitionId}
+      eventId={eventId}
+      resultType={resultType}
+      onEventChange={handleEventChange}
+      onResultTypeChange={handleResultTypeChange}
+      LinkComponent={Link}
+    />
   );
 };
