@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { AppUpdatePrompt } from './AppUpdatePrompt';
 
 const meta = {
-  title: 'Components/AppUpdatePrompt',
+  title: 'Components/App/AppUpdatePrompt',
   component: AppUpdatePrompt,
   args: {
     onUpdate: () => {},

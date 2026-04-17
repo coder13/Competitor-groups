@@ -30,7 +30,7 @@ const finalRoundCompetitionFixture = makeStorybookCompetitionFixtureWithRound(
 );
 
 const meta = {
-  title: 'Components/Competition Data/CutoffTimeLimitPanel',
+  title: 'Components/Competition/CutoffTimeLimitPanel',
   component: CutoffTimeLimitPanel,
   decorators: [
     makeCompetitionContainerDecorator(),

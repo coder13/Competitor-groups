@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { DisclaimerText } from './DisclaimerText';
 
 const meta = {
-  title: 'Components/DisclaimerText',
+  title: 'Components/App/DisclaimerText',
   component: DisclaimerText,
   args: {
     className: 'max-w-xl',

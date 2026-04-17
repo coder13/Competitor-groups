@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { CompetitionListItem } from './CompetitionListItem';
 
 const meta = {
-  title: 'Components/CompetitionListItem',
+  title: 'Components/Competition/CompetitionListItem',
   component: CompetitionListItem,
   decorators: [
     (Story) => (
