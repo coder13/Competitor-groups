@@ -12,7 +12,7 @@ export function AboutContainer() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    document.title = `${t('about.title')} - t('common.appName')`;
+    document.title = `${t('about.title')} - ${t('common.appName')}`;
   }, [t]);
 
   return (

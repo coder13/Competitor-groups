@@ -11,8 +11,8 @@ const meta = {
   decorators: [
     makeCompetitionContainerDecorator(),
     makeRouteDecorator({
-      initialPath: '/competitions/SeattleSummerOpen2026/events/333-r1/groups/1',
-      routePath: '/competitions/:competitionId/events/:roundId/groups/:groupNumber',
+      initialPath: '/competitions/SeattleSummerOpen2026/events/333-r1/1',
+      routePath: '/competitions/:competitionId/events/:roundId/:groupNumber',
     }),
   ],
   parameters: {
