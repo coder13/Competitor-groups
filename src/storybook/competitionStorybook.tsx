@@ -54,6 +54,8 @@ const createStorybookQueryClient = (competition: Competition, competitionData?: 
     queryClient.setQueryData(['competition', competition.id], competitionData);
   }
 
+  queryClient.setQueryData(['wcif', competition.id], competition);
+
   return queryClient;
 };
 
