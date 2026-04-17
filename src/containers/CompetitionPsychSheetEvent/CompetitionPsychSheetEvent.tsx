@@ -1,7 +1,7 @@
 import { Event, EventId, Person, PersonalBest } from '@wca/helpers';
 import classNames from 'classnames';
 import getUnicodeFlagIcon from 'country-flag-icons/unicode';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Container } from '@/components/Container';
 import { findPR } from '@/lib/activities';
