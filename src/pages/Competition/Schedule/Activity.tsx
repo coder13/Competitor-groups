@@ -1,55 +1,23 @@
 import { Activity } from '@wca/helpers';
-import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
-import { Container } from '@/components/Container';
-import { getAllActivities } from '@/lib/activities';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { CompetitionActivityContainer } from '@/containers/CompetitionActivity';
 import { activityCodeToName } from '@/lib/activityCodes';
-import { useWCIF } from '@/providers/WCIFProvider';
-import { EventActivity } from './EventActivity';
 
 export function CompetitionActivity() {
-  const { wcif } = useWCIF();
-  const { activityId } = useParams();
+  const { competitionId, activityId } = useParams();
+  const navigate = useNavigate();
 
-  const activity = useMemo(
-    () =>
-      wcif && getAllActivities(wcif).find((a) => activityId && a.id === parseInt(activityId, 10)),
-    [wcif, activityId],
-  );
-
-  const everyoneInActivity = useMemo(
-    () =>
-      wcif
-        ? wcif.persons
-            .map((person) => ({
-              ...person,
-              assignments: person.assignments?.filter(
-                (a) => activityId && a.activityId === parseInt(activityId, 10), // TODO this is a hack because types aren't fixed yet for @wca/helpers
-              ),
-            }))
-            .filter(({ assignments }) => assignments && assignments.length > 0)
-        : [],
-    [wcif, activityId],
-  );
-
-  if (!wcif) {
-    <Container />;
-  }
-
-  if (wcif && !activity) {
-    return (
-      <Container>
-        <h2>Activity not found</h2>
-      </Container>
-    );
+  if (!competitionId || !activityId) {
+    return null;
   }
 
   return (
-    <Container>
-      {wcif?.id && activity && everyoneInActivity && (
-        <EventActivity competitionId={wcif.id} activity={activity} persons={everyoneInActivity} />
-      )}
-    </Container>
+    <CompetitionActivityContainer
+      competitionId={competitionId}
+      activityId={parseInt(activityId, 10)}
+      LinkComponent={Link}
+      onNavigate={navigate}
+    />
   );
 }
 

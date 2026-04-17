@@ -123,6 +123,8 @@ export function CompetitionRoom() {
                   <ActivityRow
                     key={activity.id}
                     activity={activity}
+                    competitionId={wcif?.id || ''}
+                    LinkComponent={Link}
                     timeZone={timeZone}
                     stage={stage}
                     showRoom={!!stage}

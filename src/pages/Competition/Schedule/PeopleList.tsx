@@ -6,18 +6,21 @@ import { Link } from 'react-router-dom';
 import { getStationNumber } from '@/lib/activities';
 import { AssignmentCodeRank } from '@/lib/assignments';
 import { getAssignmentColorClasses } from '@/lib/colors';
+import { LinkRenderer } from '@/lib/linkRenderer';
 import { byName } from '@/lib/utils';
 
 export interface PeopleListProps {
   competitionId: string;
   activity: Activity;
   peopleByAssignmentCode: Record<AssignmentCode, Person[]>;
+  LinkComponent?: LinkRenderer;
 }
 
 export const PeopleList = ({
   competitionId,
   activity,
   peopleByAssignmentCode,
+  LinkComponent = Link,
 }: PeopleListProps) => {
   const { t } = useTranslation();
 
@@ -89,7 +92,7 @@ export const PeopleList = ({
                           return byName(a, b);
                         })
                         .map((person, index) => (
-                          <Link
+                          <LinkComponent
                             key={person.registrantId}
                             className={classNames(
                               'table-row cursor-pointer transition-colors',
@@ -100,14 +103,14 @@ export const PeopleList = ({
                             to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
                             <td className="table-cell">{person.name}</td>
                             <td className="table-cell">{person.stationNumber}</td>
-                          </Link>
+                          </LinkComponent>
                         ))}
                     </tbody>
                   </table>
                 ) : (
                   <div>
                     {people.sort(byName).map((person, index) => (
-                      <Link
+                      <LinkComponent
                         key={person.registrantId}
                         className={classNames(
                           'p-2 py-2.5 block cursor-pointer transition-colors',
@@ -117,7 +120,7 @@ export const PeopleList = ({
                         )}
                         to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
                         {person.name}
-                      </Link>
+                      </LinkComponent>
                     ))}
                   </div>
                 )}

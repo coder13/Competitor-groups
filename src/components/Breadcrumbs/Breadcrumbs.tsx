@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { LinkRenderer } from '@/lib/linkRenderer';
 import { BreadcrumbPill, PillProps } from '../Pill';
 
 export type Breadcrumb =
@@ -15,16 +16,17 @@ export type Breadcrumb =
 
 export interface BreadcrumbsProps {
   breadcrumbs: Breadcrumb[];
+  LinkComponent?: LinkRenderer;
 }
 
-export const Breadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
+export const Breadcrumbs = ({ breadcrumbs, LinkComponent = Link }: BreadcrumbsProps) => {
   return (
     <div className="flex items-center space-x-1">
       {breadcrumbs.map(({ label, ...breadcrumb }, index) => (
         <Fragment key={label}>
           {index > 0 && <span className="text-muted">·</span>}
           {'href' in breadcrumb ? (
-            <Link to={breadcrumb.href}>
+            <LinkComponent to={breadcrumb.href}>
               <BreadcrumbPill
                 {...breadcrumb.pillProps}
                 className={classNames(
@@ -33,7 +35,7 @@ export const Breadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
                 )}>
                 {label}
               </BreadcrumbPill>
-            </Link>
+            </LinkComponent>
           ) : (
             <span key={label}>{label}</span>
           )}

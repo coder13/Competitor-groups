@@ -60,6 +60,8 @@ export const OngoingActivities = ({ competitionId }: OngoingActivitiesProps) => 
             <ActivityRow
               key={a.id}
               activity={a}
+              competitionId={competitionId}
+              LinkComponent={Link}
               timeZone={timeZone}
               stage={a?.parent?.parent?.room || a?.parent?.room || a?.room}
               showRoom={false}
