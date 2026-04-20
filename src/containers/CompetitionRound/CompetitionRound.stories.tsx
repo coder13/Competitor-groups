@@ -53,6 +53,26 @@ export const ParticipationConditionLinkedRounds: Story = {
   },
 };
 
+export const DualRoundWithPreviousRound: Story = {
+  parameters: {
+    competitionFixture: storybookParticipationConditionLinkedRoundsFixture,
+  },
+  args: {
+    competitionId: 'SeattleSummerOpen2026',
+    roundId: '333-r2',
+  },
+};
+
+export const DualRoundWithNextRound: Story = {
+  parameters: {
+    competitionFixture: storybookParticipationConditionLinkedRoundsFixture,
+  },
+  args: {
+    competitionId: 'SeattleSummerOpen2026',
+    roundId: '333-r1',
+  },
+};
+
 export const FinalRound: Story = {
   parameters: {
     competitionFixture: makeStorybookCompetitionFixtureWithRound('333-r3', (round) => ({

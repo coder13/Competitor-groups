@@ -59,6 +59,7 @@ describe('wcif participation helpers', () => {
     expect(getAdvancementConditionForRound(rounds, rounds[0])).toEqual({
       sourceType: 'round',
       sourceRoundIds: ['333-r1'],
+      targetRoundId: '333-r2',
       resultCondition: {
         type: 'percent',
         value: 75,
@@ -99,6 +100,7 @@ describe('wcif participation helpers', () => {
     expect(getAdvancementConditionForRound(rounds, rounds[1])).toEqual({
       sourceType: 'linkedRounds',
       sourceRoundIds: ['333-r1', '333-r2'],
+      targetRoundId: '333-r3',
       resultCondition: {
         type: 'ranking',
         value: 12,

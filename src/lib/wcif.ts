@@ -14,6 +14,7 @@ export type ResultCondition = ParticipationResultCondition;
 export interface RoundAdvancementCondition {
   sourceType: ParticipationSource['type'];
   sourceRoundIds: string[];
+  targetRoundId?: string | null;
   resultCondition: ResultCondition;
   reservedPlaces?: ReservedPlaces | null;
 }
@@ -96,9 +97,16 @@ export const getAdvancementConditionForRound = (
   round: Round,
 ): RoundAdvancementCondition | null => {
   if (round.advancementCondition) {
+    const { eventId, roundNumber } = parseActivityCode(round.id);
+    const targetRoundId =
+      roundNumber != null
+        ? eventRounds.find((candidate) => candidate.id === `${eventId}-r${roundNumber + 1}`)?.id
+        : null;
+
     return {
       sourceType: 'round',
       sourceRoundIds: [round.id],
+      targetRoundId: targetRoundId ?? null,
       resultCondition: getLegacyResultCondition(round.advancementCondition, round),
       reservedPlaces: null,
     };
@@ -138,6 +146,7 @@ export const getAdvancementConditionForRound = (
   return {
     sourceType: source.type,
     sourceRoundIds: source.type === 'round' ? [source.roundId] : source.roundIds,
+    targetRoundId: nextEligibleRound.id,
     resultCondition: source.resultCondition,
     reservedPlaces: ruleset?.reservedPlaces ?? null,
   };

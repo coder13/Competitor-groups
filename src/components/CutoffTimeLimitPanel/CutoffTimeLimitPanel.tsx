@@ -1,10 +1,11 @@
-import { Competition, Cutoff, Round, parseActivityCode } from '@wca/helpers';
+import { Cutoff, Round, parseActivityCode } from '@wca/helpers';
 import classNames from 'classnames';
 import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
 import { renderCentiseconds, renderCutoff } from '@/lib/results';
+import { getEventRoundsForRound, joinLabels } from '@/lib/roundLabels';
 import { CompatibleRound, getAdvancementConditionForRound, ResultCondition } from '@/lib/wcif';
 import { useWCIF } from '@/providers/WCIFProvider';
 
@@ -92,7 +93,7 @@ export function CutoffTimeLimitPanel({
         </div>
         {advancement && (
           <div className="px-2">
-            {renderAdvancementText(t, advancement.sourceType, advancement)}
+            {renderAdvancementText(t, eventRounds, advancement.sourceType, advancement)}
           </div>
         )}
       </div>
@@ -103,117 +104,108 @@ export function CutoffTimeLimitPanel({
   );
 }
 
-function getEventRoundsForRound(events: Competition['events'] | undefined, roundId: string) {
-  const { eventId } = parseActivityCode(roundId);
-
-  return (
-    events
-      ?.find((event) => event.id === eventId)
-      ?.rounds?.map((candidate) => candidate as CompatibleRound) || []
-  );
-}
-
 function getCumulativeRoundIds(timeLimit: Round['timeLimit'], roundId: string) {
   return timeLimit?.cumulativeRoundIds.filter((activityCode) => activityCode !== roundId) || [];
 }
 
 function renderAdvancementText(
   t: ReturnType<typeof useTranslation>['t'],
+  eventRounds: CompatibleRound[],
   sourceType: 'registrations' | 'round' | 'linkedRounds',
   advancement: NonNullable<ReturnType<typeof getAdvancementConditionForRound>>,
 ) {
-  const isLinkedRounds = sourceType === 'linkedRounds';
+  if (sourceType === 'linkedRounds') {
+    return renderLinkedRoundsAdvancementText(t, eventRounds, advancement);
+  }
+
+  return renderSingleRoundAdvancementText(t, eventRounds, advancement);
+}
+
+function renderLinkedRoundsAdvancementText(
+  t: ReturnType<typeof useTranslation>['t'],
+  eventRounds: CompatibleRound[],
+  advancement: NonNullable<ReturnType<typeof getAdvancementConditionForRound>>,
+) {
   const { resultCondition } = advancement;
-  const sourceRoundNames = advancement.sourceRoundIds.map((roundId) =>
-    activityCodeToRoundName(t, roundId),
-  );
+  const sourceRoundNames = advancement.sourceRoundIds.map((roundId) => {
+    const roundNumber = parseActivityCode(roundId).roundNumber;
+    return roundNumber ? roundNumber.toString() : '';
+  });
   const sourceRoundsLabel = joinLabels(sourceRoundNames);
+  const targetLabel = getAdvancementTargetLabel(t, eventRounds, advancement.targetRoundId);
 
   switch (resultCondition.type) {
     case 'ranking':
-      return isLinkedRounds ? (
-        <>
-          {t('common.wca.advancement.linkedRanking', {
-            defaultValue: 'Top {{level}} combined across {{rounds}} advance to next round',
-            level: resultCondition.value,
-            rounds: sourceRoundsLabel,
-          })}
-        </>
-      ) : (
-        <Trans
-          i18nKey={'common.wca.advancement.ranking'}
-          values={{ level: resultCondition.value }}
-          components={{ b: <span className="font-semibold" /> }}
-        />
-      );
+      return t('common.wca.advancement.linkedRanking', {
+        level: resultCondition.value,
+        rounds: sourceRoundsLabel,
+        what: targetLabel,
+      });
     case 'percent':
-      return isLinkedRounds ? (
-        <>
-          {t('common.wca.advancement.linkedPercent', {
-            defaultValue: 'Top {{level}}% combined across {{rounds}} advance to next round',
-            level: resultCondition.value,
-            rounds: sourceRoundsLabel,
-          })}
-        </>
-      ) : (
-        <Trans
-          i18nKey={'common.wca.advancement.percent'}
-          values={{ level: resultCondition.value }}
-          components={{ b: <span className="font-semibold" /> }}
-        />
-      );
-    case 'resultAchieved': {
-      const thresholdCondition = resultCondition as Extract<
-        ResultCondition,
-        { type: 'resultAchieved' }
-      >;
-      const scopeLabel = t(`common.wca.resultType.${thresholdCondition.scope}`, {
-        defaultValue: thresholdCondition.scope,
-      }).toLowerCase();
-      const resultValue =
-        thresholdCondition.value === null
-          ? t('common.wca.advancement.resultThresholdUnknown', {
-              defaultValue: 'an unknown result',
-            })
-          : renderCentiseconds(thresholdCondition.value);
-
-      return (
-        <>
-          {t(
-            isLinkedRounds
-              ? 'common.wca.advancement.linkedResultAchieved'
-              : 'common.wca.advancement.resultAchieved',
-            {
-              scope: scopeLabel,
-              result: resultValue,
-              rounds: sourceRoundsLabel,
-            },
-          )}
-        </>
-      );
-    }
+      return t('common.wca.advancement.linkedPercent', {
+        level: resultCondition.value,
+        rounds: sourceRoundsLabel,
+        what: targetLabel,
+      });
+    case 'resultAchieved':
+      return t('common.wca.advancement.linkedResultAchieved', {
+        scope: t(`common.wca.advancement.scope.${resultCondition.scope}`),
+        result:
+          resultCondition.value === null
+            ? t('common.wca.advancement.resultThresholdUnknown')
+            : renderCentiseconds(resultCondition.value),
+        rounds: sourceRoundsLabel,
+        what: targetLabel,
+      });
   }
 }
 
-function activityCodeToRoundName(t: ReturnType<typeof useTranslation>['t'], roundId: string) {
-  const { roundNumber } = parseActivityCode(roundId);
+function renderSingleRoundAdvancementText(
+  t: ReturnType<typeof useTranslation>['t'],
+  eventRounds: CompatibleRound[],
+  advancement: NonNullable<ReturnType<typeof getAdvancementConditionForRound>>,
+) {
+  const { resultCondition } = advancement;
+  const targetLabel = getAdvancementTargetLabel(t, eventRounds, advancement.targetRoundId);
 
-  return t('common.activityCodeToName.round', {
-    defaultValue: `Round ${roundNumber}`,
-    roundNumber,
-  });
+  switch (resultCondition.type) {
+    case 'ranking':
+      return t('common.wca.advancement.ranking', {
+        level: resultCondition.value,
+        what: targetLabel,
+      });
+    case 'percent':
+      return t('common.wca.advancement.percent', {
+        level: resultCondition.value,
+        what: targetLabel,
+      });
+    case 'resultAchieved':
+      return t('common.wca.advancement.resultAchieved', {
+        scope: t(`common.wca.advancement.scope.${resultCondition.scope}`),
+        result:
+          resultCondition.value === null
+            ? t('common.wca.advancement.resultThresholdUnknown')
+            : renderCentiseconds(resultCondition.value),
+        what: targetLabel,
+      });
+  }
 }
 
-function joinLabels(labels: string[]) {
-  if (labels.length <= 1) {
-    return labels[0] || '';
+function getAdvancementTargetLabel(
+  t: ReturnType<typeof useTranslation>['t'],
+  eventRounds: CompatibleRound[],
+  targetRoundId: string | null | undefined,
+) {
+  if (!targetRoundId) {
+    return t('common.wca.advancement.unknown');
   }
 
-  if (labels.length === 2) {
-    return `${labels[0]} and ${labels[1]}`;
+  const targetRoundIndex = eventRounds.findIndex((candidate) => candidate.id === targetRoundId);
+  if (targetRoundIndex === eventRounds.length - 1) {
+    return t('common.wca.advancement.final');
   }
 
-  return `${labels.slice(0, -1).join(', ')}, and ${labels[labels.length - 1]}`;
+  return t('common.wca.advancement.nextRound');
 }
 
 function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {

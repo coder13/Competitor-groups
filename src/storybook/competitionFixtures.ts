@@ -768,6 +768,10 @@ export const storybookParticipationConditionPercentFixture =
 
 export const storybookParticipationConditionLinkedRoundsFixture =
   makeStorybookCompetitionFixtureWithRoundUpdates({
+    '333-r1': (round) => ({
+      ...round,
+      advancementCondition: null,
+    }),
     '333-r2': (round) => ({
       ...round,
       advancementCondition: null,

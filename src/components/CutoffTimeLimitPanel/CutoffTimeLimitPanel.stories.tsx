@@ -73,6 +73,15 @@ export const ParticipationConditionLinkedRounds: Story = {
   },
 };
 
+export const ParticipationConditionLinkedRoundsStart: Story = {
+  parameters: {
+    competitionFixture: storybookParticipationConditionLinkedRoundsFixture,
+  },
+  args: {
+    round: storybookParticipationConditionLinkedRoundsFixture.events[0].rounds[0],
+  },
+};
+
 export const CutoffAndTimeLimit: Story = {
   args: {
     round: getStorybookRoundFixture('222-r1'),
