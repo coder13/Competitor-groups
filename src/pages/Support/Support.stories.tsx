@@ -1,14 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import Support from './index';
+import { makeAppContainerDecorator } from '@/storybook/appStorybook';
+import { makeRouteDecorator } from '@/storybook/competitionStorybook';
+import SupportPage from './index';
 
 const meta = {
-  title: 'Pages/Support',
-  component: Support,
-  parameters: {
-    layout: 'fullscreen',
-  },
-  tags: ['autodocs'],
-} satisfies Meta<typeof Support>;
+  title: 'Pages/App/Support',
+  component: SupportPage,
+  decorators: [
+    makeAppContainerDecorator(),
+    makeRouteDecorator({
+      initialPath: '/support',
+      routePath: '/support',
+    }),
+  ],
+} satisfies Meta<typeof SupportPage>;
 
 export default meta;
 

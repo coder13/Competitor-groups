@@ -1,14 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import About from './index';
+import { makeAppContainerDecorator } from '@/storybook/appStorybook';
+import { makeRouteDecorator } from '@/storybook/competitionStorybook';
+import AboutPage from './index';
 
 const meta = {
-  title: 'Pages/About',
-  component: About,
-  parameters: {
-    layout: 'fullscreen',
-  },
-  tags: ['autodocs'],
-} satisfies Meta<typeof About>;
+  title: 'Pages/App/About',
+  component: AboutPage,
+  decorators: [
+    makeAppContainerDecorator(),
+    makeRouteDecorator({
+      initialPath: '/about',
+      routePath: '/about',
+    }),
+  ],
+} satisfies Meta<typeof AboutPage>;
 
 export default meta;
 

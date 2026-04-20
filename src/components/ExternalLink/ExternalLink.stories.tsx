@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ExternalLink } from './ExternalLink';
 
 const meta = {
-  title: 'Components/ExternalLink',
+  title: 'Components/App/ExternalLink',
   component: ExternalLink,
   args: {
     href: 'https://www.worldcubeassociation.org/',

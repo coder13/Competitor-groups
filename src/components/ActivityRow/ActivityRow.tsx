@@ -1,22 +1,31 @@
 import { Activity, Room, Venue } from '@wca/helpers';
 import classNames from 'classnames';
 import { useMemo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Stage } from '@/extensions/org.cubingusa.natshelper.v1/types';
 import { useNow } from '@/hooks/useNow';
 import { activityCodeToName } from '@/lib/activityCodes';
+import { LinkRenderer } from '@/lib/linkRenderer';
 import { formatTimeRange } from '@/lib/time';
 import { RoomPill } from '../Pill';
 
 interface ActivityRowProps {
   activity: Activity;
+  competitionId: string;
   stage?: Pick<Stage | Room, 'name' | 'color'>;
   timeZone: Venue['timezone'];
   showRoom?: boolean;
+  LinkComponent?: LinkRenderer;
 }
 
-export function ActivityRow({ activity, stage, timeZone, showRoom = true }: ActivityRowProps) {
-  const { competitionId } = useParams();
+export function ActivityRow({
+  activity,
+  competitionId,
+  stage,
+  timeZone,
+  showRoom = true,
+  LinkComponent = Link,
+}: ActivityRowProps) {
   const now = useNow();
 
   const isOver = useMemo(
@@ -28,7 +37,7 @@ export function ActivityRow({ activity, stage, timeZone, showRoom = true }: Acti
     : activityCodeToName(activity.activityCode);
 
   return (
-    <Link
+    <LinkComponent
       key={activity.id}
       className={classNames(
         'flex flex-col w-full p-2 type-body even:table-bg-row-alt hover:table-bg-row-hover',
@@ -50,6 +59,6 @@ export function ActivityRow({ activity, stage, timeZone, showRoom = true }: Acti
         )}
         <span>{formatTimeRange(activity.startTime, activity.endTime, 5, timeZone)}</span>
       </span>
-    </Link>
+    </LinkComponent>
   );
 }

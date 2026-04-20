@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { LoggedOutPromptCard } from './LoggedOutPromptCard';
 
 const meta = {
-  title: 'Components/LoggedOutPromptCard',
+  title: 'Components/App/LoggedOutPromptCard',
   component: LoggedOutPromptCard,
   args: {
     onLogin: () => {},
@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 export const Mobile: Story = {
   parameters: {
     viewport: {
-      defaultViewport: 'mobile1',
+      defaultViewport: 'androidTypical',
     },
   },
 };

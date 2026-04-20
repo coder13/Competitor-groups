@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { LinkButton } from './LinkButton';
 
 const meta = {
-  title: 'Components/LinkButton',
+  title: 'Components/App/LinkButton',
   component: LinkButton,
   args: {
     to: '/support',

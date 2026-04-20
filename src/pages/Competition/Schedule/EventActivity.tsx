@@ -2,12 +2,13 @@ import { Activity, AssignmentCode, Person } from '@wca/helpers';
 import classNames from 'classnames';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { getRoomData, getRooms } from '@/lib/activities';
 import { parseActivityCodeFlexible } from '@/lib/activityCodes';
 import { getAllEvents, isOfficialEventId, isRankedBySingle } from '@/lib/events';
+import { LinkRenderer } from '@/lib/linkRenderer';
 import { renderResultByEventId } from '@/lib/results';
 import { formatDateTimeRange } from '@/lib/time';
 import { useWCIF } from '@/providers/WCIFProvider';
@@ -21,12 +22,19 @@ interface EventGroupProps {
   competitionId: string;
   activity: Activity;
   persons: Person[];
+  LinkComponent?: LinkRenderer;
+  onNavigate?: (to: string) => void;
 }
 
-export function EventActivity({ competitionId, activity, persons }: EventGroupProps) {
+export function EventActivity({
+  competitionId,
+  activity,
+  persons,
+  LinkComponent = Link,
+  onNavigate,
+}: EventGroupProps) {
   const { t } = useTranslation();
 
-  const navigate = useNavigate();
   const { setTitle, wcif } = useWCIF();
   const { eventId, roundNumber } = parseActivityCodeFlexible(activity?.activityCode || '');
   const event = useMemo(
@@ -225,15 +233,15 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
 
   const goToPrev = useCallback(() => {
     if (prevUrl) {
-      navigate(prevUrl);
+      onNavigate?.(prevUrl);
     }
-  }, [navigate, prevUrl]);
+  }, [onNavigate, prevUrl]);
 
   const goToNext = useCallback(() => {
     if (nextUrl) {
-      navigate(nextUrl);
+      onNavigate?.(nextUrl);
     }
-  }, [navigate, nextUrl]);
+  }, [onNavigate, nextUrl]);
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
@@ -253,13 +261,12 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
     };
   }, [wcif, activity, goToPrev, goToNext]);
 
-  console.log({ prev, next });
-
   return (
     <>
       {wcif && (
         <div className="p-2 space-y-2 type-body">
           <Breadcrumbs
+            LinkComponent={LinkComponent}
             breadcrumbs={[
               {
                 href: `/competitions/${wcif.id}/rooms/${room?.id}`,
@@ -281,7 +288,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
             ]}
           />
           <div className="flex space-x-2 type-body">
-            <Link
+            <LinkComponent
               to={prevUrl || ''}
               className={classNames(
                 'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer transition-colors my-1 justify-end',
@@ -292,8 +299,8 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
               )}>
               <span className="self-center mr-2 transition-all fa fa-arrow-left group-hover:-translate-x-2" />
               {t('competition.groups.previousGroup')}
-            </Link>
-            <Link
+            </LinkComponent>
+            <LinkComponent
               to={nextUrl || ''}
               className={classNames(
                 'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors my-1',
@@ -304,7 +311,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
               )}>
               {t('competition.groups.nextGroup')}
               <span className="self-center ml-2 transition-all fa fa-arrow-right group-hover:translate-x-2" />
-            </Link>
+            </LinkComponent>
           </div>
 
           <div className="space-y-1">
@@ -345,7 +352,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
                   return (a.seedRank || 999999999) - (b.seedRank || 999999999);
                 })
                 .map((person) => (
-                  <Link
+                  <LinkComponent
                     key={person.registrantId}
                     className="table-row table-row-hover even:bg-green-50 dark:bg-gray-900 even:dark:bg-green-900/50"
                     to={`/competitions/${competitionId}/persons/${person.registrantId}`}>
@@ -356,7 +363,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
                         {stationNumber('competitor')(person)}
                       </td>
                     )}
-                  </Link>
+                  </LinkComponent>
                 ))}
             </tbody>
           </table>
@@ -365,6 +372,7 @@ export function EventActivity({ competitionId, activity, persons }: EventGroupPr
       <PeopleList
         competitionId={competitionId}
         activity={activity}
+        LinkComponent={LinkComponent}
         peopleByAssignmentCode={peopleByAssignmentCode}
       />
     </>

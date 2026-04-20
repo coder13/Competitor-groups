@@ -8,6 +8,7 @@ import {
   getVenueForActivity,
   hasMultipleScheduleLocations,
 } from '@/lib/activities';
+import { LinkRenderer } from '@/lib/linkRenderer';
 import { ActivityWithRoomOrParent } from '@/lib/types';
 
 const key = (compId: string) => `${compId}-schedule`;
@@ -17,11 +18,13 @@ const ScheduleDay = ({
   date,
   activities,
   showRoom,
+  LinkComponent,
 }: {
   wcif;
   date: string;
   activities: ActivityWithRoomOrParent[];
   showRoom: boolean;
+  LinkComponent?: LinkRenderer;
 }) => {
   const { collapsedDates, toggleDate } = useCollapse(key(wcif.id));
 
@@ -53,6 +56,8 @@ const ScheduleDay = ({
             <ActivityRow
               key={activity.id}
               activity={activity}
+              competitionId={wcif.id}
+              LinkComponent={LinkComponent}
               timeZone={timeZone}
               stage={stage || room}
               showRoom={showRoom}
@@ -66,9 +71,10 @@ const ScheduleDay = ({
 
 export interface ScheduleContainerProps {
   wcif: Competition;
+  LinkComponent?: LinkRenderer;
 }
 
-export const ScheduleContainer = ({ wcif }: ScheduleContainerProps) => {
+export const ScheduleContainer = ({ wcif, LinkComponent }: ScheduleContainerProps) => {
   const { collapsedDates, setCollapsedDates } = useCollapse(key(wcif.id));
 
   const scheduleDays = useMemo(() => getScheduledDays(wcif), [wcif]);
@@ -101,6 +107,7 @@ export const ScheduleContainer = ({ wcif }: ScheduleContainerProps) => {
           activities={activities}
           date={date}
           showRoom={showRoom}
+          LinkComponent={LinkComponent}
         />
       ))}
     </div>
