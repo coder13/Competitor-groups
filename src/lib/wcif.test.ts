@@ -1,8 +1,5 @@
-import {
-  CompatibleRound,
-  getAdvancementConditionForRound,
-  getRoundParticipationRuleset,
-} from './wcif';
+import { Round } from '@wca/helpers';
+import { getAdvancementConditionForRound, getRoundParticipationRuleset } from './wcif';
 
 describe('wcif participation helpers', () => {
   it('backfills stable advancement conditions into a participation ruleset', () => {
@@ -21,7 +18,7 @@ describe('wcif participation helpers', () => {
         },
         results: [],
       },
-    ] as unknown as CompatibleRound[];
+    ] as unknown as Round[];
 
     expect(getRoundParticipationRuleset(rounds, rounds[1])).toEqual({
       participationSource: {
@@ -57,7 +54,7 @@ describe('wcif participation helpers', () => {
         },
         results: [],
       },
-    ] as unknown as CompatibleRound[];
+    ] as unknown as Round[];
 
     expect(getAdvancementConditionForRound(rounds, rounds[0])).toEqual({
       sourceType: 'round',
@@ -97,7 +94,7 @@ describe('wcif participation helpers', () => {
         },
         results: [],
       },
-    ] as unknown as CompatibleRound[];
+    ] as unknown as Round[];
 
     expect(getAdvancementConditionForRound(rounds, rounds[1])).toEqual({
       sourceType: 'linkedRounds',

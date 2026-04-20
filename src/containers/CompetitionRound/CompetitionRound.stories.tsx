@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   makeStorybookCompetitionFixtureWithRound,
   makeStorybookEventCompetitionFixture,
+  storybookParticipationConditionLinkedRoundsFixture,
+  storybookParticipationConditionPercentFixture,
 } from '@/storybook/competitionFixtures';
 import { makeCompetitionContainerDecorator } from '@/storybook/competitionStorybook';
 import { CompetitionRoundContainer } from './CompetitionRound';
@@ -24,7 +26,27 @@ export const RoundOne: Story = {
   },
 };
 
+export const ParticipationConditionPercent: Story = {
+  parameters: {
+    competitionFixture: storybookParticipationConditionPercentFixture,
+  },
+  args: {
+    competitionId: 'SeattleSummerOpen2026',
+    roundId: '333-r1',
+  },
+};
+
 export const RoundTwo: Story = {
+  args: {
+    competitionId: 'SeattleSummerOpen2026',
+    roundId: '333-r2',
+  },
+};
+
+export const ParticipationConditionLinkedRounds: Story = {
+  parameters: {
+    competitionFixture: storybookParticipationConditionLinkedRoundsFixture,
+  },
   args: {
     competitionId: 'SeattleSummerOpen2026',
     roundId: '333-r2',

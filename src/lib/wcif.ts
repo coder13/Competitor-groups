@@ -1,46 +1,15 @@
-import { Round, parseActivityCode } from '@wca/helpers';
+import {
+  ParticipationResultCondition,
+  ParticipationRuleset,
+  ParticipationSource,
+  ReservedPlaces,
+  Round,
+  parseActivityCode,
+} from '@wca/helpers';
 
-type LegacyAdvancementCondition = {
-  type: 'ranking' | 'percent' | 'attemptResult';
-  level: number;
-};
+type LegacyAdvancementCondition = NonNullable<Round['advancementCondition']>;
 
-export type ResultCondition =
-  | {
-      type: 'ranking' | 'percent';
-      value: number;
-    }
-  | {
-      type: 'resultAchieved';
-      scope: 'single' | 'average';
-      value: number | null;
-    };
-
-export type ParticipationSource =
-  | {
-      type: 'registrations';
-    }
-  | {
-      type: 'round';
-      roundId: string;
-      resultCondition: ResultCondition;
-    }
-  | {
-      type: 'linkedRounds';
-      roundIds: string[];
-      resultCondition: ResultCondition;
-    };
-
-export type ReservedPlaces = {
-  nationalities: string[];
-  count?: number;
-  reservations?: number;
-};
-
-export type ParticipationRuleset = {
-  participationSource: ParticipationSource;
-  reservedPlaces?: ReservedPlaces | null;
-};
+export type ResultCondition = ParticipationResultCondition;
 
 export interface RoundAdvancementCondition {
   sourceType: ParticipationSource['type'];
@@ -49,19 +18,16 @@ export interface RoundAdvancementCondition {
   reservedPlaces?: ReservedPlaces | null;
 }
 
-export type CompatibleRound = Round & {
-  advancementCondition?: LegacyAdvancementCondition | null;
-  participationRuleset?: ParticipationRuleset | null;
-};
+export type CompatibleRound = Round;
 
 const averagedFormats = new Set(['a', 'm', '5', 'h']);
 
-const getRoundResultType = (round: Pick<CompatibleRound, 'format'>): 'single' | 'average' =>
+const getRoundResultType = (round: Pick<Round, 'format'>): 'single' | 'average' =>
   averagedFormats.has(round.format) ? 'average' : 'single';
 
 const getLegacyResultCondition = (
   advancementCondition: LegacyAdvancementCondition,
-  sourceRound?: CompatibleRound,
+  sourceRound?: Round,
 ): ResultCondition => {
   switch (advancementCondition.type) {
     case 'ranking':
@@ -83,10 +49,7 @@ const getLegacyResultCondition = (
   }
 };
 
-const getPreviousRound = (
-  eventRounds: CompatibleRound[],
-  round: CompatibleRound,
-): CompatibleRound | undefined => {
+const getPreviousRound = (eventRounds: Round[], round: Round): Round | undefined => {
   const { eventId, roundNumber } = parseActivityCode(round.id);
 
   if (!roundNumber || roundNumber <= 1) {
@@ -97,8 +60,8 @@ const getPreviousRound = (
 };
 
 export const getRoundParticipationRuleset = (
-  eventRounds: CompatibleRound[],
-  round: CompatibleRound,
+  eventRounds: Round[],
+  round: Round,
 ): ParticipationRuleset | null => {
   if (round.participationRuleset) {
     return round.participationRuleset;
@@ -123,14 +86,14 @@ export const getRoundParticipationRuleset = (
 };
 
 const getRoundParticipationSource = (
-  eventRounds: CompatibleRound[],
-  round: CompatibleRound,
+  eventRounds: Round[],
+  round: Round,
 ): ParticipationSource | null =>
   getRoundParticipationRuleset(eventRounds, round)?.participationSource ?? null;
 
 export const getAdvancementConditionForRound = (
-  eventRounds: CompatibleRound[],
-  round: CompatibleRound,
+  eventRounds: Round[],
+  round: Round,
 ): RoundAdvancementCondition | null => {
   if (round.advancementCondition) {
     return {
