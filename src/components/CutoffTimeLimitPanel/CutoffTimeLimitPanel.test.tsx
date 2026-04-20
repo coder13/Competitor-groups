@@ -31,6 +31,14 @@ jest.mock('react-i18next', () => ({
       return `Top ${values?.level}% to next round`;
     }
 
+    if (i18nKey === 'common.wca.advancement.linkedRanking') {
+      return `Top ${values?.level} combined across ${values?.rounds} advance to next round`;
+    }
+
+    if (i18nKey === 'common.wca.advancement.linkedPercent') {
+      return `Top ${values?.level}% combined across ${values?.rounds} advance to next round`;
+    }
+
     if (i18nKey === 'common.wca.cumulativeTimelimit') {
       return `Time Limit: ${values?.time} Cumulative`;
     }

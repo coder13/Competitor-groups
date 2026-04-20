@@ -33,7 +33,12 @@ common:
     advancement:
       ranking: 'Top <b>{{level}}</b> to next round'
       percent: 'Top <b>{{level}}%</b> to next round'
+      linkedRanking: 'Top {{level}} combined across {{rounds}} advance to next round'
+      linkedPercent: 'Top {{level}}% combined across {{rounds}} advance to next round'
       attemptResult: Result better than <b>{level}</b> advances to next round. Minimum of 25% of competitors must be eliminated.
+      resultAchieved: Competitors with a {{scope}} better than {{result}} advance to next round. Minimum of 25% of competitors must be eliminated.
+      linkedResultAchieved: Competitors with a {{scope}} better than {{result}} combined across {{rounds}} advance to next round. Minimum of 25% of competitors must be eliminated.
+      resultThresholdUnknown: an unknown result
     resultType:
       single: single
       average: Average

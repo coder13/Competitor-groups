@@ -1,4 +1,4 @@
-import { Cutoff, Round, parseActivityCode } from '@wca/helpers';
+import { Competition, Cutoff, Round, parseActivityCode } from '@wca/helpers';
 import classNames from 'classnames';
 import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -21,14 +21,11 @@ export function CutoffTimeLimitPanel({
   const cutoff = round.cutoff;
   const timeLimit = round.timeLimit;
   const timelimitTime = timeLimit && renderCentiseconds(timeLimit?.centiseconds);
-  const eventRounds = useMemo(() => {
-    const { eventId } = parseActivityCode(round.id);
-    return (
-      wcif?.events
-        ?.find((event) => event.id === eventId)
-        ?.rounds?.map((candidate) => candidate as CompatibleRound) || []
-    );
-  }, [round.id, wcif?.events]);
+  const cumulativeRoundIds = getCumulativeRoundIds(timeLimit, round.id);
+  const eventRounds = useMemo(
+    () => getEventRoundsForRound(wcif?.events, round.id),
+    [round.id, wcif?.events],
+  );
   const advancement = useMemo(
     () => getAdvancementConditionForRound(eventRounds, round as CompatibleRound),
     [eventRounds, round],
@@ -55,8 +52,7 @@ export function CutoffTimeLimitPanel({
 
           {timeLimit &&
             timeLimit?.cumulativeRoundIds.length > 0 &&
-            timeLimit.cumulativeRoundIds.filter((activityCode) => activityCode !== round.id)
-              .length === 0 && (
+            cumulativeRoundIds.length === 0 && (
               <span className="px-2">
                 <Trans
                   i18nKey={'common.wca.cumulativeTimelimit'}
@@ -68,8 +64,7 @@ export function CutoffTimeLimitPanel({
 
           {timeLimit &&
             timeLimit?.cumulativeRoundIds.length > 0 &&
-            timeLimit.cumulativeRoundIds.filter((activityCode) => activityCode !== round.id)
-              .length > 0 && (
+            cumulativeRoundIds.length > 0 && (
               <div className="px-2">
                 <span>
                   <Trans
@@ -77,22 +72,20 @@ export function CutoffTimeLimitPanel({
                     values={{ time: timelimitTime }}
                     components={{ b: <span className="font-semibold" /> }}
                   />
-                  {timeLimit.cumulativeRoundIds
-                    .filter((activityCode) => activityCode !== round.id)
-                    .map((activityCode, i, arry) => {
-                      const { eventId, roundNumber } = parseActivityCode(activityCode);
-                      return (
-                        <Link
-                          key={activityCode}
-                          to={`/competitions/${wcif?.id}/events/${activityCode}`}>
-                          <span
-                            className={`cubing-icon event-${eventId} mx-1 before:-ml-1 before:mr-2`}>
-                            {t('common.activityCodeToName.round', { roundNumber })}
-                            {i < arry.length - 1 ? ', ' : ''}
-                          </span>
-                        </Link>
-                      );
-                    })}
+                  {cumulativeRoundIds.map((activityCode, i, arry) => {
+                    const { eventId, roundNumber } = parseActivityCode(activityCode);
+                    return (
+                      <Link
+                        key={activityCode}
+                        to={`/competitions/${wcif?.id}/events/${activityCode}`}>
+                        <span
+                          className={`cubing-icon event-${eventId} mx-1 before:-ml-1 before:mr-2`}>
+                          {t('common.activityCodeToName.round', { roundNumber })}
+                          {i < arry.length - 1 ? ', ' : ''}
+                        </span>
+                      </Link>
+                    );
+                  })}
                 </span>
               </div>
             )}
@@ -108,6 +101,20 @@ export function CutoffTimeLimitPanel({
       </div>
     </div>
   );
+}
+
+function getEventRoundsForRound(events: Competition['events'] | undefined, roundId: string) {
+  const { eventId } = parseActivityCode(roundId);
+
+  return (
+    events
+      ?.find((event) => event.id === eventId)
+      ?.rounds?.map((candidate) => candidate as CompatibleRound) || []
+  );
+}
+
+function getCumulativeRoundIds(timeLimit: Round['timeLimit'], roundId: string) {
+  return timeLimit?.cumulativeRoundIds.filter((activityCode) => activityCode !== roundId) || [];
 }
 
 function renderAdvancementText(
@@ -177,9 +184,6 @@ function renderAdvancementText(
               ? 'common.wca.advancement.linkedResultAchieved'
               : 'common.wca.advancement.resultAchieved',
             {
-              defaultValue: isLinkedRounds
-                ? 'Competitors with a {{scope}} better than {{result}} combined across {{rounds}} advance to next round. Minimum of 25% of competitors must be eliminated.'
-                : 'Competitors with a {{scope}} better than {{result}} advance to next round. Minimum of 25% of competitors must be eliminated.',
               scope: scopeLabel,
               result: resultValue,
               rounds: sourceRoundsLabel,
