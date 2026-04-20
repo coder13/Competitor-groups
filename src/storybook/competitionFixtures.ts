@@ -730,3 +730,64 @@ export const makeStorybookCompetitionFixtureWithRound = (
 
   return competition;
 };
+
+export const makeStorybookCompetitionFixtureWithRoundUpdates = (
+  updates: Record<string, (round: Round) => Round>,
+): Competition => {
+  const competition = cloneCompetition(storybookCompetitionFixture);
+
+  competition.events = competition.events.map((event) => ({
+    ...event,
+    rounds: event.rounds.map((round) => updates[round.id]?.(round) ?? round),
+  }));
+
+  return competition;
+};
+
+export const storybookParticipationConditionPercentFixture =
+  makeStorybookCompetitionFixtureWithRoundUpdates({
+    '333-r1': (round) => ({
+      ...round,
+      advancementCondition: null,
+    }),
+    '333-r2': (round) => ({
+      ...round,
+      advancementCondition: null,
+      participationRuleset: {
+        participationSource: {
+          type: 'round',
+          roundId: '333-r1',
+          resultCondition: {
+            type: 'percent',
+            value: 75,
+          },
+        },
+      },
+    }),
+  });
+
+export const storybookParticipationConditionLinkedRoundsFixture =
+  makeStorybookCompetitionFixtureWithRoundUpdates({
+    '333-r1': (round) => ({
+      ...round,
+      advancementCondition: null,
+    }),
+    '333-r2': (round) => ({
+      ...round,
+      advancementCondition: null,
+    }),
+    '333-r3': (round) => ({
+      ...round,
+      advancementCondition: null,
+      participationRuleset: {
+        participationSource: {
+          type: 'linkedRounds',
+          roundIds: ['333-r1', '333-r2'],
+          resultCondition: {
+            type: 'ranking',
+            value: 12,
+          },
+        },
+      },
+    }),
+  });

@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   getStorybookRoundFixture,
   makeStorybookCompetitionFixtureWithRound,
+  storybookParticipationConditionLinkedRoundsFixture,
+  storybookParticipationConditionPercentFixture,
 } from '@/storybook/competitionFixtures';
 import { makeCompetitionContainerDecorator } from '@/storybook/competitionStorybook';
 import { CutoffTimeLimitPanel } from './CutoffTimeLimitPanel';
@@ -50,6 +52,33 @@ type Story = StoryObj<typeof meta>;
 export const RankingAdvancement: Story = {
   args: {
     round: getStorybookRoundFixture('333-r1'),
+  },
+};
+
+export const ParticipationConditionPercent: Story = {
+  parameters: {
+    competitionFixture: storybookParticipationConditionPercentFixture,
+  },
+  args: {
+    round: storybookParticipationConditionPercentFixture.events[0].rounds[0],
+  },
+};
+
+export const ParticipationConditionLinkedRounds: Story = {
+  parameters: {
+    competitionFixture: storybookParticipationConditionLinkedRoundsFixture,
+  },
+  args: {
+    round: storybookParticipationConditionLinkedRoundsFixture.events[0].rounds[1],
+  },
+};
+
+export const ParticipationConditionLinkedRoundsStart: Story = {
+  parameters: {
+    competitionFixture: storybookParticipationConditionLinkedRoundsFixture,
+  },
+  args: {
+    round: storybookParticipationConditionLinkedRoundsFixture.events[0].rounds[0],
   },
 };
 
