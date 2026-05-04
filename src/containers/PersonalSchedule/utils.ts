@@ -18,20 +18,17 @@ export const getNormalAssignments = (wcif: Competition, person: Person) => {
           activity: allActivities.find(({ id }) => id === assignment.activityId),
         }))
         .filter((assignment) => {
-          const activityCode = assignment.activity?.activityCode || '';
-          const parsed = parseActivityCodeFlexible(activityCode);
           if (
             assignment.activity?.activityCode === 'other-multi' &&
             assignment.assignmentCode === 'competitor'
           ) {
             return false;
           }
-          if (
-            parsed.eventId === '333fm' &&
-            parsed.attemptNumber !== null &&
-            assignment.assignmentCode === 'competitor'
-          ) {
-            return false;
+          if (assignment.assignmentCode === 'competitor') {
+            const parsed = parseActivityCodeFlexible(assignment.activity?.activityCode || '');
+            if (parsed.eventId === '333fm' && parsed.attemptNumber !== null) {
+              return false;
+            }
           }
           return true;
         })
