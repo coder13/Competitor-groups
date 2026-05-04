@@ -1,4 +1,6 @@
+import { AssignmentCode } from '@wca/helpers';
 import classNames from 'classnames';
+import { AssignmentLabel } from '@/components';
 import { BaseAssignmentPill } from '@/components/Pill';
 import { worldsAssignmentMap } from './constants';
 
@@ -59,7 +61,11 @@ export const ExtraAssignment = ({
         </td>
       )}
       <td colSpan={1} className="py-2 text-center">
-        {worldsAssignmentMap[assignment.assignmentCode] || assignment.assignmentCode}
+        {worldsAssignmentMap[assignment.assignmentCode] ? (
+          worldsAssignmentMap[assignment.assignmentCode]
+        ) : (
+          <AssignmentLabel assignmentCode={assignment.assignmentCode as AssignmentCode} />
+        )}
       </td>
       <td></td>
       {room ? (
