@@ -6,6 +6,7 @@ export interface ExtraAssignmentProps {
   assignment: {
     assignmentCode: string;
   };
+  activityName?: string;
   isOver: boolean;
   isCurrent: boolean;
   startTime: Date;
@@ -19,6 +20,7 @@ export interface ExtraAssignmentProps {
 
 export const ExtraAssignment = ({
   assignment,
+  activityName,
   isOver,
   isCurrent,
   startTime,
@@ -46,9 +48,18 @@ export const ExtraAssignment = ({
           'bg-op': isCurrent,
         },
       )}>
-      <td colSpan={2} className="py-2 text-center">
-        {formattedStartTime} - {formattedEndTime}
-      </td>
+      {activityName ? (
+        <>
+          <td className="py-2 text-center">{activityName}</td>
+          <td className="py-2 text-center min-w-[5em]">
+            {formattedStartTime} - {formattedEndTime}
+          </td>
+        </>
+      ) : (
+        <td colSpan={2} className="py-2 text-center">
+          {formattedStartTime} - {formattedEndTime}
+        </td>
+      )}
       <td colSpan={1} className="py-2 text-center">
         {worldsAssignmentMap[assignment.assignmentCode] || assignment.assignmentCode}
       </td>

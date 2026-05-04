@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { useCollapse } from '@/hooks/UseCollapse';
 import { useNow } from '@/hooks/useNow/useNow';
 import { parseActivityCodeFlexible } from '@/lib/activityCodes';
+import { isOfficialEventId } from '@/lib/events';
 import { isActivityWithRoomOrParent } from '@/lib/typeguards';
 import { byDate, roundTime } from '@/lib/utils';
 import { getRoomData, hasMultipleScheduleLocations } from '../../lib/activities';
 import { ExtraAssignment } from './PersonalExtraAssignment';
 import { PersonalNormalAssignment } from './PersonalNormalAssignment';
-import { getGroupedAssignmentsByDate } from './utils';
+import { formatBriefActivityName, getGroupedAssignmentsByDate } from './utils';
 
 export interface AssignmentsProps {
   wcif: Competition;
@@ -126,12 +127,17 @@ export function Assignments({ wcif, person, showStationNumber }: AssignmentsProp
                             ? activity.parent?.room
                             : undefined;
                       if (assignment.type === 'extra') {
+                        const parsed = parseActivityCodeFlexible(activity.activityCode);
+                        const activityName = isOfficialEventId(parsed.eventId)
+                          ? formatBriefActivityName(activity)
+                          : undefined;
                         return (
                           <ExtraAssignment
                             key={`${date}-${roundedStartTime.toLocaleString()}-${
                               assignment.assignmentCode
                             }`}
                             assignment={assignment}
+                            activityName={activityName}
                             isOver={isOver}
                             isCurrent={isCurrent}
                             startTime={roundedStartTime}
