@@ -51,9 +51,7 @@ export const ExtraAssignment = ({
       {activityName ? (
         <>
           <td className="py-2 text-center">{activityName}</td>
-          <td className="py-2 text-center min-w-[5em]">
-            {formattedStartTime} - {formattedEndTime}
-          </td>
+          <td className="py-2 text-center min-w-[5em]">{formattedStartTime}</td>
         </>
       ) : (
         <td colSpan={2} className="py-2 text-center">
