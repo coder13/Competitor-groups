@@ -17,13 +17,21 @@ export const getNormalAssignments = (wcif: Competition, person: Person) => {
           ...assignment,
           activity: allActivities.find(({ id }) => id === assignment.activityId),
         }))
-        .filter(
-          (assignment) =>
-            !(
-              assignment.activity?.activityCode === 'other-multi' &&
-              assignment.assignmentCode === 'competitor'
-            ),
-        )
+        .filter((assignment) => {
+          if (
+            assignment.activity?.activityCode === 'other-multi' &&
+            assignment.assignmentCode === 'competitor'
+          ) {
+            return false;
+          }
+          if (assignment.assignmentCode === 'competitor') {
+            const parsed = parseActivityCodeFlexible(assignment.activity?.activityCode || '');
+            if (parsed.eventId === '333fm' && parsed.attemptNumber !== null) {
+              return false;
+            }
+          }
+          return true;
+        })
         .sort((a, b) => byDate(a.activity, b.activity))
     : [];
 
@@ -85,15 +93,45 @@ const getCubeSubmissionAssignments = (wcif: Competition, person: Person) => {
   );
 };
 
+const getFmcAttemptAssignments = (wcif: Competition, person: Person) => {
+  const allActivities = getAllActivities(wcif);
+
+  if (!person.registration?.eventIds.includes('333fm')) {
+    return [];
+  }
+
+  const fmcAttemptActivities = allActivities.filter((activity) => {
+    const parsed = parseActivityCodeFlexible(activity.activityCode);
+    return parsed.eventId === '333fm' && parsed.attemptNumber !== null;
+  });
+
+  return fmcAttemptActivities.map(
+    (
+      activity,
+    ): Assignment & {
+      type: 'extra';
+      activity: Activity;
+    } => ({
+      type: 'extra',
+      assignmentCode: 'competitor',
+      activityId: activity.id,
+      stationNumber: null,
+      activity,
+    }),
+  );
+};
+
 export const getAllAssignments = (wcif: Competition, person: Person) => {
   const normalAssignments = getNormalAssignments(wcif, person);
   const extraAssignments = getExtraAssignments(person);
   const mbldCubeSubmissionAssignments = getCubeSubmissionAssignments(wcif, person);
+  const fmcAttemptAssignments = getFmcAttemptAssignments(wcif, person);
 
   const allAssignments = [
     ...normalAssignments,
     ...extraAssignments,
     ...mbldCubeSubmissionAssignments,
+    ...fmcAttemptAssignments,
   ].sort((a, b) => byDate(a.activity, b.activity));
 
   return allAssignments;
