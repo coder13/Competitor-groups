@@ -205,6 +205,7 @@ competition:
     best: Best
     attempts: Attempts
     unknownCompetitor: 'Competitor #{{personId}}'
+    viewLiveResults: View live results
   personalResults:
     eventResults: Event results
   round:

@@ -1,12 +1,21 @@
-import { AttemptResult, EventId, Result, Round } from '@wca/helpers';
+import { AttemptResult, EventId } from '@wca/helpers';
+import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { LinkRenderer } from '@/lib/linkRenderer';
 import { renderResultByEventId } from '@/lib/results';
 
 interface PersonalRoundResult {
-  round: Round;
+  roundId: string;
+  roundName?: string;
   roundNumber: number;
-  result: Result;
+  ranking: number | null;
+  advancing: boolean;
+  advancingQuestionable: boolean;
+  attempts: {
+    result: AttemptResult;
+  }[];
+  best: AttemptResult;
+  average: AttemptResult;
 }
 
 interface CompetitionPersonalResultsTableProps {
@@ -39,10 +48,7 @@ export function CompetitionPersonalResultsTable({
   LinkComponent,
 }: CompetitionPersonalResultsTableProps) {
   const { t } = useTranslation();
-  const attemptColumnCount = Math.max(
-    0,
-    ...roundResults.map(({ result }) => result.attempts.length),
-  );
+  const attemptColumnCount = Math.max(0, ...roundResults.map((result) => result.attempts.length));
 
   return (
     <div className="w-full overflow-x-auto border border-tertiary-weak bg-panel shadow-md">
@@ -55,8 +61,8 @@ export function CompetitionPersonalResultsTable({
           {Array.from({ length: attemptColumnCount }, (_, attemptIndex) => (
             <col key={attemptIndex} className="hidden w-16 md:table-column" />
           ))}
-          <col className="w-16" />
-          <col className="w-16" />
+          <col className="w-20 md:w-16" />
+          <col className="w-20 md:w-16" />
         </colgroup>
         <thead>
           <tr className="border-b border-tertiary-weak type-body-xs font-semibold">
@@ -83,16 +89,25 @@ export function CompetitionPersonalResultsTable({
           </tr>
         </thead>
         <tbody>
-          {roundResults.map(({ round, roundNumber, result }) => (
-            <tr key={round.id} className="border-b border-tertiary-weak last:border-b-0">
-              <td className="bg-green-300 px-2 py-2 text-right type-body-sm tabular-nums text-gray-950 dark:bg-green-700 dark:text-white">
+          {roundResults.map((result) => (
+            <tr key={result.roundId} className="border-b border-tertiary-weak last:border-b-0">
+              <td
+                className={classNames(
+                  'px-2 py-2 text-right type-body-sm tabular-nums',
+                  result.advancing &&
+                    !result.advancingQuestionable &&
+                    'bg-green-300 text-gray-950 dark:bg-green-700 dark:text-white',
+                  result.advancingQuestionable &&
+                    'bg-yellow-200 text-gray-950 dark:bg-yellow-500 dark:text-gray-950',
+                )}>
                 {result.ranking ?? '-'}
               </td>
               <td className="min-w-0 px-2 py-2">
                 <LinkComponent
-                  to={`/competitions/${competitionId}/results/${round.id}`}
+                  to={`/competitions/${competitionId}/results/${result.roundId}`}
                   className="block truncate text-primary hover-transition hover:text-primary-strong">
-                  {t('common.activityCodeToName.round', { roundNumber })}
+                  {result.roundName ??
+                    t('common.activityCodeToName.round', { roundNumber: result.roundNumber })}
                 </LinkComponent>
               </td>
               {Array.from({ length: attemptColumnCount }, (_, attemptIndex) => (
