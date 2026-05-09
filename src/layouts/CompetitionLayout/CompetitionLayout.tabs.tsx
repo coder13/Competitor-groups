@@ -44,6 +44,10 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
         href: `/competitions/${competitionId}/psych-sheet`,
         text: t('header.tabs.rankings'),
       },
+      {
+        href: `/competitions/${competitionId}/results`,
+        text: t('header.tabs.results'),
+      },
     );
 
     if (isPersonStaff) {

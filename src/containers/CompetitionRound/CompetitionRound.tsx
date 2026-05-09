@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
 import { Container } from '@/components/Container';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
+import { LinkButton } from '@/components/LinkButton';
 import {
   activityCodeToName,
   parseActivityCodeFlexible,
@@ -78,6 +79,14 @@ export function CompetitionRoundContainer({
             </p>
           )}
           {round && <CutoffTimeLimitPanel round={round} />}
+          {round && (
+            <LinkButton
+              to={`/competitions/${competitionId}/results/${roundId}`}
+              title={t('competition.results.seeResults')}
+              variant="light"
+              LinkComponent={LinkComponent}
+            />
+          )}
         </div>
       </div>
       <ul className="flex flex-col space-y-2 p-2">

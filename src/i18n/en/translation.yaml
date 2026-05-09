@@ -154,6 +154,7 @@ header:
     events: 'Events'
     schedule: 'Schedule'
     rankings: 'Rankings'
+    results: 'Results'
     scramblers: 'Scramblers'
     stream: 'Stream'
 home:
@@ -191,6 +192,19 @@ competition:
   rankings:
     title: Rankings
     name: Name
+  results:
+    title: Results
+    selectRound: Select a round to view its results.
+    seeResults: See Results
+    back: Back
+    roundNotFound: Round not found.
+    noResults: No results yet.
+    rank: '#'
+    competitor: Competitor
+    average: Avg
+    best: Best
+    attempts: Attempts
+    unknownCompetitor: 'Competitor #{{personId}}'
   round:
     linkedWith: 'Dual round with {{rounds}}'
   personalSchedule:

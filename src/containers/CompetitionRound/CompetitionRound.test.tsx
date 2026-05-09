@@ -49,6 +49,10 @@ jest.mock('react-i18next', () => ({
         return `Dual round with ${options?.rounds}`;
       }
 
+      if (key === 'competition.results.seeResults') {
+        return 'See Results';
+      }
+
       if (key === 'common.activityCodeToName.round') {
         return `Round ${options?.roundNumber}`;
       }
@@ -186,5 +190,14 @@ describe('CompetitionRoundContainer', () => {
     renderRound('333-r3');
 
     expect(screen.queryByText(/Dual round with/i)).not.toBeInTheDocument();
+  });
+
+  it('links to results for the selected round', () => {
+    renderRound('333-r2');
+
+    expect(screen.getByText('See Results')).toHaveAttribute(
+      'href',
+      '/competitions/TestComp2026/results/333-r2',
+    );
   });
 });

@@ -18,6 +18,7 @@ import CompetitionLive from './pages/Competition/Live';
 import CompetitionPerson from './pages/Competition/Person';
 import CompetitionPersonalBests from './pages/Competition/Person/PersonalBests';
 import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
+import CompetitionResults from './pages/Competition/Results';
 import {
   CompetitionActivity,
   CompetitionRoom,
@@ -106,6 +107,8 @@ const Navigation = () => {
 
           <Route path="psych-sheet" element={<PsychSheet />} />
           <Route path="psych-sheet/:eventId" element={<PsychSheetEvent />} />
+          <Route path="results" element={<CompetitionResults />} />
+          <Route path="results/:roundId" element={<CompetitionResults />} />
 
           <Route path="scramblers" element={<CompetitionScramblerSchedule />} />
           <Route path="stream" element={<CompetitionStreamSchedule />} />
