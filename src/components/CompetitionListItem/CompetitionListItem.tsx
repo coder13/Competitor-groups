@@ -13,6 +13,7 @@ interface CompetitionListItemProps {
   city: string;
   isLive: boolean;
   isBookmarked?: boolean;
+  variant?: 'card' | 'dropdown';
 }
 
 export const CompetitionListItem = ({
@@ -24,6 +25,7 @@ export const CompetitionListItem = ({
   city,
   isLive,
   isBookmarked,
+  variant = 'card',
 }: CompetitionListItemProps) => {
   const endDate = new Date(
     new Date(end_date).getTime() + 1000 * 60 * new Date().getTimezoneOffset(),
@@ -33,7 +35,9 @@ export const CompetitionListItem = ({
     <Link to={`/competitions/${id}`}>
       <li
         className={classNames(
-          'link-card list-none flex flex-row cursor-pointer group transition-colors my-1 type-body',
+          variant === 'card'
+            ? 'link-card list-none flex flex-row cursor-pointer group hover-transition my-1 type-body'
+            : 'list-none flex flex-row cursor-pointer group hover-transition type-body w-full px-2 py-2 bg-panel hover:bg-gray-100 dark:hover:bg-gray-700',
           {
             'opacity-50': endDate < new Date(Date.now() - 1000 * 60 * 60 * 24),
           },

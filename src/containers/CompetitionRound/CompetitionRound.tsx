@@ -91,7 +91,7 @@ export function CompetitionRoundContainer({
             <LinkComponent
               key={value}
               to={`/competitions/${competitionId}/events/${roundId}/${groupNumber}`}
-              className="flex flex-row list-none rounded-md border border-tertiary bg-tertiary px-3 py-2 transition-colors hover:bg-tertiary-strong group dark:text-white">
+              className="flex flex-row list-none rounded-md border border-tertiary bg-tertiary px-3 py-2 hover-transition hover:bg-tertiary-strong group dark:text-white">
               <li className="flex flex-col">
                 <span className="type-heading">
                   {t('common.activityCodeToName.group', { groupNumber })}
@@ -105,7 +105,7 @@ export function CompetitionRoundContainer({
       <div className="p-2">
         <LinkComponent
           to={`/competitions/${competitionId}/events/`}
-          className="my-1 flex w-full flex-row rounded-md border border-primary bg-primary p-2 px-1 transition-colors hover:bg-primary-strong group dark:text-gray-100">
+          className="my-1 flex w-full flex-row rounded-md border border-primary bg-primary p-2 px-1 hover-transition hover:bg-primary-strong group dark:text-gray-100">
           {t('competition.groups.backToEvents')}
         </LinkComponent>
       </div>

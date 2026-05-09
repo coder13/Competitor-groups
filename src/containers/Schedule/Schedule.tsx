@@ -40,7 +40,7 @@ const ScheduleDay = ({
   return (
     <div className="flex flex-col">
       <div
-        className="w-full text-center bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-default font-bold type-heading mb-1 select-none cursor-pointer h-10 transition-colors duration-150"
+        className="w-full text-center bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-default font-bold type-heading mb-1 select-none cursor-pointer h-10 hover-transition"
         onClick={() => toggleCollapsed()}>
         <span>{date}</span>
         <span className="p-2 flex-end">{collapsed ? ' ▼' : ' ▲'}</span>

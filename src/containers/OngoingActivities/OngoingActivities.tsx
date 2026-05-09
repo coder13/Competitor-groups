@@ -27,7 +27,7 @@ export const OngoingActivities = ({ competitionId }: OngoingActivitiesProps) => 
     return isInChargeOfComp && wcif?.id ? (
       <div className="py-2">
         <a
-          className="border border-assignment-competitor rounded-md p-2 px-1 flex cursor-pointer hover:bg-assignment-competitor-muted group transition-colors flex-row"
+          className="border border-assignment-competitor rounded-md p-2 px-1 flex cursor-pointer hover:bg-assignment-competitor-muted group hover-transition flex-row"
           href={`mailto:support@notifycomp.com?subject=${subject}&body=${body}`}
           target="_blank"
           rel="noreferrer">
