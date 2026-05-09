@@ -194,7 +194,6 @@ competition:
     name: Name
   results:
     title: Results
-    selectRound: Select a round to view its results.
     seeResults: See Results
     back: Back
     roundNotFound: Round not found.

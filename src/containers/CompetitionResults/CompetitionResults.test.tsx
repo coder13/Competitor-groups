@@ -4,6 +4,8 @@ import { Competition } from '@wca/helpers';
 import { AnchorLink } from '@/lib/linkRenderer';
 import { CompetitionResultsContainer } from './CompetitionResults';
 
+let mockWcaLiveRoundResults: unknown[] = [];
+
 jest.mock('@/components/Container', () => ({
   Container: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
@@ -13,11 +15,21 @@ jest.mock('@/lib/events', () => ({
   getAllEvents: (wcif: Competition) => wcif.events,
 }));
 
+jest.mock('@/hooks/queries/useWcaLive', () => ({
+  useWcaLiveRoundLink: () => ({
+    data: 'https://live.worldcubeassociation.org/competitions/TestComp2026/rounds/1',
+    status: 'success',
+  }),
+  useWcaLiveRoundResults: () => ({
+    data: { results: mockWcaLiveRoundResults },
+    status: 'success',
+  }),
+}));
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, options?: Record<string, unknown>) => {
       if (key === 'competition.results.title') return 'Results';
-      if (key === 'competition.results.selectRound') return 'Select a round';
       if (key === 'competition.results.roundNotFound') return 'Round not found.';
       if (key === 'competition.results.back') return 'Back';
       if (key === 'competition.results.noResults') return 'No results yet.';
@@ -165,6 +177,14 @@ function renderResults(selectedRoundId?: string) {
 }
 
 describe('CompetitionResultsContainer', () => {
+  beforeEach(() => {
+    mockWcaLiveRoundResults = [];
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('shows the round chooser without selected round content by default', () => {
     renderResults();
 
@@ -205,11 +225,17 @@ describe('CompetitionResultsContainer', () => {
       'href',
       '/competitions/TestComp2026/persons/2',
     );
+    expect(screen.getByRole('navigation', { name: 'Round' })).toBeInTheDocument();
+    expect(
+      screen.getAllByRole('link', { name: 'Round 1' }).map((link) => link.getAttribute('href')),
+    ).toEqual([
+      '/competitions/TestComp2026/results/333-r1',
+      '/competitions/TestComp2026/results/222-r1',
+    ]);
     expect(screen.queryByText('2010THOM03')).not.toBeInTheDocument();
     expect(screen.getAllByText('13.00')).toHaveLength(2);
     expect(screen.getAllByText('12.00')).toHaveLength(2);
     expect(screen.queryByLabelText('Attempts')).not.toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'Round 1' })).not.toBeInTheDocument();
   });
 
   it('shows a not-found state for an invalid round id', () => {
@@ -220,7 +246,7 @@ describe('CompetitionResultsContainer', () => {
       '/competitions/TestComp2026/results',
     );
     expect(screen.getByText('Round not found.')).toBeInTheDocument();
-    expect(screen.getAllByRole('link')).toHaveLength(1);
+    expect(screen.getAllByRole('link')).toHaveLength(3);
   });
 
   it('does not show the selected round scaffold for a round with no result rows', () => {
@@ -239,6 +265,36 @@ describe('CompetitionResultsContainer', () => {
     );
     expect(screen.getByText('222 Round 1')).toBeInTheDocument();
     expect(screen.getByText('No results yet.')).toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'Round 1' })).not.toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: 'Round 1' })).toHaveLength(2);
+  });
+
+  it('uses WCA Live partial results for the selected round when they are available', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2026-05-03T12:00:00'));
+    mockWcaLiveRoundResults = [
+      {
+        id: 'live-result-1',
+        ranking: 3,
+        advancing: true,
+        advancingQuestionable: true,
+        attempts: [{ result: 1100 }, { result: 1200 }],
+        best: 1100,
+        average: 0,
+        person: {
+          id: 'live-person-1',
+          registrantId: 1,
+          name: 'Blake Thompson',
+        },
+      },
+    ];
+
+    renderResults('333-r1');
+
+    expect(screen.getByRole('link', { name: 'Blake Thompson' })).toHaveAttribute(
+      'href',
+      '/competitions/TestComp2026/persons/1',
+    );
+    expect(screen.getByText('3')).toHaveClass('bg-yellow-200');
+    expect(screen.getAllByText('11.00')).toHaveLength(2);
+    expect(screen.queryByText('13.00')).not.toBeInTheDocument();
   });
 });

@@ -47,6 +47,33 @@ export const useWcaLiveCompetitorLink = (
   });
 };
 
+export const useWcaLiveRoundLink = (
+  competitionId: string,
+  eventId: string,
+  roundNumber: number,
+  options: { enabled?: boolean } = {},
+) => {
+  return useQuery({
+    enabled: options.enabled ?? true,
+    retry: false,
+    queryKey: ['wca-live/competition-round-link', competitionId, eventId, roundNumber],
+    queryFn: async () => {
+      const response = await fetch(
+        `${WCA_LIVE_ORIGIN}/link/competitions/${competitionId}/rounds/${eventId}/${roundNumber}`,
+      );
+      if (!response.ok && response.status === 404) {
+        const { errors } = (await response.json()) as {
+          errors: {
+            detail: string;
+          };
+        };
+        throw new Error(errors.detail);
+      }
+      return response.url;
+    },
+  });
+};
+
 export interface WcaLiveCompetitorResult {
   id: string;
   ranking: number | null;
@@ -77,12 +104,48 @@ export interface WcaLiveCompetitorResult {
   };
 }
 
+export interface WcaLiveRoundResult {
+  id: string;
+  ranking: number | null;
+  advancing: boolean;
+  advancingQuestionable: boolean;
+  attempts: {
+    result: number;
+  }[];
+  best: number;
+  average: number;
+  person: {
+    id: string;
+    registrantId: number | null;
+    name: string;
+  };
+}
+
+export interface WcaLiveRound {
+  id: string;
+  results: WcaLiveRoundResult[];
+  format: {
+    id: string;
+    numberOfAttempts: number;
+    sortBy: string;
+  };
+}
+
 interface WcaLiveCompetitorResultsResponse {
   data?: {
     person?: {
       id: string;
       results: WcaLiveCompetitorResult[];
     } | null;
+  };
+  errors?: {
+    message: string;
+  }[];
+}
+
+interface WcaLiveRoundResultsResponse {
+  data?: {
+    round?: WcaLiveRound | null;
   };
   errors?: {
     message: string;
@@ -126,8 +189,42 @@ const WCA_LIVE_COMPETITOR_RESULTS_QUERY = `
   }
 `;
 
+const WCA_LIVE_ROUND_RESULTS_QUERY = `
+  query Round($id: ID!) {
+    round(id: $id) {
+      id
+      format {
+        id
+        numberOfAttempts
+        sortBy
+      }
+      results {
+        id
+        ranking
+        advancing
+        advancingQuestionable
+        attempts {
+          result
+        }
+        best
+        average
+        person {
+          id
+          registrantId
+          name
+        }
+      }
+    }
+  }
+`;
+
 const getCompetitorIdFromWcaLiveUrl = (url: string) => {
   const match = url.match(/\/competitors\/([^/?#]+)/);
+  return match?.[1];
+};
+
+const getRoundIdFromWcaLiveUrl = (url: string) => {
+  const match = url.match(/\/rounds\/([^/?#]+)/);
   return match?.[1];
 };
 
@@ -162,6 +259,37 @@ const fetchWcaLiveCompetitorResults = async (competitorUrl: string) => {
   return payload.data?.person?.results ?? [];
 };
 
+const fetchWcaLiveRoundResults = async (roundUrl: string) => {
+  const roundId = getRoundIdFromWcaLiveUrl(roundUrl);
+
+  if (!roundId) {
+    throw new Error('Could not resolve WCA Live round id.');
+  }
+
+  const response = await fetch(`${WCA_LIVE_ORIGIN}/api`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: WCA_LIVE_ROUND_RESULTS_QUERY,
+      variables: { id: roundId },
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`WCA Live round results request failed with status ${response.status}.`);
+  }
+
+  const payload = (await response.json()) as WcaLiveRoundResultsResponse;
+
+  if (payload.errors?.length) {
+    throw new Error(payload.errors.map((error) => error.message).join('\n'));
+  }
+
+  return payload.data?.round;
+};
+
 export const useWcaLiveCompetitorResults = (
   competitorUrl: string | undefined,
   options: { enabled?: boolean } = {},
@@ -171,4 +299,17 @@ export const useWcaLiveCompetitorResults = (
     queryKey: ['wca-live/competitor-results', competitorUrl],
     queryFn: () => fetchWcaLiveCompetitorResults(competitorUrl!),
     refetchInterval: 5 * 60 * 1000,
+    refetchIntervalInBackground: false,
+  });
+
+export const useWcaLiveRoundResults = (
+  roundUrl: string | undefined,
+  options: { enabled?: boolean } = {},
+) =>
+  useQuery({
+    enabled: Boolean(roundUrl) && (options.enabled ?? true),
+    queryKey: ['wca-live/round-results', roundUrl],
+    queryFn: () => fetchWcaLiveRoundResults(roundUrl!),
+    refetchInterval: 5 * 60 * 1000,
+    refetchIntervalInBackground: false,
   });

@@ -1,31 +1,43 @@
-import {
-  AttemptResult,
-  EventId,
-  Person,
-  RankingType,
-  Result,
-  Round,
-  RoundFormat,
-} from '@wca/helpers';
+import { AttemptResult, EventId, Person, RankingType, Round, RoundFormat } from '@wca/helpers';
+import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { AnchorLink, LinkRenderer } from '@/lib/linkRenderer';
 import { renderResultByEventId } from '@/lib/results';
+
+export interface CompetitionRoundResult {
+  id: string | number;
+  personId: number | null;
+  personName?: string;
+  ranking: number | null;
+  advancing: boolean;
+  advancingQuestionable: boolean;
+  attempts: {
+    result: AttemptResult;
+  }[];
+  best: AttemptResult;
+  average: AttemptResult;
+}
 
 interface CompetitionResultsTableProps {
   competitionId: string;
   eventId: string;
   round: Round;
   persons: Person[];
+  results?: CompetitionRoundResult[];
   LinkComponent?: LinkRenderer;
 }
 
 const getPrimaryRankingType = (format: RoundFormat): RankingType =>
   format === 'a' || format === 'm' ? 'average' : 'single';
 
-const getResultValue = (result: Result, rankingType: RankingType) =>
+const getResultValue = (result: CompetitionRoundResult, rankingType: RankingType) =>
   rankingType === 'average' ? result.average : result.best;
 
-const renderResultValue = (eventId: string, rankingType: RankingType, result: Result) => {
+const renderResultValue = (
+  eventId: string,
+  rankingType: RankingType,
+  result: CompetitionRoundResult,
+) => {
   const value = getResultValue(result, rankingType);
 
   if (value === 0) {
@@ -48,13 +60,23 @@ export function CompetitionResultsTable({
   eventId,
   round,
   persons,
+  results = round.results.map((result) => ({
+    id: result.personId,
+    personId: result.personId,
+    ranking: result.ranking,
+    advancing: false,
+    advancingQuestionable: false,
+    attempts: result.attempts.map((attempt) => ({ result: attempt.result })),
+    best: result.best,
+    average: result.average,
+  })),
   LinkComponent = AnchorLink,
 }: CompetitionResultsTableProps) {
   const { t } = useTranslation();
   const primaryRankingType = getPrimaryRankingType(round.format);
-  const attemptColumnCount = Math.max(0, ...round.results.map((result) => result.attempts.length));
+  const attemptColumnCount = Math.max(0, ...results.map((result) => result.attempts.length));
 
-  if (round.results.length === 0) {
+  if (results.length === 0) {
     return (
       <div className="rounded-md border border-tertiary-weak bg-panel p-4 text-muted">
         {t('competition.results.noResults')}
@@ -103,19 +125,28 @@ export function CompetitionResultsTable({
           </tr>
         </thead>
         <tbody>
-          {round.results.map((result) => {
+          {results.map((result) => {
             const person = persons.find((p) => p.registrantId === result.personId);
             const name =
               person?.name ??
+              result.personName ??
               t('competition.results.unknownCompetitor', { personId: result.personId });
 
             return (
-              <tr key={result.personId} className="border-b border-tertiary-weak last:border-b-0">
-                <td className="bg-green-300 px-2 py-2 text-right type-body-sm tabular-nums text-gray-950 dark:bg-green-700 dark:text-white">
+              <tr key={result.id} className="border-b border-tertiary-weak last:border-b-0">
+                <td
+                  className={classNames(
+                    'px-2 py-2 text-right type-body-sm tabular-nums',
+                    result.advancing &&
+                      !result.advancingQuestionable &&
+                      'bg-green-300 text-gray-950 dark:bg-green-700 dark:text-white',
+                    result.advancingQuestionable &&
+                      'bg-yellow-200 text-gray-950 dark:bg-yellow-500 dark:text-gray-950',
+                  )}>
                   {result.ranking ?? '-'}
                 </td>
                 <td className="min-w-0 px-2 py-2">
-                  {person ? (
+                  {person && result.personId ? (
                     <LinkComponent
                       to={`/competitions/${competitionId}/persons/${person.registrantId}`}
                       className="block truncate text-default hover-transition hover:text-primary">
