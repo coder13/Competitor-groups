@@ -205,12 +205,18 @@ competition:
     best: Best
     attempts: Attempts
     unknownCompetitor: 'Competitor #{{personId}}'
+  personalResults:
+    eventResults: Event results
   round:
     linkedWith: 'Dual round with {{rounds}}'
   personalSchedule:
+    schedule: Schedule
+    results: Results
+    records: Records
     registeredEvents: Registered Events
     viewPersonalRecords: View Personal Records
     viewResults: View Results
+    viewWcaLiveResults: View WCA Live Results
     noAssignments:
       line1: No Assignments
       line2: Check back later for updates!

@@ -5,9 +5,8 @@ import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Button, ExternalLink, LinkButton } from '@/components';
+import { Button } from '@/components/Button';
 import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
-import { useWcaLiveCompetitorLink } from '@/hooks/queries/useWcaLive';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 const fallbackAvatarUrl =
@@ -24,11 +23,6 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
   const { competitionId } = useWCIF();
   const { pinnedPersons, pinPerson, unpinPerson } = usePinnedPersons(competitionId);
   const isPinned = pinnedPersons.some((i) => i === person.registrantId);
-
-  const { data: wcaLiveLink, status: wcaLiveFetchStatus } = useWcaLiveCompetitorLink(
-    competitionId,
-    person.registrantId.toString(),
-  );
 
   const registeredEventIconClassNames = useMemo(() => {
     const officialEventIds = person.registration?.eventIds || [];
@@ -98,23 +92,6 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
           </div>
         </div>
       </div>
-      {person.wcaId && (
-        <>
-          <hr className="my-2 border-tertiary-weak" />
-          <div className="flex flex-col px-1 space-y-2">
-            <LinkButton
-              variant="green"
-              title={t('competition.personalSchedule.viewPersonalRecords')}
-              to={`/competitions/${competitionId}/personal-records/${person.wcaId}`}
-            />
-            {wcaLiveFetchStatus === 'success' && (
-              <ExternalLink href={wcaLiveLink}>
-                {t('competition.personalSchedule.viewResults')}
-              </ExternalLink>
-            )}
-          </div>
-        </>
-      )}
     </>
   );
 };

@@ -1,8 +1,11 @@
 import { Person } from '@wca/helpers';
 import { Extension } from '@wca/helpers/lib/models/extension';
 import { useEffect } from 'react';
-import { Container } from '@/components/Container';
-import { PersonalScheduleContainer } from '@/containers/PersonalSchedule';
+import { useLocation } from 'react-router-dom';
+import { CompetitionPersonalResultsContent } from '@/containers/CompetitionPersonalResults';
+import { PersonalBestsContainer } from '@/containers/PersonalBests';
+import { PersonalScheduleContent } from '@/containers/PersonalSchedule';
+import { PersonalPage, PersonalPageLayout } from '@/containers/PersonalSchedule/PersonalPageLayout';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export interface CompetitionPersonContainerProps {
@@ -10,7 +13,8 @@ export interface CompetitionPersonContainerProps {
 }
 
 export function CompetitionPersonContainer({ registrantId }: CompetitionPersonContainerProps) {
-  const { wcif, setTitle } = useWCIF();
+  const { competitionId, wcif, setTitle } = useWCIF();
+  const { pathname } = useLocation();
 
   const person = wcif?.persons?.find((p) => p.registrantId.toString() === registrantId) as
     | (Person & {
@@ -28,9 +32,27 @@ export function CompetitionPersonContainer({ registrantId }: CompetitionPersonCo
     return null;
   }
 
+  const activePage: PersonalPage = pathname.endsWith('/results')
+    ? 'results'
+    : pathname.endsWith('/records')
+      ? 'records'
+      : 'schedule';
+
+  const content = (() => {
+    if (activePage === 'results') {
+      return <CompetitionPersonalResultsContent person={person} />;
+    }
+
+    if (activePage === 'records') {
+      return person.wcaId ? <PersonalBestsContainer wcif={wcif} person={person} /> : null;
+    }
+
+    return <PersonalScheduleContent person={person} />;
+  })();
+
   return (
-    <Container>
-      <PersonalScheduleContainer person={person} />
-    </Container>
+    <PersonalPageLayout activePage={activePage} competitionId={competitionId} person={person}>
+      {content}
+    </PersonalPageLayout>
   );
 }
