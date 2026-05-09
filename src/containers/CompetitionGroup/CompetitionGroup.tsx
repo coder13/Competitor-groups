@@ -1,6 +1,6 @@
 import { ActivityCode } from '@wca/helpers';
 import classNames from 'classnames';
-import { Fragment, useEffect, useMemo } from 'react';
+import { Fragment, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityRow } from '@/components';
 import { AssignmentCodeCell } from '@/components/AssignmentCodeCell';
@@ -26,6 +26,7 @@ export interface CompetitionGroupContainerProps {
   roundId: string;
   groupNumber: string;
   LinkComponent?: LinkRenderer;
+  onNavigate?: (url: string) => void;
 }
 
 export function CompetitionGroupContainer({
@@ -33,6 +34,7 @@ export function CompetitionGroupContainer({
   roundId,
   groupNumber,
   LinkComponent = AnchorLink,
+  onNavigate,
 }: CompetitionGroupContainerProps) {
   const { t } = useTranslation();
   const { wcif, setTitle } = useWCIF();
@@ -95,12 +97,44 @@ export function CompetitionGroupContainer({
 
   const prev = wcif && prevActivityCode(wcif, activityCode);
   const next = wcif && nextActivityCode(wcif, activityCode);
-  const prevUrl = `/competitions/${competitionId}/events/${prev?.split?.('-g')?.[0]}/${
-    prev?.split?.('-g')?.[1]
-  }`;
-  const nextUrl = `/competitions/${competitionId}/events/${next?.split?.('-g')?.[0]}/${
-    next?.split?.('-g')?.[1]
-  }`;
+  const prevUrl = prev
+    ? `/competitions/${competitionId}/events/${prev.split('-g')[0]}/${prev.split('-g')[1]}`
+    : undefined;
+  const nextUrl = next
+    ? `/competitions/${competitionId}/events/${next.split('-g')[0]}/${next.split('-g')[1]}`
+    : undefined;
+
+  const goToPrev = useCallback(() => {
+    if (prevUrl) {
+      onNavigate?.(prevUrl);
+    }
+  }, [onNavigate, prevUrl]);
+
+  const goToNext = useCallback(() => {
+    if (nextUrl) {
+      onNavigate?.(nextUrl);
+    }
+  }, [onNavigate, nextUrl]);
+
+  useEffect(() => {
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        goToPrev();
+      }
+
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        goToNext();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeydown);
+    };
+  }, [goToPrev, goToNext]);
 
   return (
     <>
