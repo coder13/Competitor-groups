@@ -28,9 +28,6 @@ export default defineConfig({
     ViteYaml(),
     VitePWA({
       registerType: 'autoUpdate',
-      devOptions: {
-        enabled: true,
-      },
     }),
   ],
   build: {
