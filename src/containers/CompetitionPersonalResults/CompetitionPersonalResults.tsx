@@ -2,12 +2,15 @@ import { Competition, Person } from '@wca/helpers';
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExternalLink } from '@/components/ExternalLink';
+import { getWcaApiResultsByRoundId } from '@/containers/CompetitionResults/resultSources';
 import { PersonalPageLayout } from '@/containers/PersonalSchedule/PersonalPageLayout';
 import {
   useWcaLiveCompetitorLink,
   useWcaLiveCompetitorResults,
   WcaLiveCompetitorResult,
 } from '@/hooks/queries/useWcaLive';
+import { useWcaCompetitionResults } from '@/hooks/queries/useWcaResults';
+import { WcaCompetitionResult } from '@/lib/api';
 import { isCompetitionDay } from '@/lib/competitionDates';
 import { getEventName } from '@/lib/events';
 import { AnchorLink, LinkRenderer } from '@/lib/linkRenderer';
@@ -108,6 +111,74 @@ const getLivePersonalResults = (
     .sort((a, b) => a.eventRank - b.eventRank);
 };
 
+const getApiPersonalResults = (
+  wcif: Competition,
+  person: Person,
+  apiResults: WcaCompetitionResult[],
+): EventResults[] => {
+  const personResults = apiResults.filter(
+    (result) =>
+      (person.wcaId && result.wca_id === person.wcaId) ||
+      result.name.toLocaleLowerCase() === person.name.toLocaleLowerCase(),
+  );
+  const resultsByRoundId = getWcaApiResultsByRoundId(wcif, personResults);
+
+  return wcif.events
+    .map((event, eventIndex) => {
+      const rounds = event.rounds
+        .map<PersonalRoundResult | undefined>((round, roundIndex) => {
+          const result = resultsByRoundId.get(round.id)?.[0];
+
+          return result
+            ? {
+                roundId: round.id,
+                roundNumber: roundIndex + 1,
+                ranking: result.pos,
+                advancing: false,
+                advancingQuestionable: false,
+                attempts: result.attempts.map((attempt) => ({ result: attempt })),
+                best: result.best,
+                average: result.average,
+              }
+            : undefined;
+        })
+        .filter((roundResult): roundResult is PersonalRoundResult => Boolean(roundResult));
+
+      return {
+        eventId: event.id,
+        eventName: getEventName(event.id, event),
+        eventRank: eventIndex,
+        rounds,
+      };
+    })
+    .filter((eventResults) => eventResults.rounds.length > 0);
+};
+
+const mergeEventResultSources = (...sources: EventResults[][]): EventResults[] => {
+  const eventsById = new Map<string, EventResults>();
+
+  sources.forEach((sourceEvents) => {
+    sourceEvents.forEach((sourceEvent) => {
+      const existingEvent = eventsById.get(sourceEvent.eventId);
+      const roundsById = new Map(
+        existingEvent?.rounds.map((roundResult) => [roundResult.roundId, roundResult]) ?? [],
+      );
+
+      sourceEvent.rounds.forEach((roundResult) => {
+        roundsById.set(roundResult.roundId, roundResult);
+      });
+
+      eventsById.set(sourceEvent.eventId, {
+        ...sourceEvent,
+        eventRank: existingEvent?.eventRank ?? sourceEvent.eventRank,
+        rounds: [...roundsById.values()].sort((a, b) => a.roundNumber - b.roundNumber),
+      });
+    });
+  });
+
+  return [...eventsById.values()].sort((a, b) => a.eventRank - b.eventRank);
+};
+
 export function CompetitionPersonalResultsContent({
   person,
   LinkComponent = AnchorLink,
@@ -123,6 +194,13 @@ export function CompetitionPersonalResultsContent({
   const { data: wcaLiveResults } = useWcaLiveCompetitorResults(wcaLiveLink, {
     enabled: isTodayCompetitionDay && wcaLiveFetchStatus === 'success',
   });
+  const { data: wcaApiResults, status: wcaApiResultsStatus } = useWcaCompetitionResults(
+    competitionId,
+    {
+      enabled: Boolean(wcif),
+    },
+  );
+  const isWcaApiResultsLoading = wcaApiResultsStatus === 'pending' && !wcaApiResults;
 
   const eventResults = useMemo(() => {
     if (!wcif) {
@@ -132,9 +210,13 @@ export function CompetitionPersonalResultsContent({
     const liveEventResults = wcaLiveResults?.length
       ? getLivePersonalResults(wcif, wcaLiveResults)
       : [];
+    const storedEventResults = getPersonalResults(wcif, person);
+    const apiEventResults = wcaApiResults?.length
+      ? getApiPersonalResults(wcif, person, wcaApiResults)
+      : [];
 
-    return liveEventResults.length > 0 ? liveEventResults : getPersonalResults(wcif, person);
-  }, [person, wcaLiveResults, wcif]);
+    return mergeEventResultSources(apiEventResults, storedEventResults, liveEventResults);
+  }, [person, wcaApiResults, wcaLiveResults, wcif]);
 
   if (!wcif) {
     return null;
@@ -164,6 +246,10 @@ export function CompetitionPersonalResultsContent({
               />
             </section>
           ))}
+        </div>
+      ) : isWcaApiResultsLoading ? (
+        <div className="rounded-md border border-tertiary-weak bg-panel p-4 text-muted">
+          {t('common.loading')}
         </div>
       ) : (
         <div className="rounded-md border border-tertiary-weak bg-panel p-4 text-muted">

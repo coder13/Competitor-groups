@@ -6,6 +6,8 @@ import { AnchorLink } from '@/lib/linkRenderer';
 import { CompetitionPersonalResultsContainer } from './CompetitionPersonalResults';
 
 let mockWcaLiveResults: unknown[] = [];
+let mockWcaCompetitionResults: unknown[] | undefined = [];
+let mockWcaCompetitionResultsStatus = 'success';
 
 jest.mock('@/components/Container', () => ({
   Container: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -31,6 +33,13 @@ jest.mock('@/hooks/queries/useWcaLive', () => ({
   useWcaLiveCompetitorResults: () => ({
     data: mockWcaLiveResults,
     status: 'success',
+  }),
+}));
+
+jest.mock('@/hooks/queries/useWcaResults', () => ({
+  useWcaCompetitionResults: () => ({
+    data: mockWcaCompetitionResults,
+    status: mockWcaCompetitionResultsStatus,
   }),
 }));
 
@@ -62,6 +71,7 @@ jest.mock('react-i18next', () => ({
       if (key === 'common.name') return 'Name';
       if (key === 'common.wca.event') return 'Event';
       if (key === 'common.wca.round') return 'Round';
+      if (key === 'common.loading') return 'Loading...';
       if (key === 'common.activityCodeToName.round') return `Round ${options?.roundNumber}`;
 
       return key;
@@ -162,6 +172,8 @@ describe('CompetitionPersonalResultsContainer', () => {
 
   beforeEach(() => {
     mockWcaLiveResults = [];
+    mockWcaCompetitionResults = [];
+    mockWcaCompetitionResultsStatus = 'success';
   });
 
   it('shows event tables for the selected competitor results', () => {
@@ -231,6 +243,40 @@ describe('CompetitionPersonalResultsContainer', () => {
     expect(screen.getAllByText('8.00')).toHaveLength(2);
     expect(screen.getByText('4')).toHaveClass('bg-yellow-200');
     expect(screen.queryByText('7.41')).not.toBeInTheDocument();
+  });
+
+  it('uses WCA competition API results when WCIF and WCA Live results are missing', () => {
+    const originalResults = wcifMock.events[0].rounds[0].results;
+    wcifMock.events[0].rounds[0].results = [];
+    mockWcaCompetitionResults = [
+      {
+        id: 8085002,
+        pos: 3,
+        best: 700,
+        average: 800,
+        name: 'Vikram Haldar',
+        country_iso2: 'US',
+        competition_id: 'TestComp2026',
+        event_id: '333',
+        round_type_id: '1',
+        format_id: 'a',
+        wca_id: '2010HALD01',
+        attempts: [700, 800, 900],
+      },
+    ];
+
+    try {
+      renderPersonalResults();
+
+      expect(screen.getByRole('link', { name: 'Round 1' })).toHaveAttribute(
+        'href',
+        '/competitions/TestComp2026/results/333-r1',
+      );
+      expect(screen.getAllByText('8.00')).toHaveLength(2);
+      expect(screen.getAllByText('7.00')).toHaveLength(2);
+    } finally {
+      wcifMock.events[0].rounds[0].results = originalResults;
+    }
   });
 
   it('opens full result details from a narrow personal results row', () => {

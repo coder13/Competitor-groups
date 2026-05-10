@@ -5,6 +5,8 @@ import { AnchorLink } from '@/lib/linkRenderer';
 import { CompetitionResultsContainer } from './CompetitionResults';
 
 let mockWcaLiveRoundResults: unknown[] = [];
+let mockWcaCompetitionResults: unknown[] | undefined = [];
+let mockWcaCompetitionResultsStatus = 'success';
 
 jest.mock('@/components/Container', () => ({
   Container: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -23,6 +25,13 @@ jest.mock('@/hooks/queries/useWcaLive', () => ({
   useWcaLiveRoundResults: () => ({
     data: { results: mockWcaLiveRoundResults },
     status: 'success',
+  }),
+}));
+
+jest.mock('@/hooks/queries/useWcaResults', () => ({
+  useWcaCompetitionResults: () => ({
+    data: mockWcaCompetitionResults,
+    status: mockWcaCompetitionResultsStatus,
   }),
 }));
 
@@ -49,6 +58,7 @@ jest.mock('react-i18next', () => ({
       if (key === 'common.wca.event') return 'Event';
       if (key === 'common.wca.round') return 'Round';
       if (key === 'common.view') return 'View';
+      if (key === 'common.loading') return 'Loading...';
       if (key === 'common.activityCodeToName.round') return `Round ${options?.roundNumber}`;
 
       return key;
@@ -236,6 +246,8 @@ function renderResults(selectedRoundId?: string) {
 describe('CompetitionResultsContainer', () => {
   beforeEach(() => {
     mockWcaLiveRoundResults = [];
+    mockWcaCompetitionResults = [];
+    mockWcaCompetitionResultsStatus = 'success';
   });
 
   afterEach(() => {
@@ -332,6 +344,60 @@ describe('CompetitionResultsContainer', () => {
 
     expect(screen.getByText('Round not found.')).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Round 2' })).not.toBeInTheDocument();
+  });
+
+  it('does not show the round not-found state while fallback results are loading', () => {
+    mockWcaCompetitionResults = undefined;
+    mockWcaCompetitionResultsStatus = 'pending';
+
+    renderResults('333-r2');
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.queryByText('Round not found.')).not.toBeInTheDocument();
+  });
+
+  it('does not show the no-results state while fallback results are loading', () => {
+    mockWcaCompetitionResults = undefined;
+    mockWcaCompetitionResultsStatus = 'pending';
+
+    renderResults('222-r1');
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.queryByText('No results yet.')).not.toBeInTheDocument();
+  });
+
+  it('uses WCA competition API results when WCIF and WCA Live results are missing', () => {
+    mockWcaCompetitionResults = [
+      {
+        id: 8085001,
+        pos: 1,
+        best: 900,
+        average: 950,
+        name: 'Blake Thompson',
+        country_iso2: 'US',
+        competition_id: 'TestComp2026',
+        event_id: '333',
+        round_type_id: '2',
+        format_id: 'a',
+        wca_id: '2010THOM03',
+        attempts: [900, 950, 1000],
+      },
+    ];
+
+    renderResults('333-r2');
+
+    expect(screen.getByText('3x3x3 Cube Round 2')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Blake Thompson' })).toHaveAttribute(
+      'href',
+      '/competitions/TestComp2026/persons/1/results',
+    );
+    expect(
+      within(screen.getByRole('row', { name: /1 Blake Thompson/ })).getAllByText('9.50'),
+    ).toHaveLength(2);
+    expect(screen.getAllByText('9.00')).toHaveLength(2);
+    expect(
+      within(screen.getByRole('navigation', { name: 'Round' })).getAllByText('Done'),
+    ).toHaveLength(2);
   });
 
   it('shows round one for an event even before it has results', () => {

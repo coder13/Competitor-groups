@@ -55,6 +55,24 @@ export const fetchUserWithCompetitions = async (userId: string) =>
 export const fetchWcif = async (competitionId: string) =>
   wcaApiFetch<Competition>(`/competitions/${competitionId}/wcif/public`);
 
+export interface WcaCompetitionResult {
+  id: number;
+  pos: number;
+  best: number;
+  average: number;
+  name: string;
+  country_iso2: string;
+  competition_id: string;
+  event_id: string;
+  round_type_id: string;
+  format_id: string;
+  wca_id: string | null;
+  attempts: number[];
+}
+
+export const fetchCompetitionResults = async (competitionId: string) =>
+  wcaApiFetch<WcaCompetitionResult[]>(`/competitions/${competitionId}/results`);
+
 export const fetchCompetition = async (competitionId: string) =>
   await wcaApiFetch<ApiCompetition>(`/competitions/${competitionId}`);
 

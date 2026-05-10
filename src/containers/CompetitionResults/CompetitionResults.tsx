@@ -11,6 +11,7 @@ import {
   RoundResultStatusBadge,
 } from '@/components/RoundActionPicker';
 import { useWcaLiveRoundLink, useWcaLiveRoundResults } from '@/hooks/queries/useWcaLive';
+import { useWcaCompetitionResults } from '@/hooks/queries/useWcaResults';
 import { useNow } from '@/hooks/useNow';
 import { getRoundActivitiesForRoundId } from '@/lib/activities';
 import { isCompetitionDay } from '@/lib/competitionDates';
@@ -21,6 +22,7 @@ import { getAdvancementConditionForRound } from '@/lib/wcif';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { CompetitionResultsTable, CompetitionRoundResult } from './CompetitionResultsTable';
 import { getStoredRoundResults } from './advancement';
+import { getApiRoundResults, getWcaApiResultsByRoundId } from './resultSources';
 import { getRoundRosterResults } from './roundRoster';
 
 export interface CompetitionResultsContainerProps {
@@ -38,6 +40,7 @@ const getRoundResultStatus = (
   round: RoundOptionGroup['rounds'][number]['round'],
   wcif: ReturnType<typeof useWCIF>['wcif'],
   now: Date,
+  hasApiResults = false,
 ): RoundResultStatus => {
   const isRoundOngoing =
     wcif &&
@@ -52,7 +55,7 @@ const getRoundResultStatus = (
     return 'now';
   }
 
-  if (round.results.length === 0) {
+  if (round.results.length === 0 && !hasApiResults) {
     return undefined;
   }
 
@@ -66,6 +69,7 @@ function ResultsRoundNav({
   LinkComponent,
   wcif,
   now,
+  apiResultsByRoundId,
 }: {
   competitionId: string;
   groups: RoundOptionGroup[];
@@ -73,6 +77,7 @@ function ResultsRoundNav({
   LinkComponent: LinkRenderer;
   wcif: ReturnType<typeof useWCIF>['wcif'];
   now: Date;
+  apiResultsByRoundId: Map<string, unknown[]>;
 }) {
   const { t } = useTranslation();
 
@@ -90,7 +95,12 @@ function ResultsRoundNav({
             <div>
               {rounds.map(({ round, roundNumber }) => {
                 const isSelected = round.id === selectedRoundId;
-                const status = getRoundResultStatus(round, wcif, now);
+                const status = getRoundResultStatus(
+                  round,
+                  wcif,
+                  now,
+                  (apiResultsByRoundId.get(round.id)?.length ?? 0) > 0,
+                );
 
                 return (
                   <LinkComponent
@@ -118,6 +128,23 @@ function ResultsRoundNav({
   );
 }
 
+const getResultKey = (result: CompetitionRoundResult) =>
+  result.personId == null ? `result-${result.id}` : `person-${result.personId}`;
+
+const mergeRoundResultSources = (
+  ...sources: CompetitionRoundResult[][]
+): CompetitionRoundResult[] => {
+  const resultsByKey = new Map<string, CompetitionRoundResult>();
+
+  sources.forEach((sourceResults) => {
+    sourceResults.forEach((result) => {
+      resultsByKey.set(getResultKey(result), result);
+    });
+  });
+
+  return [...resultsByKey.values()];
+};
+
 export function CompetitionResultsContainer({
   competitionId,
   selectedRoundId,
@@ -127,6 +154,17 @@ export function CompetitionResultsContainer({
   const { wcif, setTitle } = useWCIF();
   const now = useNow(30 * 1000);
   const isTodayCompetitionDay = wcif ? isCompetitionDay(wcif) : false;
+  const { data: wcaApiResults, status: wcaApiResultsStatus } = useWcaCompetitionResults(
+    competitionId,
+    {
+      enabled: Boolean(wcif),
+    },
+  );
+  const isWcaApiResultsLoading = wcaApiResultsStatus === 'pending' && !wcaApiResults;
+  const apiResultsByRoundId = useMemo(
+    () => (wcif && wcaApiResults ? getWcaApiResultsByRoundId(wcif, wcaApiResults) : new Map()),
+    [wcaApiResults, wcif],
+  );
 
   useEffect(() => {
     setTitle(t('competition.results.title'));
@@ -136,10 +174,13 @@ export function CompetitionResultsContainer({
     () =>
       wcif
         ? getAllRoundsWithEvents(wcif).filter(
-            ({ round, roundNumber }) => roundNumber === 1 || round.results.length > 0,
+            ({ round, roundNumber }) =>
+              roundNumber === 1 ||
+              round.results.length > 0 ||
+              (apiResultsByRoundId.get(round.id)?.length ?? 0) > 0,
           )
         : [],
-    [wcif],
+    [apiResultsByRoundId, wcif],
   );
   const eventsWithResults = useMemo(
     () =>
@@ -167,11 +208,16 @@ export function CompetitionResultsContainer({
         rounds: rounds.map(({ round, roundNumber }) => ({
           id: round.id,
           roundNumber,
-          resultStatus: getRoundResultStatus(round, wcif, now),
+          resultStatus: getRoundResultStatus(
+            round,
+            wcif,
+            now,
+            (apiResultsByRoundId.get(round.id)?.length ?? 0) > 0,
+          ),
           href: `/competitions/${competitionId}/results/${round.id}`,
         })),
       })),
-    [competitionId, eventsWithResults, now, wcif],
+    [apiResultsByRoundId, competitionId, eventsWithResults, now, wcif],
   );
   const selectedRound = useMemo(() => {
     if (!wcif || !selectedRoundId) {
@@ -180,10 +226,13 @@ export function CompetitionResultsContainer({
 
     const round = findRoundWithEvent(wcif, selectedRoundId);
     return round &&
-      (round.roundNumber === 1 || round.round.results.length > 0 || isTodayCompetitionDay)
+      (round.roundNumber === 1 ||
+        round.round.results.length > 0 ||
+        (apiResultsByRoundId.get(round.round.id)?.length ?? 0) > 0 ||
+        isTodayCompetitionDay)
       ? round
       : undefined;
-  }, [isTodayCompetitionDay, selectedRoundId, wcif]);
+  }, [apiResultsByRoundId, isTodayCompetitionDay, selectedRoundId, wcif]);
   const { data: wcaLiveRoundLink, status: wcaLiveRoundLinkStatus } = useWcaLiveRoundLink(
     competitionId,
     selectedRound?.event.id ?? '',
@@ -227,41 +276,22 @@ export function CompetitionResultsContainer({
 
     return getRoundRosterResults(wcif, selectedRound.round.id);
   }, [selectedRound, wcif]);
+  const apiRoundResults = useMemo(
+    () => getApiRoundResults(wcif, selectedRound?.round.id, wcaApiResults),
+    [selectedRound?.round.id, wcaApiResults, wcif],
+  );
   const roundResults = useMemo(() => {
     if (liveRoundResults.length === 0) {
-      return storedRoundResults;
+      return mergeRoundResultSources(apiRoundResults, storedRoundResults);
     }
 
-    const baseResultsByPersonId = new Map<number, CompetitionRoundResult>();
-    rosterResults.forEach((result) => {
-      if (result.personId != null) {
-        baseResultsByPersonId.set(result.personId, result);
-      }
-    });
-    storedRoundResults.forEach((result) => {
-      if (result.personId != null) {
-        baseResultsByPersonId.set(result.personId, result);
-      }
-    });
-
-    const liveResultsByPersonId = new Map<number, CompetitionRoundResult>();
-    liveRoundResults.forEach((result) => {
-      if (result.personId != null) {
-        liveResultsByPersonId.set(result.personId, result);
-      }
-    });
-    const liveResultsForUnknownPersons = liveRoundResults.filter(
-      (result) => result.personId == null,
+    return mergeRoundResultSources(
+      rosterResults,
+      apiRoundResults,
+      storedRoundResults,
+      liveRoundResults,
     );
-    const mergedBaseResults = [...baseResultsByPersonId.values()].map((result) =>
-      result.personId == null ? result : (liveResultsByPersonId.get(result.personId) ?? result),
-    );
-    const extraLiveResults = liveRoundResults.filter(
-      (result) => result.personId != null && !baseResultsByPersonId.has(result.personId),
-    );
-
-    return [...mergedBaseResults, ...extraLiveResults, ...liveResultsForUnknownPersons];
-  }, [liveRoundResults, rosterResults, storedRoundResults]);
+  }, [apiRoundResults, liveRoundResults, rosterResults, storedRoundResults]);
 
   if (selectedRoundId) {
     return (
@@ -274,6 +304,7 @@ export function CompetitionResultsContainer({
             LinkComponent={LinkComponent}
             wcif={wcif}
             now={now}
+            apiResultsByRoundId={apiResultsByRoundId}
           />
           <div className="flex min-w-0 flex-col space-y-4">
             <div className="md:hidden">
@@ -294,14 +325,24 @@ export function CompetitionResultsContainer({
                   })}
                 </h2>
                 <NoteBox text={t('competition.results.liveResultsDelayNote')} />
-                <CompetitionResultsTable
-                  competitionId={competitionId}
-                  eventId={selectedRound.event.id}
-                  round={selectedRound.round}
-                  persons={wcif?.persons ?? []}
-                  results={roundResults}
-                  LinkComponent={LinkComponent}
-                />
+                {isWcaApiResultsLoading && roundResults.length === 0 ? (
+                  <section className="rounded-md border border-tertiary-weak bg-panel p-4 text-muted">
+                    <p>{t('common.loading')}</p>
+                  </section>
+                ) : (
+                  <CompetitionResultsTable
+                    competitionId={competitionId}
+                    eventId={selectedRound.event.id}
+                    round={selectedRound.round}
+                    persons={wcif?.persons ?? []}
+                    results={roundResults}
+                    LinkComponent={LinkComponent}
+                  />
+                )}
+              </section>
+            ) : isWcaApiResultsLoading ? (
+              <section className="rounded-md border border-tertiary-weak bg-panel p-4 text-muted">
+                <p>{t('common.loading')}</p>
               </section>
             ) : (
               <section className="rounded-md border border-tertiary-weak bg-panel p-4">
