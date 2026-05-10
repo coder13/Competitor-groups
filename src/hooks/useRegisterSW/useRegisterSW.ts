@@ -6,6 +6,10 @@ export function usePWAUpdate() {
   const updateSWRef = useRef<(reloadPage?: boolean) => Promise<void>>();
 
   useEffect(() => {
+    if (!import.meta.env.PROD) {
+      return;
+    }
+
     updateSWRef.current = registerSW({
       onNeedRefresh() {
         setUpdateAvailable(true);
