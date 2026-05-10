@@ -265,8 +265,8 @@ export function CompetitionResultsContainer({
 
   if (selectedRoundId) {
     return (
-      <Container className="pt-4">
-        <div className="grid gap-4 p-2 type-body md:grid-cols-[16rem_minmax(0,1fr)] md:items-start">
+      <Container className="pt-4" fullWidth>
+        <div className="mx-auto grid w-full max-w-screen-xl gap-4 p-2 type-body md:grid-cols-[16rem_minmax(0,1fr)] md:items-start">
           <ResultsRoundNav
             competitionId={competitionId}
             groups={eventsWithResults}
