@@ -18,12 +18,10 @@ import { isCompetitionDay } from '@/lib/competitionDates';
 import { getEventName } from '@/lib/events';
 import { AnchorLink, LinkRenderer } from '@/lib/linkRenderer';
 import { findRoundWithEvent, getAllRoundsWithEvents } from '@/lib/rounds';
-import { getAdvancementConditionForRound } from '@/lib/wcif';
 import { useWCIF } from '@/providers/WCIFProvider';
-import { CompetitionResultsTable, CompetitionRoundResult } from './CompetitionResultsTable';
-import { getStoredRoundResults } from './advancement';
-import { getApiRoundResults, getWcaApiResultsByRoundId } from './resultSources';
-import { getRoundRosterResults } from './roundRoster';
+import { CompetitionResultsTable } from './CompetitionResultsTable';
+import { getWcaApiResultsByRoundId } from './resultSources';
+import { getRoundResultsFromSources } from './resultsProvider';
 
 export interface CompetitionResultsContainerProps {
   competitionId: string;
@@ -128,23 +126,6 @@ function ResultsRoundNav({
   );
 }
 
-const getResultKey = (result: CompetitionRoundResult) =>
-  result.personId == null ? `result-${result.id}` : `person-${result.personId}`;
-
-const mergeRoundResultSources = (
-  ...sources: CompetitionRoundResult[][]
-): CompetitionRoundResult[] => {
-  const resultsByKey = new Map<string, CompetitionRoundResult>();
-
-  sources.forEach((sourceResults) => {
-    sourceResults.forEach((result) => {
-      resultsByKey.set(getResultKey(result), result);
-    });
-  });
-
-  return [...resultsByKey.values()];
-};
-
 export function CompetitionResultsContainer({
   competitionId,
   selectedRoundId,
@@ -242,56 +223,10 @@ export function CompetitionResultsContainer({
   const { data: wcaLiveRound } = useWcaLiveRoundResults(wcaLiveRoundLink, {
     enabled: isTodayCompetitionDay && wcaLiveRoundLinkStatus === 'success',
   });
-  const storedRoundResults = useMemo<CompetitionRoundResult[]>(() => {
-    if (!selectedRound) {
-      return [];
-    }
-
-    return getStoredRoundResults(
-      selectedRound.round,
-      getAdvancementConditionForRound(selectedRound.event.rounds, selectedRound.round),
-    );
-  }, [selectedRound]);
-  const liveRoundResults = useMemo<CompetitionRoundResult[]>(
-    () =>
-      wcaLiveRound?.results
-        .filter((result) => result.attempts.length > 0)
-        .map((result) => ({
-          id: result.id,
-          personId: result.person.registrantId,
-          personName: result.person.name,
-          ranking: result.ranking,
-          advancing: result.advancing,
-          advancingQuestionable: result.advancingQuestionable,
-          attempts: result.attempts,
-          best: result.best,
-          average: result.average,
-        })) ?? [],
-    [wcaLiveRound],
+  const roundResults = useMemo(
+    () => getRoundResultsFromSources({ wcif, selectedRound, wcaLiveRound, wcaApiResults }),
+    [selectedRound, wcaApiResults, wcaLiveRound, wcif],
   );
-  const rosterResults = useMemo<CompetitionRoundResult[]>(() => {
-    if (!selectedRound || !wcif) {
-      return [];
-    }
-
-    return getRoundRosterResults(wcif, selectedRound.round.id);
-  }, [selectedRound, wcif]);
-  const apiRoundResults = useMemo(
-    () => getApiRoundResults(wcif, selectedRound?.round.id, wcaApiResults),
-    [selectedRound?.round.id, wcaApiResults, wcif],
-  );
-  const roundResults = useMemo(() => {
-    if (liveRoundResults.length === 0) {
-      return mergeRoundResultSources(apiRoundResults, storedRoundResults);
-    }
-
-    return mergeRoundResultSources(
-      rosterResults,
-      apiRoundResults,
-      storedRoundResults,
-      liveRoundResults,
-    );
-  }, [apiRoundResults, liveRoundResults, rosterResults, storedRoundResults]);
 
   if (selectedRoundId) {
     return (
