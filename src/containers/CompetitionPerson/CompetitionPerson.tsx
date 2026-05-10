@@ -1,7 +1,7 @@
 import { Person } from '@wca/helpers';
 import { Extension } from '@wca/helpers/lib/models/extension';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { CompetitionPersonalResultsContent } from '@/containers/CompetitionPersonalResults';
 import { PersonalBestsContainer } from '@/containers/PersonalBests';
 import { PersonalScheduleContent } from '@/containers/PersonalSchedule';
@@ -40,7 +40,7 @@ export function CompetitionPersonContainer({ registrantId }: CompetitionPersonCo
 
   const content = (() => {
     if (activePage === 'results') {
-      return <CompetitionPersonalResultsContent person={person} />;
+      return <CompetitionPersonalResultsContent person={person} LinkComponent={Link} />;
     }
 
     if (activePage === 'records') {

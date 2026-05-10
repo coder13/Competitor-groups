@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { Competition } from '@wca/helpers';
 import { AnchorLink } from '@/lib/linkRenderer';
 import { CompetitionResultsContainer } from './CompetitionResults';
@@ -38,9 +38,14 @@ jest.mock('react-i18next', () => ({
       if (key === 'competition.results.average') return 'Avg';
       if (key === 'competition.results.best') return 'Best';
       if (key === 'competition.results.attempts') return 'Attempts';
+      if (key === 'competition.results.liveResultsDelayNote') {
+        return 'Data is pulled from WCA Live and may be delayed.';
+      }
+      if (key === 'competition.results.allResults') return 'All results';
       if (key === 'competition.results.unknownCompetitor') {
         return `Competitor #${options?.personId}`;
       }
+      if (key === 'common.close') return 'Close';
       if (key === 'common.wca.event') return 'Event';
       if (key === 'common.wca.round') return 'Round';
       if (key === 'common.view') return 'View';
@@ -64,6 +69,7 @@ const wcifMock = {
       wcaId: '2010THOM03',
       countryIso2: 'US',
       registration: null,
+      assignments: [{ activityId: 101, assignmentCode: 'competitor', stationNumber: 1 }],
       extensions: [],
     },
     {
@@ -73,6 +79,17 @@ const wcifMock = {
       wcaId: '2016SILV08',
       countryIso2: 'US',
       registration: null,
+      assignments: [{ activityId: 101, assignmentCode: 'competitor', stationNumber: 2 }],
+      extensions: [],
+    },
+    {
+      registrantId: 3,
+      name: 'Casey Nguyen',
+      wcaUserId: 1003,
+      wcaId: '2024NGUY02',
+      countryIso2: 'US',
+      registration: null,
+      assignments: [{ activityId: 101, assignmentCode: 'competitor', stationNumber: 3 }],
       extensions: [],
     },
   ],
@@ -88,19 +105,11 @@ const wcifMock = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          advancementCondition: {
+            type: 'ranking',
+            level: 1,
+          },
           results: [
-            {
-              personId: 1,
-              ranking: 1,
-              attempts: [
-                { result: 1200, reconstruction: null },
-                { result: 1300, reconstruction: null },
-                { result: 1400, reconstruction: null },
-              ],
-              best: 1200,
-              average: 1300,
-            },
             {
               personId: 2,
               ranking: 2,
@@ -111,6 +120,17 @@ const wcifMock = {
               ],
               best: 1400,
               average: 1500,
+            },
+            {
+              personId: 1,
+              ranking: 1,
+              attempts: [
+                { result: 1200, reconstruction: null },
+                { result: 1300, reconstruction: null },
+                { result: 1400, reconstruction: null },
+              ],
+              best: 1200,
+              average: 1300,
             },
           ],
           extensions: [],
@@ -154,7 +174,44 @@ const wcifMock = {
   schedule: {
     numberOfDays: 1,
     startDate: '2026-05-03',
-    venues: [],
+    venues: [
+      {
+        id: 1,
+        name: 'Main Venue',
+        latitudeMicrodegrees: 0,
+        longitudeMicrodegrees: 0,
+        countryIso2: 'US',
+        timezone: 'America/Los_Angeles',
+        rooms: [
+          {
+            id: 1,
+            name: 'Main Room',
+            color: '#ffffff',
+            activities: [
+              {
+                id: 100,
+                name: '3x3x3 Cube Round 1',
+                activityCode: '333-r1',
+                startTime: '2026-05-03T19:00:00Z',
+                endTime: '2026-05-03T20:00:00Z',
+                childActivities: [
+                  {
+                    id: 101,
+                    name: '3x3x3 Cube Round 1 Group 1',
+                    activityCode: '333-r1-g1',
+                    startTime: '2026-05-03T19:00:00Z',
+                    endTime: '2026-05-03T20:00:00Z',
+                    childActivities: [],
+                    extensions: [],
+                  },
+                ],
+                extensions: [],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
 } as unknown as Competition;
 
@@ -191,9 +248,7 @@ describe('CompetitionResultsContainer', () => {
     expect(screen.queryByText('Results')).not.toBeInTheDocument();
     expect(screen.queryByText('Select a round')).not.toBeInTheDocument();
     expect(screen.getAllByRole('link')).toHaveLength(2);
-    expect(
-      screen.getAllByRole('link', { name: 'Round 1' }).map((link) => link.getAttribute('href')),
-    ).toEqual([
+    expect(screen.getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual([
       '/competitions/TestComp2026/results/333-r1',
       '/competitions/TestComp2026/results/222-r1',
     ]);
@@ -201,6 +256,9 @@ describe('CompetitionResultsContainer', () => {
     expect(screen.getAllByText('222')).toHaveLength(1);
     expect(screen.queryByRole('link', { name: 'Round 2' })).not.toBeInTheDocument();
     expect(screen.queryByRole('table', { name: 'Results' })).not.toBeInTheDocument();
+    expect(
+      screen.getByText('Data is pulled from WCA Live and may be delayed.'),
+    ).toBeInTheDocument();
   });
 
   it('shows the selected round results table', () => {
@@ -219,23 +277,43 @@ describe('CompetitionResultsContainer', () => {
     expect(screen.getByRole('columnheader', { name: 'Best' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Blake Thompson' })).toHaveAttribute(
       'href',
-      '/competitions/TestComp2026/persons/1',
+      '/competitions/TestComp2026/persons/1/results',
     );
     expect(screen.getByRole('link', { name: 'Nick Silvestri' })).toHaveAttribute(
       'href',
-      '/competitions/TestComp2026/persons/2',
+      '/competitions/TestComp2026/persons/2/results',
     );
     expect(screen.getByRole('navigation', { name: 'Round' })).toBeInTheDocument();
     expect(
-      screen.getAllByRole('link', { name: 'Round 1' }).map((link) => link.getAttribute('href')),
+      within(screen.getByRole('navigation', { name: 'Round' }))
+        .getAllByRole('link', { name: /Round 1/ })
+        .map((link) => link.getAttribute('href')),
     ).toEqual([
       '/competitions/TestComp2026/results/333-r1',
       '/competitions/TestComp2026/results/222-r1',
     ]);
+    expect(
+      within(screen.getByRole('navigation', { name: 'Round' })).getByText('Done'),
+    ).toBeInTheDocument();
     expect(screen.queryByText('2010THOM03')).not.toBeInTheDocument();
     expect(screen.getAllByText('13.00')).toHaveLength(2);
     expect(screen.getAllByText('12.00')).toHaveLength(2);
     expect(screen.queryByLabelText('Attempts')).not.toBeInTheDocument();
+    expect(
+      screen.getByText('Data is pulled from WCA Live and may be delayed.'),
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getAllByRole('row')
+        .slice(1)
+        .map((row) => within(row).getAllByRole('cell')[0].textContent),
+    ).toEqual(['1', '2']);
+    expect(
+      within(screen.getByRole('row', { name: /1 Blake Thompson/ })).getByText('1'),
+    ).toHaveClass('bg-green-300');
+    expect(
+      within(screen.getByRole('row', { name: /2 Nick Silvestri/ })).getByText('2'),
+    ).not.toHaveClass('bg-green-300');
   });
 
   it('shows a not-found state for an invalid round id', () => {
@@ -265,7 +343,7 @@ describe('CompetitionResultsContainer', () => {
     );
     expect(screen.getByText('222 Round 1')).toBeInTheDocument();
     expect(screen.getByText('No results yet.')).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: 'Round 1' })).toHaveLength(2);
+    expect(screen.getAllByRole('link', { name: /Round 1/ })).toHaveLength(2);
   });
 
   it('uses WCA Live partial results for the selected round when they are available', () => {
@@ -291,10 +369,56 @@ describe('CompetitionResultsContainer', () => {
 
     expect(screen.getByRole('link', { name: 'Blake Thompson' })).toHaveAttribute(
       'href',
-      '/competitions/TestComp2026/persons/1',
+      '/competitions/TestComp2026/persons/1/results',
     );
-    expect(screen.getByText('3')).toHaveClass('bg-yellow-200');
+    expect(screen.getByRole('link', { name: 'Nick Silvestri' })).toHaveAttribute(
+      'href',
+      '/competitions/TestComp2026/persons/2/results',
+    );
+    expect(screen.getByRole('link', { name: 'Casey Nguyen' })).toHaveAttribute(
+      'href',
+      '/competitions/TestComp2026/persons/3/results',
+    );
+    expect(
+      within(screen.getByRole('row', { name: /3 Blake Thompson/ })).getByText('3'),
+    ).toHaveClass('bg-yellow-200');
+    expect(
+      within(screen.getByRole('row', { name: /Casey Nguyen/ })).getAllByRole('cell')[0],
+    ).toBeEmptyDOMElement();
     expect(screen.getAllByText('11.00')).toHaveLength(2);
+    expect(
+      within(screen.getByRole('row', { name: /2 Nick Silvestri/ })).getAllByText('15.00'),
+    ).toHaveLength(2);
+    expect(
+      screen.getByText('Data is pulled from WCA Live and may be delayed.'),
+    ).toBeInTheDocument();
     expect(screen.queryByText('13.00')).not.toBeInTheDocument();
+  });
+
+  it('opens full result details from a narrow results row', () => {
+    renderResults('333-r1');
+
+    fireEvent.click(screen.getByRole('row', { name: /1 Blake Thompson/ }));
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Blake Thompson #1' })).toBeInTheDocument();
+    expect(screen.getByText('12.00, 13.00, 14.00')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'All results' })).toHaveAttribute(
+      'href',
+      '/competitions/TestComp2026/persons/1/results',
+    );
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('closes result details when clicking outside the dialog content', () => {
+    renderResults('333-r1');
+
+    fireEvent.click(screen.getByRole('row', { name: /1 Blake Thompson/ }));
+    fireEvent.click(screen.getByRole('dialog'));
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });

@@ -139,6 +139,7 @@ common:
   loading: 'Loading...'
   search: 'Search'
   view: 'View'
+  close: Close
   name: Name
   stage: Stage
   login: 'Login'
@@ -204,7 +205,9 @@ competition:
     best: Best
     attempts: Attempts
     unknownCompetitor: 'Competitor #{{personId}}'
+    allResults: All results
     viewLiveResults: View live results
+    liveResultsDelayNote: Data is pulled from WCA Live and may be delayed.
   personalResults:
     eventResults: Event results
   round:

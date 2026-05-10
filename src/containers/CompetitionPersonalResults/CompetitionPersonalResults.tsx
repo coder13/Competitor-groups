@@ -157,6 +157,8 @@ export function CompetitionPersonalResultsContent({
               <CompetitionPersonalResultsTable
                 competitionId={competitionId}
                 eventId={eventResult.eventId}
+                eventName={eventResult.eventName}
+                person={person}
                 roundResults={eventResult.rounds}
                 LinkComponent={LinkComponent}
               />

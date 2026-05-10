@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { Competition } from '@wca/helpers';
 import { MemoryRouter } from 'react-router-dom';
 import { AnchorLink } from '@/lib/linkRenderer';
@@ -51,11 +51,16 @@ jest.mock('react-i18next', () => ({
       if (key === 'competition.results.rank') return '#';
       if (key === 'competition.results.average') return 'Avg';
       if (key === 'competition.results.best') return 'Best';
+      if (key === 'competition.results.attempts') return 'Attempts';
+      if (key === 'competition.results.allResults') return 'All results';
       if (key === 'competition.results.viewLiveResults') return 'view live results';
       if (key === 'competition.personalResults.eventResults') return 'Event results';
       if (key === 'competition.personalSchedule.schedule') return 'Schedule';
       if (key === 'competition.personalSchedule.results') return 'Results';
       if (key === 'competition.personalSchedule.records') return 'Records';
+      if (key === 'common.close') return 'Close';
+      if (key === 'common.name') return 'Name';
+      if (key === 'common.wca.event') return 'Event';
       if (key === 'common.wca.round') return 'Round';
       if (key === 'common.activityCodeToName.round') return `Round ${options?.roundNumber}`;
 
@@ -226,5 +231,28 @@ describe('CompetitionPersonalResultsContainer', () => {
     expect(screen.getAllByText('8.00')).toHaveLength(2);
     expect(screen.getByText('4')).toHaveClass('bg-yellow-200');
     expect(screen.queryByText('7.41')).not.toBeInTheDocument();
+  });
+
+  it('opens full result details from a narrow personal results row', () => {
+    renderPersonalResults();
+
+    fireEvent.click(screen.getByRole('row', { name: /2 Round 1/ }));
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '#2' })).toBeInTheDocument();
+    expect(within(screen.getByRole('dialog')).getByText('Event')).toBeInTheDocument();
+    expect(within(screen.getByRole('dialog')).getByText('3x3x3 Cube')).toBeInTheDocument();
+    expect(within(screen.getByRole('dialog')).getByText('Round')).toBeInTheDocument();
+    expect(within(screen.getByRole('dialog')).getByText('Round 1')).toBeInTheDocument();
+    expect(screen.getByText('6.90, 7.32, 7.86, 10.34, 7.05')).toBeInTheDocument();
+    expect(within(screen.getByRole('dialog')).getByText('7.41')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'All results' })).toHaveAttribute(
+      'href',
+      '/competitions/TestComp2026/results/333-r1',
+    );
+
+    fireEvent.click(screen.getByRole('dialog'));
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });
