@@ -36,6 +36,7 @@ import LiveActivitiesAbout from './pages/LiveActivities/About';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
 import Test from './pages/Test';
+import UserPage from './pages/User';
 import UserLogin from './pages/UserLogin';
 import { AppProvider } from './providers/AppProvider';
 import { AuthProvider, useAuth } from './providers/AuthProvider';
@@ -86,6 +87,24 @@ const PsychSheet = () => {
   return null;
 };
 
+const CompetitionPersonByWcaIdRedirect = ({ to }: { to: 'results' | 'records' }) => {
+  const { competitionId, wcaId } = useParams() as { competitionId: string; wcaId: string };
+  const { wcif } = useWCIF();
+  const person = wcif?.persons.find((p) => p.wcaId?.toUpperCase() === wcaId.toUpperCase());
+
+  if (!wcif) {
+    return null;
+  }
+
+  if (!person) {
+    return <Navigate to={`/competitions/${competitionId}`} replace />;
+  }
+
+  return (
+    <Navigate to={`/competitions/${competitionId}/persons/${person.registrantId}/${to}`} replace />
+  );
+};
+
 const CompetitionRedirect = ({ to }: { to: string }) => {
   const { competitionId } = useParams() as { competitionId: string };
 
@@ -103,6 +122,14 @@ const Navigation = () => {
         <Route path="/competitions/:competitionId" element={<CompetitionLayout />}>
           <Route index element={<CompetitionHome />} />
 
+          <Route
+            path="persons/wca/:wcaId/results"
+            element={<CompetitionPersonByWcaIdRedirect to="results" />}
+          />
+          <Route
+            path="persons/wca/:wcaId/records"
+            element={<CompetitionPersonByWcaIdRedirect to="records" />}
+          />
           <Route path="persons/:registrantId/*" element={<CompetitionPerson />} />
           <Route path="personal-bests/:wcaId" element={<CompetitionPersonalBests />} />
           <Route path="personal-records/:wcaId" element={<CompetitionPersonalBests />} />
@@ -142,6 +169,9 @@ const Navigation = () => {
           <Route path="*" element={<p>Path not resolved</p>} />
         </Route>
         <Route path="/users/:userId" element={<UserLogin />} />
+        <Route path="/me" element={<Navigate to="/me/competitions" replace />} />
+        <Route path="/me/results/:resultsMode" element={<Navigate to="/me/results" replace />} />
+        <Route path="/me/:tab" element={<UserPage />} />
         <Route path="about" element={<About />} />
         <Route path="live-activities" element={<LiveActivitiesAbout />} />
         <Route path="settings" element={<Settings />} />

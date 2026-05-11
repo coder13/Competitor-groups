@@ -70,8 +70,29 @@ export interface WcaCompetitionResult {
   attempts: number[];
 }
 
+export type WcaPersonCompetition = Pick<
+  ApiCompetition,
+  | 'id'
+  | 'name'
+  | 'short_name'
+  | 'city'
+  | 'country_iso2'
+  | 'start_date'
+  | 'end_date'
+  | 'announced_at'
+  | 'cancelled_at'
+  | 'latitude_degrees'
+  | 'longitude_degrees'
+  | 'venue_address'
+  | 'venue_details'
+  | 'website'
+>;
+
 export const fetchCompetitionResults = async (competitionId: string) =>
   wcaApiFetch<WcaCompetitionResult[]>(`/competitions/${competitionId}/results`);
+
+export const fetchPersonCompetitions = async (wcaId: string) =>
+  wcaApiFetch<WcaPersonCompetition[]>(`/persons/${wcaId}/competitions`);
 
 export const fetchCompetition = async (competitionId: string) =>
   await wcaApiFetch<ApiCompetition>(`/competitions/${competitionId}`);
