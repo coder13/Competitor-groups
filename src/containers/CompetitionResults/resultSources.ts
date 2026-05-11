@@ -23,7 +23,7 @@ const compareRoundTypeIds = (a: string, b: string) => {
   return a.localeCompare(b);
 };
 
-const findPersonForApiResult = (persons: Person[], result: WcaCompetitionResult) =>
+export const findPersonForApiResult = (persons: Person[], result: WcaCompetitionResult) =>
   persons.find(
     (person) =>
       (result.wca_id && person.wcaId === result.wca_id) ||

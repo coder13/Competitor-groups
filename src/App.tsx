@@ -28,6 +28,7 @@ import {
 import CompetitionScramblerSchedule from './pages/Competition/ScramblerSchedule';
 import CompetitionStats from './pages/Competition/Stats';
 import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
+import CompetitionSumOfRanks from './pages/Competition/SumOfRanks';
 import Home from './pages/Home';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
@@ -120,6 +121,7 @@ const Navigation = () => {
           <Route path="explore" element={<CompetitionGroupsOverview />} />
           <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />
           <Route path="stats" element={<CompetitionStats />} />
+          <Route path="sum-of-ranks" element={<CompetitionSumOfRanks />} />
           <Route path="*" element={<p>Path not resolved</p>} />
         </Route>
         <Route path="/users/:userId" element={<UserLogin />} />
