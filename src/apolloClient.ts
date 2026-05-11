@@ -4,12 +4,12 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { createClient } from 'graphql-ws';
 
 const httpLink = createHttpLink({
-  uri: import.meta.env.VITE_NOTIFYCOMP_API_ORIGIN || 'https://admin.notifycomp.com/graphql',
+  uri: import.meta.env.VITE_NOTIFYCOMP_API_ORIGIN || 'https://api.notifycomp.com/api/graphql',
 });
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: import.meta.env.VITE_NOTIFYCOMP_WS_ORIGIN || 'wss://admin.notifycomp.com/graphql',
+    url: import.meta.env.VITE_NOTIFYCOMP_WS_ORIGIN || 'wss://api.notifycomp.com/api/graphql',
   }),
 );
 

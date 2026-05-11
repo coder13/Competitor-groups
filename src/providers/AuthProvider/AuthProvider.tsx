@@ -85,6 +85,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     fetchMe(accessToken)
       .then(({ me, ongoing_competitions, upcoming_competitions }) => {
+        setLocalStorage('accessToken', accessToken);
+        setLocalStorage(
+          'expirationTime',
+          String(Date.now() + Number(hashParams.get('expires_in') ?? 0) * 1000),
+        );
         setUserAndSave(me);
         queryClient.setQueryData(['userCompetitions'], {
           ongoing_competitions,
