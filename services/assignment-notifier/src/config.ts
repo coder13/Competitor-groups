@@ -1,0 +1,30 @@
+export interface NotifierServiceConfig {
+  wcifPollIntervalMs: number;
+  wcifApiBaseUrl: string;
+  apiToken: string;
+  competitionIds: string[];
+}
+
+function readNumber(name: string, fallback: number) {
+  const raw = process.env[name];
+  if (!raw) {
+    return fallback;
+  }
+
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+export function getNotifierServiceConfig(): NotifierServiceConfig {
+  const competitionIds = (process.env.WCIF_COMPETITION_IDS ?? '')
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  return {
+    wcifPollIntervalMs: readNumber('WCIF_POLL_INTERVAL_MS', 5 * 60 * 1000),
+    wcifApiBaseUrl: process.env.WCIF_API_BASE_URL ?? 'https://www.worldcubeassociation.org/api/v0',
+    apiToken: process.env.WCA_OAUTH_TOKEN ?? '',
+    competitionIds,
+  };
+}

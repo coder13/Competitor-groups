@@ -5,6 +5,7 @@ import client from './apolloClient';
 import { usePageTracking } from './hooks/usePageTracking';
 import { CompetitionLayout } from './layouts/CompetitionLayout';
 import { RootLayout } from './layouts/RootLayout';
+import { bootstrapAssignmentNotificationChecks } from './lib/notifications/assignmentNotifications';
 import About from './pages/About';
 import CompetitionEvents from './pages/Competition/ByGroup/Events';
 import CompetitionGroup from './pages/Competition/ByGroup/Group';
@@ -81,6 +82,14 @@ const PsychSheet = () => {
 
 const Navigation = () => {
   usePageTracking(import.meta.env.VITE_GA_MEASUREMENT_ID);
+
+  useEffect(() => {
+    if (!('Notification' in window) || Notification.permission !== 'granted') {
+      return;
+    }
+
+    void bootstrapAssignmentNotificationChecks();
+  }, []);
 
   return (
     <Routes>

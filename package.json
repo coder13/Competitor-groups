@@ -11,7 +11,9 @@
     "lint": "eslint ./src/",
     "check:type": "tsc --noEmit",
     "serve": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "notify:service": "yarn notify:service:build && node services/assignment-notifier/dist/index.js",
+    "notify:service:build": "tsc -p services/assignment-notifier/tsconfig.json"
   },
   "dependencies": {
     "@apollo/client": "^3.8.7",
