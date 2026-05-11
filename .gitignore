@@ -10,6 +10,8 @@
 
 # production
 /dist
+/services/assignment-notifier/dist
+/services/assignment-notifier/data/store.json
 
 # vite pwa dev
 /dev-dist
