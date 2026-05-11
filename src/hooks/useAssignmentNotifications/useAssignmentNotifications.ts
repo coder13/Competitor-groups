@@ -1,9 +1,10 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   AssignmentNotificationStatus,
   disableAssignmentNotifications,
   enableAssignmentNotifications,
   getAssignmentNotificationStatus,
+  isAssignmentNotificationsEnabled,
 } from '@/lib/notifications/assignmentNotifications';
 
 interface UseAssignmentNotificationsParams {
@@ -20,6 +21,12 @@ export function useAssignmentNotifications({
   );
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isEnabled, setIsEnabled] = useState(isAssignmentNotificationsEnabled);
+
+  useEffect(() => {
+    setStatus(getAssignmentNotificationStatus());
+    setIsEnabled(isAssignmentNotificationsEnabled());
+  }, [user]);
 
   const watches = useMemo(
     () =>
@@ -39,9 +46,11 @@ export function useAssignmentNotifications({
     try {
       const nextStatus = await enableAssignmentNotifications(watches);
       setStatus(nextStatus);
+      setIsEnabled(isAssignmentNotificationsEnabled());
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Unable to enable assignment notifications.');
       setStatus(getAssignmentNotificationStatus());
+      setIsEnabled(isAssignmentNotificationsEnabled());
     } finally {
       setIsSaving(false);
     }
@@ -54,16 +63,18 @@ export function useAssignmentNotifications({
     try {
       await disableAssignmentNotifications();
       setStatus(getAssignmentNotificationStatus());
+      setIsEnabled(isAssignmentNotificationsEnabled());
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Unable to disable assignment notifications.');
+      setIsEnabled(isAssignmentNotificationsEnabled());
     } finally {
       setIsSaving(false);
     }
   }, []);
 
   return {
-    canEnable: status === 'default' && watches.length > 0,
-    canDisable: status === 'granted',
+    canEnable: (status === 'default' || status === 'granted') && !isEnabled && watches.length > 0,
+    canDisable: status === 'granted' && isEnabled,
     enable,
     disable,
     error,

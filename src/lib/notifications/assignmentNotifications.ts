@@ -1,7 +1,10 @@
-import { getLocalStorage } from '@/lib/localStorage';
+import { deleteLocalStorage, getLocalStorage, setLocalStorage } from '@/lib/localStorage';
 
-const NOTIFY_COMP_ORIGIN = import.meta.env.VITE_NOTIFY_COMP_ORIGIN ?? '';
+const NOTIFY_COMP_ORIGIN =
+  import.meta.env.VITE_NOTIFY_COMP_ORIGIN ?? 'https://api.notifycomp.com/api';
 const NOTIFY_COMP_TOKEN_URL = '/.netlify/functions/notify-comp-token';
+const ENABLED_STORAGE_KEY = 'assignmentNotifications.enabled';
+const SERVICE_WORKER_TIMEOUT_MS = 10000;
 
 interface PushSubscriptionJson {
   endpoint?: string;
@@ -16,9 +19,12 @@ export interface AssignmentNotificationWatch {
   wcaUserId: number;
 }
 
-export type AssignmentNotificationStatus = NotificationPermission | 'not-signed-in' | 'unsupported';
+export type AssignmentNotificationStatus = NotificationPermission | 'reauthorize' | 'unsupported';
 
 const notifyCompUrl = (path: string) => `${NOTIFY_COMP_ORIGIN}${path}`;
+
+export const isAssignmentNotificationsEnabled = () =>
+  getLocalStorage(ENABLED_STORAGE_KEY) === 'true';
 
 const getAccessToken = () => {
   const expiresAt = Number(getLocalStorage('expirationTime') ?? 0);
@@ -54,7 +60,7 @@ export const getAssignmentNotificationStatus = (): AssignmentNotificationStatus 
   }
 
   if (!getAccessToken()) {
-    return 'not-signed-in';
+    return 'reauthorize';
   }
 
   return Notification.permission;
@@ -72,10 +78,21 @@ export const requestAssignmentNotificationPermission = async () => {
   return await Notification.requestPermission();
 };
 
+const readErrorMessage = async (response: Response) => {
+  const text = await response.text();
+
+  try {
+    const payload = JSON.parse(text) as { message?: string };
+    return payload.message || text;
+  } catch {
+    return text;
+  }
+};
+
 const fetchNotifyCompToken = async () => {
   const accessToken = getAccessToken();
   if (!accessToken) {
-    throw new Error('Sign in with WCA to enable assignment notifications.');
+    throw new Error('Refresh your WCA authorization to enable assignment notifications.');
   }
 
   const response = await fetch(NOTIFY_COMP_TOKEN_URL, {
@@ -87,7 +104,7 @@ const fetchNotifyCompToken = async () => {
   });
 
   if (!response.ok) {
-    throw new Error(await response.text());
+    throw new Error(await readErrorMessage(response));
   }
 
   const payload = (await response.json()) as { token?: string };
@@ -102,7 +119,7 @@ const fetchVapidPublicKey = async () => {
   const response = await fetch(notifyCompUrl('/v0/external/push/vapid-public-key'));
 
   if (!response.ok) {
-    throw new Error(await response.text());
+    throw new Error(await readErrorMessage(response));
   }
 
   const payload = (await response.json()) as { publicKey?: string };
@@ -113,8 +130,27 @@ const fetchVapidPublicKey = async () => {
   return payload.publicKey;
 };
 
+const withTimeout = async <T>(promise: Promise<T>, message: string) =>
+  await Promise.race([
+    promise,
+    new Promise<never>((_, reject) => {
+      window.setTimeout(() => reject(new Error(message)), SERVICE_WORKER_TIMEOUT_MS);
+    }),
+  ]);
+
+const getServiceWorkerRegistration = async () => {
+  if (import.meta.env.DEV) {
+    return await navigator.serviceWorker.register('/notification-sw.js');
+  }
+
+  return await withTimeout(
+    navigator.serviceWorker.ready,
+    'Notification service worker was not ready. Refresh the page and try again.',
+  );
+};
+
 const getPushSubscription = async () => {
-  const registration = await navigator.serviceWorker.ready;
+  const registration = await getServiceWorkerRegistration();
   const existing = await registration.pushManager.getSubscription();
 
   if (existing) {
@@ -133,7 +169,8 @@ export const enableAssignmentNotifications = async (watches: AssignmentNotificat
     return permission;
   }
 
-  const [token, subscription] = await Promise.all([fetchNotifyCompToken(), getPushSubscription()]);
+  const token = await fetchNotifyCompToken();
+  const subscription = await getPushSubscription();
   const payload = subscription.toJSON() as PushSubscriptionJson;
 
   if (!payload.endpoint || !payload.keys?.p256dh || !payload.keys.auth) {
@@ -155,17 +192,20 @@ export const enableAssignmentNotifications = async (watches: AssignmentNotificat
   });
 
   if (!response.ok) {
-    throw new Error(await response.text());
+    deleteLocalStorage(ENABLED_STORAGE_KEY);
+    throw new Error(await readErrorMessage(response));
   }
 
+  setLocalStorage(ENABLED_STORAGE_KEY, 'true');
   return permission;
 };
 
 export const disableAssignmentNotifications = async () => {
-  const registration = await navigator.serviceWorker.ready;
+  const registration = await getServiceWorkerRegistration();
   const subscription = await registration.pushManager.getSubscription();
 
   if (!subscription) {
+    deleteLocalStorage(ENABLED_STORAGE_KEY);
     return;
   }
 
@@ -184,4 +224,5 @@ export const disableAssignmentNotifications = async () => {
   }
 
   await subscription.unsubscribe();
+  deleteLocalStorage(ENABLED_STORAGE_KEY);
 };

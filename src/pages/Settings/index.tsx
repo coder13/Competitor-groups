@@ -72,11 +72,11 @@ export default function Settings() {
             <p className="type-meta">This browser does not support push notifications.</p>
           )}
 
-          {user && notifications.status === 'not-signed-in' && (
+          {user && notifications.status === 'reauthorize' && (
             <div className="space-y-2">
-              <p className="type-meta">Sign in with WCA again to enable notifications.</p>
+              <p className="type-meta">Refresh your WCA authorization to enable notifications.</p>
               <Button type="button" onClick={signIn}>
-                Sign in with WCA
+                Continue with WCA
               </Button>
             </div>
           )}
