@@ -1,3 +1,4 @@
+import { startNotifierApiServer } from './apiServer';
 import { getNotifierServiceConfig } from './config';
 import { buildNotificationJobs, createAssignmentSnapshots } from './diff';
 import { sendPushNotifications } from './pushSender';
@@ -26,6 +27,7 @@ async function runOnce() {
     await sendPushNotifications({
       jobs,
       subscriptions: store.subscriptions,
+      config,
     });
 
     store.snapshots = [
@@ -40,6 +42,7 @@ async function runOnce() {
 
 async function main() {
   const config = getNotifierServiceConfig();
+  startNotifierApiServer(config);
 
   await runOnce();
 

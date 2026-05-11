@@ -82,14 +82,15 @@ const PsychSheet = () => {
 
 const Navigation = () => {
   usePageTracking(import.meta.env.VITE_GA_MEASUREMENT_ID);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!('Notification' in window) || Notification.permission !== 'granted') {
       return;
     }
 
-    void bootstrapAssignmentNotificationChecks();
-  }, []);
+    void bootstrapAssignmentNotificationChecks(user?.id);
+  }, [user?.id]);
 
   return (
     <Routes>

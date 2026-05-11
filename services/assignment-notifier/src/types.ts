@@ -36,3 +36,9 @@ export interface WcifPayload {
   name: string;
   persons: WcifPerson[];
 }
+
+export interface ServiceStore {
+  snapshots: AssignmentSnapshot[];
+  subscriptions: PushSubscriptionRecord[];
+  deliveredDedupeKeys: string[];
+}

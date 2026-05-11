@@ -6,7 +6,7 @@ import {
 
 type NotificationStatus = NotificationPermission | 'unsupported';
 
-export function useAssignmentNotifications() {
+export function useAssignmentNotifications(userId?: number) {
   const [status, setStatus] = useState<NotificationStatus>(() => {
     if (!('Notification' in window)) {
       return 'unsupported';
@@ -26,22 +26,22 @@ export function useAssignmentNotifications() {
       setStatus(permission);
 
       if (permission === 'granted') {
-        await bootstrapAssignmentNotificationChecks();
+        await bootstrapAssignmentNotificationChecks(userId);
       }
     } catch (nextError) {
       setError(nextError instanceof Error ? nextError.message : 'Unable to enable notifications');
     } finally {
       setIsEnabling(false);
     }
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (status !== 'granted') {
       return;
     }
 
-    void bootstrapAssignmentNotificationChecks();
-  }, [status]);
+    void bootstrapAssignmentNotificationChecks(userId);
+  }, [status, userId]);
 
   return {
     status,

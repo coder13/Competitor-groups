@@ -1,7 +1,8 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-const diff_1 = require('./diff');
+const apiServer_1 = require('./apiServer');
 const config_1 = require('./config');
+const diff_1 = require('./diff');
 const pushSender_1 = require('./pushSender');
 const store_1 = require('./store');
 const wcifClient_1 = require('./wcifClient');
@@ -23,6 +24,7 @@ async function runOnce() {
     await (0, pushSender_1.sendPushNotifications)({
       jobs,
       subscriptions: store.subscriptions,
+      config,
     });
     store.snapshots = [
       ...store.snapshots.filter((snapshot) => snapshot.competitionId !== competitionId),
@@ -34,6 +36,7 @@ async function runOnce() {
 }
 async function main() {
   const config = (0, config_1.getNotifierServiceConfig)();
+  (0, apiServer_1.startNotifierApiServer)(config);
   await runOnce();
   if (process.env.NOTIFIER_RUN_ONCE === 'true') {
     return;

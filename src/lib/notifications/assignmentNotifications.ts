@@ -73,7 +73,7 @@ export async function registerPushSubscription() {
   return subscription;
 }
 
-export async function syncSubscriptionWithBackend(subscription: PushSubscription) {
+export async function syncSubscriptionWithBackend(subscription: PushSubscription, userId?: number) {
   const payload = subscription.toJSON() as PushSubscriptionJson;
 
   await fetch(`${getNotificationServiceUrl()}/subscriptions`, {
@@ -83,6 +83,7 @@ export async function syncSubscriptionWithBackend(subscription: PushSubscription
     },
     credentials: 'include',
     body: JSON.stringify({
+      userId,
       endpoint: payload.endpoint,
       p256dh: payload.keys?.p256dh,
       auth: payload.keys?.auth,
@@ -112,7 +113,7 @@ export async function showAssignmentNotification(payload: AssignmentNotification
  * 2) run periodic background checks (where supported)
  * 3) postMessage payloads into the SW and display user-facing notifications
  */
-export async function bootstrapAssignmentNotificationChecks() {
+export async function bootstrapAssignmentNotificationChecks(userId?: number) {
   if (!('serviceWorker' in navigator)) {
     return;
   }
@@ -120,7 +121,7 @@ export async function bootstrapAssignmentNotificationChecks() {
   const registration = await navigator.serviceWorker.ready;
   const subscription = await registerPushSubscription();
   if (subscription) {
-    await syncSubscriptionWithBackend(subscription);
+    await syncSubscriptionWithBackend(subscription, userId);
   }
 
   if ('periodicSync' in registration) {

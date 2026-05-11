@@ -19,5 +19,9 @@ function getNotifierServiceConfig() {
     wcifApiBaseUrl: process.env.WCIF_API_BASE_URL ?? 'https://www.worldcubeassociation.org/api/v0',
     apiToken: process.env.WCA_OAUTH_TOKEN ?? '',
     competitionIds,
+    apiPort: readNumber('NOTIFIER_API_PORT', 8787),
+    vapidSubject: process.env.VAPID_SUBJECT ?? 'mailto:notifications@example.com',
+    vapidPublicKey: process.env.VAPID_PUBLIC_KEY ?? '',
+    vapidPrivateKey: process.env.VAPID_PRIVATE_KEY ?? '',
   };
 }

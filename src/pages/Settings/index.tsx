@@ -1,11 +1,13 @@
 import { Button, Container } from '@/components';
 import { useAssignmentNotifications } from '@/hooks/useAssignmentNotifications';
+import { useAuth } from '@/providers/AuthProvider';
 import { Theme, useUserSettings } from '@/providers/UserSettingsProvider';
 
 export default function Settings() {
   const { theme, setTheme } = useUserSettings();
+  const { user } = useAuth();
   const { status, notificationsEnabled, isEnabling, error, enableNotifications } =
-    useAssignmentNotifications();
+    useAssignmentNotifications(user?.id);
 
   const themeOptions: { value: Theme; label: string; description: string }[] = [
     { value: 'light', label: 'Light', description: 'Always use light theme' },

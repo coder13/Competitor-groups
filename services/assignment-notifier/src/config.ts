@@ -3,6 +3,10 @@ export interface NotifierServiceConfig {
   wcifApiBaseUrl: string;
   apiToken: string;
   competitionIds: string[];
+  apiPort: number;
+  vapidSubject: string;
+  vapidPublicKey: string;
+  vapidPrivateKey: string;
 }
 
 function readNumber(name: string, fallback: number) {
@@ -26,5 +30,9 @@ export function getNotifierServiceConfig(): NotifierServiceConfig {
     wcifApiBaseUrl: process.env.WCIF_API_BASE_URL ?? 'https://www.worldcubeassociation.org/api/v0',
     apiToken: process.env.WCA_OAUTH_TOKEN ?? '',
     competitionIds,
+    apiPort: readNumber('NOTIFIER_API_PORT', 8787),
+    vapidSubject: process.env.VAPID_SUBJECT ?? 'mailto:notifications@example.com',
+    vapidPublicKey: process.env.VAPID_PUBLIC_KEY ?? '',
+    vapidPrivateKey: process.env.VAPID_PRIVATE_KEY ?? '',
   };
 }
