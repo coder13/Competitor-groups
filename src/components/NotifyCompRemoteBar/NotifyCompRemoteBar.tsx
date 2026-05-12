@@ -1,11 +1,10 @@
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
 import { Container } from '@/components/Container';
 import { useCompetitionRemoteControl } from '@/hooks/useCompetitionRemoteControl';
 import { useNow } from '@/hooks/useNow';
 import {
   formatElapsedMMSS,
-  formatUntilNextActivity,
+  formatNextActivityOffset,
   getActiveGroupStartTime,
   getRemoteBarProgress,
 } from './remoteBarProgress';
@@ -34,7 +33,7 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
   const currentTitle = activeNames.length > 0 ? activeNames.join(', ') : 'No active activity';
   const nextTitle = remote.nextGroup?.name || 'No next activity';
   const elapsed = formatElapsedMMSS(getActiveGroupStartTime(remote.activeGroups), now);
-  const nextStatus = formatUntilNextActivity(remote.nextGroup, now);
+  const nextOffset = formatNextActivityOffset(remote.nextGroup, now);
   const progress = getRemoteBarProgress({
     activeGroups: remote.activeGroups,
     nextGroup: remote.nextGroup,
@@ -76,81 +75,70 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
       <Container
         fullWidth
         className="relative flex-row min-h-16 items-center justify-center px-2 py-2">
-        <div className="w-full max-w-xl space-y-1">
-          <Link
-            to={`/competitions/${competitionId}/remote`}
-            className={classNames(
-              'grid grid-cols-2 gap-2 rounded px-1 py-1 hover-transition hover:bg-gray-100 dark:hover:bg-gray-700',
-              {
-                'opacity-60': remote.isLoading,
-              },
-            )}>
-            <span className="min-w-0 space-y-0.5">
-              <span className="block text-[0.625rem] font-medium uppercase leading-none text-muted">
-                Current
-              </span>
-              <span className="block truncate text-xs font-medium text-default">
-                {currentTitle}
-              </span>
-            </span>
-            <span className="min-w-0 space-y-0.5 text-right">
-              <span className="block text-[0.625rem] font-medium uppercase leading-none text-muted">
-                Next
-              </span>
-              <span className="block truncate text-xs font-medium text-default">{nextTitle}</span>
-            </span>
-          </Link>
-
-          <div className="flex items-center justify-center gap-2">
-            <button
-              type="button"
-              className={iconButtonClassName}
-              disabled={remote.isSaving || !remote.previousGroup}
-              aria-label="Go back to previous remote activity"
-              onClick={() => runSwitch('previous')}>
-              <span className="fa fa-arrow-left" aria-hidden="true" />
-            </button>
-
-            <button
-              type="button"
-              className={primaryButtonClassName}
-              disabled={remote.isSaving || (remote.activeGroups.length === 0 && !remote.nextGroup)}
-              aria-label={
-                remote.activeGroups.length > 0
-                  ? 'Stop current remote activities'
-                  : 'Start next remote activity'
-              }
-              onClick={togglePlayback}>
-              {remote.activeGroups.length > 0 ? <>&#9632;</> : <>&#9654;</>}
-            </button>
-
-            <button
-              type="button"
-              className={iconButtonClassName}
-              disabled={remote.isSaving || !remote.nextGroup}
-              aria-label="Go to next remote activity"
-              onClick={() => runSwitch('next')}>
-              <span className="fa fa-arrow-right" aria-hidden="true" />
-            </button>
+        <div
+          className={classNames(
+            'grid w-full max-w-4xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 md:gap-4',
+            {
+              'opacity-60': remote.isLoading,
+            },
+          )}>
+          <div className="min-w-0 space-y-0.5 text-left">
+            <div className="text-xs font-medium uppercase leading-none text-muted">Current</div>
+            <div className="truncate text-sm font-medium text-default">{currentTitle}</div>
+            <div className="text-sm tabular-nums text-muted">{elapsed}</div>
           </div>
 
-          <Link
-            to={`/competitions/${competitionId}/remote`}
-            className={classNames(
-              'grid grid-cols-[44px_minmax(0,1fr)_minmax(88px,1.5fr)] items-center gap-2 rounded px-1 py-1 hover-transition hover:bg-gray-100 dark:hover:bg-gray-700',
-              {
-                'opacity-60': remote.isLoading,
-              },
-            )}>
-            <span className="text-right text-xs tabular-nums text-muted">{elapsed}</span>
-            <span className="h-1 overflow-hidden rounded-full bg-tertiary">
-              <span
-                className="block h-full rounded-full bg-blue-500 dark:bg-blue-400"
-                style={{ width: `${progress}%` }}
-              />
-            </span>
-            <span className="truncate text-xs text-muted">{nextStatus}</span>
-          </Link>
+          <div className="flex w-28 flex-col justify-center space-y-1 sm:w-40 md:w-64">
+            <div className="flex items-center justify-center gap-2">
+              <button
+                type="button"
+                className={iconButtonClassName}
+                disabled={remote.isSaving || !remote.previousGroup}
+                aria-label="Go back to previous remote activity"
+                onClick={() => runSwitch('previous')}>
+                <span className="fa fa-arrow-left" aria-hidden="true" />
+              </button>
+
+              <button
+                type="button"
+                className={primaryButtonClassName}
+                disabled={
+                  remote.isSaving || (remote.activeGroups.length === 0 && !remote.nextGroup)
+                }
+                aria-label={
+                  remote.activeGroups.length > 0
+                    ? 'Stop current remote activities'
+                    : 'Start next remote activity'
+                }
+                onClick={togglePlayback}>
+                {remote.activeGroups.length > 0 ? <>&#9632;</> : <>&#9654;</>}
+              </button>
+
+              <button
+                type="button"
+                className={iconButtonClassName}
+                disabled={remote.isSaving || !remote.nextGroup}
+                aria-label="Go to next remote activity"
+                onClick={() => runSwitch('next')}>
+                <span className="fa fa-arrow-right" aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="flex h-4 items-center">
+              <div className="h-1 w-full overflow-hidden rounded-full bg-tertiary">
+                <span
+                  className="block h-full rounded-full bg-blue-500 dark:bg-blue-400"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="min-w-0 space-y-0.5 text-right">
+            <div className="text-xs font-medium uppercase leading-none text-muted">Next</div>
+            <div className="truncate text-sm font-medium text-default">{nextTitle}</div>
+            <div className="truncate text-sm text-muted">{nextOffset}</div>
+          </div>
         </div>
       </Container>
     </nav>

@@ -1,7 +1,7 @@
 import { RemoteActivityGroup } from '@/lib/notifyCompRemoteActivities';
 import {
   formatElapsedMMSS,
-  formatUntilNextActivity,
+  formatNextActivityOffset,
   getRemoteBarProgress,
 } from './remoteBarProgress';
 
@@ -37,7 +37,7 @@ describe('remoteBarProgress', () => {
 
   it('describes how many minutes remain until the next activity', () => {
     expect(
-      formatUntilNextActivity(
+      formatNextActivityOffset(
         group({
           name: 'Clock, Round 1, Group 1',
           scheduledActivities: [
@@ -49,7 +49,23 @@ describe('remoteBarProgress', () => {
         }),
         new Date('2026-06-01T10:10:00Z'),
       ),
-    ).toBe('5 minutes until Clock, Round 1, Group 1');
+    ).toBe('In 5 minutes');
+  });
+
+  it('describes far future activity starts in hours', () => {
+    expect(
+      formatNextActivityOffset(
+        group({
+          scheduledActivities: [
+            {
+              ...group({}).scheduledActivities[0],
+              startTime: '2026-06-01T13:45:00Z',
+            },
+          ],
+        }),
+        new Date('2026-06-01T10:10:00Z'),
+      ),
+    ).toBe('In 4 hours');
   });
 
   it('fills progress based on live start time and next scheduled start time', () => {

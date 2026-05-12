@@ -51,7 +51,7 @@ export const getActiveGroupStartTime = (groups: RemoteActivityGroup[]) =>
     }),
   );
 
-export const formatUntilNextActivity = (nextGroup: RemoteActivityGroup | undefined, now: Date) => {
+export const formatNextActivityOffset = (nextGroup: RemoteActivityGroup | undefined, now: Date) => {
   const nextStart = getGroupScheduledStartTime(nextGroup);
 
   if (!nextGroup || nextStart === undefined) {
@@ -61,13 +61,20 @@ export const formatUntilNextActivity = (nextGroup: RemoteActivityGroup | undefin
   const remainingMs = nextStart - now.getTime();
 
   if (remainingMs <= 0) {
-    return `${nextGroup.name} should start now`;
+    return 'Now';
   }
 
   const remainingMinutes = Math.ceil(remainingMs / MINUTE);
-  const unit = remainingMinutes === 1 ? 'minute' : 'minutes';
 
-  return `${remainingMinutes} ${unit} until ${nextGroup.name}`;
+  if (remainingMinutes < 60) {
+    const unit = remainingMinutes === 1 ? 'minute' : 'minutes';
+    return `In ${remainingMinutes} ${unit}`;
+  }
+
+  const remainingHours = Math.ceil(remainingMinutes / 60);
+  const unit = remainingHours === 1 ? 'hour' : 'hours';
+
+  return `In ${remainingHours} ${unit}`;
 };
 
 export const getRemoteBarProgress = ({
