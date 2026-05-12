@@ -2,12 +2,18 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { Container } from '@/components/Container';
 import { useCompetitionRemoteControl } from '@/hooks/useCompetitionRemoteControl';
+import { useNow } from '@/hooks/useNow';
+import {
+  formatElapsedMMSS,
+  formatUntilNextActivity,
+  getActiveGroupStartTime,
+  getRemoteBarProgress,
+} from './remoteBarProgress';
 
 interface NotifyCompRemoteBarProps {
   competitionId: string;
 }
 
-const groupLabel = (count: number) => `${count} active activit${count === 1 ? 'y' : 'ies'}`;
 const iconButtonClassName =
   'flex h-8 w-8 items-center justify-center rounded-full border border-tertiary-weak bg-panel text-base leading-none text-default shadow-sm hover-transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:hover:bg-gray-700 md:h-9 md:w-9 md:text-lg';
 const primaryButtonClassName =
@@ -18,22 +24,22 @@ const confirmNextGroup = (groupName: string) =>
 
 export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps) {
   const remote = useCompetitionRemoteControl({ competitionId });
+  const now = useNow();
 
   if (!remote.isAuthenticated || !remote.competition || remote.scheduledActivities.length === 0) {
     return null;
   }
 
   const activeNames = remote.activeGroups.map((group) => group.name);
-  const title = activeNames.length > 0 ? activeNames.join(', ') : 'No active activities';
-  const detail =
-    activeNames.length > 0
-      ? groupLabel(activeNames.length)
-      : remote.nextGroup
-        ? `Next: ${remote.nextGroup.name}`
-        : 'Remote overview';
-  const completedGroups = remote.activityGroups.filter((group) => group.status === 'done').length;
-  const progress =
-    remote.activityGroups.length > 0 ? (completedGroups / remote.activityGroups.length) * 100 : 0;
+  const currentTitle = activeNames.length > 0 ? activeNames.join(', ') : 'No active activity';
+  const nextTitle = remote.nextGroup?.name || 'No next activity';
+  const elapsed = formatElapsedMMSS(getActiveGroupStartTime(remote.activeGroups), now);
+  const nextStatus = formatUntilNextActivity(remote.nextGroup, now);
+  const progress = getRemoteBarProgress({
+    activeGroups: remote.activeGroups,
+    nextGroup: remote.nextGroup,
+    now,
+  });
 
   const runSwitch = (direction: 'previous' | 'next') => {
     const group = direction === 'previous' ? remote.previousGroup : remote.nextGroup;
@@ -65,16 +71,31 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
       <Container
         fullWidth
         className="relative flex-row min-h-16 items-center justify-center px-2 py-2">
-        <Link
-          to={`/competitions/${competitionId}/remote`}
-          className="absolute left-2 top-1/2 hidden max-w-[min(32vw,20rem)] -translate-y-1/2 rounded px-1 py-1 hover-transition hover:bg-gray-100 dark:hover:bg-gray-700 sm:block">
-          <div className="min-w-0 space-y-1">
-            <div className="truncate text-sm font-medium text-default">{title}</div>
-            <div className="truncate text-xs text-muted">{detail}</div>
-          </div>
-        </Link>
+        <div className="w-full max-w-xl space-y-1">
+          <Link
+            to={`/competitions/${competitionId}/remote`}
+            className={classNames(
+              'grid grid-cols-2 gap-2 rounded px-1 py-1 hover-transition hover:bg-gray-100 dark:hover:bg-gray-700',
+              {
+                'opacity-60': remote.isLoading,
+              },
+            )}>
+            <span className="min-w-0 space-y-0.5">
+              <span className="block text-[0.625rem] font-medium uppercase leading-none text-muted">
+                Current
+              </span>
+              <span className="block truncate text-xs font-medium text-default">
+                {currentTitle}
+              </span>
+            </span>
+            <span className="min-w-0 space-y-0.5 text-right">
+              <span className="block text-[0.625rem] font-medium uppercase leading-none text-muted">
+                Next
+              </span>
+              <span className="block truncate text-xs font-medium text-default">{nextTitle}</span>
+            </span>
+          </Link>
 
-        <div className="w-full max-w-sm space-y-1">
           <div className="flex items-center justify-center gap-2">
             <button
               type="button"
@@ -110,17 +131,20 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
 
           <Link
             to={`/competitions/${competitionId}/remote`}
-            className={classNames('grid grid-cols-[44px_minmax(0,1fr)_44px] items-center gap-2', {
-              'opacity-60': remote.isLoading,
-            })}>
-            <span className="text-right text-xs tabular-nums text-muted">{completedGroups}</span>
+            className={classNames(
+              'grid grid-cols-[44px_minmax(0,1fr)_minmax(88px,1.5fr)] items-center gap-2 rounded px-1 py-1 hover-transition hover:bg-gray-100 dark:hover:bg-gray-700',
+              {
+                'opacity-60': remote.isLoading,
+              },
+            )}>
+            <span className="text-right text-xs tabular-nums text-muted">{elapsed}</span>
             <span className="h-1 overflow-hidden rounded-full bg-tertiary">
               <span
                 className="block h-full rounded-full bg-blue-500 dark:bg-blue-400"
                 style={{ width: `${progress}%` }}
               />
             </span>
-            <span className="text-xs tabular-nums text-muted">{remote.activityGroups.length}</span>
+            <span className="truncate text-xs text-muted">{nextStatus}</span>
           </Link>
         </div>
       </Container>
