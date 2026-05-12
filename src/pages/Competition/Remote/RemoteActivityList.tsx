@@ -13,6 +13,8 @@ import {
 } from '@/lib/notifyCompRemoteActivities';
 import { formatTime, formatTimeRange } from '@/lib/time';
 
+const REMOTE_TIME_ROUNDING_MINUTES = 1;
+
 const formatStartedDuration = (startTime: string, now: Date) => {
   const { hours, minutes } = intervalToDuration({
     start: new Date(startTime),
@@ -23,15 +25,25 @@ const formatStartedDuration = (startTime: string, now: Date) => {
 };
 
 const stateDescription = (state: RemoteActivityState, now: Date) => {
+  const timeZone = groupTimeZone(state.scheduledActivity);
+
   if (state.liveActivity?.startTime && !state.liveActivity.endTime) {
     return `Started ${formatStartedDuration(state.liveActivity.startTime, now)} ago`;
   }
 
   if (state.liveActivity?.endTime) {
-    return `Ended at ${formatTime(state.liveActivity.endTime)}`;
+    return `Ended at ${formatTime(
+      state.liveActivity.endTime,
+      REMOTE_TIME_ROUNDING_MINUTES,
+      timeZone,
+    )}`;
   }
 
-  return `Should start at ${formatTime(state.scheduledActivity.startTime)}`;
+  return `Should start at ${formatTime(
+    state.scheduledActivity.startTime,
+    REMOTE_TIME_ROUNDING_MINUTES,
+    timeZone,
+  )}`;
 };
 
 const groupActivityName = (activity: RemoteScheduledActivity) =>
@@ -190,7 +202,7 @@ export function RemoteGroupList({ disabled, groups, onSelectGroup }: RemoteGroup
                         {formatTimeRange(
                           firstActivity.startTime,
                           firstActivity.endTime,
-                          5,
+                          REMOTE_TIME_ROUNDING_MINUTES,
                           groupTimeZone(firstActivity),
                         )}
                       </span>
