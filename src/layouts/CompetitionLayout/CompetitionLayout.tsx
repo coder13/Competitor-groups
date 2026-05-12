@@ -25,12 +25,27 @@ export function CompetitionLayout() {
     competitionId: competitionId!,
     wcif: wcif,
   });
+  const mobileTabs = useMemo(() => tabs.filter((tab) => !tab.hiddenOnMobile), [tabs]);
 
   const currentTab = useMemo(
     () =>
-      tabs.find((tab) => pathname === tab.href) ||
-      tabs.find((tab) => pathname.startsWith(tab.href)),
-    [tabs, pathname],
+      mobileTabs.find((tab) => pathname === tab.href) ||
+      mobileTabs.find((tab) => pathname.startsWith(tab.href)),
+    [mobileTabs, pathname],
+  );
+  const primaryMobileTabs = useMemo(() => {
+    const primary = mobileTabs.slice(0, 4);
+    if (currentTab && !primary.some((tab) => tab.href === currentTab.href)) {
+      return [...primary.slice(0, 3), currentTab];
+    }
+    return primary;
+  }, [mobileTabs, currentTab]);
+  const overflowMobileTabs = useMemo(
+    () =>
+      mobileTabs.filter(
+        (tab) => !primaryMobileTabs.some((primaryTab) => primaryTab.href === tab.href),
+      ),
+    [mobileTabs, primaryMobileTabs],
   );
 
   useEffect(() => {
@@ -42,25 +57,52 @@ export function CompetitionLayout() {
     <nav className="z-10 flex justify-center w-full shadow-md shadow-tertiary-dark print:hidden bg-panel">
       <Container className="justify-between md:flex-row">
         <div className="flex w-full flex-col space-y-2 p-2 md:hidden">
-          <button
-            aria-expanded={isMobileMenuOpen}
-            className="flex w-full items-center justify-between rounded-md border border-tertiary-weak bg-panel px-2 py-2"
-            onClick={() => {
-              setIsMobileMenuOpen((prev) => !prev);
-            }}
-            type="button">
-            <span className="type-meta text-muted">Section</span>
-            <span className="type-body text-primary">
-              {currentTab?.text || tabs[0]?.text || 'Menu'}
-            </span>
-          </button>
-          {isMobileMenuOpen && (
-            <div className="grid grid-cols-2 gap-2">
-              {tabs
-                .filter((tab) => !tab.hiddenOnMobile)
-                .map((i) => (
-                  <StyledNavLink key={i.href} className="type-body-sm" to={i.href} text={i.text} />
-                ))}
+          <div className="grid grid-cols-2 gap-2">
+            {primaryMobileTabs.map((i) => (
+              <StyledNavLink key={i.href} className="type-body-sm" to={i.href} text={i.text} />
+            ))}
+          </div>
+          {overflowMobileTabs.length > 0 && (
+            <button
+              aria-expanded={isMobileMenuOpen}
+              className="flex w-full items-center justify-between rounded-md border border-tertiary-weak bg-panel px-2 py-2"
+              onClick={() => {
+                setIsMobileMenuOpen((prev) => !prev);
+              }}
+              type="button">
+              <span className="type-meta text-muted">More sections</span>
+              <span className="type-body-sm text-primary">
+                {currentTab && overflowMobileTabs.some((tab) => tab.href === currentTab.href)
+                  ? currentTab.text
+                  : `${overflowMobileTabs.length} more`}
+              </span>
+            </button>
+          )}
+          {isMobileMenuOpen && overflowMobileTabs.length > 0 && (
+            <div className="fixed inset-0 z-20 bg-black/40 px-2 py-2">
+              <div className="mx-auto mt-auto flex max-w-lg flex-col space-y-2 rounded-t-xl border border-tertiary-weak bg-panel p-2 shadow-xl">
+                <div className="flex items-center justify-between">
+                  <div className="type-body font-semibold">More sections</div>
+                  <button
+                    className="rounded-md border border-tertiary-weak px-2 py-2 type-meta"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                    }}
+                    type="button">
+                    Close
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {overflowMobileTabs.map((i) => (
+                    <StyledNavLink
+                      key={i.href}
+                      className="type-body-sm"
+                      to={i.href}
+                      text={i.text}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
