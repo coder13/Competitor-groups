@@ -88,6 +88,11 @@ export default function CompetitionRemote() {
   return (
     <Container className="px-4 py-8">
       <div className="space-y-6">
+        <p className="max-w-3xl type-body-sm text-subtle">
+          Remote control uses NotifyComp to manage the live activity status for this competition, so
+          staff can start, stop, reset, and advance activities from Competition Groups.
+        </p>
+
         {remoteAuth.error && <NoteBox prefix="Remote sign in" text={remoteAuth.error} />}
 
         {!remote.isAuthenticated ? (
