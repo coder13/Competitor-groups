@@ -112,15 +112,6 @@ export default function CompetitionRemote() {
           </div>
         ) : (
           <>
-            <div className="flex flex-col gap-2 md:flex-row md:items-center">
-              <div className="flex-1 type-meta">
-                {remoteAuth.userName ? `Signed in as ${remoteAuth.userName}` : 'Signed in'}
-              </div>
-              <Button type="button" variant="gray" onClick={remoteAuth.signOut}>
-                Sign out
-              </Button>
-            </div>
-
             {remote.isLoading && <BarLoader width="100%" />}
             {remote.error && <NoteBox prefix="Remote error" text={remote.error} />}
 
