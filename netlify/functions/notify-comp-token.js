@@ -8,6 +8,8 @@ const headers = {
 };
 
 const base64Url = (value) => Buffer.from(value).toString('base64url');
+const REMOTE_SCOPE = 'notifycomp.remote';
+const PUSH_SCOPE = 'assignment_notifications';
 
 const signJwt = (claims, secret) => {
   const encodedHeader = base64Url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
@@ -42,7 +44,18 @@ exports.handler = async (event) => {
     };
   }
 
-  const { accessToken } = JSON.parse(event.body || '{}');
+  let body;
+  try {
+    body = JSON.parse(event.body || '{}');
+  } catch {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ message: 'Invalid JSON body' }),
+    };
+  }
+
+  const { accessToken, competitionId, scope } = body;
   if (!accessToken) {
     return {
       statusCode: 400,
@@ -75,14 +88,28 @@ exports.handler = async (event) => {
     };
   }
 
+  const tokenScope = scope === REMOTE_SCOPE ? REMOTE_SCOPE : PUSH_SCOPE;
+  if (tokenScope === REMOTE_SCOPE && !competitionId) {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ message: 'Missing competition ID for remote token' }),
+    };
+  }
+
   const now = Math.floor(Date.now() / 1000);
   const token = signJwt(
     {
       aud: process.env.COMPETITION_GROUPS_JWT_AUDIENCE || 'notifycomp',
+      competitionIds: tokenScope === REMOTE_SCOPE ? [competitionId] : undefined,
       exp: now + 10 * 60,
       iat: now,
       iss: process.env.COMPETITION_GROUPS_JWT_ISSUER || 'competitiongroups.com',
+      name: me.name,
+      scope: tokenScope,
+      scopes: [tokenScope],
       sub: `wca:${me.id}`,
+      wcaUserId: me.id,
       wcaUserIds: [me.id],
     },
     secret,

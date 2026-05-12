@@ -33,9 +33,12 @@ export default function CompetitionRemote() {
 
   const rooms = useMemo(() => (wcif ? getRooms(wcif) : []), [wcif]);
   const roomId = selectedRoomId === 'all' ? undefined : selectedRoomId;
+  const isRemoteAuthenticated = competitionId
+    ? remoteAuth.isAuthenticatedForCompetition(competitionId)
+    : false;
   const remote = useNotifyCompRemoteActivities({
     competitionId: competitionId || '',
-    enabled: remoteAuth.isAuthenticated,
+    enabled: isRemoteAuthenticated,
     roomId,
   });
 
@@ -120,16 +123,22 @@ export default function CompetitionRemote() {
 
         {remoteAuth.error && <NoteBox prefix="Remote sign in" text={remoteAuth.error} />}
 
-        {!remoteAuth.isAuthenticated ? (
+        {!isRemoteAuthenticated ? (
           <div className="space-y-4 rounded border border-tertiary-weak bg-panel p-4 shadow-md shadow-tertiary-dark">
             <div className="space-y-2">
-              <h2 className="type-heading">Remote sign in</h2>
+              <h2 className="type-heading">Remote authorization</h2>
               <p className="type-body-sm text-subtle">
-                Sign in with NotifyComp Remote to start, stop, reset, or auto-advance activities.
+                Authorize this competition with your WCA account to start, stop, reset, or
+                auto-advance activities.
               </p>
             </div>
-            <Button type="button" disabled={remoteAuth.authenticating} onClick={remoteAuth.signIn}>
-              {remoteAuth.authenticating ? 'Signing in...' : 'Sign in for remote control'}
+            <Button
+              type="button"
+              disabled={remoteAuth.authenticating}
+              onClick={() => {
+                void remoteAuth.signIn(competitionId);
+              }}>
+              {remoteAuth.authenticating ? 'Authorizing...' : 'Authorize remote control'}
             </Button>
           </div>
         ) : (

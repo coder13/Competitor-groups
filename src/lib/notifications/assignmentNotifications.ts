@@ -1,4 +1,5 @@
 import { deleteLocalStorage, getLocalStorage, setLocalStorage } from '@/lib/localStorage';
+import { getStoredWcaAccessToken } from '@/lib/wcaAccessToken';
 
 const NOTIFY_COMP_ORIGIN =
   import.meta.env.VITE_NOTIFY_COMP_ORIGIN ?? 'https://api.notifycomp.com/api';
@@ -26,17 +27,6 @@ const notifyCompUrl = (path: string) => `${NOTIFY_COMP_ORIGIN}${path}`;
 export const isAssignmentNotificationsEnabled = () =>
   getLocalStorage(ENABLED_STORAGE_KEY) === 'true';
 
-const getAccessToken = () => {
-  const expiresAt = Number(getLocalStorage('expirationTime') ?? 0);
-  const accessToken = getLocalStorage('accessToken');
-
-  if (!accessToken || !expiresAt || expiresAt <= Date.now()) {
-    return null;
-  }
-
-  return accessToken;
-};
-
 const toUint8Array = (base64: string) => {
   const padding = '='.repeat((4 - (base64.length % 4)) % 4);
   const normalized = `${base64}${padding}`.replace(/-/g, '+').replace(/_/g, '/');
@@ -59,7 +49,7 @@ export const getAssignmentNotificationStatus = (): AssignmentNotificationStatus 
     return 'unsupported';
   }
 
-  if (!getAccessToken()) {
+  if (!getStoredWcaAccessToken()) {
     return 'reauthorize';
   }
 
@@ -90,7 +80,7 @@ const readErrorMessage = async (response: Response) => {
 };
 
 const fetchNotifyCompToken = async () => {
-  const accessToken = getAccessToken();
+  const accessToken = getStoredWcaAccessToken();
   if (!accessToken) {
     throw new Error('Refresh your WCA authorization to enable assignment notifications.');
   }

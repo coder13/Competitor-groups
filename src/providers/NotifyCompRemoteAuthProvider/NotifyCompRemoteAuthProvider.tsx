@@ -1,16 +1,17 @@
-import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import {
   clearNotifyCompRemoteToken,
-  consumeNotifyCompRemoteRedirectPath,
   getNotifyCompRemoteClaims,
   getNotifyCompRemoteToken,
-  isNotifyCompRemoteAuthPending,
-  setNotifyCompRemoteAuthPending,
+  hasNotifyCompRemoteTokenForCompetition,
   setNotifyCompRemoteToken,
 } from '@/lib/notifyCompRemoteAuth';
-import { NOTIFYCOMP_AUTH_ORIGIN } from '@/lib/remoteConfig';
+import { getStoredWcaAccessToken } from '@/lib/wcaAccessToken';
+import { useAuth } from '../AuthProvider';
 import { NotifyCompRemoteAuthContext } from './NotifyCompRemoteAuthContext';
+
+const NOTIFY_COMP_TOKEN_URL = '/.netlify/functions/notify-comp-token';
+const REMOTE_SCOPE = 'notifycomp.remote';
 
 const readErrorMessage = async (response: Response) => {
   const text = await response.text();
@@ -27,75 +28,59 @@ export function NotifyCompRemoteAuthProvider({ children }: PropsWithChildren) {
   const [token, setToken] = useState(getNotifyCompRemoteToken);
   const [authenticating, setAuthenticating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { signIn: signInWithWca } = useAuth();
 
-  const signIn = useCallback(() => {
-    const redirectPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-    setNotifyCompRemoteAuthPending(redirectPath);
-    setError(null);
+  const signIn = useCallback(
+    async (competitionId: string) => {
+      setError(null);
+      const accessToken = getStoredWcaAccessToken();
 
-    const params = new URLSearchParams({
-      redirect_uri: window.location.href,
-    });
+      if (!accessToken) {
+        signInWithWca();
+        return;
+      }
 
-    window.location.href = `${NOTIFYCOMP_AUTH_ORIGIN}/auth/wca?${params.toString()}`;
-  }, []);
+      setAuthenticating(true);
+
+      try {
+        const response = await fetch(NOTIFY_COMP_TOKEN_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            accessToken,
+            competitionId,
+            scope: REMOTE_SCOPE,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(await readErrorMessage(response));
+        }
+
+        const payload = (await response.json()) as { token?: string };
+        if (!payload.token) {
+          throw new Error('Remote token response was missing a token.');
+        }
+
+        setNotifyCompRemoteToken(payload.token);
+        setToken(payload.token);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unable to authorize NotifyComp Remote.');
+        clearNotifyCompRemoteToken();
+        setToken(null);
+      } finally {
+        setAuthenticating(false);
+      }
+    },
+    [signInWithWca],
+  );
 
   const signOut = useCallback(() => {
     clearNotifyCompRemoteToken();
     setToken(null);
   }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const code = params.get('code');
-
-    if (!code || !isNotifyCompRemoteAuthPending()) {
-      return;
-    }
-
-    setAuthenticating(true);
-    setError(null);
-
-    const callbackParams = new URLSearchParams({
-      code,
-      redirect_uri: window.location.href,
-    });
-
-    fetch(`${NOTIFYCOMP_AUTH_ORIGIN}/auth/wca/callback?${callbackParams.toString()}`)
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error(await readErrorMessage(response));
-        }
-
-        return (await response.json()) as { jwt?: string };
-      })
-      .then(({ jwt }) => {
-        if (!jwt) {
-          throw new Error('NotifyComp did not return a remote session token.');
-        }
-
-        setNotifyCompRemoteToken(jwt);
-        setToken(jwt);
-
-        const nextParams = new URLSearchParams(location.search);
-        nextParams.delete('code');
-        const query = nextParams.toString();
-        const fallbackPath = `${location.pathname}${query ? `?${query}` : ''}${location.hash}`;
-        const redirectPath = consumeNotifyCompRemoteRedirectPath() || fallbackPath;
-        navigate(redirectPath, { replace: true });
-      })
-      .catch((err) => {
-        setError(err instanceof Error ? err.message : 'Unable to sign in to NotifyComp Remote.');
-        clearNotifyCompRemoteToken();
-        setToken(null);
-        consumeNotifyCompRemoteRedirectPath();
-      })
-      .finally(() => {
-        setAuthenticating(false);
-      });
-  }, [location, navigate]);
 
   const claims = token ? getNotifyCompRemoteClaims() : null;
 
@@ -103,6 +88,7 @@ export function NotifyCompRemoteAuthProvider({ children }: PropsWithChildren) {
     () => ({
       authenticating,
       error,
+      isAuthenticatedForCompetition: hasNotifyCompRemoteTokenForCompetition,
       isAuthenticated: Boolean(token),
       signIn,
       signOut,

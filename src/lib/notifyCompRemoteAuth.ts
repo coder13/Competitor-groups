@@ -1,13 +1,15 @@
 import { deleteLocalStorage, getLocalStorage, setLocalStorage } from './localStorage';
 
 const REMOTE_JWT_KEY = 'notifyComp.jwt';
-const REMOTE_AUTH_PENDING_KEY = 'notifyComp.authPending';
-const REMOTE_REDIRECT_PATH_KEY = 'notifyComp.redirectPath';
 
 interface JwtClaims {
+  competitionIds?: string[];
   exp?: number;
-  name?: string;
   id?: number;
+  name?: string;
+  scope?: string | string[];
+  scopes?: string[];
+  wcaUserId?: number;
 }
 
 const decodeJwtPayload = (token: string): JwtClaims | null => {
@@ -44,25 +46,19 @@ export const getNotifyCompRemoteClaims = () => {
   return token ? decodeJwtPayload(token) : null;
 };
 
+export const hasNotifyCompRemoteTokenForCompetition = (competitionId: string) => {
+  const claims = getNotifyCompRemoteClaims();
+  if (!claims) {
+    return false;
+  }
+
+  return claims.competitionIds?.includes(competitionId) ?? false;
+};
+
 export const setNotifyCompRemoteToken = (token: string) => {
   setLocalStorage(REMOTE_JWT_KEY, token);
 };
 
 export const clearNotifyCompRemoteToken = () => {
   deleteLocalStorage(REMOTE_JWT_KEY);
-};
-
-export const setNotifyCompRemoteAuthPending = (redirectPath: string) => {
-  setLocalStorage(REMOTE_AUTH_PENDING_KEY, 'true');
-  setLocalStorage(REMOTE_REDIRECT_PATH_KEY, redirectPath);
-};
-
-export const isNotifyCompRemoteAuthPending = () =>
-  getLocalStorage(REMOTE_AUTH_PENDING_KEY) === 'true';
-
-export const consumeNotifyCompRemoteRedirectPath = () => {
-  const redirectPath = getLocalStorage(REMOTE_REDIRECT_PATH_KEY) || '/';
-  deleteLocalStorage(REMOTE_AUTH_PENDING_KEY);
-  deleteLocalStorage(REMOTE_REDIRECT_PATH_KEY);
-  return redirectPath;
 };

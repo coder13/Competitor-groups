@@ -9,6 +9,3 @@ export const NOTIFYCOMP_API_ORIGIN = NOTIFYCOMP_GRAPHQL_ORIGIN.replace(/\/graphq
 
 export const NOTIFYCOMP_WS_ORIGIN =
   import.meta.env.VITE_NOTIFYCOMP_WS_ORIGIN || 'wss://api.notifycomp.com/api/graphql';
-
-export const NOTIFYCOMP_AUTH_ORIGIN =
-  import.meta.env.VITE_NOTIFYCOMP_AUTH_ORIGIN || NOTIFYCOMP_API_ORIGIN;
