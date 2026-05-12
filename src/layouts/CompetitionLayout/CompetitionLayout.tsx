@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useEffect, useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Outlet, useLocation, useParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import { ErrorFallback, LastFetchedAt, NoteBox, NotifyCompRemoteBar } from '@/components';
 import { Container } from '@/components/Container';
@@ -15,6 +15,7 @@ export function CompetitionLayout() {
   const { online } = useApp();
   const { competitionId } = useParams();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -31,8 +32,28 @@ export function CompetitionLayout() {
 
   const Header = (
     <nav className="z-10 flex justify-center w-full shadow-md shadow-tertiary-dark print:hidden bg-panel">
-      <Container className="justify-between md:flex-row">
-        <div className="flex">
+      <Container className="justify-between md:flex-row space-y-2 md:space-y-0">
+        <div className="flex md:hidden w-full p-2">
+          <label className="flex w-full items-center space-x-2" htmlFor="competition-section-nav">
+            <span className="type-meta text-muted">Section</span>
+            <select
+              className="w-full rounded-md border border-tertiary-weak bg-panel p-2"
+              id="competition-section-nav"
+              onChange={(event) => {
+                void navigate(event.target.value);
+              }}
+              value={pathname}>
+              {tabs
+                .filter((tab) => !tab.hiddenOnMobile)
+                .map((tab) => (
+                  <option key={tab.href} value={tab.href}>
+                    {tab.text}
+                  </option>
+                ))}
+            </select>
+          </label>
+        </div>
+        <div className="hidden md:flex">
           {tabs.map((i) => (
             <StyledNavLink
               key={i.href}
