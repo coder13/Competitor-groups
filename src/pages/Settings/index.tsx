@@ -2,11 +2,13 @@ import { Button, Container } from '@/components';
 import { useMyCompetitionsQuery } from '@/containers/MyCompetitions/MyCompetitions.query';
 import { useAssignmentNotifications } from '@/hooks/useAssignmentNotifications';
 import { useAuth } from '@/providers/AuthProvider';
+import { useNotifyCompRemoteAuth } from '@/providers/NotifyCompRemoteAuthProvider';
 import { Theme, useUserSettings } from '@/providers/UserSettingsProvider';
 
 export default function Settings() {
   const { theme, setTheme } = useUserSettings();
   const { user, signIn } = useAuth();
+  const notifyCompRemoteAuth = useNotifyCompRemoteAuth();
   const { competitions, isLoading } = useMyCompetitionsQuery(user?.id);
   const notifications = useAssignmentNotifications({
     competitions,
@@ -109,6 +111,24 @@ export default function Settings() {
           )}
 
           {notifications.error && <p className="type-meta text-red-500">{notifications.error}</p>}
+        </div>
+
+        <div className="space-y-4 p-6 bg-panel rounded-lg shadow-md shadow-tertiary-dark">
+          <div className="space-y-2">
+            <h2 className="type-heading">Live Activities Remote</h2>
+            <p className="type-body-sm text-subtle">
+              Manage the separate session used by Live Activities remote controls.
+            </p>
+            <p className="type-meta">
+              {notifyCompRemoteAuth.isAuthenticated ? 'Signed in' : 'Not signed in'}
+            </p>
+          </div>
+
+          {notifyCompRemoteAuth.isAuthenticated && (
+            <Button type="button" variant="gray" onClick={notifyCompRemoteAuth.signOut}>
+              Sign out of Live Activities Remote
+            </Button>
+          )}
         </div>
       </div>
     </Container>

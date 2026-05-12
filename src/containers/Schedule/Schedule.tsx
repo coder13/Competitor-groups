@@ -1,15 +1,11 @@
 import { Competition } from '@wca/helpers';
 import { useCallback, useEffect, useMemo } from 'react';
-import { ActivityRow } from '@/components';
 import { useCollapse } from '@/hooks/UseCollapse';
-import {
-  getRoomData,
-  getScheduledDays,
-  getVenueForActivity,
-  hasMultipleScheduleLocations,
-} from '@/lib/activities';
+import { getScheduledDays, hasMultipleScheduleLocations } from '@/lib/activities';
 import { LinkRenderer } from '@/lib/linkRenderer';
 import { ActivityWithRoomOrParent } from '@/lib/types';
+import { ScheduleActivityRow } from './ScheduleActivityRow';
+import { getScheduleActivityGroups } from './scheduleActivityGroups';
 
 const key = (compId: string) => `${compId}-schedule`;
 
@@ -27,10 +23,10 @@ const ScheduleDay = ({
   LinkComponent?: LinkRenderer;
 }) => {
   const { collapsedDates, toggleDate } = useCollapse(key(wcif.id));
-
-  const findVenue = useCallback(() => {
-    return getVenueForActivity(wcif);
-  }, [wcif]);
+  const activityGroups = useMemo(
+    () => getScheduleActivityGroups(wcif, activities),
+    [activities, wcif],
+  );
 
   const collapsed = collapsedDates.includes(date);
   const toggleCollapsed = useCallback(() => {
@@ -46,24 +42,14 @@ const ScheduleDay = ({
         <span className="p-2 flex-end">{collapsed ? ' ▼' : ' ▲'}</span>
       </div>
       <div className="flex flex-col">
-        {(collapsed ? [] : activities).map((activity) => {
-          const venue = findVenue()(activity);
-          const timeZone = venue?.timezone ?? wcif.schedule.venues?.[0]?.timezone ?? '';
-          const room = activity?.parent?.parent?.room || activity?.parent?.room || activity?.room;
-          const stage = room ? getRoomData(room, activity) : undefined;
-
-          return (
-            <ActivityRow
-              key={activity.id}
-              activity={activity}
-              competitionId={wcif.id}
-              LinkComponent={LinkComponent}
-              timeZone={timeZone}
-              stage={stage || room}
-              showRoom={showRoom}
-            />
-          );
-        })}
+        {(collapsed ? [] : activityGroups).map((group) => (
+          <ScheduleActivityRow
+            key={group.id}
+            group={group}
+            LinkComponent={LinkComponent}
+            showRoom={showRoom}
+          />
+        ))}
       </div>
     </div>
   );

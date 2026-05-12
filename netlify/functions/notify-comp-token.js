@@ -8,6 +8,24 @@ const headers = {
 };
 
 const base64Url = (value) => Buffer.from(value).toString('base64url');
+const REMOTE_SCOPE = 'notifycomp.remote';
+const PUSH_SCOPE = 'assignment_notifications';
+const REMOTE_TOKEN_TTL_SECONDS = 12 * 60 * 60;
+const PUSH_TOKEN_TTL_SECONDS = 10 * 60;
+
+const getCompetitionManagers = (competition) => {
+  const data = competition?.competition || competition;
+  return [...(data?.organizers || []), ...(data?.delegates || [])];
+};
+
+const isListedCompetitionManager = (competition, userId) =>
+  getCompetitionManagers(competition).some((user) => Number(user?.id) === Number(userId));
+
+const getManagedCompetitionIds = (competitions, userId) =>
+  competitions
+    .filter((competition) => isListedCompetitionManager(competition, userId))
+    .map((competition) => competition.id)
+    .filter(Boolean);
 
 const signJwt = (claims, secret) => {
   const encodedHeader = base64Url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
@@ -42,7 +60,19 @@ exports.handler = async (event) => {
     };
   }
 
-  const { accessToken } = JSON.parse(event.body || '{}');
+  let body;
+  try {
+    body = JSON.parse(event.body || '{}');
+  } catch {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ message: 'Invalid JSON body' }),
+    };
+  }
+
+  const { accessToken, competitionId, scope } = body;
+  const tokenScope = scope === REMOTE_SCOPE ? REMOTE_SCOPE : PUSH_SCOPE;
   if (!accessToken) {
     return {
       statusCode: 400,
@@ -52,7 +82,9 @@ exports.handler = async (event) => {
   }
 
   const wcaOrigin = process.env.WCA_ORIGIN || 'https://www.worldcubeassociation.org';
-  const meResponse = await fetch(`${wcaOrigin}/api/v0/me`, {
+  const meParams =
+    tokenScope === REMOTE_SCOPE ? '?upcoming_competitions=true&ongoing_competitions=true' : '';
+  const meResponse = await fetch(`${wcaOrigin}/api/v0/me${meParams}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -66,7 +98,7 @@ exports.handler = async (event) => {
     };
   }
 
-  const { me } = await meResponse.json();
+  const { me, ongoing_competitions = [], upcoming_competitions = [] } = await meResponse.json();
   if (!me?.id) {
     return {
       statusCode: 401,
@@ -75,14 +107,68 @@ exports.handler = async (event) => {
     };
   }
 
+  const tokenTtlSeconds =
+    tokenScope === REMOTE_SCOPE ? REMOTE_TOKEN_TTL_SECONDS : PUSH_TOKEN_TTL_SECONDS;
+  if (tokenScope === REMOTE_SCOPE && !competitionId) {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ message: 'Missing competition ID for remote token' }),
+    };
+  }
+
+  let remoteCompetitionIds = [];
+
+  if (tokenScope === REMOTE_SCOPE) {
+    const competitionResponse = await fetch(`${wcaOrigin}/api/v0/competitions/${competitionId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!competitionResponse.ok) {
+      return {
+        statusCode: competitionResponse.status === 404 ? 404 : 502,
+        headers,
+        body: JSON.stringify({ message: 'Unable to verify competition remote access' }),
+      };
+    }
+
+    const competition = await competitionResponse.json();
+    if (!isListedCompetitionManager(competition, me.id)) {
+      return {
+        statusCode: 403,
+        headers,
+        body: JSON.stringify({
+          message:
+            'Only listed competition delegates and organizers can use Live Activities Remote',
+        }),
+      };
+    }
+
+    // Remote tokens are scoped to competitions the WCA API says this user manages. The
+    // NotifyComp API must reject remote mutations for competition IDs outside this claim.
+    remoteCompetitionIds = [
+      ...new Set([
+        competitionId,
+        ...getManagedCompetitionIds([...ongoing_competitions, ...upcoming_competitions], me.id),
+      ]),
+    ];
+  }
+
   const now = Math.floor(Date.now() / 1000);
   const token = signJwt(
     {
       aud: process.env.COMPETITION_GROUPS_JWT_AUDIENCE || 'notifycomp',
-      exp: now + 10 * 60,
+      competitionIds: tokenScope === REMOTE_SCOPE ? remoteCompetitionIds : undefined,
+      exp: now + tokenTtlSeconds,
       iat: now,
       iss: process.env.COMPETITION_GROUPS_JWT_ISSUER || 'competitiongroups.com',
+      name: me.name,
+      scope: tokenScope,
+      scopes: [tokenScope],
       sub: `wca:${me.id}`,
+      wcaUserId: me.id,
       wcaUserIds: [me.id],
     },
     secret,

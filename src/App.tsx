@@ -18,6 +18,7 @@ import CompetitionLive from './pages/Competition/Live';
 import CompetitionPerson from './pages/Competition/Person';
 import CompetitionPersonalBests from './pages/Competition/Person/PersonalBests';
 import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
+import CompetitionRemote from './pages/Competition/Remote';
 import CompetitionResults from './pages/Competition/Results';
 import {
   CompetitionActivity,
@@ -30,12 +31,15 @@ import CompetitionStats from './pages/Competition/Stats';
 import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
 import CompetitionSumOfRanks from './pages/Competition/SumOfRanks';
 import Home from './pages/Home';
+import LiveActivitiesAbout from './pages/LiveActivities/About';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
 import Test from './pages/Test';
 import UserLogin from './pages/UserLogin';
 import { AppProvider } from './providers/AppProvider';
 import { AuthProvider, useAuth } from './providers/AuthProvider';
+import { ConfirmProvider } from './providers/ConfirmProvider';
+import { NotifyCompRemoteAuthProvider } from './providers/NotifyCompRemoteAuthProvider';
 import { QueryProvider } from './providers/QueryProvider/QueryProvider';
 import { UserSettingsProvider } from './providers/UserSettingsProvider';
 import { useWCIF } from './providers/WCIFProvider';
@@ -108,6 +112,7 @@ const Navigation = () => {
 
           <Route path="psych-sheet" element={<PsychSheet />} />
           <Route path="psych-sheet/:eventId" element={<PsychSheetEvent />} />
+          <Route path="remote" element={<CompetitionRemote />} />
           <Route path="results" element={<CompetitionResults />} />
           <Route path="results/:roundId" element={<CompetitionResults />} />
 
@@ -126,6 +131,7 @@ const Navigation = () => {
         </Route>
         <Route path="/users/:userId" element={<UserLogin />} />
         <Route path="about" element={<About />} />
+        <Route path="live-activities" element={<LiveActivitiesAbout />} />
         <Route path="settings" element={<Settings />} />
         <Route path="support" element={<Support />} />
       </Route>
@@ -141,9 +147,13 @@ const App = () => (
       <QueryProvider>
         <ApolloProvider client={client}>
           <BrowserRouter>
-            <AuthProvider>
-              <Navigation />
-            </AuthProvider>
+            <ConfirmProvider>
+              <AuthProvider>
+                <NotifyCompRemoteAuthProvider>
+                  <Navigation />
+                </NotifyCompRemoteAuthProvider>
+              </AuthProvider>
+            </ConfirmProvider>
           </BrowserRouter>
         </ApolloProvider>
       </QueryProvider>
