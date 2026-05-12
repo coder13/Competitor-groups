@@ -80,7 +80,7 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
               disabled={remote.isSaving || !remote.previousGroup}
               aria-label="Go back to previous remote activity"
               onClick={() => runSwitch('previous')}>
-              &#9198;
+              <span className="fa fa-arrow-left" aria-hidden="true" />
             </button>
 
             <button
@@ -102,7 +102,7 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
               disabled={remote.isSaving || !remote.nextGroup}
               aria-label="Go to next remote activity"
               onClick={() => runSwitch('next')}>
-              &#9197;
+              <span className="fa fa-arrow-right" aria-hidden="true" />
             </button>
           </div>
 
