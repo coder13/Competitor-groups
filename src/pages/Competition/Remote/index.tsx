@@ -8,15 +8,24 @@ import { getRooms } from '@/lib/activities';
 import { RemoteActivityGroup, RemoteActivityState } from '@/lib/notifyCompRemoteActivities';
 import { useNotifyCompRemoteAuth } from '@/providers/NotifyCompRemoteAuthProvider';
 import { useWCIF } from '@/providers/WCIFProvider';
+import { RemoteAction, RemoteActionDialog } from './RemoteActionDialog';
 import { RemoteActivityList, RemoteGroupList } from './RemoteActivityList';
 
 const confirmAction = (message: string) => window.confirm(message);
+
+interface PendingRemoteAction {
+  action: RemoteAction;
+  activityName: string;
+  onConfirm: () => void;
+  roomNames: string[];
+}
 
 export default function CompetitionRemote() {
   const { competitionId } = useParams<{ competitionId: string }>();
   const { wcif, setTitle } = useWCIF();
   const remoteAuth = useNotifyCompRemoteAuth();
   const [selectedRoomId, setSelectedRoomId] = useState<number | 'all'>('all');
+  const [pendingAction, setPendingAction] = useState<PendingRemoteAction | null>(null);
 
   useEffect(() => {
     setTitle('Remote');
@@ -33,56 +42,49 @@ export default function CompetitionRemote() {
     return null;
   }
 
-  const startActivity = (state: RemoteActivityState) => {
-    void remote.startActivity(state.scheduledActivity.id);
-  };
-
-  const stopActivity = (state: RemoteActivityState) => {
-    void remote.stopActivity(state.scheduledActivity.id);
-  };
-
-  const toggleActivity = (state: RemoteActivityState) => {
-    if (state.status === 'current') {
-      stopActivity(state);
+  const selectActivity = (state: RemoteActivityState) => {
+    if (state.status === 'done') {
       return;
     }
 
-    startActivity(state);
+    const action = state.status === 'current' ? 'stop' : 'start';
+
+    setPendingAction({
+      action,
+      activityName: state.scheduledActivity.name,
+      onConfirm: () => {
+        if (action === 'start') {
+          void remote.startActivity(state.scheduledActivity.id);
+          return;
+        }
+
+        void remote.stopActivity(state.scheduledActivity.id);
+      },
+      roomNames: [state.scheduledActivity.room.name],
+    });
   };
 
-  const resetActivity = (state: RemoteActivityState) => {
-    if (
-      !confirmAction(`Reset ${state.scheduledActivity.name}? This clears its start and stop times.`)
-    ) {
+  const selectGroup = (group: RemoteActivityGroup) => {
+    if (group.status === 'done') {
       return;
     }
 
-    void remote.resetActivity(state.scheduledActivity.id);
-  };
+    const action = group.status === 'current' || group.status === 'mixed' ? 'stop' : 'start';
+    const roomNames = [...new Set(group.scheduledActivities.map((activity) => activity.room.name))];
 
-  const startGroup = (group: RemoteActivityGroup) => {
-    void remote.startGroup(group);
-  };
+    setPendingAction({
+      action,
+      activityName: group.name,
+      onConfirm: () => {
+        if (action === 'start') {
+          void remote.startGroup(group);
+          return;
+        }
 
-  const stopGroup = (group: RemoteActivityGroup) => {
-    void remote.stopGroup(group);
-  };
-
-  const toggleGroup = (group: RemoteActivityGroup) => {
-    if (group.status === 'current' || group.status === 'mixed') {
-      stopGroup(group);
-      return;
-    }
-
-    startGroup(group);
-  };
-
-  const resetGroup = (group: RemoteActivityGroup) => {
-    if (!confirmAction(`Reset ${group.name} in all listed rooms?`)) {
-      return;
-    }
-
-    void remote.resetGroup(group);
+        void remote.stopGroup(group);
+      },
+      roomNames,
+    });
   };
 
   return (
@@ -90,7 +92,7 @@ export default function CompetitionRemote() {
       <div className="space-y-6">
         <p className="max-w-3xl type-body-sm text-subtle">
           Remote control uses NotifyComp to manage the live activity status for this competition, so
-          staff can start, stop, reset, and advance activities from Competition Groups.
+          staff can start, stop, and advance activities from Competition Groups.
         </p>
 
         {remoteAuth.error && <NoteBox prefix="Remote sign in" text={remoteAuth.error} />}
@@ -171,19 +173,13 @@ export default function CompetitionRemote() {
                     <RemoteGroupList
                       disabled={remote.isSaving}
                       groups={remote.activityGroups}
-                      onResetGroup={resetGroup}
-                      onStartGroup={startGroup}
-                      onStopGroup={stopGroup}
-                      onToggleGroup={toggleGroup}
+                      onSelectGroup={selectGroup}
                     />
                   ) : (
                     <RemoteActivityList
                       disabled={remote.isSaving}
                       states={remote.activityStates}
-                      onResetActivity={resetActivity}
-                      onStartActivity={startActivity}
-                      onStopActivity={stopActivity}
-                      onToggleActivity={toggleActivity}
+                      onSelectActivity={selectActivity}
                     />
                   )}
                 </div>
@@ -192,6 +188,20 @@ export default function CompetitionRemote() {
           </>
         )}
       </div>
+
+      {pendingAction && (
+        <RemoteActionDialog
+          action={pendingAction.action}
+          activityName={pendingAction.activityName}
+          disabled={remote.isSaving}
+          roomNames={pendingAction.roomNames}
+          onCancel={() => setPendingAction(null)}
+          onConfirm={() => {
+            pendingAction.onConfirm();
+            setPendingAction(null);
+          }}
+        />
+      )}
     </Container>
   );
 }
