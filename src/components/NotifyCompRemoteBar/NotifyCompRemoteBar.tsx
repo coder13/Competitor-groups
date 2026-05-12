@@ -3,9 +3,8 @@ import { Container } from '@/components/Container';
 import { useCompetitionRemoteControl } from '@/hooks/useCompetitionRemoteControl';
 import { useNow } from '@/hooks/useNow';
 import {
-  formatElapsedMMSS,
+  formatElapsedDuration,
   formatNextActivityOffset,
-  getActiveGroupStartTime,
   getRemoteBarProgress,
 } from './remoteBarProgress';
 
@@ -32,12 +31,16 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
   const activeNames = remote.activeGroups.map((group) => group.name);
   const currentTitle = activeNames.length > 0 ? activeNames.join(', ') : 'No active activity';
   const nextTitle = remote.nextGroup?.name || 'No next activity';
-  const elapsed = formatElapsedMMSS(getActiveGroupStartTime(remote.activeGroups), now);
+  const elapsed = formatElapsedDuration(remote.activeGroups, now);
   const nextOffset = formatNextActivityOffset(remote.nextGroup, now);
   const progress = getRemoteBarProgress({
     activeGroups: remote.activeGroups,
-    nextGroup: remote.nextGroup,
     now,
+  });
+  const progressBarClassName = classNames('block h-full rounded-full', {
+    'bg-blue-500 dark:bg-blue-400': progress.tone === 'normal',
+    'bg-yellow-400 dark:bg-yellow-300': progress.tone === 'warning',
+    'bg-red-500 dark:bg-red-400': progress.tone === 'overdue',
   });
 
   const runSwitch = (direction: 'previous' | 'next') => {
@@ -126,10 +129,7 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
 
             <div className="flex h-4 items-center">
               <div className="h-1 w-full overflow-hidden rounded-full bg-tertiary">
-                <span
-                  className="block h-full rounded-full bg-blue-500 dark:bg-blue-400"
-                  style={{ width: `${progress}%` }}
-                />
+                <span className={progressBarClassName} style={{ width: `${progress.percent}%` }} />
               </div>
             </div>
           </div>

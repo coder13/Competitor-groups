@@ -19,6 +19,11 @@ const getEarliestTime = (times: Array<number | undefined>) => {
   return validTimes.length ? Math.min(...validTimes) : undefined;
 };
 
+const getLatestTime = (times: Array<number | undefined>) => {
+  const validTimes = times.filter((time): time is number => time !== undefined);
+  return validTimes.length ? Math.max(...validTimes) : undefined;
+};
+
 export const formatElapsedMMSS = (startTime: number | string | undefined, now: Date) => {
   const start = typeof startTime === 'number' ? startTime : getTime(startTime);
 
@@ -36,6 +41,20 @@ export const formatElapsedMMSS = (startTime: number | string | undefined, now: D
 export const getGroupScheduledStartTime = (group?: RemoteActivityGroup) =>
   getEarliestTime(group?.scheduledActivities.map((activity) => getTime(activity.startTime)) || []);
 
+const getActiveGroupsScheduledStartTime = (groups: RemoteActivityGroup[]) =>
+  getEarliestTime(
+    groups.flatMap((group) =>
+      group.scheduledActivities.map((activity) => getTime(activity.startTime)),
+    ),
+  );
+
+const getActiveGroupsScheduledEndTime = (groups: RemoteActivityGroup[]) =>
+  getLatestTime(
+    groups.flatMap((group) =>
+      group.scheduledActivities.map((activity) => getTime(activity.endTime)),
+    ),
+  );
+
 export const getActiveGroupStartTime = (groups: RemoteActivityGroup[]) =>
   getEarliestTime(
     groups.flatMap((group) => {
@@ -50,6 +69,33 @@ export const getActiveGroupStartTime = (groups: RemoteActivityGroup[]) =>
       return group.scheduledActivities.map((activity) => getTime(activity.startTime));
     }),
   );
+
+export const getActiveGroupsScheduledDuration = (groups: RemoteActivityGroup[]) => {
+  const start = getActiveGroupsScheduledStartTime(groups);
+  const end = getActiveGroupsScheduledEndTime(groups);
+
+  if (start === undefined || end === undefined || end <= start) {
+    return undefined;
+  }
+
+  return end - start;
+};
+
+const formatDurationMinutes = (duration: number | undefined) => {
+  if (duration === undefined) {
+    return '0 minutes';
+  }
+
+  const minutes = Math.max(1, Math.round(duration / MINUTE));
+  const unit = minutes === 1 ? 'minute' : 'minutes';
+
+  return `${minutes} ${unit}`;
+};
+
+export const formatElapsedDuration = (groups: RemoteActivityGroup[], now: Date) =>
+  `${formatElapsedMMSS(getActiveGroupStartTime(groups), now)} / ${formatDurationMinutes(
+    getActiveGroupsScheduledDuration(groups),
+  )}`;
 
 export const formatNextActivityOffset = (nextGroup: RemoteActivityGroup | undefined, now: Date) => {
   const nextStart = getGroupScheduledStartTime(nextGroup);
@@ -79,25 +125,31 @@ export const formatNextActivityOffset = (nextGroup: RemoteActivityGroup | undefi
 
 export const getRemoteBarProgress = ({
   activeGroups,
-  nextGroup,
   now,
 }: {
   activeGroups: RemoteActivityGroup[];
-  nextGroup?: RemoteActivityGroup;
   now: Date;
 }) => {
   const activeStart = getActiveGroupStartTime(activeGroups);
-  const nextStart = getGroupScheduledStartTime(nextGroup);
+  const duration = getActiveGroupsScheduledDuration(activeGroups);
 
-  if (activeStart === undefined || nextStart === undefined) {
-    return nextStart !== undefined && now.getTime() >= nextStart ? 100 : 0;
+  if (activeStart === undefined || duration === undefined) {
+    return {
+      percent: 0,
+      tone: 'normal' as const,
+    };
   }
 
-  const duration = nextStart - activeStart;
+  const elapsed = Math.max(0, now.getTime() - activeStart);
+  const percent = (elapsed / duration) * 100;
 
-  if (duration <= 0) {
-    return now.getTime() >= nextStart ? 100 : 0;
-  }
-
-  return clampPercent(((now.getTime() - activeStart) / duration) * 100);
+  return {
+    percent: clampPercent(percent),
+    tone:
+      percent > 100
+        ? ('overdue' as const)
+        : percent >= 95
+          ? ('warning' as const)
+          : ('normal' as const),
+  };
 };
