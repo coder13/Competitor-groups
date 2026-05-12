@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useNotifyCompRemoteActivities } from '@/hooks/useNotifyCompRemoteActivities';
+import { isCompetitionDelegateOrOrganizer } from '@/lib/competitionAuthorization';
 import {
   getRemoteActiveGroups,
   getRemoteActivityGroups,
@@ -9,6 +10,7 @@ import {
   getRemoteScheduledActivities,
   RemoteActivityGroup,
 } from '@/lib/notifyCompRemoteActivities';
+import { useAuth } from '@/providers/AuthProvider';
 import { useNotifyCompRemoteAuth } from '@/providers/NotifyCompRemoteAuthProvider';
 import { useWCIF } from '@/providers/WCIFProvider';
 
@@ -21,15 +23,20 @@ interface UseCompetitionRemoteControlParams {
 const activityIdsForGroup = (group: RemoteActivityGroup) =>
   group.scheduledActivities.map((activity) => activity.id);
 
+const isActiveGroup = (group: RemoteActivityGroup) =>
+  group.status === 'current' || group.status === 'mixed';
+
 export function useCompetitionRemoteControl({
   competitionId,
   enabled = true,
   roomId,
 }: UseCompetitionRemoteControlParams) {
   const { wcif } = useWCIF();
+  const { user } = useAuth();
   const remoteAuth = useNotifyCompRemoteAuth();
+  const canManageRemote = isCompetitionDelegateOrOrganizer(wcif, user);
   const isAuthenticated = remoteAuth.isAuthenticatedForCompetition(competitionId);
-  const isEnabled = enabled && isAuthenticated;
+  const isEnabled = enabled && isAuthenticated && canManageRemote;
 
   const remote = useNotifyCompRemoteActivities({
     competitionId,
@@ -56,14 +63,105 @@ export function useCompetitionRemoteControl({
   const previousGroup = useMemo(() => getRemotePreviousGroup(activityGroups), [activityGroups]);
   const nextGroup = useMemo(() => getRemoteNextGroup(activityGroups), [activityGroups]);
 
-  const startGroup = (group: RemoteActivityGroup) =>
-    remote.startActivities(activityIdsForGroup(group));
-  const stopGroup = (group: RemoteActivityGroup) =>
-    remote.stopActivities(activityIdsForGroup(group));
-  const resetGroup = (group: RemoteActivityGroup) =>
-    remote.resetActivities(activityIdsForGroup(group));
+  const requireRemoteAccess = () => {
+    if (!canManageRemote) {
+      throw new Error(
+        'Only listed competition delegates and organizers can manage remote control.',
+      );
+    }
+  };
+
+  const finishSkippedGroupsBefore = async (group: RemoteActivityGroup) => {
+    const targetIndex = activityGroups.findIndex((candidate) => candidate.id === group.id);
+
+    if (targetIndex < 0) {
+      return;
+    }
+
+    const skippedActivityIds = activityGroups
+      .slice(0, targetIndex)
+      .filter((candidate) => candidate.status === 'next')
+      .flatMap(activityIdsForGroup);
+
+    if (skippedActivityIds.length === 0) {
+      return;
+    }
+
+    await remote.startActivities(skippedActivityIds);
+    await remote.stopActivities(skippedActivityIds);
+  };
+
+  const startGroup = async (group: RemoteActivityGroup) => {
+    requireRemoteAccess();
+    const currentActivityIds = activeGroups.flatMap(activityIdsForGroup);
+
+    if (currentActivityIds.length > 0) {
+      await remote.stopActivities(currentActivityIds);
+    }
+
+    await finishSkippedGroupsBefore(group);
+    return remote.startActivities(activityIdsForGroup(group));
+  };
+  const stopGroup = (group: RemoteActivityGroup) => {
+    requireRemoteAccess();
+    return remote.stopActivities(activityIdsForGroup(group));
+  };
+  const resetGroup = (group: RemoteActivityGroup) => {
+    requireRemoteAccess();
+    return remote.resetActivities(activityIdsForGroup(group));
+  };
+  const startActivity = (activityId: number) => {
+    requireRemoteAccess();
+    return remote.startActivity(activityId);
+  };
+  const stopActivity = (activityId: number) => {
+    requireRemoteAccess();
+    return remote.stopActivity(activityId);
+  };
+  const resetActivity = (activityId: number) => {
+    requireRemoteAccess();
+    return remote.resetActivity(activityId);
+  };
+  const startActivities = (activityIds: number[]) => {
+    requireRemoteAccess();
+    return remote.startActivities(activityIds);
+  };
+  const stopActivities = (activityIds: number[]) => {
+    requireRemoteAccess();
+    return remote.stopActivities(activityIds);
+  };
+  const resetActivities = (activityIds: number[]) => {
+    requireRemoteAccess();
+    return remote.resetActivities(activityIds);
+  };
+  const importCompetition = () => {
+    requireRemoteAccess();
+    return remote.importCompetition();
+  };
+  const resetAllActivities = () => {
+    requireRemoteAccess();
+    return remote.resetAllActivities();
+  };
+  const finishAllActivities = () => {
+    requireRemoteAccess();
+    const unfinishedActivityIds = remote.activities
+      .filter((activity) => activity.startTime && !activity.endTime)
+      .map((activity) => activity.activityId);
+
+    if (unfinishedActivityIds.length === 0) {
+      return Promise.resolve();
+    }
+
+    return remote.stopActivities(unfinishedActivityIds);
+  };
+  const updateAutoAdvance = (autoAdvance: boolean) => {
+    requireRemoteAccess();
+    return remote.updateAutoAdvance(autoAdvance);
+  };
 
   const switchToGroup = async (group?: RemoteActivityGroup) => {
+    requireRemoteAccess();
+
     if (!group) {
       return;
     }
@@ -74,10 +172,16 @@ export function useCompetitionRemoteControl({
       await remote.stopActivities(currentActivityIds);
     }
 
+    if (!isActiveGroup(group)) {
+      await finishSkippedGroupsBefore(group);
+    }
+
     await remote.startActivities(activityIdsForGroup(group));
   };
 
   const switchToPreviousGroup = async () => {
+    requireRemoteAccess();
+
     if (!previousGroup) {
       return;
     }
@@ -97,14 +201,26 @@ export function useCompetitionRemoteControl({
     activeGroups,
     activityGroups,
     activityStates,
+    canManageRemote,
+    finishAllActivities,
+    importCompetition,
     isAuthenticated,
+    isEnabled,
     nextGroup,
     previousGroup,
+    resetActivities,
+    resetActivity,
+    resetAllActivities,
     resetGroup,
     scheduledActivities,
+    startActivities,
+    startActivity,
     startGroup,
+    stopActivities,
+    stopActivity,
     stopGroup,
     switchToPreviousGroup,
     switchToGroup,
+    updateAutoAdvance,
   };
 }

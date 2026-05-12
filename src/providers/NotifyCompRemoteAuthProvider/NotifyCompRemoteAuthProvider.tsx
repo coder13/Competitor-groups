@@ -4,7 +4,7 @@ import {
   clearNotifyCompRemoteToken,
   getNotifyCompRemoteClaims,
   getNotifyCompRemoteToken,
-  hasNotifyCompRemoteTokenForCompetition,
+  hasNotifyCompRemoteToken,
   setNotifyCompRemoteToken,
 } from '@/lib/notifyCompRemoteAuth';
 import { getStoredWcaAccessToken } from '@/lib/wcaAccessToken';
@@ -71,7 +71,9 @@ export function NotifyCompRemoteAuthProvider({ children }: PropsWithChildren) {
         setNotifyCompRemoteToken(payload.token);
         setToken(payload.token);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unable to authorize NotifyComp Remote.');
+        setError(
+          err instanceof Error ? err.message : 'Unable to authorize Live Activities Remote.',
+        );
         clearNotifyCompRemoteToken();
         setToken(null);
       } finally {
@@ -87,7 +89,7 @@ export function NotifyCompRemoteAuthProvider({ children }: PropsWithChildren) {
       return;
     }
 
-    if (hasNotifyCompRemoteTokenForCompetition(pendingCompetitionId)) {
+    if (hasNotifyCompRemoteToken()) {
       deleteLocalStorage(PENDING_REMOTE_COMPETITION_ID_KEY);
       return;
     }
@@ -110,7 +112,7 @@ export function NotifyCompRemoteAuthProvider({ children }: PropsWithChildren) {
     () => ({
       authenticating,
       error,
-      isAuthenticatedForCompetition: hasNotifyCompRemoteTokenForCompetition,
+      isAuthenticatedForCompetition: hasNotifyCompRemoteToken,
       isAuthenticated: Boolean(token),
       signIn,
       signOut,

@@ -48,15 +48,7 @@ export const getNotifyCompRemoteClaims = () => {
   return token ? decodeJwtPayload(token) : null;
 };
 
-export const hasNotifyCompRemoteTokenForCompetition = (competitionId: string) => {
-  const claims = getNotifyCompRemoteClaims();
-  if (!claims) {
-    return false;
-  }
-
-  const competitionIds = claims.competitionIds ?? claims.competition_ids ?? [];
-  return competitionIds.includes(competitionId);
-};
+export const hasNotifyCompRemoteToken = () => Boolean(getNotifyCompRemoteClaims());
 
 export const setNotifyCompRemoteToken = (token: string) => {
   setLocalStorage(REMOTE_JWT_KEY, token);

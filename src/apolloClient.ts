@@ -4,6 +4,7 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { createClient } from 'graphql-ws';
 import { getNotifyCompRemoteToken } from './lib/notifyCompRemoteAuth';
+import { setNotifyCompWebSocketStatus } from './lib/notifyCompWebSocketStatus';
 import { NOTIFYCOMP_GRAPHQL_ORIGIN, NOTIFYCOMP_WS_ORIGIN } from './lib/remoteConfig';
 
 const httpLink = createHttpLink({
@@ -13,6 +14,24 @@ const httpLink = createHttpLink({
 const wsLink = new GraphQLWsLink(
   createClient({
     url: NOTIFYCOMP_WS_ORIGIN,
+    on: {
+      connecting: () => {
+        setNotifyCompWebSocketStatus({ status: 'connecting' });
+      },
+      connected: () => {
+        setNotifyCompWebSocketStatus({ status: 'connected' });
+      },
+      closed: () => {
+        setNotifyCompWebSocketStatus({ status: 'disconnected' });
+      },
+      error: () => {
+        setNotifyCompWebSocketStatus({
+          status: 'disconnected',
+          message:
+            'Unable to connect to NotifyComp live updates. Activity changes may not update automatically.',
+        });
+      },
+    },
   }),
 );
 

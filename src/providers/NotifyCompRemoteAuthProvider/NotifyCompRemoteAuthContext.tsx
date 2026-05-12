@@ -3,6 +3,10 @@ import { createContext, useContext } from 'react';
 export interface NotifyCompRemoteAuthContextValue {
   authenticating: boolean;
   error: string | null;
+  /**
+   * Remote sign-in is app-wide; the competition-specific access check lives in
+   * useCompetitionRemoteControl.
+   */
   isAuthenticatedForCompetition: (competitionId: string) => boolean;
   isAuthenticated: boolean;
   signIn: (competitionId: string) => Promise<void>;

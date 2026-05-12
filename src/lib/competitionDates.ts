@@ -20,3 +20,10 @@ export const isCompetitionDay = (wcif: Competition, date = new Date()) => {
     return getDateKey(competitionDate);
   }).includes(currentDateKey);
 };
+
+export const isCompetitionDayOrAfter = (wcif: Competition, date = new Date()) => {
+  const currentDate = getLocalDateFromKey(getDateKey(date));
+  const startDate = getLocalDateFromKey(wcif.schedule.startDate);
+
+  return currentDate >= startDate;
+};

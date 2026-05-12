@@ -115,9 +115,9 @@ export default function Settings() {
 
         <div className="space-y-4 p-6 bg-panel rounded-lg shadow-md shadow-tertiary-dark">
           <div className="space-y-2">
-            <h2 className="type-heading">NotifyComp Remote</h2>
+            <h2 className="type-heading">Live Activities Remote</h2>
             <p className="type-body-sm text-subtle">
-              Manage the NotifyComp Remote session used by competition remote controls.
+              Manage the separate session used by Live Activities remote controls.
             </p>
             <p className="type-meta">
               {notifyCompRemoteAuth.isAuthenticated ? 'Signed in' : 'Not signed in'}
@@ -126,7 +126,7 @@ export default function Settings() {
 
           {notifyCompRemoteAuth.isAuthenticated && (
             <Button type="button" variant="gray" onClick={notifyCompRemoteAuth.signOut}>
-              Sign out of NotifyComp Remote
+              Sign out of Live Activities Remote
             </Button>
           )}
         </div>

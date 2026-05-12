@@ -1,7 +1,13 @@
 import classNames from 'classnames';
 import { Container } from '@/components/Container';
+import { NotifyCompConnectionStatus } from '@/components/NotifyCompConnectionStatus';
+import { RemoteActivitySummaryList } from '@/components/RemoteActivitySummaryList';
 import { useCompetitionRemoteControl } from '@/hooks/useCompetitionRemoteControl';
+import { useNotifyCompWebSocketStatus } from '@/hooks/useNotifyCompWebSocketStatus';
 import { useNow } from '@/hooks/useNow';
+import { RemoteActivityGroup } from '@/lib/notifyCompRemoteActivities';
+import { canUseNotifyCompRemoteControls } from '@/lib/notifyCompWebSocketStatus';
+import { useConfirm } from '@/providers/ConfirmProvider';
 import {
   formatElapsedDuration,
   formatNextActivityOffset,
@@ -17,11 +23,10 @@ const iconButtonClassName =
 const primaryButtonClassName =
   'flex h-10 w-10 items-center justify-center rounded-full border border-blue-300 bg-blue-200 text-lg leading-none text-gray-900 shadow-sm hover-transition hover:bg-blue-300 disabled:cursor-not-allowed disabled:opacity-40 dark:border-blue-600 dark:bg-blue-700 dark:text-white dark:hover:bg-blue-600';
 
-const confirmNextGroup = (groupName: string) =>
-  window.confirm(`Advance to ${groupName}? This will update the live remote activity.`);
-
 export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps) {
+  const confirm = useConfirm();
   const remote = useCompetitionRemoteControl({ competitionId });
+  const notifyCompWebSocketStatus = useNotifyCompWebSocketStatus();
   const now = useNow();
 
   if (!remote.isAuthenticated || !remote.competition || remote.scheduledActivities.length === 0) {
@@ -29,6 +34,7 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
   }
 
   const activeNames = remote.activeGroups.map((group) => group.name);
+  const hasActiveGroups = activeNames.length > 0;
   const currentTitle = activeNames.length > 0 ? activeNames.join(', ') : 'No active activity';
   const nextTitle = remote.nextGroup?.name || 'No next activity';
   const elapsed = formatElapsedDuration(remote.activeGroups, now);
@@ -42,33 +48,82 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
     'bg-yellow-400 dark:bg-yellow-300': progress.tone === 'warning',
     'bg-red-500 dark:bg-red-400': progress.tone === 'overdue',
   });
+  const activeActivities = remote.activeGroups.flatMap((group) => group.scheduledActivities);
+  const controlsDisabled =
+    remote.isSaving || !canUseNotifyCompRemoteControls(notifyCompWebSocketStatus.status);
 
-  const runSwitch = (direction: 'previous' | 'next') => {
+  const confirmNextGroup = (group: RemoteActivityGroup) =>
+    confirm({
+      confirmLabel: 'Advance',
+      message: (
+        <div className="space-y-4">
+          <p>
+            Advance to <strong>{group.name}</strong>? This will update Live Activities for this
+            competition.
+          </p>
+          {activeActivities.length > 0 && (
+            <div className="space-y-2">
+              <p className="type-label">Activities that will stop</p>
+              <RemoteActivitySummaryList activities={activeActivities} roundingMinutes={1} />
+            </div>
+          )}
+          <div className="space-y-2">
+            <p className="type-label">Activities that will start</p>
+            <RemoteActivitySummaryList activities={group.scheduledActivities} roundingMinutes={1} />
+          </div>
+        </div>
+      ),
+    });
+
+  const confirmFinishCompetition = () =>
+    confirm({
+      confirmLabel: 'Finish competition',
+      message: (
+        <div className="space-y-4">
+          <p>
+            Finish this competition? This will set an end time for the final active Live Activities.
+          </p>
+          <div className="space-y-2">
+            <p className="type-label">Activities that will stop</p>
+            <RemoteActivitySummaryList activities={activeActivities} roundingMinutes={1} />
+          </div>
+        </div>
+      ),
+    });
+
+  const runSwitch = async (direction: 'previous' | 'next') => {
     const group = direction === 'previous' ? remote.previousGroup : remote.nextGroup;
 
     if (direction === 'previous') {
-      void remote.switchToPreviousGroup();
+      await remote.switchToPreviousGroup();
       return;
     }
 
-    if (direction === 'next' && group && !confirmNextGroup(group.name)) {
+    if (direction === 'next' && !group && hasActiveGroups) {
+      if (await confirmFinishCompetition()) {
+        await remote.finishAllActivities();
+      }
       return;
     }
 
-    void remote.switchToGroup(group);
+    if (direction === 'next' && group && !(await confirmNextGroup(group))) {
+      return;
+    }
+
+    await remote.switchToGroup(group);
   };
 
-  const togglePlayback = () => {
+  const togglePlayback = async () => {
     if (remote.activeGroups.length > 0) {
-      void Promise.all(remote.activeGroups.map((group) => remote.stopGroup(group)));
+      await Promise.all(remote.activeGroups.map((group) => remote.stopGroup(group)));
       return;
     }
 
-    if (remote.nextGroup && !confirmNextGroup(remote.nextGroup.name)) {
+    if (remote.nextGroup && !(await confirmNextGroup(remote.nextGroup))) {
       return;
     }
 
-    void remote.switchToGroup(remote.nextGroup);
+    await remote.switchToGroup(remote.nextGroup);
   };
 
   return (
@@ -88,7 +143,7 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
           <div className="min-w-0 space-y-0.5 text-left">
             <div className="text-xs font-medium uppercase leading-none text-muted">Current</div>
             <div className="truncate text-sm font-medium text-default">{currentTitle}</div>
-            <div className="text-sm tabular-nums text-muted">{elapsed}</div>
+            {hasActiveGroups && <div className="text-sm tabular-nums text-muted">{elapsed}</div>}
           </div>
 
           <div className="flex w-40 flex-col justify-center space-y-1 sm:w-48 md:w-64">
@@ -96,9 +151,11 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
               <button
                 type="button"
                 className={iconButtonClassName}
-                disabled={remote.isSaving || !remote.previousGroup}
+                disabled={controlsDisabled || !remote.previousGroup}
                 aria-label="Go back to previous remote activity"
-                onClick={() => runSwitch('previous')}>
+                onClick={() => {
+                  void runSwitch('previous');
+                }}>
                 <span className="fa fa-arrow-left" aria-hidden="true" />
               </button>
 
@@ -106,23 +163,27 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
                 type="button"
                 className={primaryButtonClassName}
                 disabled={
-                  remote.isSaving || (remote.activeGroups.length === 0 && !remote.nextGroup)
+                  controlsDisabled || (remote.activeGroups.length === 0 && !remote.nextGroup)
                 }
                 aria-label={
                   remote.activeGroups.length > 0
                     ? 'Stop current remote activities'
                     : 'Start next remote activity'
                 }
-                onClick={togglePlayback}>
+                onClick={() => {
+                  void togglePlayback();
+                }}>
                 {remote.activeGroups.length > 0 ? <>&#9632;</> : <>&#9654;</>}
               </button>
 
               <button
                 type="button"
                 className={iconButtonClassName}
-                disabled={remote.isSaving || !remote.nextGroup}
-                aria-label="Go to next remote activity"
-                onClick={() => runSwitch('next')}>
+                disabled={controlsDisabled || (!remote.nextGroup && !hasActiveGroups)}
+                aria-label={remote.nextGroup ? 'Go to next remote activity' : 'Finish competition'}
+                onClick={() => {
+                  void runSwitch('next');
+                }}>
                 <span className="fa fa-arrow-right" aria-hidden="true" />
               </button>
             </div>
@@ -139,6 +200,7 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
             <div className="truncate text-sm font-medium text-default">{nextTitle}</div>
             <div className="truncate text-sm text-muted">{nextOffset}</div>
           </div>
+          <NotifyCompConnectionStatus compact className="col-span-3 -mt-1" />
         </div>
       </Container>
     </nav>

@@ -24,6 +24,19 @@ const formatStartedDuration = (startTime: string, now: Date) => {
   return formatDuration({ hours, minutes }) || 'now';
 };
 
+const formatRemoteElapsedDuration = (startTime?: string | null, endTime?: string | null) => {
+  if (!startTime || !endTime) {
+    return null;
+  }
+
+  const { hours, minutes, seconds } = intervalToDuration({
+    start: new Date(startTime),
+    end: new Date(endTime),
+  });
+
+  return formatDuration({ hours, minutes, seconds }) || '0 seconds';
+};
+
 const stateDescription = (state: RemoteActivityState, now: Date) => {
   const timeZone = groupTimeZone(state.scheduledActivity);
 
@@ -32,11 +45,16 @@ const stateDescription = (state: RemoteActivityState, now: Date) => {
   }
 
   if (state.liveActivity?.endTime) {
+    const elapsed = formatRemoteElapsedDuration(
+      state.liveActivity.startTime,
+      state.liveActivity.endTime,
+    );
+
     return `Ended at ${formatTime(
       state.liveActivity.endTime,
       REMOTE_TIME_ROUNDING_MINUTES,
       timeZone,
-    )}`;
+    )}${elapsed ? ` - Duration ${elapsed}` : ''}`;
   }
 
   return `Should start at ${formatTime(
@@ -61,6 +79,28 @@ const groupRooms = (group: RemoteActivityGroup) =>
 const groupTimeZone = (activity: RemoteScheduledActivity) =>
   (activity.room as RemoteScheduledActivity['room'] & { venue?: { timezone?: string } }).venue
     ?.timezone;
+
+const groupElapsedDuration = (group: RemoteActivityGroup) => {
+  const startedActivities = group.liveActivities.filter(
+    (activity) => activity.startTime && activity.endTime,
+  );
+
+  if (startedActivities.length === 0) {
+    return null;
+  }
+
+  const startTime = startedActivities
+    .map((activity) => activity.startTime)
+    .filter(Boolean)
+    .sort()[0];
+  const endTime = startedActivities
+    .map((activity) => activity.endTime)
+    .filter(Boolean)
+    .sort()
+    .at(-1);
+
+  return formatRemoteElapsedDuration(startTime, endTime);
+};
 
 interface RemoteActivityListProps {
   disabled?: boolean;
@@ -168,6 +208,7 @@ export function RemoteGroupList({ disabled, groups, onSelectGroup }: RemoteGroup
               const activityIds = group.scheduledActivities.map((activity) => activity.id);
               const firstActivity = group.scheduledActivities[0];
               const rooms = groupRooms(group);
+              const elapsed = group.status === 'done' ? groupElapsedDuration(group) : null;
 
               return (
                 <button
@@ -198,13 +239,16 @@ export function RemoteGroupList({ disabled, groups, onSelectGroup }: RemoteGroup
                       ))}
                     </span>
                     {firstActivity && (
-                      <span className="ml-auto shrink-0 whitespace-nowrap text-right">
-                        {formatTimeRange(
-                          firstActivity.startTime,
-                          firstActivity.endTime,
-                          REMOTE_TIME_ROUNDING_MINUTES,
-                          groupTimeZone(firstActivity),
-                        )}
+                      <span className="ml-auto flex shrink-0 flex-col whitespace-nowrap text-right">
+                        <span>
+                          {formatTimeRange(
+                            firstActivity.startTime,
+                            firstActivity.endTime,
+                            REMOTE_TIME_ROUNDING_MINUTES,
+                            groupTimeZone(firstActivity),
+                          )}
+                        </span>
+                        {elapsed && <span>Duration {elapsed}</span>}
                       </span>
                     )}
                   </span>

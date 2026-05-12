@@ -73,6 +73,22 @@ describe('remoteBarProgress', () => {
     ).toBe('In 5 minutes');
   });
 
+  it('describes how many minutes late the next activity is', () => {
+    expect(
+      formatNextActivityOffset(
+        group({
+          scheduledActivities: [
+            {
+              ...group({}).scheduledActivities[0],
+              startTime: '2026-06-01T10:05:00Z',
+            },
+          ],
+        }),
+        new Date('2026-06-01T10:10:00Z'),
+      ),
+    ).toBe('5 minutes ago');
+  });
+
   it('describes far future activity starts in hours', () => {
     expect(
       formatNextActivityOffset(

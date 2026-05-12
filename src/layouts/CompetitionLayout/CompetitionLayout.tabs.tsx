@@ -2,6 +2,7 @@ import { Competition } from '@wca/helpers';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { streamActivities } from '@/lib/activities';
+import { isCompetitionDelegateOrOrganizer } from '@/lib/competitionAuthorization';
 import { isStaff } from '@/lib/person';
 import { useAuth } from '@/providers/AuthProvider';
 
@@ -13,11 +14,13 @@ interface CompetitionLayoutTabsProps {
 export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLayoutTabsProps) => {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const userId = user?.id;
 
   return useMemo(() => {
     const hasStream = wcif && streamActivities(wcif).length > 0;
-    const person = wcif?.persons.find((p) => p.wcaUserId === user?.id);
+    const person = wcif?.persons.find((p) => p.wcaUserId === userId);
     const isPersonStaff = person && isStaff(person);
+    const canManageRemote = isCompetitionDelegateOrOrganizer(wcif, userId ? { id: userId } : null);
 
     const _tabs: {
       href: string;
@@ -55,7 +58,9 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
         href: `/competitions/${competitionId}/scramblers`,
         text: t('header.tabs.scramblers'),
       });
+    }
 
+    if (canManageRemote) {
       _tabs.push({
         href: `/competitions/${competitionId}/remote`,
         text: t('header.tabs.remote', {
@@ -72,5 +77,5 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
     }
 
     return _tabs;
-  }, [wcif, competitionId, user?.id, t]);
+  }, [wcif, competitionId, userId, t]);
 };

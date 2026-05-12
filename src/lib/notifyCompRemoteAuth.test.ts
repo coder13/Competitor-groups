@@ -1,7 +1,7 @@
 import {
   clearNotifyCompRemoteToken,
   getNotifyCompRemoteClaims,
-  hasNotifyCompRemoteTokenForCompetition,
+  hasNotifyCompRemoteToken,
   setNotifyCompRemoteToken,
 } from './notifyCompRemoteAuth';
 
@@ -26,7 +26,7 @@ describe('notifyCompRemoteAuth', () => {
     clearNotifyCompRemoteToken();
   });
 
-  it('reads competitionIds from an unpadded remote JWT payload', () => {
+  it('reads an unpadded remote JWT payload as an authenticated session', () => {
     setNotifyCompRemoteToken(
       jwtWithClaims({
         competitionIds: ['KentSpring2026'],
@@ -36,18 +36,16 @@ describe('notifyCompRemoteAuth', () => {
     );
 
     expect(getNotifyCompRemoteClaims()?.name).toBe('Test Delegate');
-    expect(hasNotifyCompRemoteTokenForCompetition('KentSpring2026')).toBe(true);
-    expect(hasNotifyCompRemoteTokenForCompetition('OtherComp2026')).toBe(false);
+    expect(hasNotifyCompRemoteToken()).toBe(true);
   });
 
-  it('accepts snake_case competition ids from remote JWT payloads', () => {
+  it('clears expired remote JWT payloads', () => {
     setNotifyCompRemoteToken(
       jwtWithClaims({
-        competition_ids: ['KentSpring2026'],
-        exp: Math.floor(Date.now() / 1000) + 60,
+        exp: Math.floor(Date.now() / 1000) - 60,
       }),
     );
 
-    expect(hasNotifyCompRemoteTokenForCompetition('KentSpring2026')).toBe(true);
+    expect(hasNotifyCompRemoteToken()).toBe(false);
   });
 });

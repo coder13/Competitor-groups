@@ -104,20 +104,19 @@ export const formatNextActivityOffset = (nextGroup: RemoteActivityGroup | undefi
     return 'No next activity';
   }
 
-  const remainingMs = nextStart - now.getTime();
+  const offsetMs = nextStart - now.getTime();
+  const absoluteOffsetMinutes = Math.max(1, Math.ceil(Math.abs(offsetMs) / MINUTE));
+  const minuteUnit = absoluteOffsetMinutes === 1 ? 'minute' : 'minutes';
 
-  if (remainingMs <= 0) {
-    return 'Now';
+  if (offsetMs < 0) {
+    return `${absoluteOffsetMinutes} ${minuteUnit} ago`;
   }
 
-  const remainingMinutes = Math.ceil(remainingMs / MINUTE);
-
-  if (remainingMinutes < 60) {
-    const unit = remainingMinutes === 1 ? 'minute' : 'minutes';
-    return `In ${remainingMinutes} ${unit}`;
+  if (absoluteOffsetMinutes < 60) {
+    return `In ${absoluteOffsetMinutes} ${minuteUnit}`;
   }
 
-  const remainingHours = Math.ceil(remainingMinutes / 60);
+  const remainingHours = Math.ceil(absoluteOffsetMinutes / 60);
   const unit = remainingHours === 1 ? 'hour' : 'hours';
 
   return `In ${remainingHours} ${unit}`;

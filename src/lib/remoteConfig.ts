@@ -8,4 +8,4 @@ export const NOTIFYCOMP_GRAPHQL_ORIGIN = rawNotifyCompApiOrigin.endsWith('/graph
 export const NOTIFYCOMP_API_ORIGIN = NOTIFYCOMP_GRAPHQL_ORIGIN.replace(/\/graphql$/, '');
 
 export const NOTIFYCOMP_WS_ORIGIN =
-  import.meta.env.VITE_NOTIFYCOMP_WS_ORIGIN || 'wss://api.notifycomp.com/api/graphql';
+  import.meta.env.VITE_NOTIFYCOMP_WS_ORIGIN || NOTIFYCOMP_GRAPHQL_ORIGIN.replace(/^http/, 'ws');

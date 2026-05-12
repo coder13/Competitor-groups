@@ -31,12 +31,14 @@ import CompetitionStats from './pages/Competition/Stats';
 import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
 import CompetitionSumOfRanks from './pages/Competition/SumOfRanks';
 import Home from './pages/Home';
+import LiveActivitiesAbout from './pages/LiveActivities/About';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
 import Test from './pages/Test';
 import UserLogin from './pages/UserLogin';
 import { AppProvider } from './providers/AppProvider';
 import { AuthProvider, useAuth } from './providers/AuthProvider';
+import { ConfirmProvider } from './providers/ConfirmProvider';
 import { NotifyCompRemoteAuthProvider } from './providers/NotifyCompRemoteAuthProvider';
 import { QueryProvider } from './providers/QueryProvider/QueryProvider';
 import { UserSettingsProvider } from './providers/UserSettingsProvider';
@@ -129,6 +131,7 @@ const Navigation = () => {
         </Route>
         <Route path="/users/:userId" element={<UserLogin />} />
         <Route path="about" element={<About />} />
+        <Route path="live-activities" element={<LiveActivitiesAbout />} />
         <Route path="settings" element={<Settings />} />
         <Route path="support" element={<Support />} />
       </Route>
@@ -144,11 +147,13 @@ const App = () => (
       <QueryProvider>
         <ApolloProvider client={client}>
           <BrowserRouter>
-            <AuthProvider>
-              <NotifyCompRemoteAuthProvider>
-                <Navigation />
-              </NotifyCompRemoteAuthProvider>
-            </AuthProvider>
+            <ConfirmProvider>
+              <AuthProvider>
+                <NotifyCompRemoteAuthProvider>
+                  <Navigation />
+                </NotifyCompRemoteAuthProvider>
+              </AuthProvider>
+            </ConfirmProvider>
           </BrowserRouter>
         </ApolloProvider>
       </QueryProvider>
