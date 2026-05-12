@@ -10,6 +10,8 @@ const headers = {
 const base64Url = (value) => Buffer.from(value).toString('base64url');
 const REMOTE_SCOPE = 'notifycomp.remote';
 const PUSH_SCOPE = 'assignment_notifications';
+const REMOTE_TOKEN_TTL_SECONDS = 12 * 60 * 60;
+const PUSH_TOKEN_TTL_SECONDS = 10 * 60;
 
 const signJwt = (claims, secret) => {
   const encodedHeader = base64Url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
@@ -89,6 +91,8 @@ exports.handler = async (event) => {
   }
 
   const tokenScope = scope === REMOTE_SCOPE ? REMOTE_SCOPE : PUSH_SCOPE;
+  const tokenTtlSeconds =
+    tokenScope === REMOTE_SCOPE ? REMOTE_TOKEN_TTL_SECONDS : PUSH_TOKEN_TTL_SECONDS;
   if (tokenScope === REMOTE_SCOPE && !competitionId) {
     return {
       statusCode: 400,
@@ -102,7 +106,7 @@ exports.handler = async (event) => {
     {
       aud: process.env.COMPETITION_GROUPS_JWT_AUDIENCE || 'notifycomp',
       competitionIds: tokenScope === REMOTE_SCOPE ? [competitionId] : undefined,
-      exp: now + 10 * 60,
+      exp: now + tokenTtlSeconds,
       iat: now,
       iss: process.env.COMPETITION_GROUPS_JWT_ISSUER || 'competitiongroups.com',
       name: me.name,
