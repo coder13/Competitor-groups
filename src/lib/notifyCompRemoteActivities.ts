@@ -112,6 +112,61 @@ export const getRemoteActivityGroups = (
   });
 };
 
+export const splitRemoteActivityGroups = (groups: RemoteActivityGroup[]) => ({
+  current: groups.filter((group) => group.status === 'current' || group.status === 'mixed'),
+  next: groups.filter((group) => group.status === 'next'),
+  done: groups.filter((group) => group.status === 'done'),
+});
+
+export const getRemoteActiveGroups = (groups: RemoteActivityGroup[]) =>
+  groups.filter((group) => group.status === 'current' || group.status === 'mixed');
+
+export const getRemoteNavigationFocusIndex = (groups: RemoteActivityGroup[]) => {
+  const activeIndex = groups.findIndex(
+    (group) => group.status === 'current' || group.status === 'mixed',
+  );
+
+  if (activeIndex >= 0) {
+    return activeIndex;
+  }
+
+  const nextIndex = groups.findIndex((group) => group.status === 'next');
+
+  return nextIndex >= 0 ? nextIndex : groups.length - 1;
+};
+
+export const getRemotePreviousGroup = (groups: RemoteActivityGroup[]) => {
+  const focusIndex = getRemoteNavigationFocusIndex(groups);
+
+  if (focusIndex <= 0) {
+    return undefined;
+  }
+
+  return [...groups.slice(0, focusIndex)]
+    .reverse()
+    .find((group) => group.status !== 'current' && group.status !== 'mixed');
+};
+
+export const getRemoteNextGroup = (groups: RemoteActivityGroup[]) => {
+  const activeIndex = groups.findIndex(
+    (group) => group.status === 'current' || group.status === 'mixed',
+  );
+
+  if (activeIndex < 0) {
+    return groups.find((group) => group.status === 'next');
+  }
+
+  const focusIndex = getRemoteNavigationFocusIndex(groups);
+
+  if (focusIndex < 0) {
+    return groups.find((group) => group.status === 'next');
+  }
+
+  return groups
+    .slice(focusIndex + 1)
+    .find((group) => group.status !== 'done' && group.status !== 'current');
+};
+
 export const splitRemoteActivityStates = (states: RemoteActivityState[]) => ({
   current: states.filter((state) => state.status === 'current'),
   next: states.filter((state) => state.status === 'next'),

@@ -16,4 +16,5 @@ export * from './LastFetchedAt';
 export * from './LinkButton';
 export * from './LoggedOutPromptCard';
 export * from './Notebox';
+export * from './NotifyCompRemoteBar';
 export * from './PinCompetitionButton';

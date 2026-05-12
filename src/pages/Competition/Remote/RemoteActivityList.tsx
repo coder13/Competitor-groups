@@ -4,6 +4,7 @@ import { useNow } from '@/hooks/useNow';
 import {
   RemoteActivityGroup,
   RemoteActivityState,
+  splitRemoteActivityGroups,
   splitRemoteActivityStates,
 } from '@/lib/notifyCompRemoteActivities';
 import { formatTime } from '@/lib/time';
@@ -34,6 +35,7 @@ interface RemoteActivityListProps {
   onResetActivity: (state: RemoteActivityState) => void;
   onStartActivity: (state: RemoteActivityState) => void;
   onStopActivity: (state: RemoteActivityState) => void;
+  onToggleActivity: (state: RemoteActivityState) => void;
   states: RemoteActivityState[];
 }
 
@@ -42,6 +44,7 @@ export function RemoteActivityList({
   onResetActivity,
   onStartActivity,
   onStopActivity,
+  onToggleActivity,
   states,
 }: RemoteActivityListProps) {
   const now = useNow();
@@ -59,11 +62,11 @@ export function RemoteActivityList({
     {
       emptyText: 'No upcoming activities remain for this room.',
       items: groupedStates.next,
-      title: 'Next',
+      title: 'Upcoming',
     },
     {
       items: groupedStates.done,
-      title: 'Done',
+      title: 'Over',
     },
   ];
 
@@ -80,12 +83,18 @@ export function RemoteActivityList({
               <div
                 key={state.scheduledActivity.id}
                 className="flex flex-col gap-2 rounded border border-tertiary-weak bg-panel p-2 shadow-md shadow-tertiary-dark md:flex-row md:items-center">
-                <div className="min-w-0 flex-1 space-y-1">
-                  <div className="type-label">{state.scheduledActivity.name}</div>
-                  <div className="type-meta">
-                    {state.scheduledActivity.room.name} - {stateDescription(state, now)}
+                <button
+                  type="button"
+                  disabled={disabled || state.status === 'done'}
+                  className="min-w-0 flex-1 rounded p-2 text-left hover-transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-gray-700"
+                  onClick={() => onToggleActivity(state)}>
+                  <div className="space-y-1">
+                    <div className="type-label">{state.scheduledActivity.name}</div>
+                    <div className="type-meta">
+                      {state.scheduledActivity.room.name} - {stateDescription(state, now)}
+                    </div>
                   </div>
-                </div>
+                </button>
                 <div className="flex flex-wrap gap-2">
                   {state.status === 'current' ? (
                     <Button
@@ -127,6 +136,7 @@ interface RemoteGroupListProps {
   onResetGroup: (group: RemoteActivityGroup) => void;
   onStartGroup: (group: RemoteActivityGroup) => void;
   onStopGroup: (group: RemoteActivityGroup) => void;
+  onToggleGroup: (group: RemoteActivityGroup) => void;
 }
 
 export function RemoteGroupList({
@@ -135,53 +145,93 @@ export function RemoteGroupList({
   onResetGroup,
   onStartGroup,
   onStopGroup,
+  onToggleGroup,
 }: RemoteGroupListProps) {
-  return (
-    <div className="space-y-2">
-      {groups.map((group) => {
-        const activityIds = group.scheduledActivities.map((activity) => activity.id);
-        const rooms = [...new Set(group.scheduledActivities.map((activity) => activity.room.name))];
+  const groupedStates = splitRemoteActivityGroups(groups);
+  const sections: Array<{
+    emptyText?: string;
+    items: RemoteActivityGroup[];
+    title: string;
+  }> = [
+    {
+      items: groupedStates.current,
+      title: 'Current',
+    },
+    {
+      emptyText: 'No upcoming activities remain.',
+      items: groupedStates.next,
+      title: 'Upcoming',
+    },
+    {
+      items: groupedStates.done,
+      title: 'Over',
+    },
+  ];
 
-        return (
-          <div
-            key={`${group.id}-${activityIds.join('-')}`}
-            className="flex flex-col gap-2 rounded border border-tertiary-weak bg-panel p-2 shadow-md shadow-tertiary-dark md:flex-row md:items-center">
-            <div className="min-w-0 flex-1 space-y-1">
-              <div className="type-label">{group.name}</div>
-              <div className="type-meta">
-                {rooms.join(', ')} - {group.scheduledActivities.length} activit
-                {group.scheduledActivities.length === 1 ? 'y' : 'ies'} - {group.status}
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {group.status === 'current' ? (
-                <Button
-                  type="button"
-                  variant="gray"
-                  disabled={disabled}
-                  onClick={() => onStopGroup(group)}>
-                  Stop
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  variant="green"
-                  disabled={disabled || group.status === 'done'}
-                  onClick={() => onStartGroup(group)}>
-                  Start
-                </Button>
-              )}
-              <Button
-                type="button"
-                variant="light"
-                disabled={disabled}
-                onClick={() => onResetGroup(group)}>
-                Reset
-              </Button>
-            </div>
+  return (
+    <div className="space-y-4">
+      {sections.map((section) => (
+        <section key={section.title} className="space-y-2">
+          <h3 className="type-heading">{section.title}</h3>
+          {section.items.length === 0 && section.emptyText && (
+            <NoteBox prefix="" text={section.emptyText} />
+          )}
+          <div className="space-y-2">
+            {section.items.map((group) => {
+              const activityIds = group.scheduledActivities.map((activity) => activity.id);
+              const rooms = [
+                ...new Set(group.scheduledActivities.map((activity) => activity.room.name)),
+              ];
+
+              return (
+                <div
+                  key={`${group.id}-${activityIds.join('-')}`}
+                  className="flex flex-col gap-2 rounded border border-tertiary-weak bg-panel p-2 shadow-md shadow-tertiary-dark md:flex-row md:items-center">
+                  <button
+                    type="button"
+                    disabled={disabled || group.status === 'done'}
+                    className="min-w-0 flex-1 rounded p-2 text-left hover-transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-gray-700"
+                    onClick={() => onToggleGroup(group)}>
+                    <div className="space-y-1">
+                      <div className="type-label">{group.name}</div>
+                      <div className="type-meta">
+                        {rooms.join(', ')} - {group.scheduledActivities.length} activit
+                        {group.scheduledActivities.length === 1 ? 'y' : 'ies'} - {group.status}
+                      </div>
+                    </div>
+                  </button>
+                  <div className="flex flex-wrap gap-2">
+                    {group.status === 'current' || group.status === 'mixed' ? (
+                      <Button
+                        type="button"
+                        variant="gray"
+                        disabled={disabled}
+                        onClick={() => onStopGroup(group)}>
+                        Stop
+                      </Button>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="green"
+                        disabled={disabled || group.status === 'done'}
+                        onClick={() => onStartGroup(group)}>
+                        Start
+                      </Button>
+                    )}
+                    <Button
+                      type="button"
+                      variant="light"
+                      disabled={disabled}
+                      onClick={() => onResetGroup(group)}>
+                      Reset
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        );
-      })}
+        </section>
+      ))}
     </div>
   );
 }

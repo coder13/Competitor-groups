@@ -1,6 +1,8 @@
 import {
   getRemoteActivityGroups,
   getRemoteActivityState,
+  getRemoteNextGroup,
+  getRemotePreviousGroup,
   RemoteScheduledActivity,
 } from './notifyCompRemoteActivities';
 
@@ -70,5 +72,49 @@ describe('notifyCompRemoteActivities', () => {
 
     expect(groups).toHaveLength(1);
     expect(groups[0].scheduledActivities.map((candidate) => candidate.id)).toEqual([201, 202]);
+  });
+
+  it('finds the next group after the current activity group', () => {
+    const groups = getRemoteActivityGroups(
+      [
+        activity({ id: 301, activityCode: '333-r1-g1' }),
+        activity({
+          id: 302,
+          activityCode: '222-r1-g1',
+          name: '2x2x2 Cube Round 1 Group 1',
+          startTime: '2026-06-01T10:20:00Z',
+        }),
+      ],
+      [{ activityId: 301, startTime: '2026-06-01T10:01:00Z', endTime: null }],
+    );
+
+    expect(getRemoteNextGroup(groups)?.scheduledActivities[0].id).toBe(302);
+  });
+
+  it('finds the previous group before the current activity group', () => {
+    const groups = getRemoteActivityGroups(
+      [
+        activity({
+          id: 401,
+          activityCode: '222-r1-g1',
+          name: '2x2x2 Cube Round 1 Group 1',
+        }),
+        activity({
+          id: 402,
+          activityCode: '333-r1-g1',
+          startTime: '2026-06-01T10:20:00Z',
+        }),
+      ],
+      [
+        {
+          activityId: 401,
+          startTime: '2026-06-01T10:01:00Z',
+          endTime: '2026-06-01T10:09:00Z',
+        },
+        { activityId: 402, startTime: '2026-06-01T10:21:00Z', endTime: null },
+      ],
+    );
+
+    expect(getRemotePreviousGroup(groups)?.scheduledActivities[0].id).toBe(401);
   });
 });

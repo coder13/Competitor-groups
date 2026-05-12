@@ -3,21 +3,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import { Button, Container, NoteBox } from '@/components';
-import { useNotifyCompRemoteActivities } from '@/hooks/useNotifyCompRemoteActivities';
+import { useCompetitionRemoteControl } from '@/hooks/useCompetitionRemoteControl';
 import { getRooms } from '@/lib/activities';
-import {
-  getRemoteActivityGroups,
-  getRemoteActivityStates,
-  getRemoteScheduledActivities,
-  RemoteActivityGroup,
-  RemoteActivityState,
-} from '@/lib/notifyCompRemoteActivities';
+import { RemoteActivityGroup, RemoteActivityState } from '@/lib/notifyCompRemoteActivities';
 import { useNotifyCompRemoteAuth } from '@/providers/NotifyCompRemoteAuthProvider';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { RemoteActivityList, RemoteGroupList } from './RemoteActivityList';
-
-const activityIdsForGroup = (group: RemoteActivityGroup) =>
-  group.scheduledActivities.map((activity) => activity.id);
 
 const confirmAction = (message: string) => window.confirm(message);
 
@@ -33,48 +24,30 @@ export default function CompetitionRemote() {
 
   const rooms = useMemo(() => (wcif ? getRooms(wcif) : []), [wcif]);
   const roomId = selectedRoomId === 'all' ? undefined : selectedRoomId;
-  const isRemoteAuthenticated = competitionId
-    ? remoteAuth.isAuthenticatedForCompetition(competitionId)
-    : false;
-  const remote = useNotifyCompRemoteActivities({
+  const remote = useCompetitionRemoteControl({
     competitionId: competitionId || '',
-    enabled: isRemoteAuthenticated,
     roomId,
   });
-
-  const scheduledActivities = useMemo(
-    () => (wcif ? getRemoteScheduledActivities(wcif, roomId) : []),
-    [roomId, wcif],
-  );
-
-  const activityStates = useMemo(
-    () => getRemoteActivityStates(scheduledActivities, remote.activities),
-    [remote.activities, scheduledActivities],
-  );
-
-  const activityGroups = useMemo(
-    () => getRemoteActivityGroups(scheduledActivities, remote.activities),
-    [remote.activities, scheduledActivities],
-  );
 
   if (!competitionId || !wcif) {
     return null;
   }
 
   const startActivity = (state: RemoteActivityState) => {
-    if (!confirmAction(`Start ${state.scheduledActivity.name}?`)) {
-      return;
-    }
-
     void remote.startActivity(state.scheduledActivity.id);
   };
 
   const stopActivity = (state: RemoteActivityState) => {
-    if (!confirmAction(`Stop ${state.scheduledActivity.name}?`)) {
+    void remote.stopActivity(state.scheduledActivity.id);
+  };
+
+  const toggleActivity = (state: RemoteActivityState) => {
+    if (state.status === 'current') {
+      stopActivity(state);
       return;
     }
 
-    void remote.stopActivity(state.scheduledActivity.id);
+    startActivity(state);
   };
 
   const resetActivity = (state: RemoteActivityState) => {
@@ -88,19 +61,20 @@ export default function CompetitionRemote() {
   };
 
   const startGroup = (group: RemoteActivityGroup) => {
-    if (!confirmAction(`Start ${group.name} in all listed rooms?`)) {
-      return;
-    }
-
-    void remote.startActivities(activityIdsForGroup(group));
+    void remote.startGroup(group);
   };
 
   const stopGroup = (group: RemoteActivityGroup) => {
-    if (!confirmAction(`Stop ${group.name} in all listed rooms?`)) {
+    void remote.stopGroup(group);
+  };
+
+  const toggleGroup = (group: RemoteActivityGroup) => {
+    if (group.status === 'current' || group.status === 'mixed') {
+      stopGroup(group);
       return;
     }
 
-    void remote.stopActivities(activityIdsForGroup(group));
+    startGroup(group);
   };
 
   const resetGroup = (group: RemoteActivityGroup) => {
@@ -108,7 +82,7 @@ export default function CompetitionRemote() {
       return;
     }
 
-    void remote.resetActivities(activityIdsForGroup(group));
+    void remote.resetGroup(group);
   };
 
   return (
@@ -123,7 +97,7 @@ export default function CompetitionRemote() {
 
         {remoteAuth.error && <NoteBox prefix="Remote sign in" text={remoteAuth.error} />}
 
-        {!isRemoteAuthenticated ? (
+        {!remote.isAuthenticated ? (
           <div className="space-y-4 rounded border border-tertiary-weak bg-panel p-4 shadow-md shadow-tertiary-dark">
             <div className="space-y-2">
               <h2 className="type-heading">Remote authorization</h2>
@@ -210,18 +184,20 @@ export default function CompetitionRemote() {
                 {selectedRoomId === 'all' ? (
                   <RemoteGroupList
                     disabled={remote.isSaving}
-                    groups={activityGroups}
+                    groups={remote.activityGroups}
                     onResetGroup={resetGroup}
                     onStartGroup={startGroup}
                     onStopGroup={stopGroup}
+                    onToggleGroup={toggleGroup}
                   />
                 ) : (
                   <RemoteActivityList
                     disabled={remote.isSaving}
-                    states={activityStates}
+                    states={remote.activityStates}
                     onResetActivity={resetActivity}
                     onStartActivity={startActivity}
                     onStopActivity={stopActivity}
+                    onToggleActivity={toggleActivity}
                   />
                 )}
               </div>
