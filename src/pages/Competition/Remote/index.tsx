@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import { Button, Container, NoteBox } from '@/components';
 import { useCompetitionRemoteControl } from '@/hooks/useCompetitionRemoteControl';
+import { isCompetitionDay } from '@/lib/competitionDates';
 import { RemoteActivityGroup } from '@/lib/notifyCompRemoteActivities';
 import { useNotifyCompRemoteAuth } from '@/providers/NotifyCompRemoteAuthProvider';
 import { useWCIF } from '@/providers/WCIFProvider';
@@ -37,6 +38,10 @@ export default function CompetitionRemote() {
   if (!competitionId || !wcif) {
     return null;
   }
+
+  const hasStartedRemoteActivities = remote.activities.some((activity) => activity.startTime);
+  const canResetAllActivities =
+    Boolean(remote.competition) && !isCompetitionDay(wcif) && hasStartedRemoteActivities;
 
   const selectGroup = (group: RemoteActivityGroup) => {
     const action =
@@ -140,6 +145,26 @@ export default function CompetitionRemote() {
                     onSelectGroup={selectGroup}
                   />
                 </div>
+
+                {canResetAllActivities && (
+                  <div className="border-t border-tertiary-weak pt-4 text-right">
+                    <Button
+                      type="button"
+                      variant="gray"
+                      disabled={remote.isSaving}
+                      onClick={() => {
+                        if (
+                          confirmAction(
+                            'Reset all NotifyComp activities for this competition? This will clear every remote start and stop time.',
+                          )
+                        ) {
+                          void remote.resetAllActivities();
+                        }
+                      }}>
+                      Reset all activities
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </>

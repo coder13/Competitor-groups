@@ -160,6 +160,12 @@ export function useNotifyCompRemoteActivities({
           variables: { competitionId, activityIds },
         }),
       ),
+    resetAllActivities: () =>
+      runMutation(() =>
+        resetActivities({
+          variables: { competitionId },
+        }),
+      ),
     resetActivity: (activityId: number) =>
       runMutation(() =>
         resetActivity({
