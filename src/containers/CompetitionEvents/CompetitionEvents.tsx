@@ -3,17 +3,22 @@ import { Container } from '@/components/Container';
 import { RoundActionPicker } from '@/components/RoundActionPicker';
 import { groupActivitiesByRound } from '@/lib/activities';
 import { getAllEvents, getEventName } from '@/lib/events';
+import { AnchorLink, LinkRenderer } from '@/lib/linkRenderer';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export interface CompetitionEventsContainerProps {
   competitionId: string;
+  LinkComponent?: LinkRenderer;
 }
 
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-export function CompetitionEventsContainer({ competitionId }: CompetitionEventsContainerProps) {
+export function CompetitionEventsContainer({
+  competitionId,
+  LinkComponent = AnchorLink,
+}: CompetitionEventsContainerProps) {
   const { wcif, setTitle } = useWCIF();
 
   const uniqueGroupCountForRound = useCallback(
@@ -49,7 +54,7 @@ export function CompetitionEventsContainer({ competitionId }: CompetitionEventsC
   return (
     <Container className="pt-4">
       <div className="p-2">
-        <RoundActionPicker mode="groups" events={pickerEvents} />
+        <RoundActionPicker mode="groups" events={pickerEvents} LinkComponent={LinkComponent} />
       </div>
     </Container>
   );

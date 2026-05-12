@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { CompetitionEventsContainer } from '@/containers/CompetitionEvents';
 
 const Events = () => {
@@ -8,7 +8,7 @@ const Events = () => {
     return null;
   }
 
-  return <CompetitionEventsContainer competitionId={competitionId} />;
+  return <CompetitionEventsContainer competitionId={competitionId} LinkComponent={Link} />;
 };
 
 export default Events;
