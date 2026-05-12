@@ -88,41 +88,22 @@ export default function CompetitionRemote() {
   return (
     <Container className="px-4 py-8">
       <div className="space-y-6">
-        <div className="space-y-2">
-          <h1 className="type-display">Remote</h1>
-          <p className="type-body-sm text-subtle">
-            Control live activity status for {wcif.shortName || wcif.name}.
-          </p>
-        </div>
-
         {remoteAuth.error && <NoteBox prefix="Remote sign in" text={remoteAuth.error} />}
 
         {!remote.isAuthenticated ? (
-          <div className="space-y-4 rounded border border-tertiary-weak bg-panel p-4 shadow-md shadow-tertiary-dark">
-            <div className="space-y-2">
-              <h2 className="type-heading">Remote authorization</h2>
-              <p className="type-body-sm text-subtle">
-                Authorize this competition with your WCA account to start, stop, reset, or
-                auto-advance activities.
-              </p>
-            </div>
-            <Button
-              type="button"
-              disabled={remoteAuth.authenticating}
-              onClick={() => {
-                void remoteAuth.signIn(competitionId);
-              }}>
-              {remoteAuth.authenticating ? 'Authorizing...' : 'Authorize remote control'}
-            </Button>
-          </div>
+          <Button
+            type="button"
+            disabled={remoteAuth.authenticating}
+            onClick={() => {
+              void remoteAuth.signIn(competitionId);
+            }}>
+            {remoteAuth.authenticating ? 'Authorizing...' : 'Authorize remote control'}
+          </Button>
         ) : (
           <>
-            <div className="flex flex-col gap-2 rounded border border-tertiary-weak bg-panel p-4 shadow-md shadow-tertiary-dark md:flex-row md:items-center">
-              <div className="flex-1 space-y-1">
-                <h2 className="type-heading">Remote session</h2>
-                <p className="type-meta">
-                  {remoteAuth.userName ? `Signed in as ${remoteAuth.userName}` : 'Signed in'}
-                </p>
+            <div className="flex flex-col gap-2 md:flex-row md:items-center">
+              <div className="flex-1 type-meta">
+                {remoteAuth.userName ? `Signed in as ${remoteAuth.userName}` : 'Signed in'}
               </div>
               <Button type="button" variant="gray" onClick={remoteAuth.signOut}>
                 Sign out
@@ -132,34 +113,27 @@ export default function CompetitionRemote() {
             {remote.isLoading && <BarLoader width="100%" />}
             {remote.error && <NoteBox prefix="Remote error" text={remote.error} />}
 
-            <div className="space-y-4 rounded border border-tertiary-weak bg-panel p-4 shadow-md shadow-tertiary-dark">
-              <div className="flex flex-col gap-4 md:flex-row md:items-center">
-                <div className="flex-1 space-y-1">
-                  <h2 className="type-heading">Controls</h2>
-                  <p className="type-meta">
-                    {selectedRoomId === 'all' ? 'All rooms' : 'Single room'} selected.
-                  </p>
+            <div className="space-y-4">
+              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                <div className="flex flex-wrap gap-2">
+                  <label className="flex min-w-48 flex-col gap-1 type-label">
+                    Room
+                    <select
+                      className="select"
+                      value={selectedRoomId}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        setSelectedRoomId(value === 'all' ? 'all' : Number(value));
+                      }}>
+                      <option value="all">All rooms</option>
+                      {rooms.map((room) => (
+                        <option key={room.id} value={room.id}>
+                          {room.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
                 </div>
-                <label className="flex flex-col gap-1 type-label">
-                  Room
-                  <select
-                    className="select"
-                    value={selectedRoomId}
-                    onChange={(event) => {
-                      const value = event.target.value;
-                      setSelectedRoomId(value === 'all' ? 'all' : Number(value));
-                    }}>
-                    <option value="all">All rooms</option>
-                    {rooms.map((room) => (
-                      <option key={room.id} value={room.id}>
-                        {room.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
                 <Button
                   type="button"
                   variant={remote.autoAdvance ? 'green' : 'light'}
