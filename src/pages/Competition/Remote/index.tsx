@@ -1,15 +1,14 @@
 import classNames from 'classnames';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import { Button, Container, NoteBox } from '@/components';
 import { useCompetitionRemoteControl } from '@/hooks/useCompetitionRemoteControl';
-import { getRooms } from '@/lib/activities';
-import { RemoteActivityState } from '@/lib/notifyCompRemoteActivities';
+import { RemoteActivityGroup } from '@/lib/notifyCompRemoteActivities';
 import { useNotifyCompRemoteAuth } from '@/providers/NotifyCompRemoteAuthProvider';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { RemoteAction, RemoteActionDialog } from './RemoteActionDialog';
-import { RemoteActivityList } from './RemoteActivityList';
+import { RemoteGroupList } from './RemoteActivityList';
 
 const confirmAction = (message: string) => window.confirm(message);
 
@@ -24,43 +23,46 @@ export default function CompetitionRemote() {
   const { competitionId } = useParams<{ competitionId: string }>();
   const { wcif, setTitle } = useWCIF();
   const remoteAuth = useNotifyCompRemoteAuth();
-  const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
   const [pendingAction, setPendingAction] = useState<PendingRemoteAction | null>(null);
 
   useEffect(() => {
     setTitle('Remote');
   }, [setTitle]);
 
-  const rooms = useMemo(() => (wcif ? getRooms(wcif) : []), [wcif]);
-  const roomId = selectedRoomId ?? rooms[0]?.id;
   const remote = useCompetitionRemoteControl({
     competitionId: competitionId || '',
-    roomId,
   });
 
   if (!competitionId || !wcif) {
     return null;
   }
 
-  const selectActivity = (state: RemoteActivityState) => {
-    if (state.status === 'done') {
-      return;
-    }
-
-    const action = state.status === 'current' ? 'stop' : 'start';
+  const selectGroup = (group: RemoteActivityGroup) => {
+    const action =
+      group.status === 'done'
+        ? 'reset'
+        : group.status === 'current' || group.status === 'mixed'
+          ? 'stop'
+          : 'start';
+    const roomNames = [...new Set(group.scheduledActivities.map((activity) => activity.room.name))];
 
     setPendingAction({
       action,
-      activityName: state.scheduledActivity.name,
+      activityName: group.name,
       onConfirm: () => {
         if (action === 'start') {
-          void remote.startActivity(state.scheduledActivity.id);
+          void remote.startGroup(group);
           return;
         }
 
-        void remote.stopActivity(state.scheduledActivity.id);
+        if (action === 'reset') {
+          void remote.resetGroup(group);
+          return;
+        }
+
+        void remote.stopGroup(group);
       },
-      roomNames: [state.scheduledActivity.room.name],
+      roomNames,
     });
   };
 
@@ -106,19 +108,7 @@ export default function CompetitionRemote() {
             ) : (
               <div className="space-y-4">
                 <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                  <div className="flex flex-wrap gap-2">
-                    <select
-                      aria-label="Select remote room"
-                      className="select min-w-48"
-                      value={roomId ?? ''}
-                      onChange={(event) => setSelectedRoomId(Number(event.target.value))}>
-                      {rooms.map((room) => (
-                        <option key={room.id} value={room.id}>
-                          {room.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <h2 className="type-heading">All rooms</h2>
                   <Button
                     type="button"
                     variant={remote.autoAdvance ? 'green' : 'light'}
@@ -140,10 +130,10 @@ export default function CompetitionRemote() {
                   className={classNames('space-y-4', {
                     'opacity-60': remote.isSaving,
                   })}>
-                  <RemoteActivityList
+                  <RemoteGroupList
                     disabled={remote.isSaving}
-                    states={remote.activityStates}
-                    onSelectActivity={selectActivity}
+                    groups={remote.activityGroups}
+                    onSelectGroup={selectGroup}
                   />
                 </div>
               </div>

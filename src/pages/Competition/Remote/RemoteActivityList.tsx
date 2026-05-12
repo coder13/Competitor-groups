@@ -1,13 +1,17 @@
+import classNames from 'classnames';
 import { formatDuration, intervalToDuration } from 'date-fns';
 import { NoteBox } from '@/components';
+import { RoomPill } from '@/components/Pill';
 import { useNow } from '@/hooks/useNow';
+import { activityCodeToName } from '@/lib/activityCodes';
 import {
   RemoteActivityGroup,
+  RemoteScheduledActivity,
   RemoteActivityState,
   splitRemoteActivityGroups,
   splitRemoteActivityStates,
 } from '@/lib/notifyCompRemoteActivities';
-import { formatTime } from '@/lib/time';
+import { formatTime, formatTimeRange } from '@/lib/time';
 
 const formatStartedDuration = (startTime: string, now: Date) => {
   const { hours, minutes } = intervalToDuration({
@@ -30,7 +34,21 @@ const stateDescription = (state: RemoteActivityState, now: Date) => {
   return `Should start at ${formatTime(state.scheduledActivity.startTime)}`;
 };
 
-const activityCountText = (count: number) => `${count} ${count === 1 ? 'activity' : 'activities'}`;
+const groupActivityName = (activity: RemoteScheduledActivity) =>
+  activity.activityCode.startsWith('other')
+    ? activity.name
+    : activityCodeToName(activity.activityCode);
+
+const groupRooms = (group: RemoteActivityGroup) =>
+  Array.from(
+    new Map(
+      group.scheduledActivities.map((activity) => [activity.room.id, activity.room]),
+    ).values(),
+  );
+
+const groupTimeZone = (activity: RemoteScheduledActivity) =>
+  (activity.room as RemoteScheduledActivity['room'] & { venue?: { timezone?: string } }).venue
+    ?.timezone;
 
 interface RemoteActivityListProps {
   disabled?: boolean;
@@ -136,24 +154,48 @@ export function RemoteGroupList({ disabled, groups, onSelectGroup }: RemoteGroup
           <div className="divide-y divide-tertiary-weak">
             {section.items.map((group) => {
               const activityIds = group.scheduledActivities.map((activity) => activity.id);
-              const rooms = [
-                ...new Set(group.scheduledActivities.map((activity) => activity.room.name)),
-              ];
+              const firstActivity = group.scheduledActivities[0];
+              const rooms = groupRooms(group);
 
               return (
                 <button
                   key={`${group.id}-${activityIds.join('-')}`}
                   type="button"
-                  disabled={disabled || group.status === 'done'}
-                  className="block w-full py-4 text-left hover-transition hover:bg-gray-100 disabled:cursor-default disabled:opacity-70 dark:hover:bg-gray-700"
+                  disabled={disabled}
+                  className={classNames(
+                    'flex w-full flex-col p-2 text-left type-body even:table-bg-row-alt hover:table-bg-row-hover disabled:cursor-default disabled:opacity-60',
+                    {
+                      'opacity-50': group.status === 'done',
+                    },
+                  )}
                   onClick={() => onSelectGroup(group)}>
-                  <div className="space-y-1">
-                    <div className="type-label">{group.name}</div>
-                    <div className="type-meta">
-                      {rooms.join(', ')} - {activityCountText(group.scheduledActivities.length)} -{' '}
-                      {group.status}
-                    </div>
-                  </div>
+                  <span className="type-body">
+                    {firstActivity ? groupActivityName(firstActivity) : group.name}
+                  </span>
+                  <span className="flex items-start justify-between gap-4 type-meta">
+                    <span className="flex min-w-0 flex-wrap gap-2">
+                      {rooms.map((room) => (
+                        <RoomPill
+                          key={room.id}
+                          className="px-1"
+                          style={{
+                            backgroundColor: `${room.color}70`,
+                          }}>
+                          {room.name}
+                        </RoomPill>
+                      ))}
+                    </span>
+                    {firstActivity && (
+                      <span className="ml-auto shrink-0 whitespace-nowrap text-right">
+                        {formatTimeRange(
+                          firstActivity.startTime,
+                          firstActivity.endTime,
+                          5,
+                          groupTimeZone(firstActivity),
+                        )}
+                      </span>
+                    )}
+                  </span>
                 </button>
               );
             })}

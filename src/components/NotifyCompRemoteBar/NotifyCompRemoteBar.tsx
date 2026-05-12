@@ -65,10 +65,7 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
       <Container className="grid grid-cols-[minmax(0,1fr)_minmax(176px,1.2fr)_auto] items-center gap-2 px-2 py-2 md:grid-cols-[minmax(0,1fr)_minmax(220px,1.4fr)_minmax(0,1fr)] md:gap-4">
         <Link
           to={`/competitions/${competitionId}/remote`}
-          className="flex min-w-0 items-center gap-2 rounded px-1 py-1 hover-transition hover:bg-gray-100 dark:hover:bg-gray-700">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded border border-tertiary-weak bg-tertiary-strong text-sm font-bold text-blue-700 shadow-sm dark:text-blue-300">
-            RC
-          </div>
+          className="min-w-0 rounded px-1 py-1 hover-transition hover:bg-gray-100 dark:hover:bg-gray-700">
           <div className="min-w-0 space-y-1">
             <div className="truncate text-sm font-medium text-default">{title}</div>
             <div className="truncate text-xs text-muted">{detail}</div>
@@ -132,11 +129,6 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
               {remote.error ? remote.error : remote.isSaving ? 'Syncing' : 'Ready'}
             </div>
           </div>
-          <Link
-            to={`/competitions/${competitionId}/remote`}
-            className="rounded border border-tertiary-weak bg-panel px-3 py-1 text-sm font-medium text-blue-700 shadow-sm hover-transition hover:bg-gray-100 dark:text-blue-300 dark:hover:bg-gray-700">
-            Open
-          </Link>
         </div>
       </Container>
     </nav>

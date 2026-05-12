@@ -76,10 +76,13 @@ export const getRemoteActivityStates = (
   liveActivities: NotifyCompActivity[],
 ) => scheduledActivities.map((activity) => getRemoteActivityState(activity, liveActivities));
 
-const normalizeActivityCode = (activity: Activity) => {
+const getGroupActivityCode = (activity: Activity) => {
   const code = activity.activityCode || activity.name;
-  return code.replace(/-g\d+$/i, '');
+  return code;
 };
+
+const getGroupKey = (activity: Activity) =>
+  `${activity.startTime}-${getGroupActivityCode(activity)}`;
 
 export const getRemoteActivityGroups = (
   scheduledActivities: RemoteScheduledActivity[],
@@ -87,7 +90,7 @@ export const getRemoteActivityGroups = (
 ): RemoteActivityGroup[] => {
   const groups = scheduledActivities.reduce<Record<string, RemoteScheduledActivity[]>>(
     (acc, activity) => {
-      const key = normalizeActivityCode(activity);
+      const key = getGroupKey(activity);
       acc[key] = [...(acc[key] || []), activity];
       return acc;
     },
@@ -104,7 +107,7 @@ export const getRemoteActivityGroups = (
 
     return {
       id,
-      name: activities[0]?.parent?.name || activities[0]?.name || id,
+      name: activities[0]?.name || activities[0]?.parent?.name || id,
       scheduledActivities: activities,
       liveActivities: groupLiveActivities,
       status: statuses.size === 1 ? states[0].status : 'mixed',

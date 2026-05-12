@@ -1,6 +1,6 @@
 import { Button } from '@/components';
 
-export type RemoteAction = 'start' | 'stop';
+export type RemoteAction = 'reset' | 'start' | 'stop';
 
 interface RemoteActionDialogProps {
   action: RemoteAction;
@@ -19,7 +19,12 @@ export function RemoteActionDialog({
   onConfirm,
   roomNames,
 }: RemoteActionDialogProps) {
-  const actionLabel = action === 'start' ? 'Start' : 'Stop';
+  const actionLabel = {
+    reset: 'Reset',
+    start: 'Start',
+    stop: 'Stop',
+  }[action];
+  const buttonVariant = action === 'start' ? 'green' : 'gray';
 
   return (
     <div
@@ -34,15 +39,17 @@ export function RemoteActionDialog({
           {roomNames.join(', ')}
         </p>
 
+        {action === 'reset' && (
+          <p className="type-body">
+            The start and stop times will reset as if the activity never happened.
+          </p>
+        )}
+
         <div className="flex justify-end gap-4">
           <Button type="button" variant="light" disabled={disabled} onClick={onCancel}>
             Cancel
           </Button>
-          <Button
-            type="button"
-            variant={action === 'start' ? 'green' : 'gray'}
-            disabled={disabled}
-            onClick={onConfirm}>
+          <Button type="button" variant={buttonVariant} disabled={disabled} onClick={onConfirm}>
             {actionLabel}
           </Button>
         </div>

@@ -53,13 +53,13 @@ describe('notifyCompRemoteActivities', () => {
     ).toBe('done');
   });
 
-  it('groups matching activity codes across rooms by round code', () => {
+  it('groups matching start times and activity codes across rooms', () => {
     const groups = getRemoteActivityGroups(
       [
         activity({ id: 201, activityCode: '333-r1-g1', room }),
         activity({
           id: 202,
-          activityCode: '333-r1-g2',
+          activityCode: '333-r1-g1',
           room: {
             ...room,
             id: 2,
@@ -72,6 +72,34 @@ describe('notifyCompRemoteActivities', () => {
 
     expect(groups).toHaveLength(1);
     expect(groups[0].scheduledActivities.map((candidate) => candidate.id)).toEqual([201, 202]);
+  });
+
+  it('keeps matching activity codes separate when their start times differ', () => {
+    const groups = getRemoteActivityGroups(
+      [
+        activity({ id: 211, activityCode: '333-r1-g1' }),
+        activity({
+          id: 212,
+          activityCode: '333-r1-g1',
+          startTime: '2026-06-01T10:20:00Z',
+        }),
+      ],
+      [],
+    );
+
+    expect(groups).toHaveLength(2);
+  });
+
+  it('keeps different group activity codes separate at the same start time', () => {
+    const groups = getRemoteActivityGroups(
+      [
+        activity({ id: 221, activityCode: '333-r1-g1' }),
+        activity({ id: 222, activityCode: '333-r1-g2' }),
+      ],
+      [],
+    );
+
+    expect(groups).toHaveLength(2);
   });
 
   it('finds the next group after the current activity group', () => {
