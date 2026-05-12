@@ -96,14 +96,20 @@ export default function CompetitionRemote() {
         {remoteAuth.error && <NoteBox prefix="Remote sign in" text={remoteAuth.error} />}
 
         {!remote.isAuthenticated ? (
-          <Button
-            type="button"
-            disabled={remoteAuth.authenticating}
-            onClick={() => {
-              void remoteAuth.signIn(competitionId);
-            }}>
-            {remoteAuth.authenticating ? 'Authorizing...' : 'Authorize remote control'}
-          </Button>
+          <div className="space-y-4">
+            <p className="max-w-3xl type-body-sm text-subtle">
+              Sign in to NotifyComp Remote with your WCA account to connect these controls to this
+              competition; signing in does not import the competition or start any activities.
+            </p>
+            <Button
+              type="button"
+              disabled={remoteAuth.authenticating}
+              onClick={() => {
+                void remoteAuth.signIn(competitionId);
+              }}>
+              {remoteAuth.authenticating ? 'Signing in...' : 'Sign in to NotifyComp Remote'}
+            </Button>
+          </div>
         ) : (
           <>
             <div className="flex flex-col gap-2 md:flex-row md:items-center">
@@ -118,69 +124,80 @@ export default function CompetitionRemote() {
             {remote.isLoading && <BarLoader width="100%" />}
             {remote.error && <NoteBox prefix="Remote error" text={remote.error} />}
 
-            <div className="space-y-4">
-              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div className="flex flex-wrap gap-2">
-                  <label className="flex min-w-48 flex-col gap-1 type-label">
-                    Room
-                    <select
-                      className="select"
-                      value={selectedRoomId}
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        setSelectedRoomId(value === 'all' ? 'all' : Number(value));
-                      }}>
-                      <option value="all">All rooms</option>
-                      {rooms.map((room) => (
-                        <option key={room.id} value={room.id}>
-                          {room.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+            {!remote.isLoading && !remote.competition ? (
+              <Button
+                type="button"
+                disabled={remote.isSaving}
+                onClick={() => {
+                  void remote.importCompetition();
+                }}>
+                {remote.isSaving ? 'Importing...' : 'Import to notifycomp'}
+              </Button>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                  <div className="flex flex-wrap gap-2">
+                    <label className="flex flex-col gap-1 min-w-48 type-label">
+                      Room
+                      <select
+                        className="select"
+                        value={selectedRoomId}
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          setSelectedRoomId(value === 'all' ? 'all' : Number(value));
+                        }}>
+                        <option value="all">All rooms</option>
+                        {rooms.map((room) => (
+                          <option key={room.id} value={room.id}>
+                            {room.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                  <Button
+                    type="button"
+                    variant={remote.autoAdvance ? 'green' : 'light'}
+                    disabled={remote.isSaving}
+                    onClick={() => {
+                      if (
+                        confirmAction(
+                          `${remote.autoAdvance ? 'Disable' : 'Enable'} auto-advance for this competition?`,
+                        )
+                      ) {
+                        void remote.updateAutoAdvance(!remote.autoAdvance);
+                      }
+                    }}>
+                    {remote.autoAdvance ? 'Auto-advance on' : 'Auto-advance off'}
+                  </Button>
                 </div>
-                <Button
-                  type="button"
-                  variant={remote.autoAdvance ? 'green' : 'light'}
-                  disabled={remote.isSaving}
-                  onClick={() => {
-                    if (
-                      confirmAction(
-                        `${remote.autoAdvance ? 'Disable' : 'Enable'} auto-advance for this competition?`,
-                      )
-                    ) {
-                      void remote.updateAutoAdvance(!remote.autoAdvance);
-                    }
-                  }}>
-                  {remote.autoAdvance ? 'Auto-advance on' : 'Auto-advance off'}
-                </Button>
-              </div>
 
-              <div
-                className={classNames('space-y-4', {
-                  'opacity-60': remote.isSaving,
-                })}>
-                {selectedRoomId === 'all' ? (
-                  <RemoteGroupList
-                    disabled={remote.isSaving}
-                    groups={remote.activityGroups}
-                    onResetGroup={resetGroup}
-                    onStartGroup={startGroup}
-                    onStopGroup={stopGroup}
-                    onToggleGroup={toggleGroup}
-                  />
-                ) : (
-                  <RemoteActivityList
-                    disabled={remote.isSaving}
-                    states={remote.activityStates}
-                    onResetActivity={resetActivity}
-                    onStartActivity={startActivity}
-                    onStopActivity={stopActivity}
-                    onToggleActivity={toggleActivity}
-                  />
-                )}
+                <div
+                  className={classNames('space-y-4', {
+                    'opacity-60': remote.isSaving,
+                  })}>
+                  {selectedRoomId === 'all' ? (
+                    <RemoteGroupList
+                      disabled={remote.isSaving}
+                      groups={remote.activityGroups}
+                      onResetGroup={resetGroup}
+                      onStartGroup={startGroup}
+                      onStopGroup={stopGroup}
+                      onToggleGroup={toggleGroup}
+                    />
+                  ) : (
+                    <RemoteActivityList
+                      disabled={remote.isSaving}
+                      states={remote.activityStates}
+                      onResetActivity={resetActivity}
+                      onStartActivity={startActivity}
+                      onStopActivity={stopActivity}
+                      onToggleActivity={toggleActivity}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </>
         )}
       </div>

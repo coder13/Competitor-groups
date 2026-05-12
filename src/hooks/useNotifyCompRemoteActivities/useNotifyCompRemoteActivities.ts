@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { useEffect, useMemo, useState } from 'react';
 import {
+  ImportRemoteCompetitionDocument,
   NotifyCompActivity,
   NotifyCompCompetition,
   RemoteActivitiesDocument,
@@ -33,7 +34,7 @@ export function useNotifyCompRemoteActivities({
     skip: !competitionId || !enabled,
   });
 
-  const competitionQuery = useQuery<{ competition: NotifyCompCompetition }>(
+  const competitionQuery = useQuery<{ competition: NotifyCompCompetition | null }>(
     RemoteCompetitionDocument,
     {
       variables: { competitionId },
@@ -121,6 +122,10 @@ export function useNotifyCompRemoteActivities({
     UpdateRemoteAutoAdvanceDocument,
     mutationOptions,
   );
+  const [importCompetition, importCompetitionStatus] = useMutation(
+    ImportRemoteCompetitionDocument,
+    mutationOptions,
+  );
 
   const runMutation = async (operation: () => Promise<unknown>) => {
     setMutationError(null);
@@ -130,10 +135,12 @@ export function useNotifyCompRemoteActivities({
   return {
     activities: activitiesQuery.data?.activities || [],
     autoAdvance: competitionQuery.data?.competition?.autoAdvance,
+    competition: competitionQuery.data?.competition || null,
     error:
       mutationError || activitiesQuery.error?.message || competitionQuery.error?.message || null,
     isLoading: activitiesQuery.loading || competitionQuery.loading,
     isSaving:
+      importCompetitionStatus.loading ||
       startActivityStatus.loading ||
       stopActivityStatus.loading ||
       resetActivityStatus.loading ||
@@ -141,6 +148,12 @@ export function useNotifyCompRemoteActivities({
       stopActivitiesStatus.loading ||
       resetActivitiesStatus.loading ||
       updateAutoAdvanceStatus.loading,
+    importCompetition: () =>
+      runMutation(() =>
+        importCompetition({
+          variables: { competitionId },
+        }),
+      ),
     resetActivities: (activityIds: number[]) =>
       runMutation(() =>
         resetActivities({

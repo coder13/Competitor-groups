@@ -16,7 +16,7 @@ const primaryButtonClassName =
 export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps) {
   const remote = useCompetitionRemoteControl({ competitionId });
 
-  if (!remote.isAuthenticated || remote.scheduledActivities.length === 0) {
+  if (!remote.isAuthenticated || !remote.competition || remote.scheduledActivities.length === 0) {
     return null;
   }
 

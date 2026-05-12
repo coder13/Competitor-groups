@@ -52,6 +52,16 @@ export const RemoteActivitiesSubscriptionDocument = gql`
   ${RemoteActivityFragment}
 `;
 
+export const ImportRemoteCompetitionDocument = gql`
+  mutation ImportRemoteCompetition($competitionId: String!) {
+    importCompetition(competitionId: $competitionId) {
+      id
+      autoAdvance
+      autoAdvanceDelay
+    }
+  }
+`;
+
 export const StartRemoteActivityDocument = gql`
   mutation StartRemoteActivity($competitionId: String!, $activityId: Int!) {
     startActivity(competitionId: $competitionId, activityId: $activityId) {
