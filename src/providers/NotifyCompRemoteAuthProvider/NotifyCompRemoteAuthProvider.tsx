@@ -1,4 +1,5 @@
-import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
+import { deleteLocalStorage, getLocalStorage, setLocalStorage } from '@/lib/localStorage';
 import {
   clearNotifyCompRemoteToken,
   getNotifyCompRemoteClaims,
@@ -11,6 +12,7 @@ import { useAuth } from '../AuthProvider';
 import { NotifyCompRemoteAuthContext } from './NotifyCompRemoteAuthContext';
 
 const NOTIFY_COMP_TOKEN_URL = '/.netlify/functions/notify-comp-token';
+const PENDING_REMOTE_COMPETITION_ID_KEY = 'notifyComp.pendingRemoteCompetitionId';
 const REMOTE_SCOPE = 'notifycomp.remote';
 
 const readErrorMessage = async (response: Response) => {
@@ -28,7 +30,7 @@ export function NotifyCompRemoteAuthProvider({ children }: PropsWithChildren) {
   const [token, setToken] = useState(getNotifyCompRemoteToken);
   const [authenticating, setAuthenticating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { signIn: signInWithWca } = useAuth();
+  const { signIn: signInWithWca, user } = useAuth();
 
   const signIn = useCallback(
     async (competitionId: string) => {
@@ -36,11 +38,13 @@ export function NotifyCompRemoteAuthProvider({ children }: PropsWithChildren) {
       const accessToken = getStoredWcaAccessToken();
 
       if (!accessToken) {
+        setLocalStorage(PENDING_REMOTE_COMPETITION_ID_KEY, competitionId);
         signInWithWca();
         return;
       }
 
       setAuthenticating(true);
+      deleteLocalStorage(PENDING_REMOTE_COMPETITION_ID_KEY);
 
       try {
         const response = await fetch(NOTIFY_COMP_TOKEN_URL, {
@@ -76,6 +80,24 @@ export function NotifyCompRemoteAuthProvider({ children }: PropsWithChildren) {
     },
     [signInWithWca],
   );
+
+  useEffect(() => {
+    const pendingCompetitionId = getLocalStorage(PENDING_REMOTE_COMPETITION_ID_KEY);
+    if (!pendingCompetitionId || authenticating || !user) {
+      return;
+    }
+
+    if (hasNotifyCompRemoteTokenForCompetition(pendingCompetitionId)) {
+      deleteLocalStorage(PENDING_REMOTE_COMPETITION_ID_KEY);
+      return;
+    }
+
+    if (!getStoredWcaAccessToken()) {
+      return;
+    }
+
+    void signIn(pendingCompetitionId);
+  }, [authenticating, signIn, user]);
 
   const signOut = useCallback(() => {
     clearNotifyCompRemoteToken();

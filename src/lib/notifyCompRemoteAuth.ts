@@ -4,6 +4,7 @@ const REMOTE_JWT_KEY = 'notifyComp.jwt';
 
 interface JwtClaims {
   competitionIds?: string[];
+  competition_ids?: string[];
   exp?: number;
   id?: number;
   name?: string;
@@ -19,7 +20,8 @@ const decodeJwtPayload = (token: string): JwtClaims | null => {
       return null;
     }
 
-    const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const normalized = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
     return JSON.parse(window.atob(normalized)) as JwtClaims;
   } catch {
     return null;
@@ -52,7 +54,8 @@ export const hasNotifyCompRemoteTokenForCompetition = (competitionId: string) =>
     return false;
   }
 
-  return claims.competitionIds?.includes(competitionId) ?? false;
+  const competitionIds = claims.competitionIds ?? claims.competition_ids ?? [];
+  return competitionIds.includes(competitionId);
 };
 
 export const setNotifyCompRemoteToken = (token: string) => {
