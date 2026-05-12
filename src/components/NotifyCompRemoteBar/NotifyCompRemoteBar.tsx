@@ -62,7 +62,9 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
     <nav
       aria-label="Remote control"
       className="z-20 w-full border-t border-tertiary-weak bg-panel shadow-md shadow-tertiary-dark print:hidden">
-      <Container className="relative flex min-h-16 items-center justify-center px-2 py-2">
+      <Container
+        fullWidth
+        className="relative flex-row min-h-16 items-center justify-center px-2 py-2">
         <Link
           to={`/competitions/${competitionId}/remote`}
           className="absolute left-2 top-1/2 hidden max-w-[min(32vw,20rem)] -translate-y-1/2 rounded px-1 py-1 hover-transition hover:bg-gray-100 dark:hover:bg-gray-700 sm:block">
