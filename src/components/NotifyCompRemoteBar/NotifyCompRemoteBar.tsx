@@ -122,14 +122,7 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
           </Link>
         </div>
 
-        <div className="flex min-w-0 items-center justify-end gap-3">
-          <div className="hidden min-w-0 text-right sm:block">
-            <div className="truncate text-sm font-medium text-default">Remote</div>
-            <div className="truncate text-xs text-muted">
-              {remote.error ? remote.error : remote.isSaving ? 'Syncing' : 'Ready'}
-            </div>
-          </div>
-        </div>
+        <div />
       </Container>
     </nav>
   );

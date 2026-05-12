@@ -9,6 +9,7 @@ import { useNotifyCompRemoteAuth } from '@/providers/NotifyCompRemoteAuthProvide
 import { useWCIF } from '@/providers/WCIFProvider';
 import { RemoteAction, RemoteActionDialog } from './RemoteActionDialog';
 import { RemoteGroupList } from './RemoteActivityList';
+import { RemoteAutoAdvanceToggle } from './RemoteAutoAdvanceToggle';
 
 const confirmAction = (message: string) => window.confirm(message);
 
@@ -109,11 +110,10 @@ export default function CompetitionRemote() {
               <div className="space-y-4">
                 <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                   <h2 className="type-heading">All rooms</h2>
-                  <Button
-                    type="button"
-                    variant={remote.autoAdvance ? 'green' : 'light'}
+                  <RemoteAutoAdvanceToggle
+                    checked={Boolean(remote.autoAdvance)}
                     disabled={remote.isSaving}
-                    onClick={() => {
+                    onToggle={() => {
                       if (
                         confirmAction(
                           `${remote.autoAdvance ? 'Disable' : 'Enable'} auto-advance for this competition?`,
@@ -121,9 +121,8 @@ export default function CompetitionRemote() {
                       ) {
                         void remote.updateAutoAdvance(!remote.autoAdvance);
                       }
-                    }}>
-                    {remote.autoAdvance ? 'Auto-advance on' : 'Auto-advance off'}
-                  </Button>
+                    }}
+                  />
                 </div>
 
                 <div
