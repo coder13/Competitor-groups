@@ -19,14 +19,16 @@ export function RemoteAutoAdvanceToggle({
       aria-label="Auto-advance"
       disabled={disabled}
       className={classNames(
-        'relative h-6 w-12 rounded-full shadow-sm hover-transition disabled:cursor-not-allowed disabled:opacity-50',
-        checked ? 'bg-blue-300' : 'bg-gray-300 dark:bg-gray-600',
+        'relative inline-flex h-7 w-12 rounded-full border p-0.5 shadow-sm hover-transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:cursor-not-allowed disabled:opacity-50',
+        checked
+          ? 'border-primary bg-primary hover:bg-primary-strong'
+          : 'border-tertiary bg-tertiary hover:bg-tertiary-strong',
       )}
       onClick={onToggle}>
       <span
         className={classNames(
-          'absolute left-0 top-1/2 h-7 w-7 -translate-y-1/2 rounded-full bg-blue-600 shadow-md transition-transform',
-          checked ? 'translate-x-6' : 'translate-x-0 bg-gray-50 dark:bg-gray-300',
+          'h-6 w-6 rounded-full border border-tertiary-weak bg-panel shadow-sm transition-transform',
+          checked ? 'translate-x-5' : 'translate-x-0',
         )}
       />
     </button>
