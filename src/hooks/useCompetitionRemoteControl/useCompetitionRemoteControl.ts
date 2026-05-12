@@ -77,6 +77,21 @@ export function useCompetitionRemoteControl({
     await remote.startActivities(activityIdsForGroup(group));
   };
 
+  const switchToPreviousGroup = async () => {
+    if (!previousGroup) {
+      return;
+    }
+
+    const currentActivityIds = activeGroups.flatMap(activityIdsForGroup);
+
+    if (currentActivityIds.length > 0) {
+      await remote.stopActivities(currentActivityIds);
+      await remote.resetActivities(currentActivityIds);
+    }
+
+    await remote.startActivities(activityIdsForGroup(previousGroup));
+  };
+
   return {
     ...remote,
     activeGroups,
@@ -89,6 +104,7 @@ export function useCompetitionRemoteControl({
     scheduledActivities,
     startGroup,
     stopGroup,
+    switchToPreviousGroup,
     switchToGroup,
   };
 }

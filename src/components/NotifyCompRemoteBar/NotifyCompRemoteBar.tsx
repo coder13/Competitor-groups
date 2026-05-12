@@ -44,6 +44,11 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
   const runSwitch = (direction: 'previous' | 'next') => {
     const group = direction === 'previous' ? remote.previousGroup : remote.nextGroup;
 
+    if (direction === 'previous') {
+      void remote.switchToPreviousGroup();
+      return;
+    }
+
     if (direction === 'next' && group && !confirmNextGroup(group.name)) {
       return;
     }
