@@ -110,19 +110,22 @@ export default function CompetitionRemote() {
               <div className="space-y-4">
                 <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                   <h2 className="type-heading">All rooms</h2>
-                  <RemoteAutoAdvanceToggle
-                    checked={Boolean(remote.autoAdvance)}
-                    disabled={remote.isSaving}
-                    onToggle={() => {
-                      if (
-                        confirmAction(
-                          `${remote.autoAdvance ? 'Disable' : 'Enable'} auto-advance for this competition?`,
-                        )
-                      ) {
-                        void remote.updateAutoAdvance(!remote.autoAdvance);
-                      }
-                    }}
-                  />
+                  <div className="flex items-center gap-2">
+                    <span className="type-meta text-muted">Auto-advance</span>
+                    <RemoteAutoAdvanceToggle
+                      checked={Boolean(remote.autoAdvance)}
+                      disabled={remote.isSaving}
+                      onToggle={() => {
+                        if (
+                          confirmAction(
+                            `${remote.autoAdvance ? 'Disable' : 'Enable'} auto-advance for this competition?`,
+                          )
+                        ) {
+                          void remote.updateAutoAdvance(!remote.autoAdvance);
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
 
                 <div
