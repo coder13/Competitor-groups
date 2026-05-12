@@ -18,6 +18,7 @@ import CompetitionLive from './pages/Competition/Live';
 import CompetitionPerson from './pages/Competition/Person';
 import CompetitionPersonalBests from './pages/Competition/Person/PersonalBests';
 import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
+import CompetitionRemote from './pages/Competition/Remote';
 import CompetitionResults from './pages/Competition/Results';
 import {
   CompetitionActivity,
@@ -36,6 +37,7 @@ import Test from './pages/Test';
 import UserLogin from './pages/UserLogin';
 import { AppProvider } from './providers/AppProvider';
 import { AuthProvider, useAuth } from './providers/AuthProvider';
+import { NotifyCompRemoteAuthProvider } from './providers/NotifyCompRemoteAuthProvider';
 import { QueryProvider } from './providers/QueryProvider/QueryProvider';
 import { UserSettingsProvider } from './providers/UserSettingsProvider';
 import { useWCIF } from './providers/WCIFProvider';
@@ -108,6 +110,7 @@ const Navigation = () => {
 
           <Route path="psych-sheet" element={<PsychSheet />} />
           <Route path="psych-sheet/:eventId" element={<PsychSheetEvent />} />
+          <Route path="remote" element={<CompetitionRemote />} />
           <Route path="results" element={<CompetitionResults />} />
           <Route path="results/:roundId" element={<CompetitionResults />} />
 
@@ -142,7 +145,9 @@ const App = () => (
         <ApolloProvider client={client}>
           <BrowserRouter>
             <AuthProvider>
-              <Navigation />
+              <NotifyCompRemoteAuthProvider>
+                <Navigation />
+              </NotifyCompRemoteAuthProvider>
             </AuthProvider>
           </BrowserRouter>
         </ApolloProvider>

@@ -55,6 +55,13 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
         href: `/competitions/${competitionId}/scramblers`,
         text: t('header.tabs.scramblers'),
       });
+
+      _tabs.push({
+        href: `/competitions/${competitionId}/remote`,
+        text: t('header.tabs.remote', {
+          defaultValue: 'Remote',
+        }),
+      });
     }
 
     if (hasStream) {
