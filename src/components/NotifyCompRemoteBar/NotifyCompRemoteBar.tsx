@@ -13,6 +13,9 @@ const iconButtonClassName =
 const primaryButtonClassName =
   'flex h-9 w-9 items-center justify-center rounded-full border border-blue-300 bg-blue-200 text-base leading-none text-gray-900 shadow-sm hover-transition hover:bg-blue-300 disabled:cursor-not-allowed disabled:opacity-40 dark:border-blue-600 dark:bg-blue-700 dark:text-white dark:hover:bg-blue-600 md:h-10 md:w-10 md:text-lg';
 
+const confirmNextGroup = (groupName: string) =>
+  window.confirm(`Advance to ${groupName}? This will update the live remote activity.`);
+
 export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps) {
   const remote = useCompetitionRemoteControl({ competitionId });
 
@@ -34,11 +37,21 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
 
   const runSwitch = (direction: 'previous' | 'next') => {
     const group = direction === 'previous' ? remote.previousGroup : remote.nextGroup;
+
+    if (direction === 'next' && group && !confirmNextGroup(group.name)) {
+      return;
+    }
+
     void remote.switchToGroup(group);
   };
+
   const togglePlayback = () => {
     if (remote.activeGroups.length > 0) {
       void Promise.all(remote.activeGroups.map((group) => remote.stopGroup(group)));
+      return;
+    }
+
+    if (remote.nextGroup && !confirmNextGroup(remote.nextGroup.name)) {
       return;
     }
 
