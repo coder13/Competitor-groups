@@ -14,9 +14,9 @@ interface NotifyCompRemoteBarProps {
 }
 
 const iconButtonClassName =
-  'flex h-8 w-8 items-center justify-center rounded-full border border-tertiary-weak bg-panel text-base leading-none text-default shadow-sm hover-transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:hover:bg-gray-700 md:h-9 md:w-9 md:text-lg';
+  'flex h-10 w-10 items-center justify-center rounded-full border border-tertiary-weak bg-panel text-lg leading-none text-default shadow-sm hover-transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:hover:bg-gray-700';
 const primaryButtonClassName =
-  'flex h-9 w-9 items-center justify-center rounded-full border border-blue-300 bg-blue-200 text-base leading-none text-gray-900 shadow-sm hover-transition hover:bg-blue-300 disabled:cursor-not-allowed disabled:opacity-40 dark:border-blue-600 dark:bg-blue-700 dark:text-white dark:hover:bg-blue-600 md:h-10 md:w-10 md:text-lg';
+  'flex h-10 w-10 items-center justify-center rounded-full border border-blue-300 bg-blue-200 text-lg leading-none text-gray-900 shadow-sm hover-transition hover:bg-blue-300 disabled:cursor-not-allowed disabled:opacity-40 dark:border-blue-600 dark:bg-blue-700 dark:text-white dark:hover:bg-blue-600';
 
 const confirmNextGroup = (groupName: string) =>
   window.confirm(`Advance to ${groupName}? This will update the live remote activity.`);
@@ -88,7 +88,7 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
             <div className="text-sm tabular-nums text-muted">{elapsed}</div>
           </div>
 
-          <div className="flex w-28 flex-col justify-center space-y-1 sm:w-40 md:w-64">
+          <div className="flex w-40 flex-col justify-center space-y-1 sm:w-48 md:w-64">
             <div className="flex items-center justify-center gap-2">
               <button
                 type="button"
