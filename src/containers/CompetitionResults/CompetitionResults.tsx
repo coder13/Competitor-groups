@@ -241,7 +241,7 @@ export function CompetitionResultsContainer({
             now={now}
             apiResultsByRoundId={apiResultsByRoundId}
           />
-          <div className="flex min-w-0 flex-col space-y-4">
+          <div className="flex flex-col min-w-0 space-y-4">
             <div className="md:hidden">
               <LinkButton
                 to={`/competitions/${competitionId}/results`}
@@ -261,7 +261,7 @@ export function CompetitionResultsContainer({
                 </h2>
                 <NoteBox text={t('competition.results.liveResultsDelayNote')} />
                 {isWcaApiResultsLoading && roundResults.length === 0 ? (
-                  <section className="rounded-md border border-tertiary-weak bg-panel p-4 text-muted">
+                  <section className="p-4 border rounded-md border-tertiary-weak bg-panel text-muted">
                     <p>{t('common.loading')}</p>
                   </section>
                 ) : (
@@ -276,11 +276,11 @@ export function CompetitionResultsContainer({
                 )}
               </section>
             ) : isWcaApiResultsLoading ? (
-              <section className="rounded-md border border-tertiary-weak bg-panel p-4 text-muted">
+              <section className="p-4 border rounded-md border-tertiary-weak bg-panel text-muted">
                 <p>{t('common.loading')}</p>
               </section>
             ) : (
-              <section className="rounded-md border border-tertiary-weak bg-panel p-4">
+              <section className="p-4 border rounded-md border-tertiary-weak bg-panel">
                 <p>{t('competition.results.roundNotFound')}</p>
               </section>
             )}
@@ -292,7 +292,7 @@ export function CompetitionResultsContainer({
 
   return (
     <Container className="pt-4">
-      <div className="flex flex-col space-y-4 p-2 type-body">
+      <div className="flex flex-col p-2 space-y-4 type-body">
         <NoteBox text={t('competition.results.liveResultsDelayNote')} />
         <RoundActionPicker mode="results" events={pickerEvents} LinkComponent={LinkComponent} />
       </div>
