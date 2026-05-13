@@ -101,7 +101,7 @@ export function CompetitionSumOfRanksContainer({
                     <KinchTooltip />
                   </span>
                 </th>
-                <th className="px-3 py-2 text-right font-semibold">Medals</th>
+                <th className="hidden px-3 py-2 text-right font-semibold md:table-cell">Medals</th>
               </tr>
             </thead>
             <tbody>
@@ -117,7 +117,9 @@ export function CompetitionSumOfRanksContainer({
                   </td>
                   <td className="px-3 py-2 text-right font-semibold">{ranking.sumOfRanks}</td>
                   <td className="px-3 py-2 text-right">{formatKinch(ranking.kinch)}</td>
-                  <td className="px-3 py-2 text-right">{formatMedals(ranking)}</td>
+                  <td className="hidden px-3 py-2 text-right md:table-cell">
+                    {formatMedals(ranking)}
+                  </td>
                 </tr>
               ))}
             </tbody>

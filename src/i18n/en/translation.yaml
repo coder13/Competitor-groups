@@ -158,6 +158,9 @@ header:
     results: 'Results'
     scramblers: 'Scramblers'
     stream: 'Stream'
+    admin: 'Admin'
+    sumOfRanks: 'Sum of Rankings'
+    stats: 'Stats'
 home:
   subtitle: 'Learn all you need about your WCA competition assignments!'
   explanation: 'Note: This site is a convenience tool for organizers, delegates, and competitors. It uses scheduled data, so check with organizers for the latest details. Start and end times may change.'

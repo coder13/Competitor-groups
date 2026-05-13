@@ -11,11 +11,12 @@ export const StyledNavLink: React.FC<StyledNavLinkProps> = ({
   to,
   text,
   className,
+  end = true,
   ...props
 }: StyledNavLinkProps) => (
   <NavLink
     {...props}
-    end
+    end={end}
     to={to}
     className={({ isActive }) =>
       classNames('link-nav', className, {

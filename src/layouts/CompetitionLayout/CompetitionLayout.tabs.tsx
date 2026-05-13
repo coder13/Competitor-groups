@@ -11,22 +11,31 @@ interface CompetitionLayoutTabsProps {
   wcif?: Competition;
 }
 
+export interface CompetitionLayoutTab {
+  href: string;
+  text: string;
+  end?: boolean;
+  hiddenOnMobile?: boolean;
+}
+
+interface CompetitionLayoutTabs {
+  tabs: CompetitionLayoutTab[];
+  adminTabs: CompetitionLayoutTab[];
+}
+
 export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLayoutTabsProps) => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const userId = user?.id;
 
-  return useMemo(() => {
+  return useMemo<CompetitionLayoutTabs>(() => {
     const hasStream = wcif && streamActivities(wcif).length > 0;
     const person = wcif?.persons.find((p) => p.wcaUserId === userId);
     const isPersonStaff = person && isStaff(person);
     const canManageRemote = isCompetitionDelegateOrOrganizer(wcif, userId ? { id: userId } : null);
 
-    const _tabs: {
-      href: string;
-      text: string;
-      hiddenOnMobile?: boolean;
-    }[] = [];
+    const _tabs: CompetitionLayoutTab[] = [];
+    const _adminTabs: CompetitionLayoutTab[] = [];
 
     _tabs.push({
       href: `/competitions/${competitionId}`,
@@ -54,15 +63,15 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
     );
 
     if (isPersonStaff) {
-      _tabs.push({
-        href: `/competitions/${competitionId}/scramblers`,
+      _adminTabs.push({
+        href: `/competitions/${competitionId}/admin/scramblers`,
         text: t('header.tabs.scramblers'),
       });
     }
 
     if (canManageRemote) {
-      _tabs.push({
-        href: `/competitions/${competitionId}/remote`,
+      _adminTabs.push({
+        href: `/competitions/${competitionId}/admin/remote`,
         text: t('header.tabs.remote', {
           defaultValue: 'Remote',
         }),
@@ -76,6 +85,34 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
       });
     }
 
-    return _tabs;
+    if (isPersonStaff || canManageRemote) {
+      _adminTabs.push(
+        {
+          href: `/competitions/${competitionId}/admin/sum-of-ranks`,
+          text: t('header.tabs.sumOfRanks', {
+            defaultValue: 'Sum of Rankings',
+          }),
+        },
+        {
+          href: `/competitions/${competitionId}/admin/stats`,
+          text: t('header.tabs.stats', {
+            defaultValue: 'Stats',
+          }),
+        },
+      );
+    }
+
+    if (_adminTabs.length > 0) {
+      _tabs.push({
+        href: `/competitions/${competitionId}/admin`,
+        text: t('header.tabs.admin'),
+        end: false,
+      });
+    }
+
+    return {
+      tabs: _tabs,
+      adminTabs: _adminTabs,
+    };
   }, [wcif, competitionId, userId, t]);
 };

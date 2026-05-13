@@ -6,6 +6,7 @@ import { usePageTracking } from './hooks/usePageTracking';
 import { CompetitionLayout } from './layouts/CompetitionLayout';
 import { RootLayout } from './layouts/RootLayout';
 import About from './pages/About';
+import CompetitionAdmin from './pages/Competition/Admin';
 import CompetitionEvents from './pages/Competition/ByGroup/Events';
 import CompetitionGroup from './pages/Competition/ByGroup/Group';
 import CompetitionGroupList from './pages/Competition/ByGroup/GroupList';
@@ -85,6 +86,12 @@ const PsychSheet = () => {
   return null;
 };
 
+const CompetitionRedirect = ({ to }: { to: string }) => {
+  const { competitionId } = useParams() as { competitionId: string };
+
+  return <Navigate to={`/competitions/${competitionId}/${to}`} replace />;
+};
+
 const Navigation = () => {
   usePageTracking(import.meta.env.VITE_GA_MEASUREMENT_ID);
 
@@ -112,11 +119,16 @@ const Navigation = () => {
 
           <Route path="psych-sheet" element={<PsychSheet />} />
           <Route path="psych-sheet/:eventId" element={<PsychSheetEvent />} />
-          <Route path="remote" element={<CompetitionRemote />} />
           <Route path="results" element={<CompetitionResults />} />
           <Route path="results/:roundId" element={<CompetitionResults />} />
 
-          <Route path="scramblers" element={<CompetitionScramblerSchedule />} />
+          <Route path="admin" element={<CompetitionAdmin />} />
+          <Route path="admin/remote" element={<CompetitionRemote />} />
+          <Route path="admin/scramblers" element={<CompetitionScramblerSchedule />} />
+          <Route path="admin/stats" element={<CompetitionStats />} />
+          <Route path="admin/sum-of-ranks" element={<CompetitionSumOfRanks />} />
+          <Route path="remote" element={<CompetitionRedirect to="admin/remote" />} />
+          <Route path="scramblers" element={<CompetitionRedirect to="admin/scramblers" />} />
           <Route path="stream" element={<CompetitionStreamSchedule />} />
           <Route path="information" element={<CompetitionInformation />} />
           <Route path="live" element={<CompetitionLive />} />
@@ -125,8 +137,8 @@ const Navigation = () => {
           <Route path="personal-schedule" element={<PersonalSchedule />} />
           <Route path="explore" element={<CompetitionGroupsOverview />} />
           <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />
-          <Route path="stats" element={<CompetitionStats />} />
-          <Route path="sum-of-ranks" element={<CompetitionSumOfRanks />} />
+          <Route path="stats" element={<CompetitionRedirect to="admin/stats" />} />
+          <Route path="sum-of-ranks" element={<CompetitionRedirect to="admin/sum-of-ranks" />} />
           <Route path="*" element={<p>Path not resolved</p>} />
         </Route>
         <Route path="/users/:userId" element={<UserLogin />} />

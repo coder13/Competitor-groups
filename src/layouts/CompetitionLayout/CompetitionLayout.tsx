@@ -20,7 +20,7 @@ export function CompetitionLayout() {
 
   const { data: wcif, dataUpdatedAt, isFetching } = useWcif(competitionId!);
 
-  const tabs = useCompetitionLayoutTabs({
+  const { tabs } = useCompetitionLayoutTabs({
     competitionId: competitionId!,
     wcif: wcif,
   });
@@ -39,6 +39,7 @@ export function CompetitionLayout() {
               className={classNames({
                 'hidden md:block': i.hiddenOnMobile,
               })}
+              end={i.end}
               to={i.href}
               text={i.text}
             />
