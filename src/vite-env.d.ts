@@ -8,4 +8,5 @@ interface ImportMetaEnv {
   readonly VITE_NOTIFY_COMP_ORIGIN?: string;
   readonly VITE_NOTIFYCOMP_API_ORIGIN?: string;
   readonly VITE_NOTIFYCOMP_WS_ORIGIN?: string;
+  readonly VITE_FEATURE_PERSONAL_USER_PAGE?: string;
 }

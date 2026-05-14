@@ -5,6 +5,7 @@ import client from './apolloClient';
 import { usePageTracking } from './hooks/usePageTracking';
 import { CompetitionLayout } from './layouts/CompetitionLayout';
 import { RootLayout } from './layouts/RootLayout';
+import { FEATURE_FLAGS } from './lib/featureFlags';
 import About from './pages/About';
 import CompetitionAdmin from './pages/Competition/Admin';
 import CompetitionEvents from './pages/Competition/ByGroup/Events';
@@ -169,9 +170,16 @@ const Navigation = () => {
           <Route path="*" element={<p>Path not resolved</p>} />
         </Route>
         <Route path="/users/:userId" element={<UserLogin />} />
-        <Route path="/me" element={<Navigate to="/me/competitions" replace />} />
-        <Route path="/me/results/:resultsMode" element={<Navigate to="/me/results" replace />} />
-        <Route path="/me/:tab" element={<UserPage />} />
+        {FEATURE_FLAGS.personalUserPage && (
+          <>
+            <Route path="/me" element={<Navigate to="/me/competitions" replace />} />
+            <Route
+              path="/me/results/:resultsMode"
+              element={<Navigate to="/me/results" replace />}
+            />
+            <Route path="/me/:tab" element={<UserPage />} />
+          </>
+        )}
         <Route path="about" element={<About />} />
         <Route path="live-activities" element={<LiveActivitiesAbout />} />
         <Route path="settings" element={<Settings />} />

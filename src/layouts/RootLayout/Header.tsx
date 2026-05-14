@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
 import { useCompetition } from '@/hooks/queries/useCompetition';
 import { UserCompsResponse } from '@/lib/api';
+import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { useAuth } from '@/providers/AuthProvider';
 import { useWCIF } from '@/providers/WCIFProvider';
 
@@ -76,9 +77,11 @@ export default function Header() {
             <div
               className="z-50 mt-2 border-2 shadow-xl bg-panel border-tertiary-weak"
               onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-              <Link to="/me" className="block w-32 px-3 py-2 link-inline hover-bg-tertiary">
-                My profile
-              </Link>
+              {FEATURE_FLAGS.personalUserPage && (
+                <Link to="/me" className="block w-32 px-3 py-2 link-inline hover-bg-tertiary">
+                  My profile
+                </Link>
+              )}
               <Link to="/settings" className="block w-32 px-3 py-2 link-inline hover-bg-tertiary">
                 Settings
               </Link>
