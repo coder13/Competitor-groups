@@ -1,0 +1,21 @@
+name: Main PR Guard
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+jobs:
+  require-beta-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require beta as the source branch
+        if: ${{ github.head_ref != 'beta' }}
+        run: |
+          echo "Pull requests into main must come from beta."
+          echo "Open feature and fix pull requests against beta, then use the Deploy workflow to promote beta into main."
+          exit 1
+
+      - name: Allow beta release PR
+        if: ${{ github.head_ref == 'beta' }}
+        run: echo "Release PR from beta to main is allowed."
