@@ -27,7 +27,7 @@ export default defineConfig({
     viteTsconfigPaths(),
     ViteYaml(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       workbox: {
         importScripts: ['notification-sw.js'],
       },
