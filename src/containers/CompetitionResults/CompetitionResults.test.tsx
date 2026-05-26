@@ -7,6 +7,8 @@ import { CompetitionResultsContainer } from './CompetitionResults';
 let mockWcaLiveRoundResults: unknown[] = [];
 let mockWcaCompetitionResults: unknown[] | undefined = [];
 let mockWcaCompetitionResultsStatus = 'success';
+const mockUseWcaLiveRoundLink = jest.fn();
+const mockUseWcaLiveRoundResults = jest.fn();
 
 jest.mock('@/components/Container', () => ({
   Container: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -18,14 +20,8 @@ jest.mock('@/lib/events', () => ({
 }));
 
 jest.mock('@/hooks/queries/useWcaLive', () => ({
-  useWcaLiveRoundLink: () => ({
-    data: 'https://live.worldcubeassociation.org/competitions/TestComp2026/rounds/1',
-    status: 'success',
-  }),
-  useWcaLiveRoundResults: () => ({
-    data: { results: mockWcaLiveRoundResults },
-    status: 'success',
-  }),
+  useWcaLiveRoundLink: (...args: unknown[]) => mockUseWcaLiveRoundLink(...args),
+  useWcaLiveRoundResults: (...args: unknown[]) => mockUseWcaLiveRoundResults(...args),
 }));
 
 jest.mock('@/hooks/queries/useWcaResults', () => ({
@@ -248,6 +244,14 @@ describe('CompetitionResultsContainer', () => {
     mockWcaLiveRoundResults = [];
     mockWcaCompetitionResults = [];
     mockWcaCompetitionResultsStatus = 'success';
+    mockUseWcaLiveRoundLink.mockReturnValue({
+      data: 'https://live.worldcubeassociation.org/competitions/TestComp2026/rounds/1',
+      status: 'success',
+    });
+    mockUseWcaLiveRoundResults.mockImplementation(() => ({
+      data: { results: mockWcaLiveRoundResults },
+      status: 'success',
+    }));
   });
 
   afterEach(() => {
@@ -380,7 +384,11 @@ describe('CompetitionResultsContainer', () => {
         round_type_id: '2',
         format_id: 'a',
         wca_id: '2010THOM03',
-        attempts: [900, 950, 1000],
+        attempts: [900, 950, 1000, 1050, 1200],
+        best_index: 0,
+        worst_index: 4,
+        regional_single_record: 'NR',
+        regional_average_record: 'WR',
       },
     ];
 
@@ -392,9 +400,30 @@ describe('CompetitionResultsContainer', () => {
       '/competitions/TestComp2026/persons/1/results',
     );
     expect(
+      within(screen.getByRole('row', { name: /1 Blake Thompson/ })).getByText('(9.00)'),
+    ).toBeInTheDocument();
+    expect(
+      within(screen.getByRole('row', { name: /1 Blake Thompson/ })).getByText('(12.00)'),
+    ).toBeInTheDocument();
+    expect(
       within(screen.getByRole('row', { name: /1 Blake Thompson/ })).getAllByText('9.50'),
     ).toHaveLength(2);
-    expect(screen.getAllByText('9.00')).toHaveLength(2);
+    expect(screen.getAllByText('9.00')).toHaveLength(1);
+    expect(screen.getByLabelText('WR record')).toHaveTextContent('WR');
+    expect(screen.getByLabelText('NR record')).toHaveTextContent('NR');
+    expect(
+      within(screen.getByRole('navigation', { name: 'Event rounds' }))
+        .getAllByRole('link')
+        .map((link) => link.getAttribute('href')),
+    ).toEqual([
+      '/competitions/TestComp2026/results/333-r1',
+      '/competitions/TestComp2026/results/333-r2',
+    ]);
+    expect(
+      within(screen.getByRole('navigation', { name: 'Event rounds' })).getByRole('link', {
+        name: /Round 2/,
+      }),
+    ).toHaveClass('bg-blue-700', 'text-white');
     expect(
       within(screen.getByRole('navigation', { name: 'Round' })).getAllByText('Done'),
     ).toHaveLength(2);
@@ -413,16 +442,23 @@ describe('CompetitionResultsContainer', () => {
   });
 
   it('uses WCA Live partial results for the selected round when they are available', () => {
-    jest.useFakeTimers().setSystemTime(new Date('2026-05-03T12:00:00'));
     mockWcaLiveRoundResults = [
       {
         id: 'live-result-1',
         ranking: 3,
         advancing: true,
         advancingQuestionable: true,
-        attempts: [{ result: 1100 }, { result: 1200 }],
+        attempts: [
+          { result: 1100 },
+          { result: 1200 },
+          { result: 1300 },
+          { result: 1400 },
+          { result: 1500 },
+        ],
         best: 1100,
-        average: 0,
+        average: 1300,
+        singleRecordTag: 'PR',
+        averageRecordTag: 'PR',
         person: {
           id: 'live-person-1',
           registrantId: 1,
@@ -433,6 +469,15 @@ describe('CompetitionResultsContainer', () => {
 
     renderResults('333-r1');
 
+    expect(mockUseWcaLiveRoundLink).toHaveBeenCalledWith('TestComp2026', '333', 1, {
+      enabled: true,
+    });
+    expect(mockUseWcaLiveRoundResults).toHaveBeenCalledWith(
+      'https://live.worldcubeassociation.org/competitions/TestComp2026/rounds/1',
+      {
+        enabled: true,
+      },
+    );
     expect(screen.getByRole('link', { name: 'Blake Thompson' })).toHaveAttribute(
       'href',
       '/competitions/TestComp2026/persons/1/results',
@@ -451,14 +496,23 @@ describe('CompetitionResultsContainer', () => {
     expect(
       within(screen.getByRole('row', { name: /Casey Nguyen/ })).getAllByRole('cell')[0],
     ).toBeEmptyDOMElement();
-    expect(screen.getAllByText('11.00')).toHaveLength(2);
+    expect(
+      within(screen.getByRole('row', { name: /3 Blake Thompson/ })).getByText('(11.00)'),
+    ).toBeInTheDocument();
+    expect(
+      within(screen.getByRole('row', { name: /3 Blake Thompson/ })).getByText('(15.00)'),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText('11.00')).toHaveLength(1);
+    expect(screen.getAllByLabelText('PR record').map((badge) => badge.textContent)).toEqual([
+      'PR',
+      'PR',
+    ]);
     expect(
       within(screen.getByRole('row', { name: /2 Nick Silvestri/ })).getAllByText('15.00'),
     ).toHaveLength(2);
     expect(
       screen.getByText('Data is pulled from WCA Live and may be delayed.'),
     ).toBeInTheDocument();
-    expect(screen.queryByText('13.00')).not.toBeInTheDocument();
   });
 
   it('opens full result details from a narrow results row', () => {

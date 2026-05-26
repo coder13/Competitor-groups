@@ -1,6 +1,7 @@
 import { RankingType, Round } from '@wca/helpers';
 import { RoundAdvancementCondition } from '@/lib/wcif';
 import { CompetitionRoundResult } from './CompetitionResultsTable';
+import { normalizeResultRecordTag } from './ResultRecordBadge';
 
 const averagedFormats = new Set(['a', 'm', '5', 'h']);
 
@@ -22,7 +23,7 @@ const getRankLimit = (
   return null;
 };
 
-const getResultValue = (round: Round, result: Round['results'][number], scope: RankingType) =>
+const getResultValue = (result: Round['results'][number], scope: RankingType) =>
   scope === 'average' ? result.average : result.best;
 
 const isAdvancingFromStoredResult = (
@@ -53,7 +54,7 @@ const isAdvancingFromStoredResult = (
   }
 
   const scope = resultCondition.scope ?? getPrimaryRankingType(round);
-  const resultValue = getResultValue(round, result, scope);
+  const resultValue = getResultValue(result, scope);
 
   return resultValue > 0 && resultValue < resultCondition.value;
 };
@@ -62,13 +63,28 @@ export const getStoredRoundResults = (
   round: Round,
   advancementCondition: RoundAdvancementCondition | null,
 ): CompetitionRoundResult[] =>
-  round.results.map((result) => ({
-    id: result.personId,
-    personId: result.personId,
-    ranking: result.ranking,
-    advancing: isAdvancingFromStoredResult(round, result, advancementCondition),
-    advancingQuestionable: false,
-    attempts: result.attempts.map((attempt) => ({ result: attempt.result })),
-    best: result.best,
-    average: result.average,
-  }));
+  round.results.map((result) => {
+    const resultWithRecords = result as typeof result & {
+      regionalSingleRecord?: string | null;
+      regionalAverageRecord?: string | null;
+      singleRecordTag?: string | null;
+      averageRecordTag?: string | null;
+    };
+
+    return {
+      id: result.personId,
+      personId: result.personId,
+      ranking: result.ranking,
+      advancing: isAdvancingFromStoredResult(round, result, advancementCondition),
+      advancingQuestionable: false,
+      attempts: result.attempts.map((attempt) => ({ result: attempt.result })),
+      best: result.best,
+      average: result.average,
+      singleRecordTag: normalizeResultRecordTag(
+        resultWithRecords.singleRecordTag ?? resultWithRecords.regionalSingleRecord,
+      ),
+      averageRecordTag: normalizeResultRecordTag(
+        resultWithRecords.averageRecordTag ?? resultWithRecords.regionalAverageRecord,
+      ),
+    };
+  });

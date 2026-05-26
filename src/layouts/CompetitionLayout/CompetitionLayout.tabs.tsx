@@ -59,6 +59,7 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
       {
         href: `/competitions/${competitionId}/results`,
         text: t('header.tabs.results'),
+        end: false,
       },
     );
 

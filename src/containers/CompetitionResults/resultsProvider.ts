@@ -6,6 +6,7 @@ import { findRoundWithEvent } from '@/lib/rounds';
 import { getAdvancementConditionForRound } from '@/lib/wcif';
 import { PersonalRoundResult } from '../CompetitionPersonalResults/CompetitionPersonalResultsTable';
 import { CompetitionRoundResult } from './CompetitionResultsTable';
+import { normalizeResultRecordTag } from './ResultRecordBadge';
 import { getStoredRoundResults } from './advancement';
 import { getApiRoundResults, getWcaApiResultsByRoundId } from './resultSources';
 import { getRoundRosterResults } from './roundRoster';
@@ -29,7 +30,14 @@ const mergeRoundResultSources = (
 
   sources.forEach((sourceResults) => {
     sourceResults.forEach((result) => {
-      resultsByKey.set(getResultKey(result), result);
+      const key = getResultKey(result);
+      const existingResult = resultsByKey.get(key);
+
+      resultsByKey.set(key, {
+        ...result,
+        singleRecordTag: result.singleRecordTag ?? existingResult?.singleRecordTag,
+        averageRecordTag: result.averageRecordTag ?? existingResult?.averageRecordTag,
+      });
     });
   });
 
@@ -49,6 +57,8 @@ const getLiveRoundResults = (wcaLiveRound: WcaLiveRound | null | undefined) =>
       attempts: result.attempts,
       best: result.best,
       average: result.average,
+      singleRecordTag: normalizeResultRecordTag(result.singleRecordTag),
+      averageRecordTag: normalizeResultRecordTag(result.averageRecordTag),
     })) ?? [];
 
 export const getRoundResultsFromSources = ({

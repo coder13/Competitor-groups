@@ -20,6 +20,7 @@ import { AnchorLink, LinkRenderer } from '@/lib/linkRenderer';
 import { findRoundWithEvent, getAllRoundsWithEvents } from '@/lib/rounds';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { CompetitionResultsTable } from './CompetitionResultsTable';
+import { ResultsEventRoundSelector } from './ResultsEventRoundSelector';
 import { getWcaApiResultsByRoundId } from './resultSources';
 import { getRoundResultsFromSources } from './resultsProvider';
 
@@ -82,7 +83,7 @@ function ResultsRoundNav({
   return (
     <nav
       aria-label={t('common.wca.round')}
-      className="hidden overflow-y-auto rounded-md border border-tertiary-weak bg-panel shadow-sm md:sticky md:top-4 md:block md:max-h-[calc(100vh-2rem)]">
+      className="hidden overflow-y-auto rounded-md border border-tertiary-weak bg-panel shadow-sm lg:sticky lg:top-4 lg:block lg:max-h-[calc(100vh-2rem)]">
       <div>
         {groups.map(({ event, rounds }) => (
           <div key={event.id} className="border-b border-tertiary-weak last:border-b-0">
@@ -107,7 +108,7 @@ function ResultsRoundNav({
                     className={classNames(
                       'flex min-h-10 items-center gap-2 px-3 py-2 type-body-sm hover-transition hover:bg-gray-100 dark:hover:bg-gray-700',
                       {
-                        'bg-active text-primary': isSelected,
+                        'bg-blue-700 text-white dark:bg-blue-300 dark:text-gray-950': isSelected,
                         'text-default': !isSelected,
                       },
                     )}>
@@ -218,20 +219,34 @@ export function CompetitionResultsContainer({
     competitionId,
     selectedRound?.event.id ?? '',
     selectedRound?.roundNumber ?? 1,
-    { enabled: Boolean(selectedRound) && isTodayCompetitionDay },
+    { enabled: Boolean(selectedRound) },
   );
   const { data: wcaLiveRound } = useWcaLiveRoundResults(wcaLiveRoundLink, {
-    enabled: isTodayCompetitionDay && wcaLiveRoundLinkStatus === 'success',
+    enabled: wcaLiveRoundLinkStatus === 'success',
   });
   const roundResults = useMemo(
     () => getRoundResultsFromSources({ wcif, selectedRound, wcaLiveRound, wcaApiResults }),
     [selectedRound, wcaApiResults, wcaLiveRound, wcif],
   );
+  const selectedEventRoundLinks = useMemo(
+    () =>
+      selectedRound
+        ? (pickerEvents.find((event) => event.id === selectedRound.event.id)?.rounds ?? []).map(
+            ({ href, id, resultStatus, roundNumber }) => ({
+              href: href ?? `/competitions/${competitionId}/results/${id}`,
+              id,
+              resultStatus,
+              roundNumber,
+            }),
+          )
+        : [],
+    [competitionId, pickerEvents, selectedRound],
+  );
 
   if (selectedRoundId) {
     return (
       <Container className="pt-4" fullWidth>
-        <div className="mx-auto grid w-full max-w-screen-xl gap-4 p-2 type-body md:grid-cols-[16rem_minmax(0,1fr)] md:items-start">
+        <div className="mx-auto grid w-full max-w-screen-xl gap-4 p-2 type-body lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start">
           <ResultsRoundNav
             competitionId={competitionId}
             groups={eventsWithResults}
@@ -242,7 +257,7 @@ export function CompetitionResultsContainer({
             apiResultsByRoundId={apiResultsByRoundId}
           />
           <div className="flex flex-col min-w-0 space-y-4">
-            <div className="md:hidden">
+            <div className="lg:hidden">
               <LinkButton
                 to={`/competitions/${competitionId}/results`}
                 title={t('competition.results.back')}
@@ -260,6 +275,11 @@ export function CompetitionResultsContainer({
                   })}
                 </h2>
                 <NoteBox text={t('competition.results.liveResultsDelayNote')} />
+                <ResultsEventRoundSelector
+                  selectedRoundId={selectedRound.round.id}
+                  rounds={selectedEventRoundLinks}
+                  LinkComponent={LinkComponent}
+                />
                 {isWcaApiResultsLoading && roundResults.length === 0 ? (
                   <section className="p-4 border rounded-md border-tertiary-weak bg-panel text-muted">
                     <p>{t('common.loading')}</p>

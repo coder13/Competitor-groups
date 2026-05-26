@@ -1,6 +1,7 @@
 import { Competition, Person } from '@wca/helpers';
 import { WcaCompetitionResult } from '@/lib/api';
 import { CompetitionRoundResult } from './CompetitionResultsTable';
+import { normalizeResultRecordTag } from './ResultRecordBadge';
 
 const roundTypeOrder = ['0', '1', 'c', '2', 'e', '3', 'b', 'd', 'f'];
 
@@ -98,6 +99,10 @@ export const toCompetitionRoundResult = (
     attempts: result.attempts.map((attempt) => ({ result: attempt })),
     best: result.best,
     average: result.average,
+    bestAttemptIndex: result.best_index,
+    worstAttemptIndex: result.worst_index,
+    singleRecordTag: normalizeResultRecordTag(result.regional_single_record),
+    averageRecordTag: normalizeResultRecordTag(result.regional_average_record),
   };
 };
 

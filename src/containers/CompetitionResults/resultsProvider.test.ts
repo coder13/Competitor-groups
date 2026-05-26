@@ -301,6 +301,8 @@ describe('resultsProvider', () => {
             average: 2200,
             round_type_id: '1',
             attempts: [2100, 2200, 2300],
+            regional_single_record: 'NR',
+            regional_average_record: 'WR',
           }),
         ],
         wcaLiveRound: liveRound([
@@ -321,6 +323,8 @@ describe('resultsProvider', () => {
         ranking: 2,
         best: 1000,
         average: 1100,
+        singleRecordTag: 'NR',
+        averageRecordTag: 'WR',
       });
       expect(results.find((result) => result.personId === 1)).toMatchObject({
         ranking: 1,

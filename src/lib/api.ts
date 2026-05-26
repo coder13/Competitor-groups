@@ -68,6 +68,10 @@ export interface WcaCompetitionResult {
   format_id: string;
   wca_id: string | null;
   attempts: number[];
+  best_index?: number | null;
+  worst_index?: number | null;
+  regional_single_record?: string | null;
+  regional_average_record?: string | null;
 }
 
 export type WcaPersonCompetition = Pick<

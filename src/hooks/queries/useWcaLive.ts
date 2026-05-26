@@ -84,6 +84,8 @@ export interface WcaLiveCompetitorResult {
   }[];
   best: number;
   average: number;
+  singleRecordTag?: string | null;
+  averageRecordTag?: string | null;
   round: {
     id: string;
     name: string;
@@ -114,6 +116,8 @@ export interface WcaLiveRoundResult {
   }[];
   best: number;
   average: number;
+  singleRecordTag?: string | null;
+  averageRecordTag?: string | null;
   person: {
     id: string;
     registrantId: number | null;
@@ -166,6 +170,8 @@ const WCA_LIVE_COMPETITOR_RESULTS_QUERY = `
         }
         best
         average
+        singleRecordTag
+        averageRecordTag
         round {
           id
           name
@@ -208,6 +214,8 @@ const WCA_LIVE_ROUND_RESULTS_QUERY = `
         }
         best
         average
+        singleRecordTag
+        averageRecordTag
         person {
           id
           registrantId
