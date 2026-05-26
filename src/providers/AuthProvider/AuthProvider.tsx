@@ -49,21 +49,22 @@ export function AuthProvider({ children }: PropsWithChildren) {
     localStorage.removeItem(localStorageKey('user'));
     localStorage.removeItem(localStorageKey('my.upcoming_competitions'));
     localStorage.removeItem(localStorageKey('my.ongoing_competitions'));
+    queryClient.removeQueries({ queryKey: ['userCompetitions'] });
+    queryClient.removeQueries({ queryKey: ['user-results'] });
+    queryClient.removeQueries({ queryKey: ['user-past-competitions'] });
+    queryClient.removeQueries({ queryKey: ['user-profile'] });
+    queryClient.removeQueries({ queryKey: ['user-assignment-status'] });
   };
 
   const signInAs = useCallback(
     (userId: number) => {
-      queryClient
-        .getQueryCache()
-        .find({
-          queryKey: ['userCompetitions'],
-        })
-        ?.reset();
+      queryClient.removeQueries({ queryKey: ['userCompetitions'] });
 
       fetchUserWithCompetitions(userId.toString()).then(
         ({ user, ongoing_competitions, upcoming_competitions }) => {
           setUser(user);
-          queryClient.setQueryData(['userCompetitions'], {
+          queryClient.setQueryData(['userCompetitions', user.id], {
+            user,
             ongoing_competitions,
             upcoming_competitions,
           });
@@ -85,8 +86,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     fetchMe(accessToken)
       .then(({ me, ongoing_competitions, upcoming_competitions }) => {
+        setLocalStorage('accessToken', accessToken);
+        setLocalStorage(
+          'expirationTime',
+          String(Date.now() + Number(hashParams.get('expires_in') ?? 0) * 1000),
+        );
         setUserAndSave(me);
-        queryClient.setQueryData(['userCompetitions'], {
+        queryClient.setQueryData(['userCompetitions', me.id], {
+          user: me,
           ongoing_competitions,
           upcoming_competitions,
         });

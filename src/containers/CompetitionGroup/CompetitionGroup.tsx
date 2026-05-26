@@ -158,7 +158,7 @@ export function CompetitionGroupContainer({
             <LinkComponent
               to={prevUrl || ''}
               className={classNames(
-                'my-1 flex w-full justify-end rounded-md border border-tertiary-weak p-2 px-2 transition-colors',
+                'my-1 flex w-full justify-end rounded-md border border-tertiary-weak p-2 px-2 hover-transition',
                 {
                   'pointer-events-none opacity-25': !prev,
                   'group cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700': prev,
@@ -170,7 +170,7 @@ export function CompetitionGroupContainer({
             <LinkComponent
               to={nextUrl || ''}
               className={classNames(
-                'group my-1 flex w-full rounded-md border border-tertiary-weak p-2 px-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700',
+                'group my-1 flex w-full rounded-md border border-tertiary-weak p-2 px-2 hover-transition hover:bg-gray-100 dark:hover:bg-gray-700',
                 {
                   'pointer-events-none opacity-25': !next,
                 },
@@ -283,7 +283,7 @@ export function CompetitionGroupContainer({
             <LinkComponent
               to={prevUrl || ''}
               className={classNames(
-                'my-1 flex w-full justify-end rounded-md border border-tertiary-weak p-2 px-2 transition-colors',
+                'my-1 flex w-full justify-end rounded-md border border-tertiary-weak p-2 px-2 hover-transition',
                 {
                   'pointer-events-none opacity-25': !prev,
                   'group cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700': prev,
@@ -295,7 +295,7 @@ export function CompetitionGroupContainer({
             <LinkComponent
               to={nextUrl || ''}
               className={classNames(
-                'group my-1 flex w-full rounded-md border border-tertiary-weak p-2 px-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700',
+                'group my-1 flex w-full rounded-md border border-tertiary-weak p-2 px-2 hover-transition hover:bg-gray-100 dark:hover:bg-gray-700',
                 {
                   'pointer-events-none opacity-25': !next,
                 },
@@ -371,7 +371,7 @@ export function CompetitionGroupContainer({
                         <LinkComponent
                           key={person.registrantId}
                           to={`/competitions/${competitionId}/persons/${person.registrantId}`}
-                          className="col-span-1 p-1 transition-colors duration-150 hover:bg-gray-100 hover:opacity-80 dark:text-white dark:hover:bg-gray-700">
+                          className="col-span-1 p-1 hover-transition hover:bg-gray-100 hover:opacity-80 dark:text-white dark:hover:bg-gray-700">
                           {person.name}
                         </LinkComponent>
                       ))}

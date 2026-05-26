@@ -1,10 +1,12 @@
 import { Cutoff, Round, parseActivityCode } from '@wca/helpers';
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
 import { renderCentiseconds, renderCutoff } from '@/lib/results';
+import { getEventRoundsForRound, joinLabels } from '@/lib/roundLabels';
+import { CompatibleRound, getAdvancementConditionForRound, ResultCondition } from '@/lib/wcif';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export function CutoffTimeLimitPanel({
@@ -20,10 +22,17 @@ export function CutoffTimeLimitPanel({
   const cutoff = round.cutoff;
   const timeLimit = round.timeLimit;
   const timelimitTime = timeLimit && renderCentiseconds(timeLimit?.centiseconds);
+  const cumulativeRoundIds = getCumulativeRoundIds(timeLimit, round.id);
+  const eventRounds = useMemo(
+    () => getEventRoundsForRound(wcif?.events, round.id),
+    [round.id, wcif?.events],
+  );
+  const advancement = useMemo(
+    () => getAdvancementConditionForRound(eventRounds, round as CompatibleRound),
+    [eventRounds, round],
+  );
 
-  if (!timeLimit && !cutoff && !round.advancementCondition) return null;
-
-  const level = round.advancementCondition?.level;
+  if (!timeLimit && !cutoff && !advancement) return null;
 
   return (
     <div className={classNames('flex w-full', className)}>
@@ -44,8 +53,7 @@ export function CutoffTimeLimitPanel({
 
           {timeLimit &&
             timeLimit?.cumulativeRoundIds.length > 0 &&
-            timeLimit.cumulativeRoundIds.filter((activityCode) => activityCode !== round.id)
-              .length === 0 && (
+            cumulativeRoundIds.length === 0 && (
               <span className="px-2">
                 <Trans
                   i18nKey={'common.wca.cumulativeTimelimit'}
@@ -57,8 +65,7 @@ export function CutoffTimeLimitPanel({
 
           {timeLimit &&
             timeLimit?.cumulativeRoundIds.length > 0 &&
-            timeLimit.cumulativeRoundIds.filter((activityCode) => activityCode !== round.id)
-              .length > 0 && (
+            cumulativeRoundIds.length > 0 && (
               <div className="px-2">
                 <span>
                   <Trans
@@ -66,55 +73,27 @@ export function CutoffTimeLimitPanel({
                     values={{ time: timelimitTime }}
                     components={{ b: <span className="font-semibold" /> }}
                   />
-                  {timeLimit.cumulativeRoundIds
-                    .filter((activityCode) => activityCode !== round.id)
-                    .map((activityCode, i, arry) => {
-                      const { eventId, roundNumber } = parseActivityCode(activityCode);
-                      return (
-                        <Link
-                          key={activityCode}
-                          to={`/competitions/${wcif?.id}/events/${activityCode}`}>
-                          <span
-                            className={`cubing-icon event-${eventId} mx-1 before:-ml-1 before:mr-2`}>
-                            {t('common.activityCodeToName.round', { roundNumber })}
-                            {i < arry.length - 1 ? ', ' : ''}
-                          </span>
-                        </Link>
-                      );
-                    })}
+                  {cumulativeRoundIds.map((activityCode, i, arry) => {
+                    const { eventId, roundNumber } = parseActivityCode(activityCode);
+                    return (
+                      <Link
+                        key={activityCode}
+                        to={`/competitions/${wcif?.id}/events/${activityCode}`}>
+                        <span
+                          className={`cubing-icon event-${eventId} mx-1 before:-ml-1 before:mr-2`}>
+                          {t('common.activityCodeToName.round', { roundNumber })}
+                          {i < arry.length - 1 ? ', ' : ''}
+                        </span>
+                      </Link>
+                    );
+                  })}
                 </span>
               </div>
             )}
         </div>
-        {round.advancementCondition && (
-          <div>
-            {round.advancementCondition.type === 'ranking' && (
-              <div className="px-2">
-                <Trans
-                  i18nKey={'common.wca.advancement.ranking'}
-                  values={{ level }}
-                  components={{ b: <span className="font-semibold" /> }}
-                />
-              </div>
-            )}
-            {round.advancementCondition.type === 'percent' && (
-              <div className="px-2">
-                <Trans
-                  i18nKey={'common.wca.advancement.percent'}
-                  values={{ level }}
-                  components={{ b: <span className="font-semibold" /> }}
-                />
-              </div>
-            )}
-            {round.advancementCondition.type === 'attemptResult' && (
-              <div className="px-2">
-                <Trans
-                  i18nKey={'common.wca.advancement.attemptResult'}
-                  values={{ level }}
-                  components={{ b: <span className="font-semibold" /> }}
-                />
-              </div>
-            )}
+        {advancement && (
+          <div className="px-2">
+            {renderAdvancementText(t, eventRounds, advancement.sourceType, advancement)}
           </div>
         )}
       </div>
@@ -123,6 +102,110 @@ export function CutoffTimeLimitPanel({
       </div>
     </div>
   );
+}
+
+function getCumulativeRoundIds(timeLimit: Round['timeLimit'], roundId: string) {
+  return timeLimit?.cumulativeRoundIds.filter((activityCode) => activityCode !== roundId) || [];
+}
+
+function renderAdvancementText(
+  t: ReturnType<typeof useTranslation>['t'],
+  eventRounds: CompatibleRound[],
+  sourceType: 'registrations' | 'round' | 'linkedRounds',
+  advancement: NonNullable<ReturnType<typeof getAdvancementConditionForRound>>,
+) {
+  if (sourceType === 'linkedRounds') {
+    return renderLinkedRoundsAdvancementText(t, eventRounds, advancement);
+  }
+
+  return renderSingleRoundAdvancementText(t, eventRounds, advancement);
+}
+
+function renderLinkedRoundsAdvancementText(
+  t: ReturnType<typeof useTranslation>['t'],
+  eventRounds: CompatibleRound[],
+  advancement: NonNullable<ReturnType<typeof getAdvancementConditionForRound>>,
+) {
+  const { resultCondition } = advancement;
+  const sourceRoundNames = advancement.sourceRoundIds.map((roundId) => {
+    const roundNumber = parseActivityCode(roundId).roundNumber;
+    return roundNumber ? roundNumber.toString() : '';
+  });
+  const sourceRoundsLabel = joinLabels(sourceRoundNames);
+  const targetLabel = getAdvancementTargetLabel(t, eventRounds, advancement.targetRoundId);
+
+  switch (resultCondition.type) {
+    case 'ranking':
+      return t('common.wca.advancement.linkedRanking', {
+        level: resultCondition.value,
+        rounds: sourceRoundsLabel,
+        what: targetLabel,
+      });
+    case 'percent':
+      return t('common.wca.advancement.linkedPercent', {
+        level: resultCondition.value,
+        rounds: sourceRoundsLabel,
+        what: targetLabel,
+      });
+    case 'resultAchieved':
+      return t('common.wca.advancement.linkedResultAchieved', {
+        scope: t(`common.wca.advancement.scope.${resultCondition.scope}`),
+        result:
+          resultCondition.value === null
+            ? t('common.wca.advancement.resultThresholdUnknown')
+            : renderCentiseconds(resultCondition.value),
+        rounds: sourceRoundsLabel,
+        what: targetLabel,
+      });
+  }
+}
+
+function renderSingleRoundAdvancementText(
+  t: ReturnType<typeof useTranslation>['t'],
+  eventRounds: CompatibleRound[],
+  advancement: NonNullable<ReturnType<typeof getAdvancementConditionForRound>>,
+) {
+  const { resultCondition } = advancement;
+  const targetLabel = getAdvancementTargetLabel(t, eventRounds, advancement.targetRoundId);
+
+  switch (resultCondition.type) {
+    case 'ranking':
+      return t('common.wca.advancement.ranking', {
+        level: resultCondition.value,
+        what: targetLabel,
+      });
+    case 'percent':
+      return t('common.wca.advancement.percent', {
+        level: resultCondition.value,
+        what: targetLabel,
+      });
+    case 'resultAchieved':
+      return t('common.wca.advancement.resultAchieved', {
+        scope: t(`common.wca.advancement.scope.${resultCondition.scope}`),
+        result:
+          resultCondition.value === null
+            ? t('common.wca.advancement.resultThresholdUnknown')
+            : renderCentiseconds(resultCondition.value),
+        what: targetLabel,
+      });
+  }
+}
+
+function getAdvancementTargetLabel(
+  t: ReturnType<typeof useTranslation>['t'],
+  eventRounds: CompatibleRound[],
+  targetRoundId: string | null | undefined,
+) {
+  if (!targetRoundId) {
+    return t('common.wca.advancement.unknown');
+  }
+
+  const targetRoundIndex = eventRounds.findIndex((candidate) => candidate.id === targetRoundId);
+  if (targetRoundIndex === eventRounds.length - 1) {
+    return t('common.wca.advancement.final');
+  }
+
+  return t('common.wca.advancement.nextRound');
 }
 
 function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {

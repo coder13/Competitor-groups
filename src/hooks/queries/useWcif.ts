@@ -21,7 +21,10 @@ export const useWcif = (competitionId?: string) =>
         queryClient
           .getQueryData<InfiniteData<CondensedApiCompetiton[]>>(['upcomingCompetitions'])
           ?.pages?.flat() || [];
-      const myUpcomingComps = queryClient?.getQueryData<UserCompsResponse>(['userCompetitions']);
+      const myUpcomingComps = queryClient
+        ?.getQueriesData<UserCompsResponse>({ queryKey: ['userCompetitions'] })
+        .map(([, data]) => data)
+        .find(Boolean);
 
       const allComps = [
         ...upcomingComps,

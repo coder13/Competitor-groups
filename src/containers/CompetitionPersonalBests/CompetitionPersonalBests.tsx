@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { Container } from '@/components/Container';
 import { PersonalBestsContainer } from '@/containers/PersonalBests';
+import { PersonalPageLayout } from '@/containers/PersonalSchedule/PersonalPageLayout';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export interface CompetitionPersonalBestsContainerProps {
@@ -26,8 +26,8 @@ export function CompetitionPersonalBestsContainer({
   }
 
   return (
-    <Container>
+    <PersonalPageLayout activePage="records" competitionId={wcif.id} person={person}>
       <PersonalBestsContainer wcif={wcif} person={person} />
-    </Container>
+    </PersonalPageLayout>
   );
 }

@@ -31,9 +31,20 @@ common:
     cumulativeTimelimit: 'Time Limit: <b>{{time}} Cumulative</b>'
     cumulativeTimelimitWithrounds: 'Time Limit: <b>{{time}} Total</b> with: '
     advancement:
-      ranking: 'Top <b>{{level}}</b> to next round'
-      percent: 'Top <b>{{level}}%</b> to next round'
+      ranking: 'Top {{level}} advance to {{what}}'
+      percent: 'Top {{level}}% advance to {{what}}'
+      linkedRanking: 'Top {{level}} in dual rounds {{rounds}} advance to {{what}}'
+      linkedPercent: 'Top {{level}}% in dual rounds {{rounds}} advance to {{what}}'
       attemptResult: Result better than <b>{level}</b> advances to next round. Minimum of 25% of competitors must be eliminated.
+      resultAchieved: '{{scope}} < {{result}} advance to {{what}}; minimum of 25% of competitors must be eliminated'
+      linkedResultAchieved: '{{scope}} < {{result}} in dual rounds {{rounds}} advance to {{what}}; minimum of 25% of competitors must be eliminated'
+      resultThresholdUnknown: an unknown result
+      nextRound: next round
+      final: final
+      unknown: unknown
+      scope:
+        single: Singles
+        average: Averages
     resultType:
       single: single
       average: Average
@@ -128,6 +139,7 @@ common:
   loading: 'Loading...'
   search: 'Search'
   view: 'View'
+  close: Close
   name: Name
   stage: Stage
   login: 'Login'
@@ -143,8 +155,12 @@ header:
     events: 'Events'
     schedule: 'Schedule'
     rankings: 'Rankings'
+    results: 'Results'
     scramblers: 'Scramblers'
     stream: 'Stream'
+    admin: 'Admin'
+    sumOfRanks: 'Sum of Rankings'
+    stats: 'Stats'
 home:
   subtitle: 'Learn all you need about your WCA competition assignments!'
   explanation: 'Note: This site is a convenience tool for organizers, delegates, and competitors. It uses scheduled data, so check with organizers for the latest details. Start and end times may change.'
@@ -180,10 +196,33 @@ competition:
   rankings:
     title: Rankings
     name: Name
+  results:
+    title: Results
+    seeResults: See Results
+    back: Back
+    roundNotFound: Round not found.
+    noResults: No results yet.
+    rank: '#'
+    competitor: Competitor
+    average: Avg
+    best: Best
+    attempts: Attempts
+    unknownCompetitor: 'Competitor #{{personId}}'
+    allResults: All results
+    viewLiveResults: View live results
+    liveResultsDelayNote: Data is pulled from WCA Live and may be delayed.
+  personalResults:
+    eventResults: Event results
+  round:
+    linkedWith: 'Dual round with {{rounds}}'
   personalSchedule:
+    schedule: Schedule
+    results: Results
+    records: Records
     registeredEvents: Registered Events
     viewPersonalRecords: View Personal Records
     viewResults: View Results
+    viewWcaLiveResults: View WCA Live Results
     noAssignments:
       line1: No Assignments
       line2: Check back later for updates!

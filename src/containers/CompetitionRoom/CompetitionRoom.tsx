@@ -150,7 +150,7 @@ export function CompetitionRoomContainer({
         <div className="flex flex-row justify-between">
           <LinkComponent
             to={`/competitions/${competitionId}/rooms`}
-            className="group my-1 flex w-full cursor-pointer flex-row rounded-md border border-primary bg-primary p-2 px-1 transition-colors hover:bg-primary-strong">
+            className="group my-1 flex w-full cursor-pointer flex-row rounded-md border border-primary bg-primary p-2 px-1 hover-transition hover:bg-primary-strong">
             {t('competition.room.back')}
           </LinkComponent>
         </div>

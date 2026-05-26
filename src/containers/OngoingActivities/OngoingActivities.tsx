@@ -19,20 +19,13 @@ export const OngoingActivities = ({ competitionId }: OngoingActivitiesProps) => 
   );
 
   if (!ongoingActivities?.length) {
-    const subject = `[${wcif?.shortName}]%20NotifyComp%20Support%20Request`;
-    const body = `Hello, I am a ${
-      roles?.some((i) => i.includes('delegate')) ? 'delegate' : 'organizer'
-    } for ${wcif?.shortName} and I would like to learn more about live activity support.`;
-
     return isInChargeOfComp && wcif?.id ? (
       <div className="py-2">
-        <a
-          className="border border-assignment-competitor rounded-md p-2 px-1 flex cursor-pointer hover:bg-assignment-competitor-muted group transition-colors flex-row"
-          href={`mailto:support@notifycomp.com?subject=${subject}&body=${body}`}
-          target="_blank"
-          rel="noreferrer">
-          Elevate your competition, learn about live activity support
-        </a>
+        <Link
+          className="border border-assignment-competitor rounded-md p-2 px-1 flex cursor-pointer hover:bg-assignment-competitor-muted group hover-transition flex-row"
+          to="/live-activities">
+          Learn how to use Live Activities for this competition
+        </Link>
       </div>
     ) : null;
   }

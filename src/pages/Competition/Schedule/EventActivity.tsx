@@ -291,7 +291,7 @@ export function EventActivity({
             <LinkComponent
               to={prevUrl || ''}
               className={classNames(
-                'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer transition-colors my-1 justify-end',
+                'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer hover-transition my-1 justify-end',
                 {
                   'pointer-events-none opacity-25': !prev,
                   'hover:bg-gray-100 dark:hover:bg-gray-700 group cursor-pointer': prev,
@@ -303,7 +303,7 @@ export function EventActivity({
             <LinkComponent
               to={nextUrl || ''}
               className={classNames(
-                'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors my-1',
+                'w-full border border-tertiary-weak rounded-md p-2 px-2 flex cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-700 hover-transition my-1',
                 {
                   'pointer-events-none opacity-25': !next,
                   'hover:bg-gray-100 dark:hover:bg-gray-700 group': next,

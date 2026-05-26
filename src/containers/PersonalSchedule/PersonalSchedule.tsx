@@ -3,26 +3,22 @@ import { useTranslation } from 'react-i18next';
 import { DisclaimerText } from '@/components';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { Assignments } from './Assignments';
-import { PersonHeader } from './PersonHeader';
+import { PersonalPageLayout } from './PersonalPageLayout';
 
 export interface PersonalScheduleContainerProps {
   person: Person;
 }
 
-export function PersonalScheduleContainer({ person }: PersonalScheduleContainerProps) {
+export function PersonalScheduleContent({ person }: PersonalScheduleContainerProps) {
   const { t } = useTranslation();
 
-  const { wcif, competitionId } = useWCIF();
+  const { wcif } = useWCIF();
 
   const anyAssignmentsHasStationNumber = !!person.assignments?.some((a) => a.stationNumber);
 
   return (
-    <div className="flex flex-col pt-1 type-body">
-      <PersonHeader competitionId={competitionId} person={person} />
-
-      <hr className="my-2 border-tertiary-weak" />
+    <>
       <DisclaimerText className="mx-1" />
-      <hr className="my-2 border-tertiary-weak" />
 
       {wcif && (
         <>
@@ -40,6 +36,16 @@ export function PersonalScheduleContainer({ person }: PersonalScheduleContainerP
           )}
         </>
       )}
-    </div>
+    </>
+  );
+}
+
+export function PersonalScheduleContainer({ person }: PersonalScheduleContainerProps) {
+  const { competitionId } = useWCIF();
+
+  return (
+    <PersonalPageLayout activePage="schedule" competitionId={competitionId} person={person}>
+      <PersonalScheduleContent person={person} />
+    </PersonalPageLayout>
   );
 }

@@ -20,7 +20,7 @@ export const CompetitorListItem = ({
 
   return (
     <Link key={person.registrantId} to={`persons/${person.registrantId}`}>
-      <li className="border border-tertiary-weak bg-panel list-none rounded-md flex justify-between cursor-pointer hover:table-bg-row-hover group transition-colors my-1 flex-row min-h-[40px] items-center text-gray-900 dark:text-white type-body">
+      <li className="border border-tertiary-weak bg-panel list-none rounded-md flex justify-between cursor-pointer hover:table-bg-row-hover group hover-transition my-1 flex-row min-h-[40px] items-center text-gray-900 dark:text-white type-body">
         <div className="flex space-x-1">
           {highlight && (
             <div className="flex flex-shrink">
@@ -42,19 +42,21 @@ export const CompetitorListItem = ({
             )}
           </div>
         </div>
-        {bookmarked && !currentAssignmentCode && (
-          <div className="flex items-center flex-shrink px-2 type-title">
-            <span className="text-yellow-500 fa fa-bookmark" />
-          </div>
-        )}
-        {currentAssignmentCode ? (
-          <AssignmentCodeCell
-            as="div"
-            className="p-1 type-body-sm text-muted rounded-md"
-            assignmentCode={currentAssignmentCode}
-            grammar="verb"
-          />
-        ) : null}
+        <div className="flex mr-2 space-x-2">
+          {currentAssignmentCode ? (
+            <AssignmentCodeCell
+              as="div"
+              className="px-1 rounded-[3px] type-body-sm text-muted" //  border radius 3px
+              assignmentCode={currentAssignmentCode}
+              grammar="verb"
+            />
+          ) : null}
+          {bookmarked && !currentAssignmentCode && (
+            <div className="flex items-center flex-shrink type-title">
+              <span className="text-[1.25rem] text-yellow-500 text-md fa fa-bookmark" />
+            </div>
+          )}
+        </div>
       </li>
     </Link>
   );

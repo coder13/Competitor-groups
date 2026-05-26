@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
 import { useCompetition } from '@/hooks/queries/useCompetition';
+import { UserCompsResponse } from '@/lib/api';
+import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { useAuth } from '@/providers/AuthProvider';
 import { useWCIF } from '@/providers/WCIFProvider';
 
@@ -30,13 +32,15 @@ export default function Header() {
     const upcomingCompetitions = queryClient.getQueryData<{ pages: CondensedApiCompetiton[][] }>([
       'upcomingCompetitions',
     ]);
-    const myCompetitions = queryClient.getQueryData<{ pages: CondensedApiCompetiton[][] }>([
-      'userCompetitions',
-    ]);
+    const myCompetitions = queryClient
+      .getQueriesData<UserCompsResponse>({ queryKey: ['userCompetitions'] })
+      .map(([, data]) => data)
+      .find(Boolean);
 
     const allCompetitions = [
       ...(upcomingCompetitions?.pages?.flat() || []),
-      ...(myCompetitions?.pages?.flat() || []),
+      ...(myCompetitions?.upcoming_competitions || []),
+      ...(myCompetitions?.ongoing_competitions || []),
     ];
 
     const competition = allCompetitions?.find((c) => c.id === competitionId);
@@ -73,6 +77,11 @@ export default function Header() {
             <div
               className="z-50 mt-2 border-2 shadow-xl bg-panel border-tertiary-weak"
               onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+              {FEATURE_FLAGS.personalUserPage && (
+                <Link to="/me" className="block w-32 px-3 py-2 link-inline hover-bg-tertiary">
+                  My profile
+                </Link>
+              )}
               <Link to="/settings" className="block w-32 px-3 py-2 link-inline hover-bg-tertiary">
                 Settings
               </Link>

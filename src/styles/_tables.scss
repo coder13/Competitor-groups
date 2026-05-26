@@ -141,7 +141,7 @@
   }
 
   .table-row-hover-bg {
-    @apply transition-colors cursor-pointer;
+    @apply hover-transition cursor-pointer;
   }
 
   .table-row-hover-bg:hover {

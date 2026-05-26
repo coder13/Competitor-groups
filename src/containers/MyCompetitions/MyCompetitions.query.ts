@@ -5,9 +5,9 @@ import { fetchUserWithCompetitions, UserCompsResponse } from '@/lib/api';
 import { FIVE_MINUTES } from '@/lib/constants';
 import { getLocalStorage, setLocalStorage } from '@/lib/localStorage';
 
-export const useMyCompetitionsQuery = (userId?: number) => {
+export const useMyCompetitionsQuery = (userId?: number, options: { enabled?: boolean } = {}) => {
   const { data, ...props } = useQuery<UserCompsResponse, string>({
-    queryKey: ['userCompetitions'],
+    queryKey: ['userCompetitions', userId],
     queryFn: async () => {
       const res = await fetchUserWithCompetitions(userId!.toString());
 
@@ -16,10 +16,15 @@ export const useMyCompetitionsQuery = (userId?: number) => {
 
       return res;
     },
+    staleTime: FIVE_MINUTES,
     gcTime: FIVE_MINUTES,
-    enabled: !!userId,
+    enabled: Boolean(userId && (options.enabled ?? true)),
     initialData: () => {
       const user = JSON.parse(getLocalStorage('user') || 'null') as User;
+      if (user?.id !== userId) {
+        return undefined;
+      }
+
       const upcoming_competitions = JSON.parse(
         getLocalStorage('my.upcoming_competitions') || '[]',
       ) as ApiCompetition[];

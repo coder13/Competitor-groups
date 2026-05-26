@@ -118,6 +118,9 @@ header:
     rankings: 'Classements'
     scramblers: 'Mélangeurs'
     stream: 'Stream'
+    admin: 'Admin'
+    sumOfRanks: 'Somme des classements'
+    stats: 'Stats'
 home:
   subtitle: 'Apprenez tout ce que vous devez savoir sur les tâches qui vous ont été attribuées aux compétitions WCA !'
   explanation: 'Remarque : Ce site web est un outil pratique pour les organisateurs, délégués et compétiteurs. Les informations fournies sont basées sur le planning prévisionnel. Pensez à consulter régulièrement la page de la compétition pour obtenir les informations les plus récentes. Les horaires de début et de fin peuvent varier.'
