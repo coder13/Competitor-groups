@@ -1,0 +1,67 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: deploy-pr
+  cancel-in-progress: false
+
+jobs:
+  create-deploy-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create or update deploy PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          git fetch origin main beta
+
+          if [ -z "$(git log --oneline origin/main..origin/beta)" ]; then
+            echo "No commits to deploy from beta to main."
+            exit 0
+          fi
+
+          compare_url="${{ github.server_url }}/${{ github.repository }}/compare/main...beta"
+          recent_commits="$(git log --oneline --max-count=25 origin/main..origin/beta)"
+          existing_pr="$(gh pr list --base main --head beta --state open --json number --jq '.[0].number')"
+          body_file="$(mktemp)"
+
+          {
+            echo "## Summary"
+            echo
+            echo "Deploy the current \`beta\` branch to production by merging it into \`main\`."
+            echo
+            echo "Compare: ${compare_url}"
+            echo
+            echo "## Commits"
+            echo
+            echo "\`\`\`"
+            echo "${recent_commits}"
+            echo "\`\`\`"
+          } > "${body_file}"
+
+          if [ -n "${existing_pr}" ]; then
+            gh pr edit "${existing_pr}" \
+              --title "Deploy beta to production" \
+              --body-file "${body_file}"
+            echo "Updated existing deploy PR #${existing_pr}."
+            exit 0
+          fi
+
+          gh pr create \
+            --draft \
+            --base main \
+            --head beta \
+            --title "Deploy beta to production" \
+            --body-file "${body_file}"
