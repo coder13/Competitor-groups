@@ -25,22 +25,22 @@ jobs:
         run: |
           set -euo pipefail
 
-          git fetch origin main production
+          git fetch origin main beta
 
-          if [ -z "$(git log --oneline origin/production..origin/main)" ]; then
-            echo "No commits to deploy from main to production."
+          if [ -z "$(git log --oneline origin/main..origin/beta)" ]; then
+            echo "No commits to deploy from beta to main."
             exit 0
           fi
 
-          compare_url="${{ github.server_url }}/${{ github.repository }}/compare/production...main"
-          recent_commits="$(git log --oneline --max-count=25 origin/production..origin/main)"
-          existing_pr="$(gh pr list --base production --head main --state open --json number --jq '.[0].number')"
+          compare_url="${{ github.server_url }}/${{ github.repository }}/compare/main...beta"
+          recent_commits="$(git log --oneline --max-count=25 origin/main..origin/beta)"
+          existing_pr="$(gh pr list --base main --head beta --state open --json number --jq '.[0].number')"
           body_file="$(mktemp)"
 
           {
             echo "## Summary"
             echo
-            echo "Deploy the current \`main\` branch to \`production\`."
+            echo "Deploy the current \`beta\` branch to production by merging it into \`main\`."
             echo
             echo "Compare: ${compare_url}"
             echo
@@ -53,7 +53,7 @@ jobs:
 
           if [ -n "${existing_pr}" ]; then
             gh pr edit "${existing_pr}" \
-              --title "Deploy main to production" \
+              --title "Deploy beta to production" \
               --body-file "${body_file}"
             echo "Updated existing deploy PR #${existing_pr}."
             exit 0
@@ -61,7 +61,7 @@ jobs:
 
           gh pr create \
             --draft \
-            --base production \
-            --head main \
-            --title "Deploy main to production" \
+            --base main \
+            --head beta \
+            --title "Deploy beta to production" \
             --body-file "${body_file}"
