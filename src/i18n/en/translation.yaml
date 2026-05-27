@@ -132,8 +132,8 @@ common:
   stage: Stage
   login: 'Login'
 appUpdate:
-  title: 'New version ready'
-  description: 'Refresh to get the latest fixes and schedule updates.'
+  title: 'New update available!'
+  description: 'Refresh to get the latest version of the app.'
   action: 'Refresh now'
 header:
   login: $t(common.login)
