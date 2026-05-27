@@ -26,7 +26,7 @@ export default function LiveActivitiesAbout() {
   }, []);
 
   return (
-    <Container className="px-4 py-8">
+    <Container className="min-h-0 flex-1 overflow-y-auto px-4 py-8">
       <div className="space-y-8">
         <section className="space-y-4">
           <div className="space-y-2">
