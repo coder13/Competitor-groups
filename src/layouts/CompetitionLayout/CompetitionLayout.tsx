@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Outlet, useLocation, useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
-import { ErrorFallback, LastFetchedAt, NoteBox } from '@/components';
+import { ErrorFallback, LastFetchedAt, NoteBox, NotifyCompRemoteBar } from '@/components';
 import { Container } from '@/components/Container';
 import { StyledNavLink } from '@/components/StyledNavLink/StyledNavLink';
 import { useWcif } from '@/hooks/queries/useWcif';
@@ -20,7 +20,7 @@ export function CompetitionLayout() {
 
   const { data: wcif, dataUpdatedAt, isFetching } = useWcif(competitionId!);
 
-  const tabs = useCompetitionLayoutTabs({
+  const { tabs } = useCompetitionLayoutTabs({
     competitionId: competitionId!,
     wcif: wcif,
   });
@@ -39,6 +39,7 @@ export function CompetitionLayout() {
               className={classNames({
                 'hidden md:block': i.hiddenOnMobile,
               })}
+              end={i.end}
               to={i.href}
               text={i.text}
             />
@@ -65,7 +66,7 @@ export function CompetitionLayout() {
         )}
         {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
         <div
-          className="flex flex-col w-full items-center overflow-y-auto [scrollbar-gutter:stable;]"
+          className="flex flex-1 flex-col w-full items-center overflow-y-auto [scrollbar-gutter:stable;]"
           ref={ref}>
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <Outlet />
@@ -80,6 +81,7 @@ export function CompetitionLayout() {
             </Container>
           )}
         </div>
+        {competitionId && <NotifyCompRemoteBar competitionId={competitionId} />}
       </div>
     </WCIFProvider>
   );

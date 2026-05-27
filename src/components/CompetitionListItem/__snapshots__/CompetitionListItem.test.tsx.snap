@@ -7,7 +7,7 @@ exports[`CompetitionListItem matches snapshot (default) 1`] = `
       href="/competitions/123"
     >
       <li
-        class="link-card list-none flex flex-row cursor-pointer group transition-colors my-1 type-body opacity-50"
+        class="link-card list-none flex flex-row cursor-pointer group hover-transition my-1 type-body opacity-50"
       >
         <div
           class="flex flex-shrink mr-2 type-title"
@@ -50,7 +50,7 @@ exports[`CompetitionListItem renders with all props (live and bookmarked) 1`] = 
       href="/competitions/123"
     >
       <li
-        class="link-card list-none flex flex-row cursor-pointer group transition-colors my-1 type-body opacity-50"
+        class="link-card list-none flex flex-row cursor-pointer group hover-transition my-1 type-body opacity-50"
       >
         <div
           class="flex flex-shrink mr-2 type-title"

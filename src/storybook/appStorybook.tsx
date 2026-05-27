@@ -21,6 +21,7 @@ const competitionsQueryDocument = gql`
 `;
 
 interface AppStorybookOptions {
+  configureQueryClient?: (queryClient: QueryClient) => void;
   currentUser?: User | null;
   online?: boolean;
   pinnedCompetitions?: ApiCompetition[];
@@ -43,6 +44,7 @@ interface AppStorybookOptions {
 type AppStorybookParameters = AppStorybookOptions;
 
 const buildStorybookQueryClient = ({
+  configureQueryClient,
   competitionDetails,
   currentUser,
   userCompetitions,
@@ -57,7 +59,7 @@ const buildStorybookQueryClient = ({
   });
 
   if (currentUser && userCompetitions) {
-    queryClient.setQueryData(['userCompetitions'], {
+    queryClient.setQueryData(['userCompetitions', currentUser.id], {
       user: currentUser,
       upcoming_competitions: userCompetitions.upcoming_competitions,
       ongoing_competitions: userCompetitions.ongoing_competitions,
@@ -75,10 +77,13 @@ const buildStorybookQueryClient = ({
     } satisfies InfiniteData<CondensedApiCompetiton[], number>);
   }
 
+  configureQueryClient?.(queryClient);
+
   return queryClient;
 };
 
 function AppStorybookProviders({
+  configureQueryClient,
   currentUser,
   online,
   pinnedCompetitions,
@@ -92,11 +97,18 @@ function AppStorybookProviders({
     () =>
       buildStorybookQueryClient({
         competitionDetails,
+        configureQueryClient,
         currentUser,
         userCompetitions,
         upcomingCompetitionsPages,
       }),
-    [competitionDetails, currentUser, upcomingCompetitionsPages, userCompetitions],
+    [
+      competitionDetails,
+      configureQueryClient,
+      currentUser,
+      upcomingCompetitionsPages,
+      userCompetitions,
+    ],
   );
 
   const competitionMocks = useMemo(
@@ -257,6 +269,7 @@ export const storybookUpcomingCompetitionsPages: CondensedApiCompetiton[][] = [
 
 export const makeAppContainerDecorator = ({
   currentUser = storybookAppUser,
+  configureQueryClient,
   online = true,
   pinnedCompetitions = storybookPinnedCompetitions,
   competitionDetails = storybookPinnedCompetitions,
@@ -270,6 +283,7 @@ export const makeAppContainerDecorator = ({
     return (
       <AppStorybookProviders
         currentUser={parameters.currentUser ?? currentUser}
+        configureQueryClient={parameters.configureQueryClient || configureQueryClient}
         online={parameters.online ?? online}
         pinnedCompetitions={parameters.pinnedCompetitions || pinnedCompetitions}
         competitionDetails={parameters.competitionDetails || competitionDetails}

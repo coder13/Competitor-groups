@@ -16,6 +16,17 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
   const { t } = useTranslation();
   const { effectiveTheme } = useUserSettings();
   const isDark = effectiveTheme === 'dark';
+  const colors = {
+    controlBackground: isDark ? '#1f2937' : '#ffffff',
+    optionBackground: isDark ? '#1f2937' : '#ffffff',
+    optionFocusedBackground: isDark ? '#374151' : '#e5e7eb',
+    optionSelectedBackground: isDark ? '#1e3a8a' : '#dbeafe',
+    text: isDark ? '#ffffff' : '#111827',
+    mutedText: isDark ? '#9ca3af' : '#4b5563',
+    border: isDark ? '#374151' : '#e5e7eb',
+    menuBorder: isDark ? '#4b5563' : '#cbd5e1',
+    focusBorder: isDark ? '#60a5fa' : '#3b82f6',
+  };
 
   const loadOptions = useDebounced(async (inputValue: string) => {
     try {
@@ -58,7 +69,7 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
     dropdownIndicator: (state) =>
       ['text-muted', state.isFocused ? 'text-blue-600 dark:text-blue-400' : ''].join(' '),
     clearIndicator: () => 'text-muted hover-text-tertiary',
-    menu: () => 'bg-panel border border-tertiary-weak shadow-md',
+    menu: () => 'bg-panel border border-tertiary-weak shadow-md dropdown-open-transition',
     menuList: () => 'bg-panel',
     option: (state) =>
       [
@@ -72,37 +83,54 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
   const styles: StylesConfig<ApiCompetition, false> = {
     control: (base, state) => ({
       ...base,
-      backgroundColor: 'transparent',
-      borderColor: state.isFocused ? (isDark ? '#60a5fa' : '#3b82f6') : base.borderColor,
-      boxShadow: state.isFocused ? `0 0 0 1px ${isDark ? '#60a5fa' : '#3b82f6'}` : 'none',
+      backgroundColor: colors.controlBackground,
+      borderColor: state.isFocused ? colors.focusBorder : colors.border,
+      boxShadow: state.isFocused ? `0 0 0 1px ${colors.focusBorder}` : 'none',
       ':hover': {
         ...base[':hover'],
-        borderColor: state.isFocused ? (isDark ? '#60a5fa' : '#3b82f6') : base.borderColor,
+        borderColor: state.isFocused ? colors.focusBorder : colors.border,
       },
     }),
     menu: (base) => ({
       ...base,
-      backgroundColor: 'transparent',
+      backgroundColor: colors.optionBackground,
+      border: `1px solid ${colors.menuBorder}`,
+      boxShadow: '0 16px 36px rgba(15, 23, 42, 0.38)',
+      overflow: 'hidden',
+      zIndex: 1000,
     }),
     menuList: (base) => ({
       ...base,
-      backgroundColor: 'transparent',
+      backgroundColor: colors.optionBackground,
+      paddingBottom: 0,
+      paddingTop: 0,
     }),
-    option: (base) => ({
+    option: (base, state) => ({
       ...base,
-      backgroundColor: 'transparent',
+      backgroundColor: state.isSelected
+        ? colors.optionSelectedBackground
+        : state.isFocused
+          ? colors.optionFocusedBackground
+          : colors.optionBackground,
+      color: colors.text,
+      cursor: 'pointer',
+      padding: 0,
+      ':active': {
+        ...base[':active'],
+        backgroundColor: colors.optionSelectedBackground,
+      },
     }),
     input: (base) => ({
       ...base,
-      color: isDark ? '#ffffff' : '#111827', // gray-900
+      color: colors.text,
     }),
     singleValue: (base) => ({
       ...base,
-      color: isDark ? '#ffffff' : '#111827', // gray-900
+      color: colors.text,
     }),
     placeholder: (base) => ({
       ...base,
-      color: isDark ? '#9ca3af' : '#4b5563', // dark: gray-400, light: gray-600
+      color: colors.mutedText,
     }),
   };
 
@@ -113,7 +141,9 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
       cacheOptions
       loadOptions={loadOptions}
       placeholder={t('common.competitionSelect.placeholder')}
-      noOptionsMessage={() => t('common.competitionSelect.noOptions')}
+      noOptionsMessage={({ inputValue }) =>
+        inputValue.trim() ? t('common.competitionSelect.noOptions') : null
+      }
       components={{
         Option: CompetitionOption,
       }}
@@ -125,7 +155,7 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
 };
 
 export const CompetitionOption = ({ data }: OptionProps<ApiCompetition>) => {
-  return <CompetitionListItem {...data} isLive={false} />;
+  return <CompetitionListItem {...data} isLive={false} variant="dropdown" />;
 };
 
 function useDebounced<Input, Output>(

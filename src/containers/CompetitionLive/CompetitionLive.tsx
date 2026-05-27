@@ -1,4 +1,4 @@
-import { Container } from '@/components/Container';
+import { Container, NotifyCompConnectionStatus } from '@/components';
 import { LiveActivities } from '@/containers/LiveActivities';
 
 export interface CompetitionLiveContainerProps {
@@ -12,6 +12,7 @@ export function CompetitionLiveContainer({ competitionId }: CompetitionLiveConta
         <i className="fa fa-tower-broadcast mr-1 text-green-500 type-heading" />
         <span className="type-heading">Live Activities </span>
       </div>
+      <NotifyCompConnectionStatus className="mx-2" />
       <LiveActivities competitionId={competitionId} />
     </Container>
   );

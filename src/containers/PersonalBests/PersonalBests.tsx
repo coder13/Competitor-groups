@@ -1,10 +1,7 @@
 import { Competition, Person } from '@wca/helpers';
-import { hasFlag } from 'country-flag-icons';
-import getUnicodeFlagIcon from 'country-flag-icons/unicode';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { LinkButton } from '@/components/LinkButton';
 import { eventNameById } from '@/lib/events';
 import { renderResultByEventId } from '@/lib/results';
 import { Ranking } from './Ranking';
@@ -19,26 +16,6 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
 
   return (
     <>
-      <div className="flex items-center justify-between px-1 text-gray-900 min-h-10 dark:text-white">
-        <div className="flex items-center flex-shrink w-full space-x-1">
-          {hasFlag(person.countryIso2) && (
-            <div className="flex flex-shrink mx-1 type-body sm:type-heading">
-              {getUnicodeFlagIcon(person.countryIso2)}
-            </div>
-          )}
-          <h3 className="type-heading sm:type-title">{person.name}</h3>
-        </div>
-        <a
-          className="w-48 font-mono text-blue-600 type-body sm:type-heading hover:underline dark:text-blue-400"
-          href={`https://www.worldcubeassociation.org/persons/${person.wcaId}`}
-          target="_blank"
-          rel="noreferrer">
-          {person.wcaId}
-          <i className="ml-2 fa fa-solid fa-arrow-up-right-from-square" />
-        </a>
-      </div>
-      <hr className="my-2 border-tertiary-weak" />
-
       <table className="w-full type-body-sm">
         <thead className="bg-assignment-competitor shadow-md dark:shadow-none">
           <tr className="text-assignment-competitor">
@@ -115,14 +92,6 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
             })}
         </tbody>
       </table>
-      <br />
-      <div className="flex px-1">
-        <LinkButton
-          variant="blue"
-          title={t('competition.personalRecords.viewSchedule')}
-          to={`/competitions/${wcif.id}/persons/${person.registrantId}`}
-        />
-      </div>
     </>
   );
 }

@@ -28,6 +28,9 @@ export default defineConfig({
     ViteYaml(),
     VitePWA({
       registerType: 'prompt',
+      workbox: {
+        importScripts: ['notification-sw.js'],
+      },
     }),
   ],
   build: {

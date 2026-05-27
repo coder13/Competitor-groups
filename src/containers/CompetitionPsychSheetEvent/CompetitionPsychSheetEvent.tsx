@@ -128,7 +128,7 @@ export function CompetitionPsychSheetEventContainer({
                 <LinkComponent
                   key={person.registrantId}
                   className={classNames(
-                    'contents [&>span]:transition-colors',
+                    'contents [&>span]:hover-transition',
                     isOdd ? '[&>span]:table-bg-row-alt-secondary' : '[&>span]:table-bg-row',
                     '[&:hover>span]:table-bg-row-hover-secondary',
                   )}

@@ -5,7 +5,9 @@ import client from './apolloClient';
 import { usePageTracking } from './hooks/usePageTracking';
 import { CompetitionLayout } from './layouts/CompetitionLayout';
 import { RootLayout } from './layouts/RootLayout';
+import { FEATURE_FLAGS } from './lib/featureFlags';
 import About from './pages/About';
+import CompetitionAdmin from './pages/Competition/Admin';
 import CompetitionEvents from './pages/Competition/ByGroup/Events';
 import CompetitionGroup from './pages/Competition/ByGroup/Group';
 import CompetitionGroupList from './pages/Competition/ByGroup/GroupList';
@@ -18,6 +20,8 @@ import CompetitionLive from './pages/Competition/Live';
 import CompetitionPerson from './pages/Competition/Person';
 import CompetitionPersonalBests from './pages/Competition/Person/PersonalBests';
 import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
+import CompetitionRemote from './pages/Competition/Remote';
+import CompetitionResults from './pages/Competition/Results';
 import {
   CompetitionActivity,
   CompetitionRoom,
@@ -27,13 +31,18 @@ import {
 import CompetitionScramblerSchedule from './pages/Competition/ScramblerSchedule';
 import CompetitionStats from './pages/Competition/Stats';
 import CompetitionStreamSchedule from './pages/Competition/StreamSchedule';
+import CompetitionSumOfRanks from './pages/Competition/SumOfRanks';
 import Home from './pages/Home';
+import LiveActivitiesAbout from './pages/LiveActivities/About';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
 import Test from './pages/Test';
+import UserPage from './pages/User';
 import UserLogin from './pages/UserLogin';
 import { AppProvider } from './providers/AppProvider';
 import { AuthProvider, useAuth } from './providers/AuthProvider';
+import { ConfirmProvider } from './providers/ConfirmProvider';
+import { NotifyCompRemoteAuthProvider } from './providers/NotifyCompRemoteAuthProvider';
 import { QueryProvider } from './providers/QueryProvider/QueryProvider';
 import { UserSettingsProvider } from './providers/UserSettingsProvider';
 import { useWCIF } from './providers/WCIFProvider';
@@ -79,6 +88,30 @@ const PsychSheet = () => {
   return null;
 };
 
+const CompetitionPersonByWcaIdRedirect = ({ to }: { to: 'results' | 'records' }) => {
+  const { competitionId, wcaId } = useParams() as { competitionId: string; wcaId: string };
+  const { wcif } = useWCIF();
+  const person = wcif?.persons.find((p) => p.wcaId?.toUpperCase() === wcaId.toUpperCase());
+
+  if (!wcif) {
+    return null;
+  }
+
+  if (!person) {
+    return <Navigate to={`/competitions/${competitionId}`} replace />;
+  }
+
+  return (
+    <Navigate to={`/competitions/${competitionId}/persons/${person.registrantId}/${to}`} replace />
+  );
+};
+
+const CompetitionRedirect = ({ to }: { to: string }) => {
+  const { competitionId } = useParams() as { competitionId: string };
+
+  return <Navigate to={`/competitions/${competitionId}/${to}`} replace />;
+};
+
 const Navigation = () => {
   usePageTracking(import.meta.env.VITE_GA_MEASUREMENT_ID);
 
@@ -90,7 +123,15 @@ const Navigation = () => {
         <Route path="/competitions/:competitionId" element={<CompetitionLayout />}>
           <Route index element={<CompetitionHome />} />
 
-          <Route path="persons/:registrantId" element={<CompetitionPerson />} />
+          <Route
+            path="persons/wca/:wcaId/results"
+            element={<CompetitionPersonByWcaIdRedirect to="results" />}
+          />
+          <Route
+            path="persons/wca/:wcaId/records"
+            element={<CompetitionPersonByWcaIdRedirect to="records" />}
+          />
+          <Route path="persons/:registrantId/*" element={<CompetitionPerson />} />
           <Route path="personal-bests/:wcaId" element={<CompetitionPersonalBests />} />
           <Route path="personal-records/:wcaId" element={<CompetitionPersonalBests />} />
           <Route path="compare-schedules" element={<CompetitionCompareSchedules />} />
@@ -106,8 +147,16 @@ const Navigation = () => {
 
           <Route path="psych-sheet" element={<PsychSheet />} />
           <Route path="psych-sheet/:eventId" element={<PsychSheetEvent />} />
+          <Route path="results" element={<CompetitionResults />} />
+          <Route path="results/:roundId" element={<CompetitionResults />} />
 
-          <Route path="scramblers" element={<CompetitionScramblerSchedule />} />
+          <Route path="admin" element={<CompetitionAdmin />} />
+          <Route path="admin/remote" element={<CompetitionRemote />} />
+          <Route path="admin/scramblers" element={<CompetitionScramblerSchedule />} />
+          <Route path="admin/stats" element={<CompetitionStats />} />
+          <Route path="admin/sum-of-ranks" element={<CompetitionSumOfRanks />} />
+          <Route path="remote" element={<CompetitionRedirect to="admin/remote" />} />
+          <Route path="scramblers" element={<CompetitionRedirect to="admin/scramblers" />} />
           <Route path="stream" element={<CompetitionStreamSchedule />} />
           <Route path="information" element={<CompetitionInformation />} />
           <Route path="live" element={<CompetitionLive />} />
@@ -116,11 +165,23 @@ const Navigation = () => {
           <Route path="personal-schedule" element={<PersonalSchedule />} />
           <Route path="explore" element={<CompetitionGroupsOverview />} />
           <Route path="groups-schedule" element={<CompetitionGroupsSchedule />} />
-          <Route path="stats" element={<CompetitionStats />} />
+          <Route path="stats" element={<CompetitionRedirect to="admin/stats" />} />
+          <Route path="sum-of-ranks" element={<CompetitionRedirect to="admin/sum-of-ranks" />} />
           <Route path="*" element={<p>Path not resolved</p>} />
         </Route>
         <Route path="/users/:userId" element={<UserLogin />} />
+        {FEATURE_FLAGS.personalUserPage && (
+          <>
+            <Route path="/me" element={<Navigate to="/me/competitions" replace />} />
+            <Route
+              path="/me/results/:resultsMode"
+              element={<Navigate to="/me/results" replace />}
+            />
+            <Route path="/me/:tab" element={<UserPage />} />
+          </>
+        )}
         <Route path="about" element={<About />} />
+        <Route path="live-activities" element={<LiveActivitiesAbout />} />
         <Route path="settings" element={<Settings />} />
         <Route path="support" element={<Support />} />
       </Route>
@@ -136,9 +197,13 @@ const App = () => (
       <QueryProvider>
         <ApolloProvider client={client}>
           <BrowserRouter>
-            <AuthProvider>
-              <Navigation />
-            </AuthProvider>
+            <ConfirmProvider>
+              <AuthProvider>
+                <NotifyCompRemoteAuthProvider>
+                  <Navigation />
+                </NotifyCompRemoteAuthProvider>
+              </AuthProvider>
+            </ConfirmProvider>
           </BrowserRouter>
         </ApolloProvider>
       </QueryProvider>

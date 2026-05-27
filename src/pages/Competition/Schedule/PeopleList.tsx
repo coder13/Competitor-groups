@@ -95,7 +95,7 @@ export const PeopleList = ({
                           <LinkComponent
                             key={person.registrantId}
                             className={classNames(
-                              'table-row cursor-pointer transition-colors',
+                              'table-row cursor-pointer hover-transition',
                               'type-body',
                               index % 2 === 0 ? colorClasses.tableRow : colorClasses.tableRowAlt,
                               `hover:${colorClasses.tableRowHover}`,
@@ -113,7 +113,7 @@ export const PeopleList = ({
                       <LinkComponent
                         key={person.registrantId}
                         className={classNames(
-                          'p-2 py-2.5 block cursor-pointer transition-colors',
+                          'p-2 py-2.5 block cursor-pointer hover-transition',
                           'type-body',
                           index % 2 === 0 ? colorClasses.tableRow : colorClasses.tableRowAlt,
                           `hover:${colorClasses.tableRowHover}`,

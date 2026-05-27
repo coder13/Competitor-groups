@@ -21,29 +21,26 @@ export function CompetitionStatsContainer() {
   const acceptedRegistrationsCount = acceptedRegistrations?.length || 0;
 
   return (
-    <Container className="space-y-2 p-2">
-      <div className="type-heading flex justify-evenly">
+    <Container className="space-y-4 p-2">
+      <div className="grid grid-cols-2 gap-2 type-heading">
         <StatsBox title="Competitors" value={acceptedRegistrationsCount} />
         <StatsBox title="Events" value={eventCount} />
       </div>
-      <hr />
-      <div
-        className="grid w-full"
-        style={{
-          gridTemplateColumns: `repeat(${eventCount}, 1fr)`,
-        }}>
-        {wcif?.events?.map(({ id }) => (
-          <span key={id} className={`cubing-icon event-${id} mx-1 type-body`} />
-        ))}
-        {wcif?.events?.map(({ id }) => (
-          <span key={id} className="type-body-sm text-center">
-            {
-              acceptedRegistrations?.filter(({ registration }) =>
-                registration?.eventIds.includes(id),
-              ).length
-            }
-          </span>
-        ))}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+        {wcif?.events?.map(({ id }) => {
+          const registrationCount =
+            acceptedRegistrations?.filter(({ registration }) => registration?.eventIds.includes(id))
+              .length ?? 0;
+
+          return (
+            <div
+              key={id}
+              className="flex items-center justify-between gap-2 rounded-md border border-tertiary-weak bg-panel px-3 py-2 shadow-sm">
+              <span className={`cubing-icon event-${id} shrink-0 type-body`} />
+              <span className="type-label text-default">{registrationCount}</span>
+            </div>
+          );
+        })}
       </div>
     </Container>
   );
