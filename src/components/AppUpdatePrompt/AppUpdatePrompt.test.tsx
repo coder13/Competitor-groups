@@ -14,10 +14,9 @@ describe('AppUpdatePrompt', () => {
     const onUpdate = jest.fn();
 
     const messages: Record<string, string> = {
-      'appUpdate.title': 'Update available',
-      'appUpdate.description':
-        'A new version of the app is ready. Update to load the latest cached files.',
-      'appUpdate.action': 'Update app',
+      'appUpdate.title': 'New version ready',
+      'appUpdate.description': 'Refresh to get the latest fixes and schedule updates.',
+      'appUpdate.action': 'Refresh now',
     };
 
     jest.mocked(useTranslation).mockReturnValue({
@@ -28,9 +27,9 @@ describe('AppUpdatePrompt', () => {
 
     render(<AppUpdatePrompt onUpdate={onUpdate} />);
 
-    expect(screen.getByRole('heading', { name: /update available/i })).toBeVisible();
+    expect(screen.getByRole('heading', { name: /new version ready/i })).toBeVisible();
 
-    await user.click(screen.getByRole('button', { name: /update app/i }));
+    await user.click(screen.getByRole('button', { name: /refresh now/i }));
 
     expect(onUpdate).toHaveBeenCalledTimes(1);
   });
