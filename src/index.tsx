@@ -6,6 +6,8 @@ import './i18n';
 import reportWebVitals from './reportWebVitals';
 import './styles/index.scss';
 
+console.log(`Competition Groups commit: ${__GIT_COMMIT__}`);
+
 const container = document.getElementById('root');
 if (!container) throw new Error('Failed to find the root element');
 const root = createRoot(container);
