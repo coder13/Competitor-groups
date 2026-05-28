@@ -7,6 +7,7 @@ import { useWCIF } from '@/providers/WCIFProvider';
 const adminDescriptions: Record<string, string> = {
   scramblers: 'View scrambler assignments by event and round.',
   remote: 'Control Live Activities updates for the competition.',
+  webhooks: 'Send Live Activities updates to external services.',
   'sum-of-ranks': 'Review competitor rankings across completed rounds.',
   stats: 'View competition registration and event counts.',
 };

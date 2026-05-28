@@ -71,12 +71,20 @@ export const useCompetitionLayoutTabs = ({ competitionId, wcif }: CompetitionLay
     }
 
     if (canManageRemote) {
-      _adminTabs.push({
-        href: `/competitions/${competitionId}/admin/remote`,
-        text: t('header.tabs.remote', {
-          defaultValue: 'Remote',
-        }),
-      });
+      _adminTabs.push(
+        {
+          href: `/competitions/${competitionId}/admin/remote`,
+          text: t('header.tabs.remote', {
+            defaultValue: 'Remote',
+          }),
+        },
+        {
+          href: `/competitions/${competitionId}/admin/webhooks`,
+          text: t('header.tabs.webhooks', {
+            defaultValue: 'Webhooks',
+          }),
+        },
+      );
     }
 
     if (hasStream) {

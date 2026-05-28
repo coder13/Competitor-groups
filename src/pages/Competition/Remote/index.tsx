@@ -2,13 +2,11 @@ import classNames from 'classnames';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
-import {
-  Button,
-  Container,
-  NoteBox,
-  NotifyCompConnectionStatus,
-  RemoteActivitySummaryList,
-} from '@/components';
+import { Button } from '@/components/Button';
+import { Container } from '@/components/Container';
+import { NoteBox } from '@/components/Notebox';
+import { NotifyCompConnectionStatus } from '@/components/NotifyCompConnectionStatus';
+import { RemoteActivitySummaryList } from '@/components/RemoteActivitySummaryList';
 import { useCompetitionRemoteControl } from '@/hooks/useCompetitionRemoteControl';
 import { useNotifyCompWebSocketStatus } from '@/hooks/useNotifyCompWebSocketStatus';
 import { isCompetitionDayOrAfter } from '@/lib/competitionDates';
@@ -166,7 +164,24 @@ export default function CompetitionRemote() {
           <>
             {remote.isLoading && <BarLoader width="100%" />}
             {remote.error && <NoteBox prefix="Remote error" text={remote.error} />}
-            {remote.competition && <NotifyCompConnectionStatus />}
+            {remote.competition && (
+              <div className="space-y-4">
+                <NotifyCompConnectionStatus />
+                <div className="flex flex-wrap items-center justify-between gap-4 rounded-md border border-tertiary-weak bg-panel p-4">
+                  <div className="space-y-1">
+                    <h2 className="type-label">Webhooks</h2>
+                    <p className="type-body-sm text-subtle">
+                      Configure external Live Activities update webhooks on a separate page.
+                    </p>
+                  </div>
+                  <Link
+                    to={`/competitions/${competitionId}/admin/webhooks`}
+                    className="btn btn-gray inline-flex shrink-0">
+                    Manage webhooks
+                  </Link>
+                </div>
+              </div>
+            )}
 
             {!remote.isLoading && !remote.competition ? (
               <div className="space-y-4">
