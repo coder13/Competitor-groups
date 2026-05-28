@@ -25,12 +25,18 @@ export const useMyCompetitionsQuery = (userId?: number, options: { enabled?: boo
         return undefined;
       }
 
-      const upcoming_competitions = JSON.parse(
-        getLocalStorage('my.upcoming_competitions') || '[]',
-      ) as ApiCompetition[];
-      const ongoing_competitions = JSON.parse(
-        getLocalStorage('my.ongoing_competitions') || '[]',
-      ) as ApiCompetition[];
+      const rawUpcomingCompetitions = getLocalStorage('my.upcoming_competitions');
+      const rawOngoingCompetitions = getLocalStorage('my.ongoing_competitions');
+      if (!rawUpcomingCompetitions && !rawOngoingCompetitions) {
+        return undefined;
+      }
+
+      const upcoming_competitions = JSON.parse(rawUpcomingCompetitions || '[]') as ApiCompetition[];
+      const ongoing_competitions = JSON.parse(rawOngoingCompetitions || '[]') as ApiCompetition[];
+
+      if (!upcoming_competitions.length && !ongoing_competitions.length) {
+        return undefined;
+      }
 
       return { user: user, upcoming_competitions, ongoing_competitions };
     },

@@ -84,7 +84,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
       return;
     }
 
-    fetchMe(accessToken)
+    fetchMe(accessToken, {
+      upcoming_competitions: true,
+      ongoing_competitions: true,
+    })
       .then(({ me, ongoing_competitions, upcoming_competitions }) => {
         setLocalStorage('accessToken', accessToken);
         setLocalStorage(
@@ -92,6 +95,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
           String(Date.now() + Number(hashParams.get('expires_in') ?? 0) * 1000),
         );
         setUserAndSave(me);
+        setLocalStorage('my.upcoming_competitions', JSON.stringify(upcoming_competitions || []));
+        setLocalStorage('my.ongoing_competitions', JSON.stringify(ongoing_competitions || []));
         queryClient.setQueryData(['userCompetitions', me.id], {
           user: me,
           ongoing_competitions,
