@@ -11,6 +11,7 @@ const NOTIFY_COMP_ORIGIN =
 const NOTIFY_COMP_TOKEN_URL = '/.netlify/functions/notify-comp-token';
 const ENABLED_STORAGE_KEY = 'assignmentNotifications.enabled';
 const SERVICE_WORKER_TIMEOUT_MS = 10000;
+const INVALID_PUSH_SESSION_STATUSES = new Set([401, 403, 404, 410]);
 
 interface PushSubscriptionJson {
   endpoint?: string;
@@ -42,6 +43,14 @@ const notifyCompUrl = (path: string) => `${NOTIFY_COMP_ORIGIN}${path}`;
 
 export const isAssignmentNotificationsEnabled = () =>
   Boolean(getNotifyCompPushSessionToken()) || getLocalStorage(ENABLED_STORAGE_KEY) === 'true';
+
+const clearAssignmentNotificationState = () => {
+  clearNotifyCompPushSessionToken();
+  deleteLocalStorage(ENABLED_STORAGE_KEY);
+};
+
+const isInvalidPushSessionResponse = (response: Response) =>
+  INVALID_PUSH_SESSION_STATUSES.has(response.status);
 
 const toUint8Array = (base64: string) => {
   const padding = '='.repeat((4 - (base64.length % 4)) % 4);
@@ -172,6 +181,12 @@ const getPushSubscription = async () => {
   });
 };
 
+const unsubscribePushSubscription = async () => {
+  const registration = await getServiceWorkerRegistration();
+  const subscription = await registration.pushManager.getSubscription();
+  await subscription?.unsubscribe();
+};
+
 const pushSubscriptionPayload = (subscription: PushSubscription): PushSubscriptionPayload => {
   const payload = subscription.toJSON() as PushSubscriptionJson;
 
@@ -204,7 +219,7 @@ const registerLegacySubscription = async (
   });
 
   if (!response.ok) {
-    deleteLocalStorage(ENABLED_STORAGE_KEY);
+    clearAssignmentNotificationState();
     throw new Error(await readErrorMessage(response));
   }
 };
@@ -232,16 +247,14 @@ const createPushSession = async (
   }
 
   if (!response.ok) {
-    clearNotifyCompPushSessionToken();
-    deleteLocalStorage(ENABLED_STORAGE_KEY);
+    clearAssignmentNotificationState();
     throw new Error(await readErrorMessage(response));
   }
 
   const session = (await response.json()) as PushSessionResponse;
   const sessionToken = session.sessionToken || session.token;
   if (!sessionToken) {
-    clearNotifyCompPushSessionToken();
-    deleteLocalStorage(ENABLED_STORAGE_KEY);
+    clearAssignmentNotificationState();
     throw new Error('NotifyComp push session response was missing a session token.');
   }
 
@@ -265,7 +278,7 @@ const updatePushSession = async (
     }),
   });
 
-  if (response.status === 401 || response.status === 403) {
+  if (isInvalidPushSessionResponse(response)) {
     clearNotifyCompPushSessionToken();
     return false;
   }
@@ -337,8 +350,7 @@ export const disableAssignmentNotifications = async () => {
   const sessionToken = getNotifyCompPushSessionToken();
 
   if (!subscription) {
-    clearNotifyCompPushSessionToken();
-    deleteLocalStorage(ENABLED_STORAGE_KEY);
+    clearAssignmentNotificationState();
     return;
   }
 
@@ -351,6 +363,29 @@ export const disableAssignmentNotifications = async () => {
   }
 
   await subscription.unsubscribe();
-  clearNotifyCompPushSessionToken();
-  deleteLocalStorage(ENABLED_STORAGE_KEY);
+  clearAssignmentNotificationState();
+};
+
+export const testAssignmentNotifications = async () => {
+  const sessionToken = getNotifyCompPushSessionToken();
+  if (!sessionToken) {
+    throw new Error('Enable assignment notifications before sending a test notification.');
+  }
+
+  const response = await fetch(notifyCompUrl('/v0/external/push/sessions/current/test'), {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (isInvalidPushSessionResponse(response)) {
+    clearAssignmentNotificationState();
+    await unsubscribePushSubscription().catch(() => undefined);
+  }
+
+  if (!response.ok) {
+    throw new Error(await readErrorMessage(response));
+  }
 };
