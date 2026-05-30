@@ -13,6 +13,7 @@ interface CompetitionListFragmentProps {
   loading: boolean;
   liveCompetitionIds: string[];
   lastFetchedAt?: number;
+  showWhenEmpty?: boolean;
 }
 
 export function CompetitionListFragment({
@@ -21,11 +22,12 @@ export function CompetitionListFragment({
   loading,
   liveCompetitionIds,
   lastFetchedAt,
+  showWhenEmpty = false,
 }: CompetitionListFragmentProps) {
   const { t } = useTranslation();
   const { pinnedCompetitions } = usePinnedCompetitions();
 
-  if (!competitions.length && !loading) {
+  if (!showWhenEmpty && !competitions.length && !loading) {
     return null;
   }
 
