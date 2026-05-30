@@ -20,7 +20,7 @@ export const events: {
   { id: '333bf', name: '3x3x3 Blindfolded', shortName: '3BLD' },
   { id: '333fm', name: '3x3x3 Fewest Moves', shortName: 'FMC' },
   { id: '333oh', name: '3x3x3 One-Handed', shortName: '3OH' },
-  { id: 'minx', name: 'Megaminx', shortName: 'Minx' },
+  { id: 'minx', name: 'Megaminx', shortName: 'Mega' },
   { id: 'pyram', name: 'Pyraminx', shortName: 'Pyra' },
   { id: 'clock', name: 'Clock', shortName: 'Clock' },
   { id: 'skewb', name: 'Skewb', shortName: 'Skewb' },
