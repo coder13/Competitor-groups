@@ -1,38 +1,16 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { trackCompetitionEvent } from '@/lib/analytics';
+import { competitionPageName } from '@/lib/analyticsPages';
 import { useAuth } from '@/providers/AuthProvider';
 import { usePageActivityTracking } from '../usePageActivityTracking';
 
-const competitionPageName = (pathname: string, competitionId: string) => {
-  const competitionRoot = `/competitions/${competitionId}`;
-  const relativePath = pathname.replace(competitionRoot, '') || '/';
-
-  if (relativePath === '/') {
-    return 'groups';
-  }
-
-  if (relativePath.startsWith('/activities') || relativePath.startsWith('/rooms')) {
-    return 'schedule';
-  }
-
-  if (relativePath === '/live' || relativePath === '/admin/remote') {
-    return 'live_activities';
-  }
-
-  if (relativePath === '/admin/scramblers') {
-    return 'assignments';
-  }
-
-  return relativePath.replace(/^\//, '').replace(/\//g, '_') || 'competition';
-};
-
-const pageViewEventName = (page: string) => {
+const featureViewEventName = (page: string) => {
   if (page === 'groups') {
     return 'groups_viewed';
   }
 
-  if (page === 'schedule') {
+  if (page === 'schedule' || page === 'schedule_activity') {
     return 'schedule_viewed';
   }
 
@@ -78,12 +56,12 @@ export const useCompetitionAnalytics = (competitionId?: string) => {
       return;
     }
 
-    const eventName = pageViewEventName(page);
+    const eventName = featureViewEventName(page);
     if (!eventName) {
       return;
     }
 
-    const eventKey = `${competitionId}:${location.pathname}:${eventName}`;
+    const eventKey = `${competitionId}:${location.pathname}${location.search}:${eventName}`;
     if (lastPageEventKey.current === eventKey) {
       return;
     }
@@ -95,7 +73,7 @@ export const useCompetitionAnalytics = (competitionId?: string) => {
       user_id: user?.id,
     });
     lastPageEventKey.current = eventKey;
-  }, [competitionId, location.pathname, page, user?.id]);
+  }, [competitionId, location.pathname, location.search, page, user?.id]);
 
   usePageActivityTracking({
     competitionId,
