@@ -29,7 +29,11 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
   const notifyCompWebSocketStatus = useNotifyCompWebSocketStatus();
   const now = useNow();
 
-  if (!remote.isAuthenticated || !remote.competition || remote.scheduledActivities.length === 0) {
+  if (
+    !remote.isAuthenticated ||
+    !remote.isCompetitionImported ||
+    remote.scheduledActivities.length === 0
+  ) {
     return null;
   }
 
@@ -50,7 +54,9 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
   });
   const activeActivities = remote.activeGroups.flatMap((group) => group.scheduledActivities);
   const controlsDisabled =
-    remote.isSaving || !canUseNotifyCompRemoteControls(notifyCompWebSocketStatus.status);
+    remote.isLoading ||
+    remote.isSaving ||
+    !canUseNotifyCompRemoteControls(notifyCompWebSocketStatus.status);
 
   const confirmNextGroup = (group: RemoteActivityGroup) =>
     confirm({
