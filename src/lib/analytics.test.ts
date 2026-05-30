@@ -1,4 +1,6 @@
 import {
+  __resetAnalyticsForTests,
+  configureUmamiAnalytics,
   identifyUser,
   isValidEventName,
   loadUmamiScript,
@@ -8,6 +10,7 @@ import {
 
 describe('analytics', () => {
   beforeEach(() => {
+    __resetAnalyticsForTests();
     document.head.innerHTML = '';
     window.umami = undefined;
   });
@@ -34,6 +37,37 @@ describe('analytics', () => {
 
   it('no-ops when Umami is not available', () => {
     expect(() => trackEvent('competition_viewed')).not.toThrow();
+  });
+
+  it('flushes route events that fire before the Umami script loads', () => {
+    configureUmamiAnalytics({
+      src: 'https://analytics.example.com/script.js',
+      websiteId: 'website-id',
+    });
+
+    trackCompetitionEvent('competition_viewed', {
+      competitionId: 'ExampleComp2026',
+      page: 'groups',
+    });
+
+    loadUmamiScript({
+      src: 'https://analytics.example.com/script.js',
+      websiteId: 'website-id',
+    });
+
+    const track = jest.fn();
+    window.umami = { track };
+    document.querySelector('script')?.dispatchEvent(new Event('load'));
+
+    expect(track).toHaveBeenCalledWith(
+      'competition_viewed',
+      expect.objectContaining({
+        app: 'competitiongroups',
+        auth_status: 'anonymous',
+        competition_id: 'ExampleComp2026',
+        page: 'groups',
+      }),
+    );
   });
 
   it('tracks event data with shared app and auth properties', () => {
@@ -76,6 +110,30 @@ describe('analytics', () => {
     };
 
     identifyUser(123);
+
+    expect(identify).toHaveBeenCalledWith(
+      '123',
+      expect.objectContaining({
+        app: 'competitiongroups',
+        auth_status: 'logged_in',
+      }),
+    );
+  });
+
+  it('identifies logged-in users after the Umami script loads', () => {
+    loadUmamiScript({
+      src: 'https://analytics.example.com/script.js',
+      websiteId: 'website-id',
+    });
+
+    identifyUser(123);
+
+    const identify = jest.fn();
+    window.umami = {
+      identify,
+      track: jest.fn(),
+    };
+    document.querySelector('script')?.dispatchEvent(new Event('load'));
 
     expect(identify).toHaveBeenCalledWith(
       '123',

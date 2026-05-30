@@ -8,11 +8,19 @@ type UmamiTrack = {
     ((data: AnalyticsProperties) => void);
 };
 
+type PendingEvent = {
+  eventName: string;
+  properties?: AnalyticsProperties;
+};
+
 const APP_NAME = 'competitiongroups';
 const MAX_EVENT_NAME_LENGTH = 50;
+const MAX_PENDING_EVENTS = 50;
 const UMAMI_SCRIPT_ID = 'umami-analytics-script';
 
 let currentUserId: string | undefined;
+let pendingEvents: PendingEvent[] = [];
+let umamiConfigured = false;
 
 const getEnvironment = () => (typeof __APP_ENV__ === 'undefined' ? 'test' : __APP_ENV__);
 
@@ -67,6 +75,65 @@ const eventProperties = (properties: AnalyticsProperties = {}): AnalyticsPropert
 export const isValidEventName = (eventName: string) =>
   eventName.length > 0 && eventName.length <= MAX_EVENT_NAME_LENGTH;
 
+export const configureUmamiAnalytics = ({
+  src,
+  websiteId,
+}: {
+  src?: string;
+  websiteId?: string;
+} = {}) => {
+  umamiConfigured = Boolean(src && websiteId);
+};
+
+const sendEvent = (eventName: string, properties?: AnalyticsProperties) => {
+  const umami = getUmami();
+  if (!umami?.track) {
+    return false;
+  }
+
+  umami.track(eventName, eventProperties(properties));
+  return true;
+};
+
+const queueEvent = (eventName: string, properties?: AnalyticsProperties) => {
+  if (!umamiConfigured) {
+    return;
+  }
+
+  pendingEvents = [...pendingEvents.slice(-(MAX_PENDING_EVENTS - 1)), { eventName, properties }];
+};
+
+const identifyCurrentUser = () => {
+  const umami = getUmami();
+  if (!umami?.identify || !currentUserId) {
+    return false;
+  }
+
+  umami.identify(currentUserId, {
+    ...baseProperties(),
+    auth_status: 'logged_in',
+  });
+  return true;
+};
+
+const flushPendingEvents = () => {
+  if (!pendingEvents.length) {
+    identifyCurrentUser();
+    return;
+  }
+
+  const events = pendingEvents;
+  pendingEvents = [];
+
+  events.forEach(({ eventName, properties }) => {
+    if (!sendEvent(eventName, properties)) {
+      queueEvent(eventName, properties);
+    }
+  });
+
+  identifyCurrentUser();
+};
+
 export const loadUmamiScript = ({
   src,
   websiteId,
@@ -74,7 +141,14 @@ export const loadUmamiScript = ({
   src?: string;
   websiteId?: string;
 } = {}) => {
-  if (!isBrowser() || !src || !websiteId || document.getElementById(UMAMI_SCRIPT_ID)) {
+  if (!isBrowser() || !src || !websiteId) {
+    return;
+  }
+
+  configureUmamiAnalytics({ src, websiteId });
+
+  if (document.getElementById(UMAMI_SCRIPT_ID)) {
+    flushPendingEvents();
     return;
   }
 
@@ -83,21 +157,13 @@ export const loadUmamiScript = ({
   script.defer = true;
   script.src = src;
   script.dataset.websiteId = websiteId;
+  script.addEventListener('load', flushPendingEvents);
   document.head.appendChild(script);
 };
 
 export const identifyUser = (userId?: number | string | null) => {
   currentUserId = userId ? String(userId) : undefined;
-
-  const umami = getUmami();
-  if (!umami?.identify || !currentUserId) {
-    return;
-  }
-
-  umami.identify(currentUserId, {
-    ...baseProperties(),
-    auth_status: 'logged_in',
-  });
+  identifyCurrentUser();
 };
 
 export const trackEvent = (eventName: string, properties?: AnalyticsProperties) => {
@@ -108,12 +174,9 @@ export const trackEvent = (eventName: string, properties?: AnalyticsProperties) 
     return;
   }
 
-  const umami = getUmami();
-  if (!umami?.track) {
-    return;
+  if (!sendEvent(eventName, properties)) {
+    queueEvent(eventName, properties);
   }
-
-  umami.track(eventName, eventProperties(properties));
 };
 
 export const trackCompetitionEvent = (
@@ -133,3 +196,9 @@ declare global {
     umami?: UmamiTrack;
   }
 }
+
+export const __resetAnalyticsForTests = () => {
+  currentUserId = undefined;
+  pendingEvents = [];
+  umamiConfigured = false;
+};

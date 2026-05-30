@@ -1,19 +1,26 @@
 import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { useLocation } from 'react-router-dom';
-import { identifyUser, loadUmamiScript } from '@/lib/analytics';
+import { configureUmamiAnalytics, identifyUser, loadUmamiScript } from '@/lib/analytics';
 import { useAuth } from '@/providers/AuthProvider';
 
 export const usePageTracking = (trackingCode?: string) => {
   const location = useLocation();
   const { user } = useAuth();
+  const umamiSrc = import.meta.env.VITE_UMAMI_SRC;
+  const umamiWebsiteId = import.meta.env.VITE_UMAMI_WEBSITE_ID;
+
+  configureUmamiAnalytics({
+    src: umamiSrc,
+    websiteId: umamiWebsiteId,
+  });
 
   useEffect(() => {
     loadUmamiScript({
-      src: import.meta.env.VITE_UMAMI_SRC,
-      websiteId: import.meta.env.VITE_UMAMI_WEBSITE_ID,
+      src: umamiSrc,
+      websiteId: umamiWebsiteId,
     });
-  }, []);
+  }, [umamiSrc, umamiWebsiteId]);
 
   useEffect(() => {
     identifyUser(user?.id);
