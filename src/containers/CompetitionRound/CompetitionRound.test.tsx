@@ -57,6 +57,10 @@ jest.mock('react-i18next', () => ({
         return `Round ${options?.roundNumber}`;
       }
 
+      if (key === 'common.activityCodeToName.group') {
+        return `Group ${options?.groupNumber}`;
+      }
+
       return key;
     },
   }),
@@ -89,7 +93,15 @@ const linkedRoundsCompetition = {
           cutoff: null,
           timeLimit: null,
           advancementCondition: null,
-          results: [],
+          results: [
+            {
+              personId: 1,
+              ranking: 1,
+              attempts: [],
+              best: 1000,
+              average: 1200,
+            },
+          ],
         },
         {
           id: '333-r3',
@@ -195,9 +207,29 @@ describe('CompetitionRoundContainer', () => {
   it('links to results for the selected round', () => {
     renderRound('333-r2');
 
-    expect(screen.getByText('See Results')).toHaveAttribute(
-      'href',
-      '/competitions/TestComp2026/results/333-r2',
+    const resultsLink = screen.getByText('See Results');
+
+    expect(resultsLink).toHaveAttribute('href', '/competitions/TestComp2026/results/333-r2');
+    expect(screen.getByText('Group 1').compareDocumentPosition(resultsLink)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
     );
+  });
+
+  it('uses shared button spacing for the back link', () => {
+    renderRound('333-r2');
+
+    expect(screen.getByText('Back To Events')).toHaveClass('btn', 'btn-block');
+  });
+
+  it('shows when the selected round has results', () => {
+    renderRound('333-r2');
+
+    expect(screen.getByText('See Results')).toHaveClass('btn-green');
+  });
+
+  it('shows a neutral results link when the selected round has no results yet', () => {
+    renderRound('333-r3');
+
+    expect(screen.getByText('See Results')).toHaveClass('btn-light');
   });
 });

@@ -21,6 +21,7 @@ import CompetitionPerson from './pages/Competition/Person';
 import CompetitionPersonalBests from './pages/Competition/Person/PersonalBests';
 import { PsychSheetEvent } from './pages/Competition/PsychSheet/PsychSheetEvent';
 import CompetitionRemote from './pages/Competition/Remote';
+import CompetitionRemoteWebhooks from './pages/Competition/Remote/Webhooks';
 import CompetitionResults from './pages/Competition/Results';
 import {
   CompetitionActivity,
@@ -152,10 +153,12 @@ const Navigation = () => {
 
           <Route path="admin" element={<CompetitionAdmin />} />
           <Route path="admin/remote" element={<CompetitionRemote />} />
+          <Route path="admin/webhooks" element={<CompetitionRemoteWebhooks />} />
           <Route path="admin/scramblers" element={<CompetitionScramblerSchedule />} />
           <Route path="admin/stats" element={<CompetitionStats />} />
           <Route path="admin/sum-of-ranks" element={<CompetitionSumOfRanks />} />
           <Route path="remote" element={<CompetitionRedirect to="admin/remote" />} />
+          <Route path="webhooks" element={<CompetitionRedirect to="admin/webhooks" />} />
           <Route path="scramblers" element={<CompetitionRedirect to="admin/scramblers" />} />
           <Route path="stream" element={<CompetitionStreamSchedule />} />
           <Route path="information" element={<CompetitionInformation />} />

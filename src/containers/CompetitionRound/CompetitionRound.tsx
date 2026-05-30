@@ -60,6 +60,7 @@ export function CompetitionRoundContainer({
   const rounds = roundActivies.filter((ra) => toRoundAttemptId(ra.activityCode) === roundId);
   const groups = rounds.flatMap((r) => r.childActivities);
   const uniqueGroupCodes = [...new Set(groups.map((g) => g.activityCode))];
+  const hasResults = (round?.results.length ?? 0) > 0;
 
   return (
     <Container>
@@ -79,14 +80,6 @@ export function CompetitionRoundContainer({
             </p>
           )}
           {round && <CutoffTimeLimitPanel round={round} />}
-          {round && (
-            <LinkButton
-              to={`/competitions/${competitionId}/results/${roundId}`}
-              title={t('competition.results.seeResults')}
-              variant="light"
-              LinkComponent={LinkComponent}
-            />
-          )}
         </div>
       </div>
       <ul className="flex flex-col space-y-2 p-2">
@@ -111,12 +104,22 @@ export function CompetitionRoundContainer({
           );
         })}
       </ul>
+      {round && (
+        <div className="space-y-2 p-2">
+          <LinkButton
+            to={`/competitions/${competitionId}/results/${roundId}`}
+            title={t('competition.results.seeResults')}
+            variant={hasResults ? 'green' : 'light'}
+            LinkComponent={LinkComponent}
+          />
+        </div>
+      )}
       <div className="p-2">
-        <LinkComponent
+        <LinkButton
           to={`/competitions/${competitionId}/events/`}
-          className="my-1 flex w-full flex-row rounded-md border border-primary bg-primary p-2 px-1 hover-transition hover:bg-primary-strong group dark:text-gray-100">
-          {t('competition.groups.backToEvents')}
-        </LinkComponent>
+          title={t('competition.groups.backToEvents')}
+          LinkComponent={LinkComponent}
+        />
       </div>
     </Container>
   );

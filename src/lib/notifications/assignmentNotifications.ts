@@ -1,5 +1,10 @@
 import { deleteLocalStorage, getLocalStorage, setLocalStorage } from '@/lib/localStorage';
 import { getStoredWcaAccessToken } from '@/lib/wcaAccessToken';
+import {
+  clearNotifyCompPushSessionToken,
+  getNotifyCompPushSessionToken,
+  setNotifyCompPushSessionToken,
+} from './notifyCompPushSession';
 
 const NOTIFY_COMP_ORIGIN =
   import.meta.env.VITE_NOTIFY_COMP_ORIGIN ?? 'https://api.notifycomp.com/api';
@@ -15,6 +20,17 @@ interface PushSubscriptionJson {
   };
 }
 
+interface PushSessionResponse {
+  sessionToken?: string;
+  token?: string;
+}
+
+interface PushSubscriptionPayload {
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+}
+
 export interface AssignmentNotificationWatch {
   competitionId: string;
   wcaUserId: number;
@@ -25,7 +41,7 @@ export type AssignmentNotificationStatus = NotificationPermission | 'reauthorize
 const notifyCompUrl = (path: string) => `${NOTIFY_COMP_ORIGIN}${path}`;
 
 export const isAssignmentNotificationsEnabled = () =>
-  getLocalStorage(ENABLED_STORAGE_KEY) === 'true';
+  Boolean(getNotifyCompPushSessionToken()) || getLocalStorage(ENABLED_STORAGE_KEY) === 'true';
 
 const toUint8Array = (base64: string) => {
   const padding = '='.repeat((4 - (base64.length % 4)) % 4);
@@ -49,7 +65,7 @@ export const getAssignmentNotificationStatus = (): AssignmentNotificationStatus 
     return 'unsupported';
   }
 
-  if (!getStoredWcaAccessToken()) {
+  if (!getNotifyCompPushSessionToken() && !getStoredWcaAccessToken()) {
     return 'reauthorize';
   }
 
@@ -105,6 +121,9 @@ const fetchNotifyCompToken = async () => {
   return payload.token;
 };
 
+const canFallbackToLegacySubscriptions = (response: Response) =>
+  response.status === 404 || response.status === 405;
+
 const fetchVapidPublicKey = async () => {
   const response = await fetch(notifyCompUrl('/v0/external/push/vapid-public-key'));
 
@@ -153,30 +172,33 @@ const getPushSubscription = async () => {
   });
 };
 
-export const enableAssignmentNotifications = async (watches: AssignmentNotificationWatch[]) => {
-  const permission = await requestAssignmentNotificationPermission();
-  if (permission !== 'granted') {
-    return permission;
-  }
-
-  const token = await fetchNotifyCompToken();
-  const subscription = await getPushSubscription();
+const pushSubscriptionPayload = (subscription: PushSubscription): PushSubscriptionPayload => {
   const payload = subscription.toJSON() as PushSubscriptionJson;
 
   if (!payload.endpoint || !payload.keys?.p256dh || !payload.keys.auth) {
     throw new Error('Browser push subscription is missing required keys.');
   }
 
+  return {
+    auth: payload.keys.auth,
+    endpoint: payload.endpoint,
+    p256dh: payload.keys.p256dh,
+  };
+};
+
+const registerLegacySubscription = async (
+  authToken: string,
+  payload: PushSubscriptionPayload,
+  watches: AssignmentNotificationWatch[],
+) => {
   const response = await fetch(notifyCompUrl('/v0/external/push/subscriptions'), {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${authToken}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      endpoint: payload.endpoint,
-      p256dh: payload.keys.p256dh,
-      auth: payload.keys.auth,
+      ...payload,
       watches,
     }),
   });
@@ -185,34 +207,150 @@ export const enableAssignmentNotifications = async (watches: AssignmentNotificat
     deleteLocalStorage(ENABLED_STORAGE_KEY);
     throw new Error(await readErrorMessage(response));
   }
+};
+
+const createPushSession = async (
+  authToken: string,
+  payload: PushSubscriptionPayload,
+  watches: AssignmentNotificationWatch[],
+) => {
+  const response = await fetch(notifyCompUrl('/v0/external/push/sessions'), {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      ...payload,
+      watches,
+    }),
+  });
+
+  if (canFallbackToLegacySubscriptions(response)) {
+    await registerLegacySubscription(authToken, payload, watches);
+    return;
+  }
+
+  if (!response.ok) {
+    clearNotifyCompPushSessionToken();
+    deleteLocalStorage(ENABLED_STORAGE_KEY);
+    throw new Error(await readErrorMessage(response));
+  }
+
+  const session = (await response.json()) as PushSessionResponse;
+  const sessionToken = session.sessionToken || session.token;
+  if (!sessionToken) {
+    clearNotifyCompPushSessionToken();
+    deleteLocalStorage(ENABLED_STORAGE_KEY);
+    throw new Error('NotifyComp push session response was missing a session token.');
+  }
+
+  setNotifyCompPushSessionToken(sessionToken);
+};
+
+const updatePushSession = async (
+  sessionToken: string,
+  payload: PushSubscriptionPayload,
+  watches: AssignmentNotificationWatch[],
+) => {
+  const response = await fetch(notifyCompUrl('/v0/external/push/sessions/current'), {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      ...payload,
+      watches,
+    }),
+  });
+
+  if (response.status === 401 || response.status === 403) {
+    clearNotifyCompPushSessionToken();
+    return false;
+  }
+
+  if (!response.ok) {
+    throw new Error(await readErrorMessage(response));
+  }
+
+  return true;
+};
+
+export const enableAssignmentNotifications = async (watches: AssignmentNotificationWatch[]) => {
+  const permission = await requestAssignmentNotificationPermission();
+  if (permission !== 'granted') {
+    return permission;
+  }
+
+  const subscription = await getPushSubscription();
+  const payload = pushSubscriptionPayload(subscription);
+  const sessionToken = getNotifyCompPushSessionToken();
+
+  if (sessionToken && (await updatePushSession(sessionToken, payload, watches))) {
+    setLocalStorage(ENABLED_STORAGE_KEY, 'true');
+    return permission;
+  }
+
+  await createPushSession(await fetchNotifyCompToken(), payload, watches);
 
   setLocalStorage(ENABLED_STORAGE_KEY, 'true');
   return permission;
 };
 
+const deletePushSession = async (sessionToken: string, endpoint?: string) => {
+  const response = await fetch(notifyCompUrl('/v0/external/push/sessions/current'), {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ endpoint }),
+  });
+
+  if (
+    !response.ok &&
+    response.status !== 401 &&
+    response.status !== 403 &&
+    response.status !== 404
+  ) {
+    throw new Error(await readErrorMessage(response));
+  }
+};
+
+const deleteLegacySubscription = async (endpoint: string) => {
+  const token = await fetchNotifyCompToken();
+
+  await fetch(notifyCompUrl('/v0/external/push/subscriptions'), {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ endpoint }),
+  });
+};
+
 export const disableAssignmentNotifications = async () => {
   const registration = await getServiceWorkerRegistration();
   const subscription = await registration.pushManager.getSubscription();
+  const sessionToken = getNotifyCompPushSessionToken();
 
   if (!subscription) {
+    clearNotifyCompPushSessionToken();
     deleteLocalStorage(ENABLED_STORAGE_KEY);
     return;
   }
 
-  const token = await fetchNotifyCompToken();
   const payload = subscription.toJSON() as PushSubscriptionJson;
 
-  if (payload.endpoint) {
-    await fetch(notifyCompUrl('/v0/external/push/subscriptions'), {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ endpoint: payload.endpoint }),
-    });
+  if (sessionToken) {
+    await deletePushSession(sessionToken, payload.endpoint);
+  } else if (payload.endpoint) {
+    await deleteLegacySubscription(payload.endpoint);
   }
 
   await subscription.unsubscribe();
+  clearNotifyCompPushSessionToken();
   deleteLocalStorage(ENABLED_STORAGE_KEY);
 };

@@ -14,6 +14,26 @@ export interface NotifyCompCompetition {
   autoAdvanceDelay?: number | null;
 }
 
+export type HttpMethod = 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT';
+
+export interface NotifyCompWebhook {
+  id: number;
+  method: HttpMethod;
+  url: string;
+}
+
+export interface NotifyCompWebhookInput {
+  method: HttpMethod;
+  url: string;
+}
+
+export interface NotifyCompWebhookResponse {
+  body?: string | null;
+  status: number;
+  statusText: string;
+  url: string;
+}
+
 export const RemoteActivityFragment = gql`
   fragment RemoteActivityFragment on Activity {
     activityId
@@ -34,6 +54,23 @@ export const RemoteCompetitionDocument = gql`
   }
 `;
 
+export const RemoteWebhookFragment = gql`
+  fragment RemoteWebhookFragment on Webhook {
+    id
+    url
+    method
+  }
+`;
+
+export const RemoteWebhookResponseFragment = gql`
+  fragment RemoteWebhookResponseFragment on WebhookResponse {
+    url
+    status
+    statusText
+    body
+  }
+`;
+
 export const RemoteActivitiesDocument = gql`
   query RemoteActivities($competitionId: String!, $roomId: Int) {
     activities(competitionId: $competitionId, roomId: $roomId) {
@@ -43,6 +80,18 @@ export const RemoteActivitiesDocument = gql`
   ${RemoteActivityFragment}
 `;
 
+export const RemoteWebhooksDocument = gql`
+  query RemoteWebhooks($competitionId: String!) {
+    competition(competitionId: $competitionId) {
+      id
+      webhooks {
+        ...RemoteWebhookFragment
+      }
+    }
+  }
+  ${RemoteWebhookFragment}
+`;
+
 export const RemoteActivitiesSubscriptionDocument = gql`
   subscription RemoteActivities($competitionIds: [String!]!) {
     activity: activityUpdated(competitionIds: $competitionIds) {
@@ -50,6 +99,48 @@ export const RemoteActivitiesSubscriptionDocument = gql`
     }
   }
   ${RemoteActivityFragment}
+`;
+
+export const CreateRemoteWebhookDocument = gql`
+  mutation CreateRemoteWebhook($competitionId: String!, $webhook: WebhookInput!) {
+    createWebhook(competitionId: $competitionId, webhook: $webhook) {
+      ...RemoteWebhookFragment
+    }
+  }
+  ${RemoteWebhookFragment}
+`;
+
+export const UpdateRemoteWebhookDocument = gql`
+  mutation UpdateRemoteWebhook($id: Int!, $webhook: WebhookInput!) {
+    updateWebhook(id: $id, webhook: $webhook) {
+      ...RemoteWebhookFragment
+    }
+  }
+  ${RemoteWebhookFragment}
+`;
+
+export const DeleteRemoteWebhookDocument = gql`
+  mutation DeleteRemoteWebhook($id: Int!) {
+    deleteWebhook(id: $id)
+  }
+`;
+
+export const TestRemoteWebhookDocument = gql`
+  mutation TestRemoteWebhook($id: Int!) {
+    testWebhook(id: $id) {
+      ...RemoteWebhookResponseFragment
+    }
+  }
+  ${RemoteWebhookResponseFragment}
+`;
+
+export const TestEditingRemoteWebhookDocument = gql`
+  mutation TestEditingRemoteWebhook($competitionId: String!, $webhook: WebhookInput!) {
+    testEditingWebhook(competitionId: $competitionId, webhook: $webhook) {
+      ...RemoteWebhookResponseFragment
+    }
+  }
+  ${RemoteWebhookResponseFragment}
 `;
 
 export const ImportRemoteCompetitionDocument = gql`
