@@ -9,7 +9,7 @@ export function AppUpdatePrompt({ onUpdate }: AppUpdatePromptProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4">
+    <div className="safe-area-fixed-bottom pointer-events-none fixed inset-x-0 z-50 flex justify-center px-4">
       <section className="pointer-events-auto w-full max-w-sm rounded-md border border-primary bg-panel p-4 shadow-lg">
         <div className="space-y-4">
           <div className="space-y-2">

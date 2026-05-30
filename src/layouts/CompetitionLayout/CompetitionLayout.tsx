@@ -7,6 +7,7 @@ import { ErrorFallback, LastFetchedAt, NoteBox, NotifyCompRemoteBar } from '@/co
 import { Container } from '@/components/Container';
 import { StyledNavLink } from '@/components/StyledNavLink/StyledNavLink';
 import { useWcif } from '@/hooks/queries/useWcif';
+import { useCompetitionAnalytics } from '@/hooks/useCompetitionAnalytics';
 import { useApp } from '@/providers/AppProvider';
 import { WCIFProvider } from '@/providers/WCIFProvider';
 import { useCompetitionLayoutTabs } from './CompetitionLayout.tabs';
@@ -19,6 +20,8 @@ export function CompetitionLayout() {
   const ref = useRef<HTMLDivElement>(null);
 
   const { data: wcif, dataUpdatedAt, isFetching } = useWcif(competitionId!);
+
+  useCompetitionAnalytics(competitionId);
 
   const { tabs } = useCompetitionLayoutTabs({
     competitionId: competitionId!,
@@ -66,7 +69,7 @@ export function CompetitionLayout() {
         )}
         {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
         <div
-          className="flex flex-1 flex-col w-full items-center overflow-y-auto [scrollbar-gutter:stable;]"
+          className="safe-area-scroll-bottom flex flex-1 flex-col w-full items-center overflow-y-auto [scrollbar-gutter:stable;]"
           ref={ref}>
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <Outlet />

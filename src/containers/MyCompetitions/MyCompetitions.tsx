@@ -22,6 +22,7 @@ export function MyCompetitions() {
         competitions={[...pinnedCompetitions, ...competitions]}
         loading={isLoading && !pinnedCompetitions.length}
         liveCompetitionIds={NotifyCompetitions?.competitions?.map((c) => c.id) || []}
+        showWhenEmpty={Boolean(user)}
       />
     </>
   );

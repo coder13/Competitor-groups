@@ -16,7 +16,7 @@ export function AboutContainer() {
   }, [t]);
 
   return (
-    <Container className="overflow-auto">
+    <Container className="safe-area-scroll-bottom overflow-auto">
       <div className="flex flex-col items-center">
         <div className="flex flex-col space-y-4 p-2 pt-2 type-body">
           <p>{t('about.welcome')}</p>

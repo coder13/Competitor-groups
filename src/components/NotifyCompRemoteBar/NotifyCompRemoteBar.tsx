@@ -29,7 +29,11 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
   const notifyCompWebSocketStatus = useNotifyCompWebSocketStatus();
   const now = useNow();
 
-  if (!remote.isAuthenticated || !remote.competition || remote.scheduledActivities.length === 0) {
+  if (
+    !remote.isAuthenticated ||
+    !remote.isCompetitionImported ||
+    remote.scheduledActivities.length === 0
+  ) {
     return null;
   }
 
@@ -50,7 +54,9 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
   });
   const activeActivities = remote.activeGroups.flatMap((group) => group.scheduledActivities);
   const controlsDisabled =
-    remote.isSaving || !canUseNotifyCompRemoteControls(notifyCompWebSocketStatus.status);
+    remote.isLoading ||
+    remote.isSaving ||
+    !canUseNotifyCompRemoteControls(notifyCompWebSocketStatus.status);
 
   const confirmNextGroup = (group: RemoteActivityGroup) =>
     confirm({
@@ -129,10 +135,10 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
   return (
     <nav
       aria-label="Remote control"
-      className="z-20 w-full border-t border-tertiary-weak bg-panel shadow-md shadow-tertiary-dark print:hidden">
+      className="safe-area-bottom z-20 w-full border-t border-tertiary-weak bg-panel shadow-md shadow-tertiary-dark print:hidden">
       <Container
         fullWidth
-        className="relative flex-row min-h-16 items-center justify-center px-2 py-2">
+        className="relative flex-row min-h-16 items-center justify-center px-2 pb-0 pt-2">
         <div
           className={classNames(
             'grid w-full max-w-4xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 md:gap-4',

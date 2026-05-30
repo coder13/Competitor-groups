@@ -27,6 +27,18 @@
   }
 }
 
+.safe-area-bottom {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+
+.safe-area-scroll-bottom {
+  padding-bottom: max(0.5rem, calc(env(safe-area-inset-bottom, 0px) + 0.5rem));
+}
+
+.safe-area-fixed-bottom {
+  bottom: max(1rem, calc(env(safe-area-inset-bottom, 0px) + 1rem));
+}
+
 /* Base layer overrides */
 @layer base {
   body {

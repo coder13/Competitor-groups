@@ -20,8 +20,24 @@ function getGitTag() {
 const GIT_COMMIT = getGitCommitHash();
 const GIT_TAG = getGitTag();
 
+const getAppEnvironment = (mode: string) => {
+  if (process.env.VITE_APP_ENV) {
+    return process.env.VITE_APP_ENV;
+  }
+
+  if (process.env.BRANCH === 'main') {
+    return 'production';
+  }
+
+  if (process.env.BRANCH === 'beta') {
+    return 'beta';
+  }
+
+  return process.env.CONTEXT || mode;
+};
+
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     viteTsconfigPaths(),
@@ -43,7 +59,8 @@ export default defineConfig({
     },
   },
   define: {
+    __APP_ENV__: JSON.stringify(getAppEnvironment(mode)),
     __GIT_COMMIT__: JSON.stringify(GIT_COMMIT),
     __GIT_TAG__: JSON.stringify(GIT_TAG || ''),
   },
-});
+}));

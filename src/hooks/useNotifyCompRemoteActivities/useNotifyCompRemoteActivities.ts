@@ -15,6 +15,10 @@ import {
   StopRemoteActivityDocument,
   UpdateRemoteAutoAdvanceDocument,
 } from '@/lib/notifyCompRemoteGraphql';
+import {
+  cacheNotifyCompRemoteImport,
+  hasCachedNotifyCompRemoteImport,
+} from '@/lib/notifyCompRemoteImportStatus';
 
 interface UseNotifyCompRemoteActivitiesParams {
   competitionId: string;
@@ -42,6 +46,15 @@ export function useNotifyCompRemoteActivities({
     },
   );
   const { subscribeToMore } = activitiesQuery;
+  const cachedCompetitionImported = hasCachedNotifyCompRemoteImport(competitionId);
+  const queriedCompetitionImported = Boolean(competitionQuery.data?.competition);
+  const isCompetitionImported = cachedCompetitionImported || queriedCompetitionImported;
+
+  useEffect(() => {
+    if (queriedCompetitionImported) {
+      cacheNotifyCompRemoteImport(competitionId);
+    }
+  }, [competitionId, queriedCompetitionImported]);
 
   useEffect(() => {
     if (!competitionId || !enabled || !subscribeToMore) {
@@ -138,7 +151,8 @@ export function useNotifyCompRemoteActivities({
     competition: competitionQuery.data?.competition || null,
     error:
       mutationError || activitiesQuery.error?.message || competitionQuery.error?.message || null,
-    isLoading: activitiesQuery.loading || competitionQuery.loading,
+    isCompetitionImported,
+    isLoading: activitiesQuery.loading || (competitionQuery.loading && !cachedCompetitionImported),
     isSaving:
       importCompetitionStatus.loading ||
       startActivityStatus.loading ||
@@ -148,12 +162,14 @@ export function useNotifyCompRemoteActivities({
       stopActivitiesStatus.loading ||
       resetActivitiesStatus.loading ||
       updateAutoAdvanceStatus.loading,
-    importCompetition: () =>
-      runMutation(() =>
+    importCompetition: async () => {
+      await runMutation(() =>
         importCompetition({
           variables: { competitionId },
         }),
-      ),
+      );
+      cacheNotifyCompRemoteImport(competitionId);
+    },
     resetActivities: (activityIds: number[]) =>
       runMutation(() =>
         resetActivities({
