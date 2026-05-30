@@ -7,6 +7,7 @@ import { ErrorFallback, LastFetchedAt, NoteBox, NotifyCompRemoteBar } from '@/co
 import { Container } from '@/components/Container';
 import { StyledNavLink } from '@/components/StyledNavLink/StyledNavLink';
 import { useWcif } from '@/hooks/queries/useWcif';
+import { useCompetitionAnalytics } from '@/hooks/useCompetitionAnalytics';
 import { useApp } from '@/providers/AppProvider';
 import { WCIFProvider } from '@/providers/WCIFProvider';
 import { useCompetitionLayoutTabs } from './CompetitionLayout.tabs';
@@ -19,6 +20,8 @@ export function CompetitionLayout() {
   const ref = useRef<HTMLDivElement>(null);
 
   const { data: wcif, dataUpdatedAt, isFetching } = useWcif(competitionId!);
+
+  useCompetitionAnalytics(competitionId);
 
   const { tabs } = useCompetitionLayoutTabs({
     competitionId: competitionId!,

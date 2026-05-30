@@ -1,14 +1,26 @@
 import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { useLocation } from 'react-router-dom';
+import { identifyUser, loadUmamiScript } from '@/lib/analytics';
 import { useAuth } from '@/providers/AuthProvider';
 
-export const usePageTracking = (trackingCode) => {
+export const usePageTracking = (trackingCode?: string) => {
   const location = useLocation();
   const { user } = useAuth();
 
   useEffect(() => {
-    if (ReactGA.isInitialized) {
+    loadUmamiScript({
+      src: import.meta.env.VITE_UMAMI_SRC,
+      websiteId: import.meta.env.VITE_UMAMI_WEBSITE_ID,
+    });
+  }, []);
+
+  useEffect(() => {
+    identifyUser(user?.id);
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!trackingCode || ReactGA.isInitialized) {
       return;
     }
 
@@ -39,10 +51,10 @@ export const usePageTracking = (trackingCode) => {
           delegate_status: null,
         });
       }
-    } else if (!ReactGA.isInitialized) {
+    } else if (trackingCode && !ReactGA.isInitialized) {
       console.log('Would have set userId to', user?.id);
     }
-  }, [user]);
+  }, [trackingCode, user]);
 
   useEffect(() => {
     if (ReactGA.isInitialized) {
@@ -51,8 +63,8 @@ export const usePageTracking = (trackingCode) => {
         page: location.pathname + location.search,
         title: document.title,
       });
-    } else {
+    } else if (trackingCode) {
       console.log('Would have logged pageview for', location);
     }
-  }, [location]);
+  }, [location, trackingCode]);
 };

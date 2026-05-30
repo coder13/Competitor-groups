@@ -9,6 +9,7 @@ import { NotifyCompConnectionStatus } from '@/components/NotifyCompConnectionSta
 import { RemoteActivitySummaryList } from '@/components/RemoteActivitySummaryList';
 import { useCompetitionRemoteControl } from '@/hooks/useCompetitionRemoteControl';
 import { useNotifyCompWebSocketStatus } from '@/hooks/useNotifyCompWebSocketStatus';
+import { trackCompetitionEvent } from '@/lib/analytics';
 import { isCompetitionDayOrAfter } from '@/lib/competitionDates';
 import { RemoteActivityGroup } from '@/lib/notifyCompRemoteActivities';
 import { canUseNotifyCompRemoteControls } from '@/lib/notifyCompWebSocketStatus';
@@ -76,6 +77,11 @@ export default function CompetitionRemote() {
 
     if (confirmed) {
       await remote.importCompetition();
+      trackCompetitionEvent('live_activity_created', {
+        competition_id: competitionId,
+        feature: 'live_activities',
+        user_id: user?.id,
+      });
     }
   };
 
