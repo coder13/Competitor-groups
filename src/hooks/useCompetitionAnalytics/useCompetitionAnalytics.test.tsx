@@ -57,4 +57,22 @@ describe('useCompetitionAnalytics', () => {
       user_id: undefined,
     });
   });
+
+  it.each([
+    ['/competitions/ExampleComp2026/activities', 'schedule'],
+    ['/competitions/ExampleComp2026/activities/1', 'schedule_activity'],
+    ['/competitions/ExampleComp2026/rooms', 'schedule_rooms'],
+    ['/competitions/ExampleComp2026/rooms/main', 'schedule_room'],
+  ])('tracks schedule views for %s', (initialEntry, page) => {
+    renderHook(() => useCompetitionAnalytics('ExampleComp2026'), {
+      wrapper: wrapper(initialEntry),
+    });
+
+    expect(trackCompetitionEvent).toHaveBeenCalledWith('schedule_viewed', {
+      competition_id: 'ExampleComp2026',
+      page,
+      feature: undefined,
+      user_id: undefined,
+    });
+  });
 });

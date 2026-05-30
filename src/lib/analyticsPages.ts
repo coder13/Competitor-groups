@@ -56,11 +56,23 @@ export const competitionPageName = (pathname: string, competitionId: string) => 
       return 'live_activities';
     }
 
+    if (second === 'webhooks') {
+      return 'webhooks';
+    }
+
     if (second === 'scramblers') {
       return 'assignments';
     }
 
-    return second ? sanitizePageName(second) : 'admin';
+    if (second === 'stats') {
+      return 'stats';
+    }
+
+    if (second === 'sum-of-ranks') {
+      return 'sum_of_ranks';
+    }
+
+    return second ? 'admin_other' : 'admin';
   }
 
   if (section === 'remote' || section === 'live') {
@@ -83,5 +95,21 @@ export const competitionPageName = (pathname: string, competitionId: string) => 
     return 'sum_of_ranks';
   }
 
-  return sanitizePageName(segments.join('_')) || 'competition';
+  if (section === 'stream') {
+    return 'stream';
+  }
+
+  if (section === 'information') {
+    return 'information';
+  }
+
+  if (section === 'explore') {
+    return 'explore';
+  }
+
+  if (section === 'groups-schedule') {
+    return 'groups_schedule';
+  }
+
+  return 'other';
 };

@@ -18,9 +18,21 @@ describe('analyticsPages', () => {
     expect(competitionPageName(pathname, 'ExampleComp2026')).toBe(page);
   });
 
-  it('uses stable labels for unknown competition routes', () => {
+  it('uses stable coarse labels for unknown competition routes', () => {
     expect(
-      competitionPageName('/competitions/ExampleComp2026/custom/report', 'ExampleComp2026'),
-    ).toBe('custom_report');
+      competitionPageName(
+        '/competitions/ExampleComp2026/custom/potentially-sensitive-value',
+        'ExampleComp2026',
+      ),
+    ).toBe('other');
+  });
+
+  it('uses stable coarse labels for unknown admin routes', () => {
+    expect(
+      competitionPageName(
+        '/competitions/ExampleComp2026/admin/potentially-sensitive-value',
+        'ExampleComp2026',
+      ),
+    ).toBe('admin_other');
   });
 });

@@ -10,7 +10,12 @@ const featureViewEventName = (page: string) => {
     return 'groups_viewed';
   }
 
-  if (page === 'schedule' || page === 'schedule_activity') {
+  if (
+    page === 'schedule' ||
+    page === 'schedule_activity' ||
+    page === 'schedule_rooms' ||
+    page === 'schedule_room'
+  ) {
     return 'schedule_viewed';
   }
 
