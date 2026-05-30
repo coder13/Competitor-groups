@@ -114,7 +114,7 @@ export default function UserPage() {
 
   if (!user) {
     return (
-      <div className="flex min-h-0 w-full flex-1 justify-center overflow-y-auto">
+      <div className="safe-area-scroll-bottom flex min-h-0 w-full flex-1 justify-center overflow-y-auto">
         <Container className="px-4 py-8">
           <p className="type-body">Please log in to view your profile.</p>
         </Container>
@@ -123,7 +123,7 @@ export default function UserPage() {
   }
 
   return (
-    <div className="flex min-h-0 w-full flex-1 justify-center overflow-y-auto">
+    <div className="safe-area-scroll-bottom flex min-h-0 w-full flex-1 justify-center overflow-y-auto">
       <Container className="space-y-4 p-2 pt-4">
         <ProfileHeader countryIso2={recordsQuery.data?.person.country_iso2} user={user} />
         <ProfileTabs activeTab={tab} />

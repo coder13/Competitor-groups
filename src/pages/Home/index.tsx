@@ -17,7 +17,7 @@ export default function Home() {
   }, [t]);
 
   return (
-    <div className="flex flex-col items-center w-full overflow-auto">
+    <div className="safe-area-scroll-bottom flex flex-col items-center w-full overflow-auto">
       <Container className="mt-2 space-y-2">
         <div className="flex flex-col w-full px-6 md:px-6 type-body">
           <p className="type-body-sm">{t('home.subtitle')}</p>

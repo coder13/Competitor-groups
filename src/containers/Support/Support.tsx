@@ -7,7 +7,7 @@ export function SupportContainer() {
   }, []);
 
   return (
-    <Container className="overflow-auto">
+    <Container className="safe-area-scroll-bottom overflow-auto">
       <div className="flex flex-col items-center">
         <div className="flex w-full max-w-3xl flex-col space-y-4 p-2 pt-2 type-body md:px-0 md:type-body">
           <p className="type-body">Thanks for being a user of Competition Groups!</p>

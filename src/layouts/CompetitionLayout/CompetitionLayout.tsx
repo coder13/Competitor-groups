@@ -69,7 +69,7 @@ export function CompetitionLayout() {
         )}
         {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
         <div
-          className="flex flex-1 flex-col w-full items-center overflow-y-auto [scrollbar-gutter:stable;]"
+          className="safe-area-scroll-bottom flex flex-1 flex-col w-full items-center overflow-y-auto [scrollbar-gutter:stable;]"
           ref={ref}>
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <Outlet />
