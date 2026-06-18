@@ -53,7 +53,7 @@ const getExtraAssignments = (person: Person) => {
       activityId: -1,
       stationNumber: null,
       activity: {
-        activityCode: 'other-' + assignment.staff,
+        activityCode: 'other-misc',
         startTime: assignment.startTime,
         endTime: assignment.endTime,
         childActivities: [],
@@ -148,15 +148,6 @@ export const getGroupedAssignmentsByDate = (wcif: Competition, person: Person) =
 
   const scheduledDays = allAssignments
     .map((a) => {
-      if (a.type === 'extra') {
-        return {
-          approxDateTime: 0,
-          date: '',
-          dateParts: [],
-          assignments: [],
-        };
-      }
-
       if (!a.activity) {
         return {
           approxDateTime: 0,
