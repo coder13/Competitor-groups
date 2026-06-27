@@ -105,20 +105,24 @@ const getFmcAttemptAssignments = (wcif: Competition, person: Person) => {
     return parsed.eventId === '333fm' && parsed.attemptNumber !== null;
   });
 
-  return fmcAttemptActivities.map(
-    (
-      activity,
-    ): Assignment & {
-      type: 'extra';
-      activity: Activity;
-    } => ({
-      type: 'extra',
-      assignmentCode: 'competitor',
-      activityId: activity.id,
-      stationNumber: null,
-      activity,
-    }),
-  );
+  const personActivities = person.assignments?.map((ass) => ass.activityId);
+
+  return fmcAttemptActivities
+    .filter((activity) => personActivities?.includes(activity.id))
+    .map(
+      (
+        activity,
+      ): Assignment & {
+        type: 'extra';
+        activity: Activity;
+      } => ({
+        type: 'extra',
+        assignmentCode: 'competitor',
+        activityId: activity.id,
+        stationNumber: null,
+        activity,
+      }),
+    );
 };
 
 export const getAllAssignments = (wcif: Competition, person: Person) => {
