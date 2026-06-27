@@ -148,14 +148,15 @@ export const getGroupedAssignmentsByDate = (wcif: Competition, person: Person) =
 
   const scheduledDays = allAssignments
     .map((a) => {
-      if (a.type === 'extra') {
-        return {
-          approxDateTime: 0,
-          date: '',
-          dateParts: [],
-          assignments: [],
-        };
-      }
+      // Commenting out for NAC26, extra assignments are valid even if the day does not have any other assignments
+      // if (a.type === 'extra') {
+      //   return {
+      //     approxDateTime: 0,
+      //     date: '',
+      //     dateParts: [],
+      //     assignments: [],
+      //   };
+      // }
 
       if (!a.activity) {
         return {
