@@ -105,20 +105,24 @@ const getFmcAttemptAssignments = (wcif: Competition, person: Person) => {
     return parsed.eventId === '333fm' && parsed.attemptNumber !== null;
   });
 
-  return fmcAttemptActivities.map(
-    (
-      activity,
-    ): Assignment & {
-      type: 'extra';
-      activity: Activity;
-    } => ({
-      type: 'extra',
-      assignmentCode: 'competitor',
-      activityId: activity.id,
-      stationNumber: null,
-      activity,
-    }),
-  );
+  const personActivities = person.assignments?.map((ass) => ass.activityId);
+
+  return fmcAttemptActivities
+    .filter((activity) => personActivities?.includes(activity.id))
+    .map(
+      (
+        activity,
+      ): Assignment & {
+        type: 'extra';
+        activity: Activity;
+      } => ({
+        type: 'extra',
+        assignmentCode: 'competitor',
+        activityId: activity.id,
+        stationNumber: null,
+        activity,
+      }),
+    );
 };
 
 export const getAllAssignments = (wcif: Competition, person: Person) => {
@@ -148,14 +152,15 @@ export const getGroupedAssignmentsByDate = (wcif: Competition, person: Person) =
 
   const scheduledDays = allAssignments
     .map((a) => {
-      if (a.type === 'extra') {
-        return {
-          approxDateTime: 0,
-          date: '',
-          dateParts: [],
-          assignments: [],
-        };
-      }
+      // Commenting out for NAC26, extra assignments are valid even if the day does not have any other assignments
+      // if (a.type === 'extra') {
+      //   return {
+      //     approxDateTime: 0,
+      //     date: '',
+      //     dateParts: [],
+      //     assignments: [],
+      //   };
+      // }
 
       if (!a.activity) {
         return {
