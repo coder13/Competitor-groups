@@ -52,7 +52,10 @@ export const parseActivityCodeFlexible = (
   activityCode: string,
 ): ParsedActivityCode | UnofficialParsedActivityCode => {
   const eventId = activityCode.split('-')[0];
-  if (activityCode.startsWith('other') || !isOfficialEventId(eventId)) {
+  if (activityCode.startsWith('other')) {
+    return parseOtherActivityCode(activityCode);
+  }
+  if (!isOfficialEventId(eventId)) {
     return parseUnofficialActivityCode(activityCode);
   }
 
@@ -61,6 +64,19 @@ export const parseActivityCodeFlexible = (
 
 const normalizeEventId = (eventId: string): string =>
   eventId.replace('other-', '').replace('unofficial-', '');
+
+export const parseOtherActivityCode = (activityCode: string): UnofficialParsedActivityCode => {
+  const regex = /other-(?:(\w+))?(?:-g(\d+))?/;
+  const [, e, g] = activityCode.match(regex) as string[];
+
+  return {
+    rawEventId: e,
+    eventId: `other-${e}`,
+    roundNumber: 1,
+    groupNumber: g ? parseInt(g, 10) : null,
+    attemptNumber: null,
+  };
+};
 
 export const parseUnofficialActivityCode = (activityCode: string): UnofficialParsedActivityCode => {
   const regex = /^([\w-]+?)(?:-r(\d+))?(?:-g(\d+))?(?:-a(\d+))?$/;
