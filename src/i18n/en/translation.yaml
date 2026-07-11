@@ -210,7 +210,7 @@ competition:
     unknownCompetitor: 'Competitor #{{personId}}'
     allResults: All results
     viewLiveResults: View live results
-    liveResultsDelayNote: Data is pulled from WCA Live and may be delayed.
+    resultsSourceNote: Results are merged from WCIF and WCA Live when available. WCA Live data may be delayed.
   personalResults:
     eventResults: Event results
   round:

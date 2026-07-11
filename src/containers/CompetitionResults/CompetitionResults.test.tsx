@@ -43,8 +43,8 @@ jest.mock('react-i18next', () => ({
       if (key === 'competition.results.average') return 'Avg';
       if (key === 'competition.results.best') return 'Best';
       if (key === 'competition.results.attempts') return 'Attempts';
-      if (key === 'competition.results.liveResultsDelayNote') {
-        return 'Data is pulled from WCA Live and may be delayed.';
+      if (key === 'competition.results.resultsSourceNote') {
+        return 'Results are merged from WCIF and WCA Live when available. WCA Live data may be delayed.';
       }
       if (key === 'competition.results.allResults') return 'All results';
       if (key === 'competition.results.unknownCompetitor') {
@@ -273,7 +273,9 @@ describe('CompetitionResultsContainer', () => {
     expect(screen.queryByRole('link', { name: 'Round 2' })).not.toBeInTheDocument();
     expect(screen.queryByRole('table', { name: 'Results' })).not.toBeInTheDocument();
     expect(
-      screen.getByText('Data is pulled from WCA Live and may be delayed.'),
+      screen.getByText(
+        'Results are merged from WCIF and WCA Live when available. WCA Live data may be delayed.',
+      ),
     ).toBeInTheDocument();
   });
 
@@ -316,7 +318,9 @@ describe('CompetitionResultsContainer', () => {
     expect(screen.getAllByText('12.00')).toHaveLength(2);
     expect(screen.queryByLabelText('Attempts')).not.toBeInTheDocument();
     expect(
-      screen.getByText('Data is pulled from WCA Live and may be delayed.'),
+      screen.getByText(
+        'Results are merged from WCIF and WCA Live when available. WCA Live data may be delayed.',
+      ),
     ).toBeInTheDocument();
     expect(
       screen
@@ -511,7 +515,9 @@ describe('CompetitionResultsContainer', () => {
       within(screen.getByRole('row', { name: /2 Nick Silvestri/ })).getAllByText('15.00'),
     ).toHaveLength(2);
     expect(
-      screen.getByText('Data is pulled from WCA Live and may be delayed.'),
+      screen.getByText(
+        'Results are merged from WCIF and WCA Live when available. WCA Live data may be delayed.',
+      ),
     ).toBeInTheDocument();
   });
 

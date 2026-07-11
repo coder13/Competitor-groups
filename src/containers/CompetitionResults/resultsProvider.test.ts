@@ -1,6 +1,7 @@
 import { Competition, Person } from '@wca/helpers';
 import { WcaLiveCompetitorResult, WcaLiveRound } from '@/hooks/queries/useWcaLive';
 import { WcaCompetitionResult } from '@/lib/api';
+import { findPersonForApiResult } from './resultSources';
 import { getPersonalResultsFromSources, getRoundResultsFromSources } from './resultsProvider';
 
 jest.mock('@/lib/events', () => ({
@@ -186,6 +187,8 @@ const liveRoundResult = (
   person: {
     id: '2',
     registrantId: 2,
+    wcaUserId: 1002,
+    wcaId: '2010BOBS01',
     name: 'Bob Solver',
   },
   ...overrides,
@@ -220,6 +223,39 @@ const livePersonalResult = (
     },
   },
   ...overrides,
+});
+
+describe('findPersonForApiResult', () => {
+  const duplicateNamePerson: Person = {
+    ...persons[0],
+    registrantId: 4,
+    wcaUserId: 1004,
+    wcaId: '2010ALIC02',
+  };
+
+  it('matches an exact WCA ID before considering duplicate names', () => {
+    expect(
+      findPersonForApiResult(
+        [...persons, duplicateNamePerson],
+        apiResult({ name: 'Alice Solver', wca_id: '2010ALIC02' }),
+      ),
+    ).toBe(duplicateNamePerson);
+  });
+
+  it('does not fall back to a name when a WCA ID is present but unmatched', () => {
+    expect(
+      findPersonForApiResult(persons, apiResult({ name: 'Alice Solver', wca_id: '2099MISS01' })),
+    ).toBeUndefined();
+  });
+
+  it('does not use an ambiguous name when the API result has no WCA ID', () => {
+    expect(
+      findPersonForApiResult(
+        [...persons, duplicateNamePerson],
+        apiResult({ name: 'Alice Solver', wca_id: null }),
+      ),
+    ).toBeUndefined();
+  });
 });
 
 describe('resultsProvider', () => {
@@ -301,6 +337,8 @@ describe('resultsProvider', () => {
             average: 2200,
             round_type_id: '1',
             attempts: [2100, 2200, 2300],
+            best_index: 2,
+            worst_index: 0,
             regional_single_record: 'NR',
             regional_average_record: 'WR',
           }),
@@ -326,6 +364,12 @@ describe('resultsProvider', () => {
         singleRecordTag: 'NR',
         averageRecordTag: 'WR',
       });
+      expect(results.find((result) => result.personId === 2)).not.toHaveProperty(
+        'bestAttemptIndex',
+      );
+      expect(results.find((result) => result.personId === 2)).not.toHaveProperty(
+        'worstAttemptIndex',
+      );
       expect(results.find((result) => result.personId === 1)).toMatchObject({
         ranking: 1,
         best: 1200,
@@ -338,6 +382,98 @@ describe('resultsProvider', () => {
       });
       expect(results.find((result) => result.personId == null)).toMatchObject({
         personName: 'Unknown Competitor',
+      });
+    });
+
+    it('matches live round results by WCA user id when registrant id is missing', () => {
+      const results = getRoundResultsFromSources({
+        wcif,
+        selectedRound: selectedRound(0),
+        wcaApiResults: [],
+        wcaLiveRound: liveRound([
+          liveRoundResult({
+            id: 'live-alice',
+            ranking: 4,
+            best: 900,
+            average: 1000,
+            attempts: [{ result: 900 }, { result: 1000 }, { result: 1100 }],
+            person: {
+              id: 'missing-registrant-id',
+              registrantId: null,
+              wcaUserId: 1001,
+              wcaId: '2010ALIC01',
+              name: 'Alice Published Name',
+            },
+          }),
+        ]),
+      });
+
+      expect(results).toHaveLength(3);
+      expect(results.filter((result) => result.personId === 1)).toHaveLength(1);
+      expect(results.find((result) => result.personId === 1)).toMatchObject({
+        personName: 'Alice Published Name',
+        ranking: 4,
+        best: 900,
+        average: 1000,
+        attempts: [{ result: 900 }, { result: 1000 }, { result: 1100 }],
+      });
+    });
+
+    it('leaves a live result unlinked when its name is ambiguous and identifiers are missing', () => {
+      const duplicateNamePerson: Person = {
+        ...persons[0],
+        registrantId: 4,
+        wcaUserId: 1004,
+        wcaId: '2010ALIC02',
+      };
+      const duplicateNameWcif = {
+        ...wcif,
+        persons: [...persons, duplicateNamePerson],
+      } as Competition;
+      const results = getRoundResultsFromSources({
+        wcif: duplicateNameWcif,
+        selectedRound: selectedRound(0),
+        wcaApiResults: [],
+        wcaLiveRound: liveRound([
+          liveRoundResult({
+            id: 'live-ambiguous-alice',
+            person: {
+              id: 'missing-identifiers',
+              registrantId: null,
+              name: 'Alice Solver',
+            },
+          }),
+        ]),
+      });
+
+      expect(results.find((result) => result.id === 'live-ambiguous-alice')).toMatchObject({
+        personId: null,
+        personName: 'Alice Solver',
+      });
+    });
+
+    it('does not override an unmatched live identity with a name match', () => {
+      const results = getRoundResultsFromSources({
+        wcif,
+        selectedRound: selectedRound(0),
+        wcaApiResults: [],
+        wcaLiveRound: liveRound([
+          liveRoundResult({
+            id: 'live-conflicting-alice',
+            person: {
+              id: 'conflicting-identifiers',
+              registrantId: null,
+              wcaUserId: 9999,
+              wcaId: '2099MISS01',
+              name: 'Alice Solver',
+            },
+          }),
+        ]),
+      });
+
+      expect(results.find((result) => result.id === 'live-conflicting-alice')).toMatchObject({
+        personId: null,
+        personName: 'Alice Solver',
       });
     });
 
@@ -477,6 +613,23 @@ describe('resultsProvider', () => {
           average: 1600,
         },
       ]);
+    });
+
+    it('does not include a same-name API result with a conflicting WCA ID', () => {
+      const results = getPersonalResultsFromSources({
+        wcif,
+        person: persons[0],
+        wcaApiResults: [
+          apiResult({
+            id: 9201,
+            name: 'Alice Solver',
+            wca_id: '2010BOBS01',
+          }),
+        ],
+        wcaLiveResults: [],
+      });
+
+      expect(results[0].rounds.map((round) => round.roundId)).toEqual(['333-r1']);
     });
 
     it('sorts live personal events and rounds before merging them', () => {
