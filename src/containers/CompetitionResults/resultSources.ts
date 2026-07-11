@@ -5,6 +5,16 @@ import { normalizeResultRecordTag } from './ResultRecordBadge';
 
 const roundTypeOrder = ['0', '1', 'c', '2', 'e', '3', 'b', 'd', 'f'];
 
+const normalizeName = (value: string) => value.trim().toLowerCase();
+
+export const findUniquePersonByName = (persons: Person[], name: string) => {
+  const matchingPersons = persons.filter(
+    (person) => normalizeName(person.name) === normalizeName(name),
+  );
+
+  return matchingPersons.length === 1 ? matchingPersons[0] : undefined;
+};
+
 const compareRoundTypeIds = (a: string, b: string) => {
   const aIndex = roundTypeOrder.indexOf(a);
   const bIndex = roundTypeOrder.indexOf(b);
@@ -24,12 +34,13 @@ const compareRoundTypeIds = (a: string, b: string) => {
   return a.localeCompare(b);
 };
 
-export const findPersonForApiResult = (persons: Person[], result: WcaCompetitionResult) =>
-  persons.find(
-    (person) =>
-      (result.wca_id && person.wcaId === result.wca_id) ||
-      person.name.toLocaleLowerCase() === result.name.toLocaleLowerCase(),
-  );
+export const findPersonForApiResult = (persons: Person[], result: WcaCompetitionResult) => {
+  if (result.wca_id) {
+    return persons.find((person) => person.wcaId === result.wca_id);
+  }
+
+  return findUniquePersonByName(persons, result.name);
+};
 
 export const getWcaApiRoundTypeMap = (results: WcaCompetitionResult[]) => {
   const roundTypeIdsByEventId = new Map<string, string[]>();
