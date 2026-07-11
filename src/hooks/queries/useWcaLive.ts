@@ -121,6 +121,8 @@ export interface WcaLiveRoundResult {
   person: {
     id: string;
     registrantId: number | null;
+    wcaUserId?: number | null;
+    wcaId?: string | null;
     name: string;
   };
 }
@@ -219,6 +221,8 @@ const WCA_LIVE_ROUND_RESULTS_QUERY = `
         person {
           id
           registrantId
+          wcaUserId
+          wcaId
           name
         }
       }

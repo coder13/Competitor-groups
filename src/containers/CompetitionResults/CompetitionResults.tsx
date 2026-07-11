@@ -274,7 +274,7 @@ export function CompetitionResultsContainer({
                     roundNumber: selectedRound.roundNumber,
                   })}
                 </h2>
-                <NoteBox text={t('competition.results.liveResultsDelayNote')} />
+                <NoteBox text={t('competition.results.resultsSourceNote')} />
                 <ResultsEventRoundSelector
                   selectedRoundId={selectedRound.round.id}
                   rounds={selectedEventRoundLinks}
@@ -313,7 +313,7 @@ export function CompetitionResultsContainer({
   return (
     <Container className="pt-4">
       <div className="flex flex-col p-2 space-y-4 type-body">
-        <NoteBox text={t('competition.results.liveResultsDelayNote')} />
+        <NoteBox text={t('competition.results.resultsSourceNote')} />
         <RoundActionPicker mode="results" events={pickerEvents} LinkComponent={LinkComponent} />
       </div>
     </Container>

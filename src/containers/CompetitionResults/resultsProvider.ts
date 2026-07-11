@@ -8,7 +8,12 @@ import { PersonalRoundResult } from '../CompetitionPersonalResults/CompetitionPe
 import { CompetitionRoundResult } from './CompetitionResultsTable';
 import { normalizeResultRecordTag } from './ResultRecordBadge';
 import { getStoredRoundResults } from './advancement';
-import { getApiRoundResults, getWcaApiResultsByRoundId } from './resultSources';
+import {
+  findPersonForApiResult,
+  findUniquePersonByName,
+  getApiRoundResults,
+  getWcaApiResultsByRoundId,
+} from './resultSources';
 import { getRoundRosterResults } from './roundRoster';
 
 type SelectedRound = NonNullable<ReturnType<typeof findRoundWithEvent>>;
@@ -44,22 +49,66 @@ const mergeRoundResultSources = (
   return [...resultsByKey.values()];
 };
 
-const getLiveRoundResults = (wcaLiveRound: WcaLiveRound | null | undefined) =>
+const findPersonForLiveRoundResult = (
+  wcif: Competition,
+  result: WcaLiveRound['results'][number],
+): Person | undefined => {
+  if (result.person.registrantId != null) {
+    const matchedByRegistrantId = wcif.persons.find(
+      (person) => person.registrantId === result.person.registrantId,
+    );
+
+    if (matchedByRegistrantId) {
+      return matchedByRegistrantId;
+    }
+  }
+
+  if (result.person.wcaUserId != null) {
+    const matchedByWcaUserId = wcif.persons.find(
+      (person) => person.wcaUserId === result.person.wcaUserId,
+    );
+
+    if (matchedByWcaUserId) {
+      return matchedByWcaUserId;
+    }
+  }
+
+  if (result.person.wcaId) {
+    const matchedByWcaId = wcif.persons.find((person) => person.wcaId === result.person.wcaId);
+
+    if (matchedByWcaId) {
+      return matchedByWcaId;
+    }
+  }
+
+  const hasStrongIdentifier =
+    result.person.registrantId != null ||
+    result.person.wcaUserId != null ||
+    Boolean(result.person.wcaId);
+
+  return hasStrongIdentifier ? undefined : findUniquePersonByName(wcif.persons, result.person.name);
+};
+
+const getLiveRoundResults = (wcif: Competition, wcaLiveRound: WcaLiveRound | null | undefined) =>
   wcaLiveRound?.results
     .filter((result) => result.attempts.length > 0)
-    .map<CompetitionRoundResult>((result) => ({
-      id: result.id,
-      personId: result.person.registrantId,
-      personName: result.person.name,
-      ranking: result.ranking,
-      advancing: result.advancing,
-      advancingQuestionable: result.advancingQuestionable,
-      attempts: result.attempts,
-      best: result.best,
-      average: result.average,
-      singleRecordTag: normalizeResultRecordTag(result.singleRecordTag),
-      averageRecordTag: normalizeResultRecordTag(result.averageRecordTag),
-    })) ?? [];
+    .map<CompetitionRoundResult>((result) => {
+      const matchedPerson = findPersonForLiveRoundResult(wcif, result);
+
+      return {
+        id: result.id,
+        personId: matchedPerson?.registrantId ?? result.person.registrantId,
+        personName: result.person.name,
+        ranking: result.ranking,
+        advancing: result.advancing,
+        advancingQuestionable: result.advancingQuestionable,
+        attempts: result.attempts,
+        best: result.best,
+        average: result.average,
+        singleRecordTag: normalizeResultRecordTag(result.singleRecordTag),
+        averageRecordTag: normalizeResultRecordTag(result.averageRecordTag),
+      };
+    }) ?? [];
 
 export const getRoundResultsFromSources = ({
   wcif,
@@ -76,7 +125,7 @@ export const getRoundResultsFromSources = ({
     return [];
   }
 
-  const liveRoundResults = getLiveRoundResults(wcaLiveRound);
+  const liveRoundResults = getLiveRoundResults(wcif, wcaLiveRound);
   const storedRoundResults = getStoredRoundResults(
     selectedRound.round,
     getAdvancementConditionForRound(selectedRound.event.rounds, selectedRound.round),
@@ -147,8 +196,12 @@ const getLivePersonalResults = (
 
       return {
         eventId,
-        eventName: firstResult.round.competitionEvent.event.name,
-        eventRank: firstResult.round.competitionEvent.event.rank,
+        eventName: wcifEvent
+          ? getEventName(eventId, wcifEvent)
+          : firstResult.round.competitionEvent.event.name,
+        eventRank: wcifEvent
+          ? wcif.events.indexOf(wcifEvent)
+          : firstResult.round.competitionEvent.event.rank,
         rounds: eventResults
           .sort((a, b) => a.round.number - b.round.number)
           .map((result) => ({
@@ -175,9 +228,7 @@ const getApiPersonalResults = (
   apiResults: WcaCompetitionResult[],
 ): EventResults[] => {
   const personResults = apiResults.filter(
-    (result) =>
-      (person.wcaId && result.wca_id === person.wcaId) ||
-      result.name.toLocaleLowerCase() === person.name.toLocaleLowerCase(),
+    (result) => findPersonForApiResult(wcif.persons, result)?.registrantId === person.registrantId,
   );
   const resultsByRoundId = getWcaApiResultsByRoundId(wcif, personResults);
 
@@ -223,11 +274,18 @@ const mergeEventResultSources = (...sources: EventResults[][]): EventResults[] =
       );
 
       sourceEvent.rounds.forEach((roundResult) => {
-        roundsById.set(roundResult.roundId, roundResult);
+        const existingRoundResult = roundsById.get(roundResult.roundId);
+
+        roundsById.set(roundResult.roundId, {
+          ...existingRoundResult,
+          ...roundResult,
+        });
       });
 
       eventsById.set(sourceEvent.eventId, {
+        ...existingEvent,
         ...sourceEvent,
+        eventName: existingEvent?.eventName ?? sourceEvent.eventName,
         eventRank: existingEvent?.eventRank ?? sourceEvent.eventRank,
         rounds: [...roundsById.values()].sort((a, b) => a.roundNumber - b.roundNumber),
       });
