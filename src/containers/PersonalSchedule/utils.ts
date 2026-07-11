@@ -1,11 +1,26 @@
 import { Activity, Assignment, Competition, Person } from '@wca/helpers';
 import { getWorldAssignmentsExtension } from '@/extensions/com.competitiongroups.worldsassignments';
 import i18n from '@/i18n';
-import { getAllActivities, getRooms } from '@/lib/activities';
+import { getAllActivities } from '@/lib/activities';
 import { isUnofficialParsedActivityCode, parseActivityCodeFlexible } from '@/lib/activityCodes';
 import { eventById, isOfficialEventId } from '@/lib/events';
 import { formatNumericDate, getNumericDateFormatter } from '@/lib/time';
 import { byDate } from '@/lib/utils';
+
+type ActivityWithLocation = Activity & {
+  room?: { id: number };
+  parent?: { room?: { id: number } };
+};
+
+const getActivityTimeZone = (
+  venues: Competition['schedule']['venues'],
+  activity: ActivityWithLocation,
+) => {
+  const roomId = activity.room?.id ?? activity.parent?.room?.id;
+  const venue = venues.find((candidate) => candidate.rooms.some((room) => room.id === roomId));
+
+  return venue?.timezone ?? venues[0]?.timezone;
+};
 
 export const getNormalAssignments = (wcif: Competition, person: Person) => {
   const allActivities = getAllActivities(wcif);
@@ -105,20 +120,24 @@ const getFmcAttemptAssignments = (wcif: Competition, person: Person) => {
     return parsed.eventId === '333fm' && parsed.attemptNumber !== null;
   });
 
-  return fmcAttemptActivities.map(
-    (
-      activity,
-    ): Assignment & {
-      type: 'extra';
-      activity: Activity;
-    } => ({
-      type: 'extra',
-      assignmentCode: 'competitor',
-      activityId: activity.id,
-      stationNumber: null,
-      activity,
-    }),
-  );
+  const personActivities = person.assignments?.map((ass) => ass.activityId);
+
+  return fmcAttemptActivities
+    .filter((activity) => personActivities?.includes(activity.id))
+    .map(
+      (
+        activity,
+      ): Assignment & {
+        type: 'extra';
+        activity: Activity;
+      } => ({
+        type: 'extra',
+        assignmentCode: 'competitor',
+        activityId: activity.id,
+        stationNumber: null,
+        activity,
+      }),
+    );
 };
 
 export const getAllAssignments = (wcif: Competition, person: Person) => {
@@ -157,18 +176,14 @@ export const getGroupedAssignmentsByDate = (wcif: Competition, person: Person) =
         };
       }
 
-      const roomId = a.activity && 'room' in a.activity && a.activity.room?.id;
-      const parent = a.activity && 'parent' in a.activity && a.activity.parent;
-
-      const venue = venues.find((v) => v.rooms.some((r) => r.id === roomId || parent));
-
       const dateTime = new Date(a.activity?.startTime);
-      const date = formatNumericDate(dateTime, venue?.timezone);
+      const timeZone = getActivityTimeZone(venues, a.activity);
+      const date = formatNumericDate(dateTime, timeZone);
 
       return {
         approxDateTime: dateTime.getTime(),
         date: date,
-        dateParts: getNumericDateFormatter(venue?.timezone).formatToParts(dateTime),
+        dateParts: getNumericDateFormatter(timeZone).formatToParts(dateTime),
       };
     })
     .filter((v, i, arr) => arr.findIndex(({ date }) => date === v.date) === i);
@@ -186,7 +201,6 @@ export const getGroupedAssignmentsByDate = (wcif: Competition, person: Person) =
 export const getAssignmentsWithParsedDate = (wcif: Competition, person: Person) => {
   const allAssignments = getAllAssignments(wcif, person);
   const venues = wcif.schedule.venues;
-  const rooms = getRooms(wcif);
 
   return allAssignments
     .map((assignment) => {
@@ -200,7 +214,10 @@ export const getAssignmentsWithParsedDate = (wcif: Competition, person: Person) 
         return {
           assignment,
           activity,
-          date: formatNumericDate(new Date(activity.startTime), venues[0].timezone),
+          date: formatNumericDate(
+            new Date(activity.startTime),
+            getActivityTimeZone(venues, activity),
+          ),
         };
       }
 
@@ -212,16 +229,12 @@ export const getAssignmentsWithParsedDate = (wcif: Competition, person: Person) 
           };
         }
 
-        const roomId = (activity.room || activity.parent?.room)?.id;
-
-        const venue = activity?.room?.id ? rooms.find((r) => r.id === roomId)?.venue : venues[0];
-
         const dateTime = new Date(activity.startTime);
 
         return {
           assignment,
           activity,
-          date: formatNumericDate(dateTime, venue?.timezone),
+          date: formatNumericDate(dateTime, getActivityTimeZone(venues, activity)),
         };
       }
     })
