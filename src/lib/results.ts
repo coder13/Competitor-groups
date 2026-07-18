@@ -13,6 +13,14 @@ export const renderResultByEventId = (
   rankingType: RankingType,
   result: AttemptResult,
 ) => {
+  if (result === -1) {
+    return 'DNF';
+  }
+
+  if (result === -2) {
+    return 'DNS';
+  }
+
   if (eventId === '333fm') {
     return rankingType === 'average' ? ((result as number) / 100).toFixed(2).toString() : result;
   }
