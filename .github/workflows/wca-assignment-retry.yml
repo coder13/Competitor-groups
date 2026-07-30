@@ -1,0 +1,128 @@
+name: Temporary WCA assignment retry
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/wca-assignment-retry.yml
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  retry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Download initial scan
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh run download 30577152714 --repo coder13/Competitor-groups --name wca-assignment-scan-2026-07-30 --dir input
+
+      - name: Retry rate-limited WCIF requests
+        shell: python
+        run: |
+          import csv, json, os, random, time, urllib.error, urllib.request
+          from collections import Counter
+          from concurrent.futures import ThreadPoolExecutor, as_completed
+
+          API = "https://www.worldcubeassociation.org/api/v0"
+          HEADERS = {"User-Agent": "competitiongroups.com assignment usage analysis retry"}
+          OUT = "assignment-retry"
+          os.makedirs(OUT, exist_ok=True)
+
+          with open("input/all_competitions.csv", newline="", encoding="utf-8") as source:
+              failed = [row for row in csv.DictReader(source) if row["wcif_status"] != "ok"]
+          print(f"Retrying {len(failed)} competitions", flush=True)
+
+          def get_json(url, attempts=10):
+              last = None
+              for attempt in range(attempts):
+                  try:
+                      request = urllib.request.Request(url, headers=HEADERS)
+                      with urllib.request.urlopen(request, timeout=45) as response:
+                          return json.loads(response.read().decode(response.headers.get_content_charset() or "utf-8"))
+                  except urllib.error.HTTPError as error:
+                      last = error
+                      if error.code in (404, 422):
+                          raise
+                      retry_after = error.headers.get("Retry-After") if error.headers else None
+                      delay = float(retry_after) if retry_after and retry_after.isdigit() else min(3 * (2 ** attempt), 90)
+                      time.sleep(delay + random.random())
+                  except (urllib.error.URLError, TimeoutError) as error:
+                      last = error
+                      time.sleep(min(2 ** attempt, 30) + random.random())
+              raise last
+
+          def scan(row):
+              cid = row["competition_id"]
+              result = {
+                  "competition_id": cid,
+                  "persons_total": 0,
+                  "persons_with_assignments": 0,
+                  "assignment_count": 0,
+                  "competitor_assignment_count": 0,
+                  "staff_assignment_count": 0,
+                  "other_assignment_count": 0,
+                  "assignment_codes": "",
+                  "has_person_assignments": False,
+                  "has_competitor_assignments": False,
+                  "has_staff_assignments": False,
+                  "wcif_status": "ok",
+                  "inference": "no assignment data",
+              }
+              try:
+                  wcif = get_json(f"{API}/competitions/{cid}/wcif/public")
+                  persons = wcif.get("persons") or []
+                  result["persons_total"] = len(persons)
+                  codes = Counter()
+                  for person in persons:
+                      assignments = person.get("assignments") or []
+                      result["persons_with_assignments"] += bool(assignments)
+                      for assignment in assignments:
+                          codes[assignment.get("assignmentCode") or "unknown"] += 1
+                  result["assignment_count"] = sum(codes.values())
+                  result["competitor_assignment_count"] = codes.get("competitor", 0)
+                  result["staff_assignment_count"] = sum(v for k, v in codes.items() if k.startswith("staff-"))
+                  result["other_assignment_count"] = result["assignment_count"] - result["competitor_assignment_count"] - result["staff_assignment_count"]
+                  result["assignment_codes"] = ";".join(f"{k}:{v}" for k, v in sorted(codes.items()))
+                  result["has_person_assignments"] = result["assignment_count"] > 0
+                  result["has_competitor_assignments"] = result["competitor_assignment_count"] > 0
+                  result["has_staff_assignments"] = result["staff_assignment_count"] > 0
+                  if result["has_person_assignments"]:
+                      result["inference"] = "potential Competition Groups user: assignment data present"
+              except urllib.error.HTTPError as error:
+                  result["wcif_status"] = f"http_{error.code}"
+              except Exception as error:
+                  result["wcif_status"] = f"error:{type(error).__name__}"
+              time.sleep(0.35 + random.random() * 0.3)
+              return result
+
+          results = []
+          with ThreadPoolExecutor(max_workers=2) as executor:
+              futures = [executor.submit(scan, row) for row in failed]
+              for index, future in enumerate(as_completed(futures), 1):
+                  results.append(future.result())
+                  if index % 10 == 0 or index == len(futures):
+                      print(f"Retried {index}/{len(futures)}", flush=True)
+
+          fields = list(results[0]) if results else []
+          with open(f"{OUT}/retry_results.csv", "w", newline="", encoding="utf-8") as output:
+              writer = csv.DictWriter(output, fieldnames=fields)
+              writer.writeheader(); writer.writerows(sorted(results, key=lambda row: row["competition_id"]))
+          summary = {
+              "retried": len(results),
+              "successful": sum(row["wcif_status"] == "ok" for row in results),
+              "remaining_failures": dict(Counter(row["wcif_status"] for row in results if row["wcif_status"] != "ok")),
+              "with_assignments": sum(bool(row["has_person_assignments"]) for row in results),
+          }
+          with open(f"{OUT}/retry_summary.json", "w", encoding="utf-8") as output:
+              json.dump(summary, output, indent=2)
+          print(json.dumps(summary, indent=2), flush=True)
+
+      - name: Upload retry results
+        uses: actions/upload-artifact@v4
+        with:
+          name: wca-assignment-retry-2026-07-30
+          path: assignment-retry/
+          retention-days: 7
