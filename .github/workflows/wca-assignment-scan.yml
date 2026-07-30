@@ -1,0 +1,194 @@
+name: Temporary WCA assignment scan
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/wca-assignment-scan.yml
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Scan public WCIF assignment data
+        shell: python
+        run: |
+          import csv
+          import json
+          import os
+          import re
+          import time
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from collections import Counter
+          from concurrent.futures import ThreadPoolExecutor, as_completed
+          from datetime import date
+
+          START = date.fromisoformat("2026-04-30")
+          END = date.fromisoformat("2026-07-30")
+          API = "https://www.worldcubeassociation.org/api/v0"
+          HEADERS = {"User-Agent": "competitiongroups.com assignment usage analysis"}
+          OUT = "assignment-scan"
+          os.makedirs(OUT, exist_ok=True)
+
+          def get(url, attempts=5):
+              last = None
+              for attempt in range(attempts):
+                  try:
+                      request = urllib.request.Request(url, headers=HEADERS)
+                      with urllib.request.urlopen(request, timeout=45) as response:
+                          return response.read(), response.headers.get_content_charset() or "utf-8"
+                  except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as error:
+                      last = error
+                      code = getattr(error, "code", None)
+                      if code in (404, 422):
+                          raise
+                      time.sleep(min(2 ** attempt, 12))
+              raise last
+
+          competitions = []
+          page = 1
+          while True:
+              query = urllib.parse.urlencode({
+                  "start": START.isoformat(),
+                  "end": END.isoformat(),
+                  "page": page,
+              })
+              body, charset = get(f"{API}/competitions?{query}")
+              batch = json.loads(body.decode(charset))
+              if not batch:
+                  break
+              competitions.extend(batch)
+              print(f"Competition page {page}: {len(batch)}")
+              if len(batch) < 25:
+                  break
+              page += 1
+
+          # Enforce the requested range explicitly in case API boundary semantics change.
+          competitions = [
+              competition for competition in competitions
+              if START <= date.fromisoformat(competition["start_date"]) <= END
+          ]
+          deduped = {competition["id"]: competition for competition in competitions}
+          competitions = sorted(deduped.values(), key=lambda item: (item["start_date"], item["id"]))
+          print(f"Competitions in final date range: {len(competitions)}")
+
+          def scan(competition):
+              competition_id = competition["id"]
+              row = {
+                  "competition_id": competition_id,
+                  "name": competition.get("name", ""),
+                  "start_date": competition.get("start_date", ""),
+                  "end_date": competition.get("end_date", ""),
+                  "country_iso2": competition.get("country_iso2", ""),
+                  "city": competition.get("city", ""),
+                  "cancelled": bool(competition.get("cancelled_at")),
+                  "persons_total": 0,
+                  "persons_with_assignments": 0,
+                  "assignment_count": 0,
+                  "competitor_assignment_count": 0,
+                  "staff_assignment_count": 0,
+                  "other_assignment_count": 0,
+                  "assignment_codes": "",
+                  "has_person_assignments": False,
+                  "has_competitor_assignments": False,
+                  "has_staff_assignments": False,
+                  "competitiongroups_link_on_wca_page": False,
+                  "wcif_status": "ok",
+                  "inference": "no assignment data",
+                  "wca_url": competition.get("url") or f"https://www.worldcubeassociation.org/competitions/{competition_id}",
+                  "competitiongroups_url": f"https://www.competitiongroups.com/competitions/{competition_id}",
+              }
+              try:
+                  body, charset = get(f"{API}/competitions/{competition_id}/wcif/public")
+                  wcif = json.loads(body.decode(charset))
+                  persons = wcif.get("persons") or []
+                  row["persons_total"] = len(persons)
+                  codes = Counter()
+                  for person in persons:
+                      assignments = person.get("assignments") or []
+                      if assignments:
+                          row["persons_with_assignments"] += 1
+                      for assignment in assignments:
+                          code = assignment.get("assignmentCode") or "unknown"
+                          codes[code] += 1
+                  row["assignment_count"] = sum(codes.values())
+                  row["competitor_assignment_count"] = codes.get("competitor", 0)
+                  row["staff_assignment_count"] = sum(count for code, count in codes.items() if code.startswith("staff-"))
+                  row["other_assignment_count"] = row["assignment_count"] - row["competitor_assignment_count"] - row["staff_assignment_count"]
+                  row["assignment_codes"] = ";".join(f"{code}:{count}" for code, count in sorted(codes.items()))
+                  row["has_person_assignments"] = row["assignment_count"] > 0
+                  row["has_competitor_assignments"] = row["competitor_assignment_count"] > 0
+                  row["has_staff_assignments"] = row["staff_assignment_count"] > 0
+              except urllib.error.HTTPError as error:
+                  row["wcif_status"] = f"http_{error.code}"
+              except Exception as error:
+                  row["wcif_status"] = f"error:{type(error).__name__}"
+
+              if row["has_person_assignments"]:
+                  try:
+                      body, charset = get(row["wca_url"], attempts=3)
+                      html = body.decode(charset, errors="replace")
+                      row["competitiongroups_link_on_wca_page"] = bool(
+                          re.search(r"(?:www\.)?competitiongroups\.com", html, re.I)
+                      )
+                  except Exception:
+                      pass
+                  row["inference"] = (
+                      "direct WCA-page link and assignment data"
+                      if row["competitiongroups_link_on_wca_page"]
+                      else "potential Competition Groups user: assignment data present"
+                  )
+              return row
+
+          rows = []
+          with ThreadPoolExecutor(max_workers=8) as executor:
+              futures = {executor.submit(scan, competition): competition["id"] for competition in competitions}
+              for index, future in enumerate(as_completed(futures), 1):
+                  rows.append(future.result())
+                  if index % 25 == 0 or index == len(futures):
+                      print(f"Scanned {index}/{len(futures)}")
+
+          rows.sort(key=lambda item: (item["start_date"], item["competition_id"]))
+          fields = list(rows[0].keys()) if rows else []
+          with open(f"{OUT}/all_competitions.csv", "w", newline="", encoding="utf-8") as output:
+              writer = csv.DictWriter(output, fieldnames=fields)
+              writer.writeheader()
+              writer.writerows(rows)
+          assignment_rows = [row for row in rows if row["has_person_assignments"]]
+          with open(f"{OUT}/competitions_with_assignments.csv", "w", newline="", encoding="utf-8") as output:
+              writer = csv.DictWriter(output, fieldnames=fields)
+              writer.writeheader()
+              writer.writerows(assignment_rows)
+
+          summary = {
+              "date_window": {"start": START.isoformat(), "end": END.isoformat(), "basis": "competition start_date"},
+              "competitions_total": len(rows),
+              "competitions_cancelled": sum(row["cancelled"] for row in rows),
+              "competitions_with_assignments": len(assignment_rows),
+              "assignment_coverage_percent": round(100 * len(assignment_rows) / len(rows), 2) if rows else 0,
+              "competitions_with_competitor_assignments": sum(row["has_competitor_assignments"] for row in rows),
+              "competitions_with_staff_assignments": sum(row["has_staff_assignments"] for row in rows),
+              "competitions_with_direct_wca_page_link": sum(row["competitiongroups_link_on_wca_page"] for row in rows),
+              "total_person_assignments": sum(row["assignment_count"] for row in rows),
+              "wcif_failures": Counter(row["wcif_status"] for row in rows if row["wcif_status"] != "ok"),
+              "by_country": Counter(row["country_iso2"] for row in assignment_rows),
+              "by_month": Counter(row["start_date"][:7] for row in assignment_rows),
+          }
+          summary["wcif_failures"] = dict(summary["wcif_failures"])
+          summary["by_country"] = dict(summary["by_country"].most_common())
+          summary["by_month"] = dict(sorted(summary["by_month"].items()))
+          with open(f"{OUT}/summary.json", "w", encoding="utf-8") as output:
+              json.dump(summary, output, indent=2, ensure_ascii=False)
+          print(json.dumps(summary, indent=2))
+
+      - name: Upload scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: wca-assignment-scan-2026-07-30
+          path: assignment-scan/
+          retention-days: 7
