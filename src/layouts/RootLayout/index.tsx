@@ -10,7 +10,7 @@ export function RootLayout() {
   return (
     <div className="flex flex-col flex-1 full-viewport-height overflow-hidden bg-app">
       <Header />
-      {updateAvailable && <AppUpdatePrompt onUpdate={() => updateSW(true)} />}
+      {updateAvailable && <AppUpdatePrompt onUpdate={updateSW} />}
       <main className="flex flex-1 flex-col w-full items-center overflow-hidden">
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Outlet />
