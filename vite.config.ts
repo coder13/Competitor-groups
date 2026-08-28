@@ -43,8 +43,10 @@ export default defineConfig(({ mode }) => ({
     viteTsconfigPaths(),
     ViteYaml(),
     VitePWA({
+      injectRegister: false,
       registerType: 'prompt',
       workbox: {
+        clientsClaim: true,
         importScripts: ['notification-sw.js'],
       },
     }),
