@@ -5,6 +5,7 @@ import {
   enableAssignmentNotifications,
   getAssignmentNotificationStatus,
   isAssignmentNotificationsEnabled,
+  testAssignmentNotifications,
 } from '@/lib/notifications/assignmentNotifications';
 
 interface UseAssignmentNotificationsParams {
@@ -20,7 +21,9 @@ export function useAssignmentNotifications({
     getAssignmentNotificationStatus,
   );
   const [isSaving, setIsSaving] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isEnabled, setIsEnabled] = useState(isAssignmentNotificationsEnabled);
 
   useEffect(() => {
@@ -39,9 +42,14 @@ export function useAssignmentNotifications({
     [competitions, user],
   );
 
+  const clearFeedback = useCallback(() => {
+    setError(null);
+    setSuccessMessage(null);
+  }, []);
+
   const enable = useCallback(async () => {
     setIsSaving(true);
-    setError(null);
+    clearFeedback();
 
     try {
       const nextStatus = await enableAssignmentNotifications(watches);
@@ -54,11 +62,11 @@ export function useAssignmentNotifications({
     } finally {
       setIsSaving(false);
     }
-  }, [watches]);
+  }, [clearFeedback, watches]);
 
   const disable = useCallback(async () => {
     setIsSaving(true);
-    setError(null);
+    clearFeedback();
 
     try {
       await disableAssignmentNotifications();
@@ -70,16 +78,37 @@ export function useAssignmentNotifications({
     } finally {
       setIsSaving(false);
     }
-  }, []);
+  }, [clearFeedback]);
+
+  const test = useCallback(async () => {
+    setIsTesting(true);
+    clearFeedback();
+
+    try {
+      await testAssignmentNotifications();
+      setSuccessMessage('Test notification sent.');
+      setIsEnabled(isAssignmentNotificationsEnabled());
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Unable to send test notification.');
+      setStatus(getAssignmentNotificationStatus());
+      setIsEnabled(isAssignmentNotificationsEnabled());
+    } finally {
+      setIsTesting(false);
+    }
+  }, [clearFeedback]);
 
   return {
     canEnable: (status === 'default' || status === 'granted') && !isEnabled && watches.length > 0,
     canDisable: status === 'granted' && isEnabled,
+    canTest: status === 'granted' && isEnabled,
     enable,
     disable,
     error,
+    isTesting,
     isSaving,
     status,
+    successMessage,
+    test,
     watchCount: watches.length,
   };
 }
