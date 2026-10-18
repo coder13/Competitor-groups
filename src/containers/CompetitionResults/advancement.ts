@@ -17,7 +17,7 @@ const getRankLimit = (
   }
 
   if (resultCondition.type === 'percent') {
-    return Math.ceil((resultCount * resultCondition.value) / 100);
+    return Math.floor((resultCount * resultCondition.value) / 100);
   }
 
   return null;
