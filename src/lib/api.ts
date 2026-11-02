@@ -1,5 +1,5 @@
-import { Competition } from '@wca/helpers';
 import { WCA_ORIGIN } from './wca-env';
+import { normalizeWcifV2, WcifV2 } from './wcifV2';
 
 export const wcaApiFetch = async <T>(path: string, fetchOptions: RequestInit = {}) => {
   const res = await fetch(`${WCA_ORIGIN}${path}`, fetchOptions);
@@ -53,7 +53,7 @@ export const fetchUserWithCompetitions = async (userId: string) =>
   wcaApiFetch<UserCompsResponse>(`/users/${userId}?${fetchUserWithCompetitionsParams.toString()}`);
 
 export const fetchWcif = async (competitionId: string) =>
-  wcaApiFetch<Competition>(`/competitions/${competitionId}/wcif/public`);
+  normalizeWcifV2(await wcaApiFetch<WcifV2>(`/competitions/${competitionId}/wcif/version/2`));
 
 export interface WcaCompetitionResult {
   id: number;

@@ -4,6 +4,7 @@ declare module '@wca/helpers' {
   export type ParticipationResultCondition =
     | {
         type: 'ranking' | 'percent';
+        scope?: 'single' | 'average';
         value: number;
       }
     | {
@@ -39,6 +40,7 @@ declare module '@wca/helpers' {
   }
 
   export interface Round {
+    linkedRounds?: string[] | null;
     participationRuleset?: ParticipationRuleset | null;
   }
 }
