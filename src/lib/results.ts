@@ -13,6 +13,10 @@ export const renderResultByEventId = (
   rankingType: RankingType,
   result: ResultValue,
 ) => {
+  if (result === -1 || result === -2) {
+    return formatCentiseconds(result);
+  }
+
   if (eventId === '333fm') {
     return rankingType === 'average' ? ((result as number) / 100).toFixed(2).toString() : result;
   }

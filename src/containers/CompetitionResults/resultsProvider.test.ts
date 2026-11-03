@@ -702,4 +702,42 @@ describe('resultsProvider', () => {
       ]);
     });
   });
+  it('keeps published dual-round IDs when a competitor skipped the first component', () => {
+    // Published Cube Against Cancer Hong Kong 2026 uses 1, 2 and f.
+    const competition: Competition = {
+      ...wcif,
+      events: wcif.events.map((event) => ({
+        ...event,
+        rounds: event.rounds.map((round, index) => ({
+          ...round,
+          results: [],
+          linkedRounds: index < 2 ? ['333-r1', '333-r2'] : null,
+        })),
+      })),
+    };
+    const results = getPersonalResultsFromSources({
+      wcif: competition,
+      person: persons[0],
+      wcaLiveResults: [],
+      wcaApiResults: [
+        apiResult({ round_type_id: '1', wca_id: persons[1].wcaId, name: persons[1].name }),
+        apiResult({
+          round_type_id: '2',
+          wca_id: persons[0].wcaId,
+          name: persons[0].name,
+          average: 900,
+        }),
+        apiResult({
+          round_type_id: 'f',
+          wca_id: persons[0].wcaId,
+          name: persons[0].name,
+          average: 850,
+        }),
+      ],
+    });
+    expect(results[0].rounds).toMatchObject([
+      { roundId: '333-r2', average: 900 },
+      { roundId: '333-r3', average: 850 },
+    ]);
+  });
 });

@@ -271,7 +271,9 @@ describe('CutoffTimeLimitPanel', () => {
   it('uses theme-aware popover classes for help content', () => {
     renderPanel(cutoffOnlyRound);
 
-    fireEvent.click(screen.getByRole('button', { name: /help/i }));
+    const helpButton = screen.getByRole('button', { name: /^help$/i, expanded: false });
+    fireEvent.click(helpButton);
+    expect(helpButton).toHaveAttribute('aria-expanded', 'true');
 
     const popoverContent = screen
       .getByText(/common\.cutoffTimeLimitPopover\.timeLimits/i)
@@ -280,6 +282,10 @@ describe('CutoffTimeLimitPanel', () => {
     expect(popoverContent).toHaveClass('bg-panel');
     expect(popoverContent).toHaveClass('text-default');
     expect(popoverContent).not.toHaveClass('bg-white');
+
+    fireEvent.click(helpButton);
+    expect(helpButton).toHaveAttribute('aria-expanded', 'false');
+    expect(popoverContent).not.toBeInTheDocument();
   });
 
   it('shows ranking advancement from the target round', () => {

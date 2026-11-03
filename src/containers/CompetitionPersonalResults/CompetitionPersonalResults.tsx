@@ -8,6 +8,7 @@ import { useWcaLiveCompetitorLink, useWcaLiveCompetitorResults } from '@/hooks/q
 import { useWcaCompetitionResults } from '@/hooks/queries/useWcaResults';
 import { isCompetitionDay } from '@/lib/competitionDates';
 import { AnchorLink, LinkRenderer } from '@/lib/linkRenderer';
+import { getLinkedRoundIds } from '@/lib/wcif';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { CompetitionPersonalResultsTable } from './CompetitionPersonalResultsTable';
 
@@ -75,6 +76,15 @@ export function CompetitionPersonalResultsContent({
           {eventResults.map((eventResult) => (
             <section key={eventResult.eventId} className="space-y-2">
               <h3 className="type-heading-sm">{eventResult.eventName}</h3>
+              {wcif.events
+                .find((event) => event.id === eventResult.eventId)
+                ?.rounds.some(
+                  (round, _, rounds) =>
+                    eventResult.rounds.some((result) => result.roundId === round.id) &&
+                    getLinkedRoundIds(rounds, round).length > 1,
+                ) && (
+                <p className="type-meta text-muted">{t('competition.results.dualPersonalNote')}</p>
+              )}
               <CompetitionPersonalResultsTable
                 competitionId={competitionId}
                 eventId={eventResult.eventId}

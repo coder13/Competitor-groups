@@ -57,3 +57,20 @@ export const getAdvancementConditionForRound = (
     reservedPlaces: ruleset?.reservedPlaces ?? null,
   };
 };
+
+/** Explicit WCIF links also describe dual finals, which have no advancement rules. */
+export const getLinkedRoundIds = (eventRounds: Round[], round: Round): string[] => {
+  const linkedIds =
+    round.linkedRounds ??
+    eventRounds.find((candidate) => candidate.linkedRounds?.includes(round.id))?.linkedRounds ??
+    eventRounds.flatMap((candidate) => {
+      const source = candidate.participationRuleset?.participationSource;
+      return source?.type === 'linkedRounds' && source.roundIds.includes(round.id)
+        ? source.roundIds
+        : [];
+    });
+  const ids = new Set(linkedIds);
+  if (ids.size === 0) return [];
+  ids.add(round.id);
+  return eventRounds.filter((candidate) => ids.has(candidate.id)).map((candidate) => candidate.id);
+};

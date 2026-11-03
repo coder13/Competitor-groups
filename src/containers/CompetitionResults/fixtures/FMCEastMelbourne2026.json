@@ -1,0 +1,513 @@
+[
+  {
+    "id": "333fm-r1",
+    "format": "m",
+    "timeLimit": null,
+    "cutoff": null,
+    "scrambleSetCount": 1,
+    "results": [
+      {
+        "personId": 7,
+        "ranking": 1,
+        "attempts": [
+          { "value": 27, "reconstruction": null },
+          { "value": 25, "reconstruction": null },
+          { "value": 19, "reconstruction": null }
+        ],
+        "best": 19,
+        "average": 2367
+      },
+      {
+        "personId": 3,
+        "ranking": 2,
+        "attempts": [
+          { "value": 24, "reconstruction": null },
+          { "value": 22, "reconstruction": null },
+          { "value": 19, "reconstruction": null }
+        ],
+        "best": 19,
+        "average": 2167
+      },
+      {
+        "personId": 20,
+        "ranking": 3,
+        "attempts": [
+          { "value": 27, "reconstruction": null },
+          { "value": 25, "reconstruction": null },
+          { "value": 21, "reconstruction": null }
+        ],
+        "best": 21,
+        "average": 2433
+      },
+      {
+        "personId": 1,
+        "ranking": 4,
+        "attempts": [
+          { "value": 25, "reconstruction": null },
+          { "value": 32, "reconstruction": null },
+          { "value": 39, "reconstruction": null }
+        ],
+        "best": 25,
+        "average": 3200
+      },
+      {
+        "personId": 19,
+        "ranking": 5,
+        "attempts": [
+          { "value": 35, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 31, "reconstruction": null }
+        ],
+        "best": 31,
+        "average": -1
+      },
+      {
+        "personId": 23,
+        "ranking": 6,
+        "attempts": [
+          { "value": 39, "reconstruction": null },
+          { "value": 40, "reconstruction": null },
+          { "value": 37, "reconstruction": null }
+        ],
+        "best": 37,
+        "average": 3867
+      },
+      {
+        "personId": 18,
+        "ranking": 7,
+        "attempts": [
+          { "value": 50, "reconstruction": null },
+          { "value": 55, "reconstruction": null },
+          { "value": 56, "reconstruction": null }
+        ],
+        "best": 50,
+        "average": 5367
+      },
+      {
+        "personId": 6,
+        "ranking": 8,
+        "attempts": [
+          { "value": 42, "reconstruction": null },
+          { "value": 38, "reconstruction": null },
+          { "value": 47, "reconstruction": null }
+        ],
+        "best": 38,
+        "average": 4233
+      },
+      {
+        "personId": 4,
+        "ranking": 9,
+        "attempts": [
+          { "value": 38, "reconstruction": null },
+          { "value": 50, "reconstruction": null },
+          { "value": 48, "reconstruction": null }
+        ],
+        "best": 38,
+        "average": 4533
+      },
+      {
+        "personId": 16,
+        "ranking": 10,
+        "attempts": [
+          { "value": 48, "reconstruction": null },
+          { "value": 51, "reconstruction": null },
+          { "value": 51, "reconstruction": null }
+        ],
+        "best": 48,
+        "average": 5000
+      },
+      {
+        "personId": 2,
+        "ranking": 11,
+        "attempts": [
+          { "value": -1, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 30, "reconstruction": null }
+        ],
+        "best": 30,
+        "average": -1
+      },
+      {
+        "personId": 15,
+        "ranking": 12,
+        "attempts": [
+          { "value": -2, "reconstruction": null },
+          { "value": -2, "reconstruction": null },
+          { "value": 40, "reconstruction": null }
+        ],
+        "best": 40,
+        "average": -1
+      },
+      {
+        "personId": 5,
+        "ranking": 13,
+        "attempts": [
+          { "value": 31, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": -1, "reconstruction": null }
+        ],
+        "best": 31,
+        "average": -1
+      },
+      {
+        "personId": 10,
+        "ranking": 14,
+        "attempts": [
+          { "value": 35, "reconstruction": null },
+          { "value": 40, "reconstruction": null },
+          { "value": -1, "reconstruction": null }
+        ],
+        "best": 35,
+        "average": -1
+      },
+      {
+        "personId": 9,
+        "ranking": 15,
+        "attempts": [
+          { "value": -1, "reconstruction": null },
+          { "value": 37, "reconstruction": null },
+          { "value": -1, "reconstruction": null }
+        ],
+        "best": 37,
+        "average": -1
+      },
+      {
+        "personId": 22,
+        "ranking": 16,
+        "attempts": [
+          { "value": 46, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 50, "reconstruction": null }
+        ],
+        "best": 46,
+        "average": -1
+      }
+    ],
+    "extensions": [],
+    "linkedRounds": ["333fm-r1", "333fm-r2"],
+    "participationRuleset": {
+      "participationSource": { "type": "registrations" },
+      "reservedPlaces": null
+    }
+  },
+  {
+    "id": "333fm-r2",
+    "format": "m",
+    "timeLimit": null,
+    "cutoff": null,
+    "scrambleSetCount": 1,
+    "results": [
+      {
+        "personId": 7,
+        "ranking": 1,
+        "attempts": [
+          { "value": 20, "reconstruction": null },
+          { "value": 20, "reconstruction": null },
+          { "value": 22, "reconstruction": null }
+        ],
+        "best": 20,
+        "average": 2067
+      },
+      {
+        "personId": 3,
+        "ranking": 2,
+        "attempts": [
+          { "value": 21, "reconstruction": null },
+          { "value": 20, "reconstruction": null },
+          { "value": 23, "reconstruction": null }
+        ],
+        "best": 20,
+        "average": 2133
+      },
+      {
+        "personId": 20,
+        "ranking": 3,
+        "attempts": [
+          { "value": 23, "reconstruction": null },
+          { "value": 22, "reconstruction": null },
+          { "value": 22, "reconstruction": null }
+        ],
+        "best": 22,
+        "average": 2233
+      },
+      {
+        "personId": 1,
+        "ranking": 4,
+        "attempts": [
+          { "value": 34, "reconstruction": null },
+          { "value": 32, "reconstruction": null },
+          { "value": 29, "reconstruction": null }
+        ],
+        "best": 29,
+        "average": 3167
+      },
+      {
+        "personId": 19,
+        "ranking": 5,
+        "attempts": [
+          { "value": 39, "reconstruction": null },
+          { "value": 28, "reconstruction": null },
+          { "value": 38, "reconstruction": null }
+        ],
+        "best": 28,
+        "average": 3500
+      },
+      {
+        "personId": 23,
+        "ranking": 6,
+        "attempts": [
+          { "value": -1, "reconstruction": null },
+          { "value": 39, "reconstruction": null },
+          { "value": 34, "reconstruction": null }
+        ],
+        "best": 34,
+        "average": -1
+      },
+      {
+        "personId": 18,
+        "ranking": 7,
+        "attempts": [
+          { "value": 43, "reconstruction": null },
+          { "value": 43, "reconstruction": null },
+          { "value": 40, "reconstruction": null }
+        ],
+        "best": 40,
+        "average": 4200
+      },
+      {
+        "personId": 6,
+        "ranking": 8,
+        "attempts": [
+          { "value": -1, "reconstruction": null },
+          { "value": 41, "reconstruction": null },
+          { "value": 32, "reconstruction": null }
+        ],
+        "best": 32,
+        "average": -1
+      },
+      {
+        "personId": 4,
+        "ranking": 9,
+        "attempts": [
+          { "value": 43, "reconstruction": null },
+          { "value": 41, "reconstruction": null },
+          { "value": 43, "reconstruction": null }
+        ],
+        "best": 41,
+        "average": 4233
+      },
+      {
+        "personId": 2,
+        "ranking": 11,
+        "attempts": [
+          { "value": -1, "reconstruction": null },
+          { "value": 24, "reconstruction": null },
+          { "value": 25, "reconstruction": null }
+        ],
+        "best": 24,
+        "average": -1
+      },
+      {
+        "personId": 15,
+        "ranking": 12,
+        "attempts": [
+          { "value": 27, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": -1, "reconstruction": null }
+        ],
+        "best": 27,
+        "average": -1
+      },
+      {
+        "personId": 5,
+        "ranking": 13,
+        "attempts": [
+          { "value": 31, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 34, "reconstruction": null }
+        ],
+        "best": 31,
+        "average": -1
+      },
+      {
+        "personId": 10,
+        "ranking": 14,
+        "attempts": [
+          { "value": 37, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": -2, "reconstruction": null }
+        ],
+        "best": 37,
+        "average": -1
+      },
+      {
+        "personId": 9,
+        "ranking": 15,
+        "attempts": [
+          { "value": -1, "reconstruction": null },
+          { "value": 38, "reconstruction": null },
+          { "value": 36, "reconstruction": null }
+        ],
+        "best": 36,
+        "average": -1
+      },
+      {
+        "personId": 22,
+        "ranking": 16,
+        "attempts": [
+          { "value": 42, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 49, "reconstruction": null }
+        ],
+        "best": 42,
+        "average": -1
+      }
+    ],
+    "extensions": [],
+    "linkedRounds": ["333fm-r1", "333fm-r2"],
+    "participationRuleset": {
+      "participationSource": { "type": "registrations" },
+      "reservedPlaces": null
+    }
+  },
+  {
+    "id": "333fm-r3",
+    "format": "m",
+    "timeLimit": null,
+    "cutoff": null,
+    "scrambleSetCount": 1,
+    "results": [
+      {
+        "personId": 3,
+        "ranking": 1,
+        "attempts": [
+          { "value": 23, "reconstruction": null },
+          { "value": 21, "reconstruction": null },
+          { "value": 20, "reconstruction": null }
+        ],
+        "best": 20,
+        "average": 2133
+      },
+      {
+        "personId": 7,
+        "ranking": 2,
+        "attempts": [
+          { "value": 25, "reconstruction": null },
+          { "value": 19, "reconstruction": null },
+          { "value": 22, "reconstruction": null }
+        ],
+        "best": 19,
+        "average": 2200
+      },
+      {
+        "personId": 2,
+        "ranking": 3,
+        "attempts": [
+          { "value": 27, "reconstruction": null },
+          { "value": 29, "reconstruction": null },
+          { "value": 26, "reconstruction": null }
+        ],
+        "best": 26,
+        "average": 2733
+      },
+      {
+        "personId": 1,
+        "ranking": 4,
+        "attempts": [
+          { "value": 31, "reconstruction": null },
+          { "value": 30, "reconstruction": null },
+          { "value": 33, "reconstruction": null }
+        ],
+        "best": 30,
+        "average": 3133
+      },
+      {
+        "personId": 9,
+        "ranking": 5,
+        "attempts": [
+          { "value": 41, "reconstruction": null },
+          { "value": 37, "reconstruction": null },
+          { "value": 40, "reconstruction": null }
+        ],
+        "best": 37,
+        "average": 3933
+      },
+      {
+        "personId": 4,
+        "ranking": 6,
+        "attempts": [
+          { "value": 47, "reconstruction": null },
+          { "value": 47, "reconstruction": null },
+          { "value": 31, "reconstruction": null }
+        ],
+        "best": 31,
+        "average": 4167
+      },
+      {
+        "personId": 6,
+        "ranking": 7,
+        "attempts": [
+          { "value": 43, "reconstruction": null },
+          { "value": 41, "reconstruction": null },
+          { "value": 46, "reconstruction": null }
+        ],
+        "best": 41,
+        "average": 4333
+      },
+      {
+        "personId": 18,
+        "ranking": 8,
+        "attempts": [
+          { "value": 49, "reconstruction": null },
+          { "value": 43, "reconstruction": null },
+          { "value": 45, "reconstruction": null }
+        ],
+        "best": 43,
+        "average": 4567
+      },
+      {
+        "personId": 22,
+        "ranking": 9,
+        "attempts": [
+          { "value": 41, "reconstruction": null },
+          { "value": 53, "reconstruction": null },
+          { "value": 51, "reconstruction": null }
+        ],
+        "best": 41,
+        "average": 4833
+      },
+      {
+        "personId": 15,
+        "ranking": 10,
+        "attempts": [
+          { "value": -1, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 29, "reconstruction": null }
+        ],
+        "best": 29,
+        "average": -1
+      },
+      {
+        "personId": 5,
+        "ranking": 11,
+        "attempts": [
+          { "value": 33, "reconstruction": null },
+          { "value": 41, "reconstruction": null },
+          { "value": -1, "reconstruction": null }
+        ],
+        "best": 33,
+        "average": -1
+      }
+    ],
+    "extensions": [],
+    "linkedRounds": null,
+    "participationRuleset": {
+      "participationSource": {
+        "type": "linkedRounds",
+        "roundIds": ["333fm-r1", "333fm-r2"],
+        "resultCondition": { "type": "percent", "scope": "average", "value": 75 }
+      },
+      "reservedPlaces": null
+    }
+  }
+]

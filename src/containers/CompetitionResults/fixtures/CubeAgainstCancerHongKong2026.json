@@ -1,0 +1,1663 @@
+[
+  {
+    "id": "333-r1",
+    "format": "a",
+    "timeLimit": { "centiseconds": 30000, "cumulativeRoundIds": [] },
+    "cutoff": null,
+    "scrambleSetCount": 6,
+    "results": [
+      {
+        "personId": 16,
+        "ranking": 1,
+        "attempts": [
+          { "value": 631, "reconstruction": null },
+          { "value": 683, "reconstruction": null },
+          { "value": 601, "reconstruction": null },
+          { "value": 629, "reconstruction": null },
+          { "value": 700, "reconstruction": null }
+        ],
+        "best": 601,
+        "average": 648
+      },
+      {
+        "personId": 24,
+        "ranking": 2,
+        "attempts": [
+          { "value": 785, "reconstruction": null },
+          { "value": 522, "reconstruction": null },
+          { "value": 754, "reconstruction": null },
+          { "value": 1197, "reconstruction": null },
+          { "value": 790, "reconstruction": null }
+        ],
+        "best": 522,
+        "average": 776
+      },
+      {
+        "personId": 18,
+        "ranking": 3,
+        "attempts": [
+          { "value": 691, "reconstruction": null },
+          { "value": 870, "reconstruction": null },
+          { "value": 850, "reconstruction": null },
+          { "value": 938, "reconstruction": null },
+          { "value": 882, "reconstruction": null }
+        ],
+        "best": 691,
+        "average": 867
+      },
+      {
+        "personId": 13,
+        "ranking": 4,
+        "attempts": [
+          { "value": 823, "reconstruction": null },
+          { "value": 769, "reconstruction": null },
+          { "value": 861, "reconstruction": null },
+          { "value": 750, "reconstruction": null },
+          { "value": 892, "reconstruction": null }
+        ],
+        "best": 750,
+        "average": 818
+      },
+      {
+        "personId": 30,
+        "ranking": 5,
+        "attempts": [
+          { "value": 944, "reconstruction": null },
+          { "value": 804, "reconstruction": null },
+          { "value": 1251, "reconstruction": null },
+          { "value": 785, "reconstruction": null },
+          { "value": 801, "reconstruction": null }
+        ],
+        "best": 785,
+        "average": 850
+      },
+      {
+        "personId": 31,
+        "ranking": 6,
+        "attempts": [
+          { "value": 1963, "reconstruction": null },
+          { "value": 698, "reconstruction": null },
+          { "value": 883, "reconstruction": null },
+          { "value": 800, "reconstruction": null },
+          { "value": 809, "reconstruction": null }
+        ],
+        "best": 698,
+        "average": 831
+      },
+      {
+        "personId": 6,
+        "ranking": 7,
+        "attempts": [
+          { "value": 792, "reconstruction": null },
+          { "value": 871, "reconstruction": null },
+          { "value": 697, "reconstruction": null },
+          { "value": 952, "reconstruction": null },
+          { "value": 1091, "reconstruction": null }
+        ],
+        "best": 697,
+        "average": 872
+      },
+      {
+        "personId": 41,
+        "ranking": 8,
+        "attempts": [
+          { "value": 908, "reconstruction": null },
+          { "value": 853, "reconstruction": null },
+          { "value": 683, "reconstruction": null },
+          { "value": 757, "reconstruction": null },
+          { "value": 1014, "reconstruction": null }
+        ],
+        "best": 683,
+        "average": 839
+      },
+      {
+        "personId": 49,
+        "ranking": 9,
+        "attempts": [
+          { "value": 865, "reconstruction": null },
+          { "value": 869, "reconstruction": null },
+          { "value": 722, "reconstruction": null },
+          { "value": 813, "reconstruction": null },
+          { "value": 1355, "reconstruction": null }
+        ],
+        "best": 722,
+        "average": 849
+      },
+      {
+        "personId": 10,
+        "ranking": 10,
+        "attempts": [
+          { "value": 846, "reconstruction": null },
+          { "value": 826, "reconstruction": null },
+          { "value": 895, "reconstruction": null },
+          { "value": 838, "reconstruction": null },
+          { "value": 988, "reconstruction": null }
+        ],
+        "best": 826,
+        "average": 860
+      },
+      {
+        "personId": 58,
+        "ranking": 11,
+        "attempts": [
+          { "value": 938, "reconstruction": null },
+          { "value": 959, "reconstruction": null },
+          { "value": 931, "reconstruction": null },
+          { "value": 1012, "reconstruction": null },
+          { "value": 986, "reconstruction": null }
+        ],
+        "best": 931,
+        "average": 961
+      },
+      {
+        "personId": 25,
+        "ranking": 12,
+        "attempts": [
+          { "value": 1379, "reconstruction": null },
+          { "value": 921, "reconstruction": null },
+          { "value": 833, "reconstruction": null },
+          { "value": 1042, "reconstruction": null },
+          { "value": 1082, "reconstruction": null }
+        ],
+        "best": 833,
+        "average": 1015
+      },
+      {
+        "personId": 15,
+        "ranking": 13,
+        "attempts": [
+          { "value": -1, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": -1, "reconstruction": null }
+        ],
+        "best": -1,
+        "average": -1
+      },
+      {
+        "personId": 28,
+        "ranking": 14,
+        "attempts": [
+          { "value": 1686, "reconstruction": null },
+          { "value": 1082, "reconstruction": null },
+          { "value": 893, "reconstruction": null },
+          { "value": 1262, "reconstruction": null },
+          { "value": 984, "reconstruction": null }
+        ],
+        "best": 893,
+        "average": 1109
+      },
+      {
+        "personId": 22,
+        "ranking": 15,
+        "attempts": [
+          { "value": 1265, "reconstruction": null },
+          { "value": 774, "reconstruction": null },
+          { "value": 906, "reconstruction": null },
+          { "value": 928, "reconstruction": null },
+          { "value": 1066, "reconstruction": null }
+        ],
+        "best": 774,
+        "average": 967
+      },
+      {
+        "personId": 34,
+        "ranking": 16,
+        "attempts": [
+          { "value": 1031, "reconstruction": null },
+          { "value": 1317, "reconstruction": null },
+          { "value": 807, "reconstruction": null },
+          { "value": 958, "reconstruction": null },
+          { "value": 995, "reconstruction": null }
+        ],
+        "best": 807,
+        "average": 995
+      },
+      {
+        "personId": 32,
+        "ranking": 17,
+        "attempts": [
+          { "value": 1131, "reconstruction": null },
+          { "value": 1016, "reconstruction": null },
+          { "value": 915, "reconstruction": null },
+          { "value": 1057, "reconstruction": null },
+          { "value": 947, "reconstruction": null }
+        ],
+        "best": 915,
+        "average": 1007
+      },
+      {
+        "personId": 12,
+        "ranking": 18,
+        "attempts": [
+          { "value": 1325, "reconstruction": null },
+          { "value": 986, "reconstruction": null },
+          { "value": 916, "reconstruction": null },
+          { "value": 1024, "reconstruction": null },
+          { "value": 1024, "reconstruction": null }
+        ],
+        "best": 916,
+        "average": 1011
+      },
+      {
+        "personId": 9,
+        "ranking": 19,
+        "attempts": [
+          { "value": 1458, "reconstruction": null },
+          { "value": 1164, "reconstruction": null },
+          { "value": 1062, "reconstruction": null },
+          { "value": 1110, "reconstruction": null },
+          { "value": 1038, "reconstruction": null }
+        ],
+        "best": 1038,
+        "average": 1112
+      },
+      {
+        "personId": 50,
+        "ranking": 20,
+        "attempts": [
+          { "value": 1018, "reconstruction": null },
+          { "value": 1164, "reconstruction": null },
+          { "value": 884, "reconstruction": null },
+          { "value": 1039, "reconstruction": null },
+          { "value": 1126, "reconstruction": null }
+        ],
+        "best": 884,
+        "average": 1061
+      },
+      {
+        "personId": 5,
+        "ranking": 21,
+        "attempts": [
+          { "value": 967, "reconstruction": null },
+          { "value": 1379, "reconstruction": null },
+          { "value": 1130, "reconstruction": null },
+          { "value": 1188, "reconstruction": null },
+          { "value": 1073, "reconstruction": null }
+        ],
+        "best": 967,
+        "average": 1130
+      },
+      {
+        "personId": 23,
+        "ranking": 22,
+        "attempts": [
+          { "value": 1022, "reconstruction": null },
+          { "value": 1052, "reconstruction": null },
+          { "value": 919, "reconstruction": null },
+          { "value": 1300, "reconstruction": null },
+          { "value": 1412, "reconstruction": null }
+        ],
+        "best": 919,
+        "average": 1125
+      },
+      {
+        "personId": 19,
+        "ranking": 23,
+        "attempts": [
+          { "value": 810, "reconstruction": null },
+          { "value": 1932, "reconstruction": null },
+          { "value": 905, "reconstruction": null },
+          { "value": 1128, "reconstruction": null },
+          { "value": -1, "reconstruction": null }
+        ],
+        "best": 810,
+        "average": 1322
+      },
+      {
+        "personId": 21,
+        "ranking": 24,
+        "attempts": [
+          { "value": 923, "reconstruction": null },
+          { "value": 1035, "reconstruction": null },
+          { "value": 1229, "reconstruction": null },
+          { "value": 1933, "reconstruction": null },
+          { "value": 1525, "reconstruction": null }
+        ],
+        "best": 923,
+        "average": 1263
+      },
+      {
+        "personId": 20,
+        "ranking": 25,
+        "attempts": [
+          { "value": 949, "reconstruction": null },
+          { "value": 1141, "reconstruction": null },
+          { "value": 1139, "reconstruction": null },
+          { "value": 1340, "reconstruction": null },
+          { "value": 1182, "reconstruction": null }
+        ],
+        "best": 949,
+        "average": 1154
+      },
+      {
+        "personId": 35,
+        "ranking": 26,
+        "attempts": [
+          { "value": 1366, "reconstruction": null },
+          { "value": 1479, "reconstruction": null },
+          { "value": 994, "reconstruction": null },
+          { "value": 1038, "reconstruction": null },
+          { "value": 928, "reconstruction": null }
+        ],
+        "best": 928,
+        "average": 1133
+      },
+      {
+        "personId": 48,
+        "ranking": 27,
+        "attempts": [
+          { "value": 1262, "reconstruction": null },
+          { "value": 1212, "reconstruction": null },
+          { "value": 1171, "reconstruction": null },
+          { "value": 1185, "reconstruction": null },
+          { "value": 1215, "reconstruction": null }
+        ],
+        "best": 1171,
+        "average": 1204
+      },
+      {
+        "personId": 38,
+        "ranking": 28,
+        "attempts": [
+          { "value": 1538, "reconstruction": null },
+          { "value": 1356, "reconstruction": null },
+          { "value": 1267, "reconstruction": null },
+          { "value": 1212, "reconstruction": null },
+          { "value": 1074, "reconstruction": null }
+        ],
+        "best": 1074,
+        "average": 1278
+      },
+      {
+        "personId": 17,
+        "ranking": 29,
+        "attempts": [
+          { "value": 1105, "reconstruction": null },
+          { "value": 1118, "reconstruction": null },
+          { "value": 1143, "reconstruction": null },
+          { "value": 1391, "reconstruction": null },
+          { "value": 1725, "reconstruction": null }
+        ],
+        "best": 1105,
+        "average": 1217
+      },
+      {
+        "personId": 43,
+        "ranking": 30,
+        "attempts": [
+          { "value": 1216, "reconstruction": null },
+          { "value": 1304, "reconstruction": null },
+          { "value": 1203, "reconstruction": null },
+          { "value": 1306, "reconstruction": null },
+          { "value": 1508, "reconstruction": null }
+        ],
+        "best": 1203,
+        "average": 1275
+      },
+      {
+        "personId": 2,
+        "ranking": 31,
+        "attempts": [
+          { "value": 1173, "reconstruction": null },
+          { "value": 1269, "reconstruction": null },
+          { "value": 1175, "reconstruction": null },
+          { "value": 1510, "reconstruction": null },
+          { "value": 1226, "reconstruction": null }
+        ],
+        "best": 1173,
+        "average": 1223
+      },
+      {
+        "personId": 4,
+        "ranking": 32,
+        "attempts": [
+          { "value": 1232, "reconstruction": null },
+          { "value": 2772, "reconstruction": null },
+          { "value": 1488, "reconstruction": null },
+          { "value": 1133, "reconstruction": null },
+          { "value": 1112, "reconstruction": null }
+        ],
+        "best": 1112,
+        "average": 1284
+      },
+      {
+        "personId": 7,
+        "ranking": 33,
+        "attempts": [
+          { "value": 1444, "reconstruction": null },
+          { "value": 1282, "reconstruction": null },
+          { "value": 1327, "reconstruction": null },
+          { "value": 1587, "reconstruction": null },
+          { "value": 1392, "reconstruction": null }
+        ],
+        "best": 1282,
+        "average": 1388
+      },
+      {
+        "personId": 36,
+        "ranking": 34,
+        "attempts": [
+          { "value": 1131, "reconstruction": null },
+          { "value": 1614, "reconstruction": null },
+          { "value": 1271, "reconstruction": null },
+          { "value": 1636, "reconstruction": null },
+          { "value": 1185, "reconstruction": null }
+        ],
+        "best": 1131,
+        "average": 1357
+      },
+      {
+        "personId": 60,
+        "ranking": 35,
+        "attempts": [
+          { "value": 1300, "reconstruction": null },
+          { "value": 1515, "reconstruction": null },
+          { "value": 1684, "reconstruction": null },
+          { "value": 1363, "reconstruction": null },
+          { "value": 1676, "reconstruction": null }
+        ],
+        "best": 1300,
+        "average": 1518
+      },
+      {
+        "personId": 3,
+        "ranking": 36,
+        "attempts": [
+          { "value": 1514, "reconstruction": null },
+          { "value": 1411, "reconstruction": null },
+          { "value": 1354, "reconstruction": null },
+          { "value": 1123, "reconstruction": null },
+          { "value": 1404, "reconstruction": null }
+        ],
+        "best": 1123,
+        "average": 1390
+      },
+      {
+        "personId": 27,
+        "ranking": 37,
+        "attempts": [
+          { "value": 1344, "reconstruction": null },
+          { "value": 1166, "reconstruction": null },
+          { "value": 1452, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 1407, "reconstruction": null }
+        ],
+        "best": 1166,
+        "average": 1401
+      },
+      {
+        "personId": 51,
+        "ranking": 38,
+        "attempts": [
+          { "value": 1970, "reconstruction": null },
+          { "value": 1936, "reconstruction": null },
+          { "value": 1694, "reconstruction": null },
+          { "value": 2052, "reconstruction": null },
+          { "value": 1636, "reconstruction": null }
+        ],
+        "best": 1636,
+        "average": 1867
+      },
+      {
+        "personId": 59,
+        "ranking": 39,
+        "attempts": [
+          { "value": 1438, "reconstruction": null },
+          { "value": 1361, "reconstruction": null },
+          { "value": 1574, "reconstruction": null },
+          { "value": 1598, "reconstruction": null },
+          { "value": 1386, "reconstruction": null }
+        ],
+        "best": 1361,
+        "average": 1466
+      },
+      {
+        "personId": 46,
+        "ranking": 40,
+        "attempts": [
+          { "value": 1470, "reconstruction": null },
+          { "value": 1453, "reconstruction": null },
+          { "value": 1489, "reconstruction": null },
+          { "value": 1429, "reconstruction": null },
+          { "value": 1996, "reconstruction": null }
+        ],
+        "best": 1429,
+        "average": 1471
+      },
+      {
+        "personId": 63,
+        "ranking": 41,
+        "attempts": [
+          { "value": 1238, "reconstruction": null },
+          { "value": 1540, "reconstruction": null },
+          { "value": 1490, "reconstruction": null },
+          { "value": 1387, "reconstruction": null },
+          { "value": 1605, "reconstruction": null }
+        ],
+        "best": 1238,
+        "average": 1472
+      },
+      {
+        "personId": 47,
+        "ranking": 42,
+        "attempts": [
+          { "value": 1415, "reconstruction": null },
+          { "value": 1575, "reconstruction": null },
+          { "value": 1211, "reconstruction": null },
+          { "value": 1682, "reconstruction": null },
+          { "value": 1548, "reconstruction": null }
+        ],
+        "best": 1211,
+        "average": 1513
+      },
+      {
+        "personId": 40,
+        "ranking": 43,
+        "attempts": [
+          { "value": 1752, "reconstruction": null },
+          { "value": 1890, "reconstruction": null },
+          { "value": 1608, "reconstruction": null },
+          { "value": 3054, "reconstruction": null },
+          { "value": 1818, "reconstruction": null }
+        ],
+        "best": 1608,
+        "average": 1820
+      },
+      {
+        "personId": 26,
+        "ranking": 44,
+        "attempts": [
+          { "value": 1572, "reconstruction": null },
+          { "value": 1498, "reconstruction": null },
+          { "value": 1871, "reconstruction": null },
+          { "value": 1974, "reconstruction": null },
+          { "value": 1630, "reconstruction": null }
+        ],
+        "best": 1498,
+        "average": 1691
+      },
+      {
+        "personId": 52,
+        "ranking": 45,
+        "attempts": [
+          { "value": 1947, "reconstruction": null },
+          { "value": 2085, "reconstruction": null },
+          { "value": 1735, "reconstruction": null },
+          { "value": 2213, "reconstruction": null },
+          { "value": 1642, "reconstruction": null }
+        ],
+        "best": 1642,
+        "average": 1922
+      },
+      {
+        "personId": 42,
+        "ranking": 46,
+        "attempts": [
+          { "value": 1633, "reconstruction": null },
+          { "value": 1937, "reconstruction": null },
+          { "value": 1881, "reconstruction": null },
+          { "value": 1188, "reconstruction": null },
+          { "value": 2042, "reconstruction": null }
+        ],
+        "best": 1188,
+        "average": 1817
+      },
+      {
+        "personId": 55,
+        "ranking": 47,
+        "attempts": [
+          { "value": -1, "reconstruction": null },
+          { "value": 1988, "reconstruction": null },
+          { "value": 1700, "reconstruction": null },
+          { "value": 1609, "reconstruction": null },
+          { "value": 1736, "reconstruction": null }
+        ],
+        "best": 1609,
+        "average": 1808
+      },
+      {
+        "personId": 57,
+        "ranking": 48,
+        "attempts": [
+          { "value": 2094, "reconstruction": null },
+          { "value": 2193, "reconstruction": null },
+          { "value": 1729, "reconstruction": null },
+          { "value": 2226, "reconstruction": null },
+          { "value": 2215, "reconstruction": null }
+        ],
+        "best": 1729,
+        "average": 2167
+      },
+      {
+        "personId": 45,
+        "ranking": 49,
+        "attempts": [
+          { "value": 2159, "reconstruction": null },
+          { "value": 2520, "reconstruction": null },
+          { "value": 2105, "reconstruction": null },
+          { "value": 1943, "reconstruction": null },
+          { "value": 1994, "reconstruction": null }
+        ],
+        "best": 1943,
+        "average": 2086
+      },
+      {
+        "personId": 14,
+        "ranking": 50,
+        "attempts": [
+          { "value": 2213, "reconstruction": null },
+          { "value": 2470, "reconstruction": null },
+          { "value": 2564, "reconstruction": null },
+          { "value": 1747, "reconstruction": null },
+          { "value": 2799, "reconstruction": null }
+        ],
+        "best": 1747,
+        "average": 2416
+      },
+      {
+        "personId": 8,
+        "ranking": 51,
+        "attempts": [
+          { "value": 1838, "reconstruction": null },
+          { "value": 3496, "reconstruction": null },
+          { "value": 3722, "reconstruction": null },
+          { "value": 3489, "reconstruction": null },
+          { "value": 1896, "reconstruction": null }
+        ],
+        "best": 1838,
+        "average": 2960
+      },
+      {
+        "personId": 33,
+        "ranking": 52,
+        "attempts": [
+          { "value": 2445, "reconstruction": null },
+          { "value": 2052, "reconstruction": null },
+          { "value": 2207, "reconstruction": null },
+          { "value": 2209, "reconstruction": null },
+          { "value": 2126, "reconstruction": null }
+        ],
+        "best": 2052,
+        "average": 2181
+      },
+      {
+        "personId": 37,
+        "ranking": 53,
+        "attempts": [
+          { "value": 2354, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 2157, "reconstruction": null },
+          { "value": 2297, "reconstruction": null },
+          { "value": 2121, "reconstruction": null }
+        ],
+        "best": 2121,
+        "average": 2269
+      },
+      {
+        "personId": 1,
+        "ranking": 54,
+        "attempts": [
+          { "value": 2987, "reconstruction": null },
+          { "value": 1929, "reconstruction": null },
+          { "value": 2251, "reconstruction": null },
+          { "value": 2600, "reconstruction": null },
+          { "value": 2569, "reconstruction": null }
+        ],
+        "best": 1929,
+        "average": 2473
+      },
+      {
+        "personId": 61,
+        "ranking": 55,
+        "attempts": [
+          { "value": 2324, "reconstruction": null },
+          { "value": 2899, "reconstruction": null },
+          { "value": 1758, "reconstruction": null },
+          { "value": 2659, "reconstruction": null },
+          { "value": 2721, "reconstruction": null }
+        ],
+        "best": 1758,
+        "average": 2568
+      },
+      {
+        "personId": 11,
+        "ranking": 56,
+        "attempts": [
+          { "value": 3056, "reconstruction": null },
+          { "value": 3422, "reconstruction": null },
+          { "value": 3105, "reconstruction": null },
+          { "value": 3126, "reconstruction": null },
+          { "value": 3030, "reconstruction": null }
+        ],
+        "best": 3030,
+        "average": 3096
+      },
+      {
+        "personId": 44,
+        "ranking": 57,
+        "attempts": [
+          { "value": 3953, "reconstruction": null },
+          { "value": 5370, "reconstruction": null },
+          { "value": 5864, "reconstruction": null },
+          { "value": 3837, "reconstruction": null },
+          { "value": 3532, "reconstruction": null }
+        ],
+        "best": 3532,
+        "average": 4387
+      }
+    ],
+    "extensions": [],
+    "linkedRounds": ["333-r1", "333-r2"],
+    "participationRuleset": {
+      "participationSource": { "type": "registrations" },
+      "reservedPlaces": null
+    }
+  },
+  {
+    "id": "333-r2",
+    "format": "a",
+    "timeLimit": { "centiseconds": 30000, "cumulativeRoundIds": [] },
+    "cutoff": null,
+    "scrambleSetCount": 6,
+    "results": [
+      {
+        "personId": 16,
+        "ranking": 1,
+        "attempts": [
+          { "value": 619, "reconstruction": null },
+          { "value": 694, "reconstruction": null },
+          { "value": 1033, "reconstruction": null },
+          { "value": 613, "reconstruction": null },
+          { "value": 823, "reconstruction": null }
+        ],
+        "best": 613,
+        "average": 712
+      },
+      {
+        "personId": 24,
+        "ranking": 2,
+        "attempts": [
+          { "value": -1, "reconstruction": null },
+          { "value": 706, "reconstruction": null },
+          { "value": 620, "reconstruction": null },
+          { "value": 914, "reconstruction": null },
+          { "value": 645, "reconstruction": null }
+        ],
+        "best": 620,
+        "average": 755
+      },
+      {
+        "personId": 18,
+        "ranking": 3,
+        "attempts": [
+          { "value": 941, "reconstruction": null },
+          { "value": 726, "reconstruction": null },
+          { "value": 625, "reconstruction": null },
+          { "value": 900, "reconstruction": null },
+          { "value": 665, "reconstruction": null }
+        ],
+        "best": 625,
+        "average": 764
+      },
+      {
+        "personId": 13,
+        "ranking": 4,
+        "attempts": [
+          { "value": 908, "reconstruction": null },
+          { "value": 842, "reconstruction": null },
+          { "value": 879, "reconstruction": null },
+          { "value": 1065, "reconstruction": null },
+          { "value": 720, "reconstruction": null }
+        ],
+        "best": 720,
+        "average": 876
+      },
+      {
+        "personId": 30,
+        "ranking": 5,
+        "attempts": [
+          { "value": 1176, "reconstruction": null },
+          { "value": 660, "reconstruction": null },
+          { "value": 880, "reconstruction": null },
+          { "value": 815, "reconstruction": null },
+          { "value": 780, "reconstruction": null }
+        ],
+        "best": 660,
+        "average": 825
+      },
+      {
+        "personId": 31,
+        "ranking": 6,
+        "attempts": [
+          { "value": 1024, "reconstruction": null },
+          { "value": 823, "reconstruction": null },
+          { "value": 936, "reconstruction": null },
+          { "value": 881, "reconstruction": null },
+          { "value": 875, "reconstruction": null }
+        ],
+        "best": 823,
+        "average": 897
+      },
+      {
+        "personId": 6,
+        "ranking": 7,
+        "attempts": [
+          { "value": 840, "reconstruction": null },
+          { "value": 709, "reconstruction": null },
+          { "value": 951, "reconstruction": null },
+          { "value": 1743, "reconstruction": null },
+          { "value": 672, "reconstruction": null }
+        ],
+        "best": 672,
+        "average": 833
+      },
+      {
+        "personId": 41,
+        "ranking": 8,
+        "attempts": [
+          { "value": 836, "reconstruction": null },
+          { "value": 800, "reconstruction": null },
+          { "value": 1221, "reconstruction": null },
+          { "value": 826, "reconstruction": null },
+          { "value": 905, "reconstruction": null }
+        ],
+        "best": 800,
+        "average": 856
+      },
+      {
+        "personId": 49,
+        "ranking": 9,
+        "attempts": [
+          { "value": 803, "reconstruction": null },
+          { "value": 1114, "reconstruction": null },
+          { "value": 946, "reconstruction": null },
+          { "value": 961, "reconstruction": null },
+          { "value": 942, "reconstruction": null }
+        ],
+        "best": 803,
+        "average": 950
+      },
+      {
+        "personId": 10,
+        "ranking": 10,
+        "attempts": [
+          { "value": 1181, "reconstruction": null },
+          { "value": 984, "reconstruction": null },
+          { "value": 1008, "reconstruction": null },
+          { "value": 890, "reconstruction": null },
+          { "value": 1321, "reconstruction": null }
+        ],
+        "best": 890,
+        "average": 1058
+      },
+      {
+        "personId": 58,
+        "ranking": 11,
+        "attempts": [
+          { "value": 989, "reconstruction": null },
+          { "value": 1264, "reconstruction": null },
+          { "value": 914, "reconstruction": null },
+          { "value": 866, "reconstruction": null },
+          { "value": 835, "reconstruction": null }
+        ],
+        "best": 835,
+        "average": 923
+      },
+      {
+        "personId": 25,
+        "ranking": 12,
+        "attempts": [
+          { "value": 806, "reconstruction": null },
+          { "value": 941, "reconstruction": null },
+          { "value": 1080, "reconstruction": null },
+          { "value": 909, "reconstruction": null },
+          { "value": 927, "reconstruction": null }
+        ],
+        "best": 806,
+        "average": 926
+      },
+      {
+        "personId": 15,
+        "ranking": 13,
+        "attempts": [
+          { "value": 1062, "reconstruction": null },
+          { "value": 1128, "reconstruction": null },
+          { "value": 853, "reconstruction": null },
+          { "value": 947, "reconstruction": null },
+          { "value": 812, "reconstruction": null }
+        ],
+        "best": 812,
+        "average": 954
+      },
+      {
+        "personId": 28,
+        "ranking": 14,
+        "attempts": [
+          { "value": 1051, "reconstruction": null },
+          { "value": 847, "reconstruction": null },
+          { "value": 1061, "reconstruction": null },
+          { "value": 982, "reconstruction": null },
+          { "value": 836, "reconstruction": null }
+        ],
+        "best": 836,
+        "average": 960
+      },
+      {
+        "personId": 22,
+        "ranking": 15,
+        "attempts": [
+          { "value": 958, "reconstruction": null },
+          { "value": 1035, "reconstruction": null },
+          { "value": 880, "reconstruction": null },
+          { "value": 1069, "reconstruction": null },
+          { "value": 1021, "reconstruction": null }
+        ],
+        "best": 880,
+        "average": 1005
+      },
+      {
+        "personId": 34,
+        "ranking": 16,
+        "attempts": [
+          { "value": 1079, "reconstruction": null },
+          { "value": 912, "reconstruction": null },
+          { "value": 1019, "reconstruction": null },
+          { "value": 1085, "reconstruction": null },
+          { "value": 1233, "reconstruction": null }
+        ],
+        "best": 912,
+        "average": 1061
+      },
+      {
+        "personId": 32,
+        "ranking": 17,
+        "attempts": [
+          { "value": 1036, "reconstruction": null },
+          { "value": 1325, "reconstruction": null },
+          { "value": 1096, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 971, "reconstruction": null }
+        ],
+        "best": 971,
+        "average": 1152
+      },
+      {
+        "personId": 12,
+        "ranking": 18,
+        "attempts": [
+          { "value": 1198, "reconstruction": null },
+          { "value": 966, "reconstruction": null },
+          { "value": 1021, "reconstruction": null },
+          { "value": 929, "reconstruction": null },
+          { "value": 1260, "reconstruction": null }
+        ],
+        "best": 929,
+        "average": 1062
+      },
+      {
+        "personId": 9,
+        "ranking": 19,
+        "attempts": [
+          { "value": 1337, "reconstruction": null },
+          { "value": 960, "reconstruction": null },
+          { "value": 984, "reconstruction": null },
+          { "value": 853, "reconstruction": null },
+          { "value": 1199, "reconstruction": null }
+        ],
+        "best": 853,
+        "average": 1048
+      },
+      {
+        "personId": 50,
+        "ranking": 20,
+        "attempts": [
+          { "value": 774, "reconstruction": null },
+          { "value": 874, "reconstruction": null },
+          { "value": 1454, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 970, "reconstruction": null }
+        ],
+        "best": 774,
+        "average": 1099
+      },
+      {
+        "personId": 5,
+        "ranking": 21,
+        "attempts": [
+          { "value": 1129, "reconstruction": null },
+          { "value": 999, "reconstruction": null },
+          { "value": 1499, "reconstruction": null },
+          { "value": 983, "reconstruction": null },
+          { "value": 1056, "reconstruction": null }
+        ],
+        "best": 983,
+        "average": 1061
+      },
+      {
+        "personId": 23,
+        "ranking": 22,
+        "attempts": [
+          { "value": 942, "reconstruction": null },
+          { "value": 1069, "reconstruction": null },
+          { "value": 1217, "reconstruction": null },
+          { "value": 883, "reconstruction": null },
+          { "value": 1427, "reconstruction": null }
+        ],
+        "best": 883,
+        "average": 1076
+      },
+      {
+        "personId": 19,
+        "ranking": 23,
+        "attempts": [
+          { "value": 1185, "reconstruction": null },
+          { "value": 1235, "reconstruction": null },
+          { "value": 1064, "reconstruction": null },
+          { "value": 1004, "reconstruction": null },
+          { "value": 984, "reconstruction": null }
+        ],
+        "best": 984,
+        "average": 1084
+      },
+      {
+        "personId": 21,
+        "ranking": 24,
+        "attempts": [
+          { "value": 989, "reconstruction": null },
+          { "value": 1224, "reconstruction": null },
+          { "value": 1044, "reconstruction": null },
+          { "value": 978, "reconstruction": null },
+          { "value": 1334, "reconstruction": null }
+        ],
+        "best": 978,
+        "average": 1086
+      },
+      {
+        "personId": 20,
+        "ranking": 25,
+        "attempts": [
+          { "value": 1107, "reconstruction": null },
+          { "value": 1267, "reconstruction": null },
+          { "value": 1191, "reconstruction": null },
+          { "value": 930, "reconstruction": null },
+          { "value": 1030, "reconstruction": null }
+        ],
+        "best": 930,
+        "average": 1109
+      },
+      {
+        "personId": 35,
+        "ranking": 26,
+        "attempts": [
+          { "value": 1191, "reconstruction": null },
+          { "value": 1193, "reconstruction": null },
+          { "value": 1540, "reconstruction": null },
+          { "value": 1356, "reconstruction": null },
+          { "value": 1311, "reconstruction": null }
+        ],
+        "best": 1191,
+        "average": 1287
+      },
+      {
+        "personId": 48,
+        "ranking": 27,
+        "attempts": [
+          { "value": 1089, "reconstruction": null },
+          { "value": 1228, "reconstruction": null },
+          { "value": 2018, "reconstruction": null },
+          { "value": 1154, "reconstruction": null },
+          { "value": 1127, "reconstruction": null }
+        ],
+        "best": 1089,
+        "average": 1170
+      },
+      {
+        "personId": 38,
+        "ranking": 28,
+        "attempts": [
+          { "value": 1044, "reconstruction": null },
+          { "value": 1340, "reconstruction": null },
+          { "value": 2246, "reconstruction": null },
+          { "value": 1015, "reconstruction": null },
+          { "value": 1191, "reconstruction": null }
+        ],
+        "best": 1015,
+        "average": 1192
+      },
+      {
+        "personId": 17,
+        "ranking": 29,
+        "attempts": [
+          { "value": 1202, "reconstruction": null },
+          { "value": 1212, "reconstruction": null },
+          { "value": 1127, "reconstruction": null },
+          { "value": 1175, "reconstruction": null },
+          { "value": 1207, "reconstruction": null }
+        ],
+        "best": 1127,
+        "average": 1195
+      },
+      {
+        "personId": 43,
+        "ranking": 30,
+        "attempts": [
+          { "value": 2154, "reconstruction": null },
+          { "value": 1017, "reconstruction": null },
+          { "value": 1239, "reconstruction": null },
+          { "value": 1079, "reconstruction": null },
+          { "value": 1351, "reconstruction": null }
+        ],
+        "best": 1017,
+        "average": 1223
+      },
+      {
+        "personId": 2,
+        "ranking": 31,
+        "attempts": [
+          { "value": 1151, "reconstruction": null },
+          { "value": 1140, "reconstruction": null },
+          { "value": 1443, "reconstruction": null },
+          { "value": 1296, "reconstruction": null },
+          { "value": 1694, "reconstruction": null }
+        ],
+        "best": 1140,
+        "average": 1297
+      },
+      {
+        "personId": 4,
+        "ranking": 32,
+        "attempts": [
+          { "value": 1280, "reconstruction": null },
+          { "value": 1183, "reconstruction": null },
+          { "value": 1283, "reconstruction": null },
+          { "value": 1332, "reconstruction": null },
+          { "value": 1048, "reconstruction": null }
+        ],
+        "best": 1048,
+        "average": 1249
+      },
+      {
+        "personId": 7,
+        "ranking": 33,
+        "attempts": [
+          { "value": 1287, "reconstruction": null },
+          { "value": 1310, "reconstruction": null },
+          { "value": 1477, "reconstruction": null },
+          { "value": 1281, "reconstruction": null },
+          { "value": 1446, "reconstruction": null }
+        ],
+        "best": 1281,
+        "average": 1348
+      },
+      {
+        "personId": 36,
+        "ranking": 34,
+        "attempts": [
+          { "value": 1930, "reconstruction": null },
+          { "value": 1363, "reconstruction": null },
+          { "value": 1367, "reconstruction": null },
+          { "value": 1204, "reconstruction": null },
+          { "value": 1338, "reconstruction": null }
+        ],
+        "best": 1204,
+        "average": 1356
+      },
+      {
+        "personId": 60,
+        "ranking": 35,
+        "attempts": [
+          { "value": 1275, "reconstruction": null },
+          { "value": 1747, "reconstruction": null },
+          { "value": 967, "reconstruction": null },
+          { "value": 1085, "reconstruction": null },
+          { "value": 2333, "reconstruction": null }
+        ],
+        "best": 967,
+        "average": 1369
+      },
+      {
+        "personId": 3,
+        "ranking": 36,
+        "attempts": [
+          { "value": 1753, "reconstruction": null },
+          { "value": 1194, "reconstruction": null },
+          { "value": 1446, "reconstruction": null },
+          { "value": 1321, "reconstruction": null },
+          { "value": 1556, "reconstruction": null }
+        ],
+        "best": 1194,
+        "average": 1441
+      },
+      {
+        "personId": 27,
+        "ranking": 37,
+        "attempts": [
+          { "value": 1180, "reconstruction": null },
+          { "value": 1468, "reconstruction": null },
+          { "value": 1260, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 1966, "reconstruction": null }
+        ],
+        "best": 1180,
+        "average": 1565
+      },
+      {
+        "personId": 51,
+        "ranking": 38,
+        "attempts": [
+          { "value": 1356, "reconstruction": null },
+          { "value": 1630, "reconstruction": null },
+          { "value": 1537, "reconstruction": null },
+          { "value": 1411, "reconstruction": null },
+          { "value": 1267, "reconstruction": null }
+        ],
+        "best": 1267,
+        "average": 1435
+      },
+      {
+        "personId": 59,
+        "ranking": 39,
+        "attempts": [
+          { "value": 1504, "reconstruction": null },
+          { "value": 1579, "reconstruction": null },
+          { "value": 1734, "reconstruction": null },
+          { "value": 1502, "reconstruction": null },
+          { "value": 1247, "reconstruction": null }
+        ],
+        "best": 1247,
+        "average": 1528
+      },
+      {
+        "personId": 46,
+        "ranking": 40,
+        "attempts": [
+          { "value": 1383, "reconstruction": null },
+          { "value": 1530, "reconstruction": null },
+          { "value": 1733, "reconstruction": null },
+          { "value": 1714, "reconstruction": null },
+          { "value": 1440, "reconstruction": null }
+        ],
+        "best": 1383,
+        "average": 1561
+      },
+      {
+        "personId": 63,
+        "ranking": 41,
+        "attempts": [
+          { "value": 1566, "reconstruction": null },
+          { "value": 1356, "reconstruction": null },
+          { "value": 1617, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 1277, "reconstruction": null }
+        ],
+        "best": 1277,
+        "average": 1513
+      },
+      {
+        "personId": 47,
+        "ranking": 42,
+        "attempts": [
+          { "value": 1892, "reconstruction": null },
+          { "value": 1660, "reconstruction": null },
+          { "value": 1217, "reconstruction": null },
+          { "value": 1222, "reconstruction": null },
+          { "value": 1591, "reconstruction": null }
+        ],
+        "best": 1217,
+        "average": 1491
+      },
+      {
+        "personId": 40,
+        "ranking": 43,
+        "attempts": [
+          { "value": 1571, "reconstruction": null },
+          { "value": 1661, "reconstruction": null },
+          { "value": 1696, "reconstruction": null },
+          { "value": 1496, "reconstruction": null },
+          { "value": 1753, "reconstruction": null }
+        ],
+        "best": 1496,
+        "average": 1643
+      },
+      {
+        "personId": 26,
+        "ranking": 44,
+        "attempts": [
+          { "value": 1689, "reconstruction": null },
+          { "value": 2035, "reconstruction": null },
+          { "value": 1885, "reconstruction": null },
+          { "value": 1877, "reconstruction": null },
+          { "value": 2045, "reconstruction": null }
+        ],
+        "best": 1689,
+        "average": 1932
+      },
+      {
+        "personId": 52,
+        "ranking": 45,
+        "attempts": [
+          { "value": 1896, "reconstruction": null },
+          { "value": 1342, "reconstruction": null },
+          { "value": 1876, "reconstruction": null },
+          { "value": 1529, "reconstruction": null },
+          { "value": 1857, "reconstruction": null }
+        ],
+        "best": 1342,
+        "average": 1754
+      },
+      {
+        "personId": 42,
+        "ranking": 46,
+        "attempts": [
+          { "value": 1648, "reconstruction": null },
+          { "value": -1, "reconstruction": null },
+          { "value": 1850, "reconstruction": null },
+          { "value": 1858, "reconstruction": null },
+          { "value": 1712, "reconstruction": null }
+        ],
+        "best": 1648,
+        "average": 1807
+      },
+      {
+        "personId": 55,
+        "ranking": 47,
+        "attempts": [
+          { "value": 1631, "reconstruction": null },
+          { "value": 2016, "reconstruction": null },
+          { "value": 1762, "reconstruction": null },
+          { "value": 1867, "reconstruction": null },
+          { "value": 1804, "reconstruction": null }
+        ],
+        "best": 1631,
+        "average": 1811
+      },
+      {
+        "personId": 57,
+        "ranking": 48,
+        "attempts": [
+          { "value": 2240, "reconstruction": null },
+          { "value": 1941, "reconstruction": null },
+          { "value": 1986, "reconstruction": null },
+          { "value": 1763, "reconstruction": null },
+          { "value": 1621, "reconstruction": null }
+        ],
+        "best": 1621,
+        "average": 1897
+      },
+      {
+        "personId": 45,
+        "ranking": 49,
+        "attempts": [
+          { "value": 1858, "reconstruction": null },
+          { "value": 1986, "reconstruction": null },
+          { "value": 1790, "reconstruction": null },
+          { "value": 2005, "reconstruction": null },
+          { "value": 1894, "reconstruction": null }
+        ],
+        "best": 1790,
+        "average": 1913
+      },
+      {
+        "personId": 14,
+        "ranking": 50,
+        "attempts": [
+          { "value": 2066, "reconstruction": null },
+          { "value": 2064, "reconstruction": null },
+          { "value": 2439, "reconstruction": null },
+          { "value": 1944, "reconstruction": null },
+          { "value": 1764, "reconstruction": null }
+        ],
+        "best": 1764,
+        "average": 2025
+      },
+      {
+        "personId": 8,
+        "ranking": 51,
+        "attempts": [
+          { "value": 1960, "reconstruction": null },
+          { "value": 2279, "reconstruction": null },
+          { "value": 2025, "reconstruction": null },
+          { "value": 1815, "reconstruction": null },
+          { "value": 2102, "reconstruction": null }
+        ],
+        "best": 1815,
+        "average": 2029
+      },
+      {
+        "personId": 33,
+        "ranking": 52,
+        "attempts": [
+          { "value": 2016, "reconstruction": null },
+          { "value": 2482, "reconstruction": null },
+          { "value": 2189, "reconstruction": null },
+          { "value": 2468, "reconstruction": null },
+          { "value": 2664, "reconstruction": null }
+        ],
+        "best": 2016,
+        "average": 2380
+      },
+      {
+        "personId": 37,
+        "ranking": 53,
+        "attempts": [
+          { "value": 2125, "reconstruction": null },
+          { "value": 2630, "reconstruction": null },
+          { "value": 2247, "reconstruction": null },
+          { "value": 2251, "reconstruction": null },
+          { "value": 2565, "reconstruction": null }
+        ],
+        "best": 2125,
+        "average": 2354
+      },
+      {
+        "personId": 1,
+        "ranking": 54,
+        "attempts": [
+          { "value": 2193, "reconstruction": null },
+          { "value": 2539, "reconstruction": null },
+          { "value": 3005, "reconstruction": null },
+          { "value": 2737, "reconstruction": null },
+          { "value": 2078, "reconstruction": null }
+        ],
+        "best": 2078,
+        "average": 2490
+      },
+      {
+        "personId": 61,
+        "ranking": 55,
+        "attempts": [
+          { "value": 3013, "reconstruction": null },
+          { "value": 2556, "reconstruction": null },
+          { "value": 3455, "reconstruction": null },
+          { "value": 1966, "reconstruction": null },
+          { "value": 3119, "reconstruction": null }
+        ],
+        "best": 1966,
+        "average": 2896
+      },
+      {
+        "personId": 11,
+        "ranking": 56,
+        "attempts": [
+          { "value": 4446, "reconstruction": null },
+          { "value": 3698, "reconstruction": null },
+          { "value": 3806, "reconstruction": null },
+          { "value": 2896, "reconstruction": null },
+          { "value": 3110, "reconstruction": null }
+        ],
+        "best": 2896,
+        "average": 3538
+      },
+      {
+        "personId": 44,
+        "ranking": 57,
+        "attempts": [
+          { "value": 3987, "reconstruction": null },
+          { "value": 3573, "reconstruction": null },
+          { "value": 4880, "reconstruction": null },
+          { "value": 4783, "reconstruction": null },
+          { "value": 3625, "reconstruction": null }
+        ],
+        "best": 3573,
+        "average": 4132
+      }
+    ],
+    "extensions": [],
+    "linkedRounds": ["333-r1", "333-r2"],
+    "participationRuleset": {
+      "participationSource": { "type": "registrations" },
+      "reservedPlaces": null
+    }
+  },
+  {
+    "id": "333-r3",
+    "format": "a",
+    "timeLimit": { "centiseconds": 30000, "cumulativeRoundIds": [] },
+    "cutoff": null,
+    "scrambleSetCount": 1,
+    "results": [
+      {
+        "personId": 16,
+        "ranking": 1,
+        "attempts": [
+          { "value": 951, "reconstruction": null },
+          { "value": 740, "reconstruction": null },
+          { "value": 721, "reconstruction": null },
+          { "value": 687, "reconstruction": null },
+          { "value": 658, "reconstruction": null }
+        ],
+        "best": 658,
+        "average": 716
+      },
+      {
+        "personId": 18,
+        "ranking": 2,
+        "attempts": [
+          { "value": 739, "reconstruction": null },
+          { "value": 1030, "reconstruction": null },
+          { "value": 750, "reconstruction": null },
+          { "value": 768, "reconstruction": null },
+          { "value": 647, "reconstruction": null }
+        ],
+        "best": 647,
+        "average": 752
+      },
+      {
+        "personId": 24,
+        "ranking": 3,
+        "attempts": [
+          { "value": -1, "reconstruction": null },
+          { "value": 947, "reconstruction": null },
+          { "value": 730, "reconstruction": null },
+          { "value": 611, "reconstruction": null },
+          { "value": 699, "reconstruction": null }
+        ],
+        "best": 611,
+        "average": 792
+      },
+      {
+        "personId": 30,
+        "ranking": 4,
+        "attempts": [
+          { "value": 848, "reconstruction": null },
+          { "value": 769, "reconstruction": null },
+          { "value": 913, "reconstruction": null },
+          { "value": 772, "reconstruction": null },
+          { "value": 700, "reconstruction": null }
+        ],
+        "best": 700,
+        "average": 796
+      },
+      {
+        "personId": 13,
+        "ranking": 5,
+        "attempts": [
+          { "value": 769, "reconstruction": null },
+          { "value": 847, "reconstruction": null },
+          { "value": 860, "reconstruction": null },
+          { "value": 724, "reconstruction": null },
+          { "value": 868, "reconstruction": null }
+        ],
+        "best": 724,
+        "average": 825
+      },
+      {
+        "personId": 49,
+        "ranking": 6,
+        "attempts": [
+          { "value": 1076, "reconstruction": null },
+          { "value": 716, "reconstruction": null },
+          { "value": 813, "reconstruction": null },
+          { "value": 1039, "reconstruction": null },
+          { "value": 856, "reconstruction": null }
+        ],
+        "best": 716,
+        "average": 903
+      },
+      {
+        "personId": 6,
+        "ranking": 7,
+        "attempts": [
+          { "value": 782, "reconstruction": null },
+          { "value": 843, "reconstruction": null },
+          { "value": 974, "reconstruction": null },
+          { "value": 975, "reconstruction": null },
+          { "value": 939, "reconstruction": null }
+        ],
+        "best": 782,
+        "average": 919
+      },
+      {
+        "personId": 41,
+        "ranking": 8,
+        "attempts": [
+          { "value": 1299, "reconstruction": null },
+          { "value": 1011, "reconstruction": null },
+          { "value": 973, "reconstruction": null },
+          { "value": 777, "reconstruction": null },
+          { "value": 807, "reconstruction": null }
+        ],
+        "best": 777,
+        "average": 930
+      },
+      {
+        "personId": 10,
+        "ranking": 9,
+        "attempts": [
+          { "value": 885, "reconstruction": null },
+          { "value": 939, "reconstruction": null },
+          { "value": 951, "reconstruction": null },
+          { "value": 1078, "reconstruction": null },
+          { "value": 925, "reconstruction": null }
+        ],
+        "best": 885,
+        "average": 938
+      },
+      {
+        "personId": 31,
+        "ranking": 10,
+        "attempts": [
+          { "value": 832, "reconstruction": null },
+          { "value": 1063, "reconstruction": null },
+          { "value": 1118, "reconstruction": null },
+          { "value": 1180, "reconstruction": null },
+          { "value": 953, "reconstruction": null }
+        ],
+        "best": 832,
+        "average": 1045
+      }
+    ],
+    "extensions": [],
+    "linkedRounds": null,
+    "participationRuleset": {
+      "participationSource": {
+        "type": "linkedRounds",
+        "roundIds": ["333-r1", "333-r2"],
+        "resultCondition": { "type": "ranking", "scope": "average", "value": 10 }
+      },
+      "reservedPlaces": null
+    }
+  }
+]

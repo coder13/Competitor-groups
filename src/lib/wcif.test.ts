@@ -1,5 +1,5 @@
 import { ParticipationRuleset, ResultCondition, Round } from '@wca/helpers';
-import { getAdvancementConditionForRound } from './wcif';
+import { getAdvancementConditionForRound, getLinkedRoundIds } from './wcif';
 
 const makeRound = (
   id: string,
@@ -81,5 +81,23 @@ describe('wcif participation helpers', () => {
   ])('does not invent an advancement threshold when none is supplied (%j)', (ruleset) => {
     const rounds = [makeRound('333-r1'), makeRound('333-r2', ruleset)];
     expect(getAdvancementConditionForRound(rounds, rounds[0])).toBeNull();
+  });
+});
+
+describe('linked round discovery', () => {
+  it('recognizes explicit dual finals without an advancement target', () => {
+    const rounds = [makeRound('333-r1'), makeRound('333-r2')];
+    rounds.forEach((round) => {
+      round.linkedRounds = ['333-r1', '333-r2'];
+    });
+    expect(getLinkedRoundIds(rounds, rounds[1])).toEqual(['333-r1', '333-r2']);
+    expect(getAdvancementConditionForRound(rounds, rounds[0])).toBeNull();
+  });
+
+  it('uses reverse links, removes duplicates and ignores unknown round IDs', () => {
+    const rounds = [makeRound('333-r1'), makeRound('333-r2'), makeRound('333-r3')];
+    rounds[0].linkedRounds = ['333-r2', '333-r1', '333-r1', '333-r9'];
+    expect(getLinkedRoundIds(rounds, rounds[1])).toEqual(['333-r1', '333-r2']);
+    expect(getLinkedRoundIds(rounds, rounds[2])).toEqual([]);
   });
 });

@@ -1,7 +1,7 @@
 import { Competition, Person } from '@wca/helpers';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
 import { useOngoingActivities } from '@/hooks/useOngoingActivities';
 import { acceptedRegistration } from '@/lib/person';
@@ -11,7 +11,19 @@ import { CompetitorListItem } from './CompetitorListItem';
 
 export const Competitors = ({ wcif }: { wcif: Competition }) => {
   const { t } = useTranslation();
-  const [input, setInput] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const input = searchParams.get('search') || '';
+  const setInput = (value: string) => {
+    setSearchParams(
+      (previous) => {
+        const next = new URLSearchParams(previous);
+        if (value) next.set('search', value);
+        else next.delete('search');
+        return next;
+      },
+      { replace: true },
+    );
+  };
   const { competitionId } = useParams() as { competitionId: string };
   const { user } = useAuth();
 
@@ -62,7 +74,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
 
       <div className="w-full">
         <label
-          htmlFor="default-search"
+          htmlFor="competitor-search"
           className="mb-2 type-label text-gray-900 sr-only dark:text-white">
           {t('common.search')}
         </label>

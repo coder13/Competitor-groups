@@ -217,6 +217,7 @@ export function CompetitionResultsTable({
   const { t } = useTranslation();
   const [selectedResult, setSelectedResult] = useState<CompetitionRoundResult | null>(null);
   const primaryRankingType = getPrimaryRankingType(round.format);
+  const showSecondaryBest = primaryRankingType === 'average';
   const attemptColumnCount = Math.max(0, ...results.map((result) => result.attempts.length));
   const sortedResults = sortResultsByRanking(results);
 
@@ -262,7 +263,7 @@ export function CompetitionResultsTable({
             <col key={attemptIndex} className="hidden w-24 md:table-column" />
           ))}
           <col className="w-20 sm:w-24" />
-          <col className="w-20 sm:w-24" />
+          {showSecondaryBest && <col className="w-20 sm:w-24" />}
         </colgroup>
         <thead>
           <tr className="border-b border-tertiary-weak bg-gray-100 type-body-xs font-semibold text-gray-800 dark:bg-gray-900 dark:text-gray-100">
@@ -287,9 +288,11 @@ export function CompetitionResultsTable({
                 ? t('competition.results.average')
                 : t('competition.results.best')}
             </th>
-            <th scope="col" className="px-2 py-2 text-right sm:px-3 md:px-2">
-              {t('competition.results.best')}
-            </th>
+            {showSecondaryBest && (
+              <th scope="col" className="px-2 py-2 text-right sm:px-3 md:px-2">
+                {t('competition.results.best')}
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -358,18 +361,17 @@ export function CompetitionResultsTable({
                     </ResultValue>
                   )}
                 </td>
-                <td className="bg-gray-50 px-2 py-2 text-right tabular-nums dark:bg-gray-900/50 sm:px-3 md:px-2">
-                  {isRosterOnly ? (
-                    ''
-                  ) : (
-                    <ResultValue
-                      recordTag={
-                        primaryRankingType === 'average' ? result.singleRecordTag : undefined
-                      }>
-                      {renderResultValue(eventId, 'single', result)}
-                    </ResultValue>
-                  )}
-                </td>
+                {showSecondaryBest && (
+                  <td className="bg-gray-50 px-2 py-2 text-right tabular-nums dark:bg-gray-900/50 sm:px-3 md:px-2">
+                    {isRosterOnly ? (
+                      ''
+                    ) : (
+                      <ResultValue recordTag={result.singleRecordTag}>
+                        {renderResultValue(eventId, 'single', result)}
+                      </ResultValue>
+                    )}
+                  </td>
+                )}
               </tr>
             );
           })}

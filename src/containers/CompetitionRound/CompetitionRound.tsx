@@ -13,7 +13,7 @@ import { getAllEvents } from '@/lib/events';
 import { AnchorLink, LinkRenderer } from '@/lib/linkRenderer';
 import { activityCodeToRoundName, getEventRoundsForRound, joinLabels } from '@/lib/roundLabels';
 import { formatDateTimeRange } from '@/lib/time';
-import { getAdvancementConditionForRound } from '@/lib/wcif';
+import { getLinkedRoundIds } from '@/lib/wcif';
 import { useWCIF, useWcifUtils } from '@/providers/WCIFProvider';
 
 export interface CompetitionRoundContainerProps {
@@ -43,19 +43,15 @@ export function CompetitionRoundContainer({
     () => getEventRoundsForRound(wcif?.events, roundId),
     [roundId, wcif?.events],
   );
-  const advancement = useMemo(
-    () => (round ? getAdvancementConditionForRound(eventRounds, round) : null),
-    [eventRounds, round],
+  const linkedRoundNames = useMemo(
+    () =>
+      round
+        ? getLinkedRoundIds(eventRounds, round)
+            .filter((sourceRoundId) => sourceRoundId !== roundId)
+            .map((sourceRoundId) => activityCodeToRoundName(t, sourceRoundId))
+        : [],
+    [eventRounds, round, roundId, t],
   );
-  const linkedRoundNames = useMemo(() => {
-    if (!advancement || advancement.sourceType !== 'linkedRounds') {
-      return [];
-    }
-
-    return advancement.sourceRoundIds
-      .filter((sourceRoundId) => sourceRoundId !== roundId)
-      .map((sourceRoundId) => activityCodeToRoundName(t, sourceRoundId));
-  }, [advancement, roundId, t]);
 
   const rounds = roundActivies.filter((ra) => toRoundAttemptId(ra.activityCode) === roundId);
   const groups = rounds.flatMap((r) => r.childActivities);

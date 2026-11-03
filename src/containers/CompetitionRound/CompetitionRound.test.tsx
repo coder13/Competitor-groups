@@ -250,4 +250,18 @@ describe('CompetitionRoundContainer', () => {
 
     expect(screen.getByText('See Results')).toHaveClass('btn-light');
   });
+  it('shows explicit dual-final links even without a later advancement rule', () => {
+    const rounds = linkedRoundsCompetition.events[0].rounds;
+    const previousLinks = rounds[1].linkedRounds;
+    const previousRules = rounds[2].participationRuleset;
+    rounds[1].linkedRounds = ['333-r1', '333-r2'];
+    rounds[2].participationRuleset = null;
+    try {
+      renderRound('333-r2');
+      expect(screen.getByText('Dual round with Round 1')).toBeInTheDocument();
+    } finally {
+      rounds[1].linkedRounds = previousLinks;
+      rounds[2].participationRuleset = previousRules;
+    }
+  });
 });

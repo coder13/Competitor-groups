@@ -586,4 +586,27 @@ describe('CompetitionResultsContainer', () => {
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
+  it('opens an empty linked second round and keeps partner navigation available', () => {
+    const rounds = wcifMock.events[0].rounds;
+    const previous = rounds.map((round) => round.linkedRounds);
+    rounds[0].linkedRounds = [rounds[0].id, rounds[1].id];
+    rounds[1].linkedRounds = [rounds[0].id, rounds[1].id];
+    try {
+      renderResults(rounds[1].id);
+      expect(screen.getByText('No results yet.')).toBeInTheDocument();
+      expect(screen.getByText('competition.results.dualRoundNote')).toBeInTheDocument();
+      expect(
+        screen
+          .getAllByRole('link', { name: 'Round 1' })
+          .some(
+            (link) => link.getAttribute('href') === '/competitions/TestComp2026/results/333-r1',
+          ),
+      ).toBe(true);
+      expect(screen.queryByText('Round not found.')).not.toBeInTheDocument();
+    } finally {
+      rounds.forEach((round, index) => {
+        round.linkedRounds = previous[index];
+      });
+    }
+  });
 });

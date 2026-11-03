@@ -250,6 +250,7 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
       <button
         className="px-1 mr-2"
         aria-label={t('common.help')}
+        aria-expanded={open}
         // className="p-2 px-3 text-sm rounded-full shadow-sm fa-solid fa-question bg-slate-300 hover:opacity-70"
         onClick={() => setOpen((prev) => !prev)}>
         <svg
