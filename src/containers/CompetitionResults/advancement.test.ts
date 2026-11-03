@@ -1,6 +1,6 @@
 import { ResultCondition, Round } from '@wca/helpers';
 import { getAdvancementConditionForRound, getLinkedRoundIds } from '@/lib/wcif';
-import { getStoredRoundResults } from './advancement';
+import { getQualifyingResultKeys, getStoredRoundResults, hasExpectedAttempts } from './advancement';
 import * as hongKongRounds from './fixtures/CubeAgainstCancerHongKong2026.json';
 import * as fmcRounds from './fixtures/FMCEastMelbourne2026.json';
 
@@ -108,8 +108,13 @@ describe('dual-round stored results', () => {
           average,
         })),
       );
-      // Later participation may differ after withdrawals and replacements. Keep
-      // this assertion on the stated qualifying condition, not the final roster.
+      // The actual target participants override the earlier eligibility estimate.
+      const targetIds = new Set(rounds[2].results.map(({ personId }) => personId));
+      expect(results.filter(({ advancing }) => advancing).map(({ personId }) => personId)).toEqual(
+        round.results
+          .filter(({ personId, ranking }) => ranking != null && targetIds.has(personId))
+          .map(({ personId }) => personId),
+      );
       const condition = getAdvancementConditionForRound(rounds, round)!;
       const entrants = new Set(
         rounds.slice(0, 2).flatMap(({ results }) => results.map(({ personId }) => personId)),
@@ -118,9 +123,19 @@ describe('dual-round stored results', () => {
         condition.resultCondition.type === 'percent'
           ? Math.floor((entrants * condition.resultCondition.value) / 100)
           : condition.resultCondition.value!;
+      const qualifying = getQualifyingResultKeys(
+        round,
+        condition,
+        rounds
+          .slice(0, 2)
+          .flatMap(({ results }) =>
+            results.map((result) => ({ ...result, key: String(result.personId) })),
+          ),
+      );
       expect(
-        results.every(
-          ({ ranking, advancing }) => advancing === (ranking != null && ranking <= limit),
+        round.results.every(
+          ({ personId, ranking }) =>
+            qualifying.has(String(personId)) === (ranking != null && ranking <= limit),
         ),
       ).toBe(true);
     }
@@ -196,13 +211,18 @@ describe('stored qualification rules', () => {
     ).toEqual([1, 2, 3, 4, 5, 6, 7]);
   });
 
-  it('does not count empty, unranked roster placeholders as scored entrants', () => {
+  it('counts empty participant rows in the roster but never highlights them', () => {
     const results: Round['results'] = [
-      ...rankedResults(11),
-      { ...result(12, 12, 0), ranking: null, attempts: [] },
-      { ...result(13, 13, 0), ranking: null, attempts: [] },
+      ...rankedResults(6),
+      ...Array.from({ length: 4 }, (_, index) => ({
+        ...result(index + 7, 0, 0),
+        ranking: null,
+        attempts: [],
+      })),
     ];
-    expect(qualifiers(results, { type: 'percent', scope: 'average', value: 75 })).toHaveLength(8);
+    const advancing = qualifiers(results, { type: 'percent', scope: 'average', value: 75 });
+    expect(advancing.map(({ personId }) => personId)).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(advancing.every(({ advancingQuestionable }) => advancingQuestionable)).toBe(true);
   });
 
   it('treats a null threshold as any successful value in the requested scope', () => {
@@ -266,5 +286,163 @@ describe('stored qualification rules', () => {
       expect.arrayContaining([expect.objectContaining({ advancing: false })]),
     );
     expect(qualifiers([], { type: 'ranking', scope: 'average', value: 10 })).toEqual([]);
+  });
+});
+
+const fullResult = (personId: number, ranking: number, average = 1000) => ({
+  ...result(personId, ranking, average),
+  attempts: Array.from({ length: 5 }, () => ({ value: average, reconstruction: null })),
+});
+const withTarget = (rounds: Round[]) => {
+  rounds[1].participationRuleset = {
+    reservedPlaces: null,
+    participationSource: {
+      type: 'round',
+      roundId: rounds[0].id,
+      resultCondition: { type: 'percent', scope: 'average', value: 75 },
+    },
+  };
+  return rounds;
+};
+
+describe('fallback qualification certainty and participation', () => {
+  it('settles calculated eligibility when all source attempts are complete', () => {
+    const rounds = withTarget([
+      makeRound(
+        '333-r1',
+        Array.from({ length: 8 }, (_, i) => fullResult(i + 1, i + 1)),
+      ),
+      makeRound('333-r2'),
+    ]);
+    const results = getStoredRoundResults(
+      rounds[0],
+      getAdvancementConditionForRound(rounds, rounds[0]),
+      rounds,
+    );
+    expect(results.filter(({ advancing }) => advancing)).toHaveLength(6);
+    expect(results.every(({ advancingQuestionable }) => !advancingQuestionable)).toBe(true);
+  });
+
+  it('keeps every calculated qualifier provisional when even one row is partial', () => {
+    const rounds = withTarget([
+      makeRound(
+        '333-r1',
+        Array.from({ length: 8 }, (_, i) => fullResult(i + 1, i + 1)),
+      ),
+      makeRound('333-r2'),
+    ]);
+    rounds[0].results[7].attempts = [{ value: 1100, reconstruction: null }];
+    const results = getStoredRoundResults(
+      rounds[0],
+      getAdvancementConditionForRound(rounds, rounds[0]),
+      rounds,
+    );
+    expect(
+      results
+        .filter(({ advancing }) => advancing)
+        .every(({ advancingQuestionable }) => advancingQuestionable),
+    ).toBe(true);
+    expect(
+      results
+        .filter(({ advancing }) => !advancing)
+        .every(({ advancingQuestionable }) => !advancingQuestionable),
+    ).toBe(true);
+  });
+
+  it.each(['missing', 'empty', 'partial'])(
+    'does not settle linked eligibility when a component is %s',
+    (state) => {
+      const rounds = linkedRounds({ type: 'ranking', scope: 'average', value: 3 });
+      rounds[0].results = Array.from({ length: 4 }, (_, i) => fullResult(i + 1, i + 1));
+      rounds[1].results = state === 'partial' ? [result(1, 1, 900)] : [];
+      const condition = getAdvancementConditionForRound(rounds, rounds[0]);
+      const sourceRounds = state === 'missing' ? [rounds[0], rounds[2]] : rounds;
+      expect(getStoredRoundResults(rounds[0], condition, sourceRounds)[0]).toMatchObject({
+        advancing: true,
+        advancingQuestionable: true,
+      });
+    },
+  );
+
+  it('uses actual next-round participants, including blank rows, over theoretical qualifiers', () => {
+    const rounds = withTarget([
+      makeRound(
+        '333-r1',
+        Array.from({ length: 8 }, (_, i) => result(i + 1, i + 1, 1000)),
+      ),
+      makeRound('333-r2', [
+        { ...result(1, 0, 0), ranking: null, attempts: [] },
+        { ...result(8, 0, 0), ranking: null, attempts: [] },
+      ]),
+    ]);
+    const results = getStoredRoundResults(
+      rounds[0],
+      getAdvancementConditionForRound(rounds, rounds[0]),
+      rounds,
+    );
+    expect(results.filter(({ advancing }) => advancing).map(({ personId }) => personId)).toEqual([
+      1, 8,
+    ]);
+    expect(results.every(({ advancingQuestionable }) => !advancingQuestionable)).toBe(true);
+  });
+
+  it('uses the union if a future WCIF target stage has linked components', () => {
+    // Current WCA dual rounds are first-round only. This covers WCIF's extensible links.
+    const rounds = withTarget([
+      makeRound(
+        '333-r1',
+        Array.from({ length: 8 }, (_, i) => result(i + 1, i + 1, 1000)),
+      ),
+      makeRound('333-r2', [result(1, 1, 1000)]),
+      makeRound('333-r3', [result(8, 1, 900)]),
+    ]);
+    rounds[1].linkedRounds = ['333-r2', '333-r3'];
+    rounds[2].linkedRounds = ['333-r2', '333-r3'];
+    expect(
+      getStoredRoundResults(rounds[0], getAdvancementConditionForRound(rounds, rounds[0]), rounds)
+        .filter(({ advancing }) => advancing)
+        .map(({ personId }) => personId),
+    ).toEqual([1, 8]);
+  });
+});
+
+describe('expected attempts in stored snapshots', () => {
+  it.each<[Round['format'], number]>([
+    ['1', 1],
+    ['2', 2],
+    ['3', 3],
+    ['5', 5],
+    ['a', 5],
+    ['m', 3],
+  ])('recognizes completed format %s and rejects one missing attempt', (format, count) => {
+    const round = { ...makeRound('333-r1'), format };
+    const attempts = Array.from({ length: count }, () => ({ result: -1 }));
+    expect(hasExpectedAttempts(round, { attempts })).toBe(true);
+    expect(hasExpectedAttempts(round, { attempts: attempts.slice(1) })).toBe(false);
+    expect(hasExpectedAttempts(round, { attempts: [...attempts.slice(1), { result: 0 }] })).toBe(
+      false,
+    );
+    expect(
+      hasExpectedAttempts(round, { attempts: [...attempts, { result: 0 }, { result: 0 }] }),
+    ).toBe(true);
+  });
+
+  it('recognizes a missed cutoff, but requires all attempts once the cutoff is met', () => {
+    const round = { ...makeRound('333-r1'), cutoff: { numberOfAttempts: 2, resultValue: 1000 } };
+    const hasAttempts = (values: number[]) =>
+      hasExpectedAttempts(round, { attempts: values.map((result) => ({ result })) });
+    expect(hasAttempts([1200])).toBe(false);
+    expect(hasAttempts([1200, -1, 0, 0, 0])).toBe(true);
+    expect(hasAttempts([-2, -2])).toBe(true);
+    expect(hasAttempts([1000, 1000])).toBe(true); // equality does not meet the cutoff
+    expect(hasAttempts([900, -1])).toBe(false);
+    expect(hasAttempts([900, -1, -2, 1000, 1100])).toBe(true);
+    expect(hasAttempts([900, -1, -2, 1000, 0])).toBe(false);
+  });
+
+  it('does not infer completion for an unsupported head-to-head format', () => {
+    expect(hasExpectedAttempts({ ...makeRound('333-r1'), format: 'h' }, { attempts: [] })).toBe(
+      false,
+    );
   });
 });

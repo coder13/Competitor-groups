@@ -1,7 +1,10 @@
 import { Person } from '@wca/helpers';
 import { Extension } from '@wca/helpers/lib/models/extension';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
+import { Container } from '@/components/Container';
+import { LinkButton } from '@/components/LinkButton';
 import { CompetitionPersonalResultsContent } from '@/containers/CompetitionPersonalResults';
 import { PersonalBestsContainer } from '@/containers/PersonalBests';
 import { PersonalScheduleContent } from '@/containers/PersonalSchedule';
@@ -13,6 +16,7 @@ export interface CompetitionPersonContainerProps {
 }
 
 export function CompetitionPersonContainer({ registrantId }: CompetitionPersonContainerProps) {
+  const { t } = useTranslation();
   const { competitionId, wcif, setTitle } = useWCIF();
   const { pathname } = useLocation();
 
@@ -23,13 +27,24 @@ export function CompetitionPersonContainer({ registrantId }: CompetitionPersonCo
     | undefined;
 
   useEffect(() => {
-    if (person) {
-      setTitle(person.name);
+    if (wcif) {
+      setTitle(person?.name ?? t('competition.person.notFound'));
     }
-  }, [person, setTitle]);
+  }, [person, setTitle, t, wcif]);
 
-  if (!wcif || !person) {
-    return null;
+  if (!wcif) return null;
+
+  if (!person) {
+    return (
+      <Container className="p-4 space-y-4">
+        <p role="status">{t('competition.person.notFound')}</p>
+        <LinkButton
+          to={`/competitions/${competitionId}`}
+          title={t('competition.person.backToCompetitors')}
+          LinkComponent={Link}
+        />
+      </Container>
+    );
   }
 
   const activePage: PersonalPage = pathname.endsWith('/results')

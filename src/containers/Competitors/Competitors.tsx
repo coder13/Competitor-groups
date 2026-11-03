@@ -61,6 +61,10 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
       !person.pinned && (!input || person.name.toLowerCase().includes(input.toLowerCase().trim())),
   );
 
+  const hasMatchingPerson = acceptedPersons.some((person) =>
+    person.name.toLowerCase().includes(input.toLowerCase().trim()),
+  );
+
   return (
     <div className="space-y-2">
       {me && (
@@ -90,7 +94,13 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
         </div>
       </div>
 
-      <CompetitorList persons={acceptedUnpinnedPersons} />
+      {input.trim() && !hasMatchingPerson ? (
+        <p role="status" className="p-2 text-muted">
+          {t('competition.competitors.noMatches')}
+        </p>
+      ) : (
+        <CompetitorList persons={acceptedUnpinnedPersons} />
+      )}
     </div>
   );
 };

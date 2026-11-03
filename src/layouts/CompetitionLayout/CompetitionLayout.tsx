@@ -74,6 +74,11 @@ export function CompetitionLayout() {
         <div
           className="safe-area-scroll-bottom flex flex-1 flex-col w-full items-center overflow-y-auto [scrollbar-gutter:stable;]"
           ref={ref}>
+          {!wcif && isFetching && (
+            <Container className="p-4">
+              <p role="status">{t('common.loading')}</p>
+            </Container>
+          )}
           {error && (
             <Container className="p-4 space-y-2">
               <div role="alert" className="space-y-2">

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CompetitionSelect } from '@/components/CompetitionSelect';
 import { Container } from '@/components/Container';
 import { LoggedOutPromptCard } from '@/components/LoggedOutPromptCard';
@@ -10,6 +10,7 @@ import { useAuth } from '@/providers/AuthProvider';
 
 export default function Home() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { user, signIn } = useAuth();
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function Home() {
         {!user && <LoggedOutPromptCard onLogin={signIn} />}
         <MyCompetitions />
         <div className="px-2">
-          <CompetitionSelect onSelect={(e) => console.log(e)} />
+          <CompetitionSelect onSelect={(id) => navigate(`/competitions/${id}`)} />
         </div>
         <UpcomingCompetitions />
       </Container>

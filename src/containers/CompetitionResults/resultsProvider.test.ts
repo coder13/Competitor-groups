@@ -960,3 +960,268 @@ describe('mixed-source linked qualification', () => {
     ).toMatchObject({ advancing: false, advancingQuestionable: true });
   });
 });
+
+const singleSourceCompetition = (): Competition => {
+  const competition = linkedCompetition();
+  const rounds = competition.events[0].rounds;
+  rounds[0].linkedRounds = null;
+  rounds[1].linkedRounds = null;
+  rounds[0].results = Array.from({ length: 8 }, (_, index) => ({
+    personId: index + 1,
+    ranking: index + 1,
+    best: 1000 + index * 100,
+    average: 1000 + index * 100,
+    attempts: Array.from({ length: 5 }, () => ({
+      value: 1000 + index * 100,
+      reconstruction: null,
+    })),
+  }));
+  rounds[1].participationRuleset = {
+    reservedPlaces: null,
+    participationSource: {
+      type: 'round',
+      roundId: '333-r1',
+      resultCondition: { type: 'percent', scope: 'average', value: 75 },
+    },
+  };
+  rounds[2].participationRuleset = null;
+  return competition;
+};
+const blankResult = (personId: number) => ({
+  personId,
+  ranking: null,
+  best: 0,
+  average: 0,
+  attempts: [],
+});
+const advancingPersonIds = (results: ReturnType<typeof linkedSourceResults>) =>
+  results.filter(({ advancing }) => advancing).map(({ personId }) => personId);
+
+describe('stored roster and actual-participant semantics', () => {
+  it('counts empty WCIF result rows but does not count group assignments in the denominator', () => {
+    const competition = singleSourceCompetition();
+    const round = competition.events[0].rounds[0];
+    round.results = [...round.results.slice(0, 6), ...[7, 8, 9, 10].map(blankResult)];
+    let results = linkedSourceResults(competition, []);
+    expect(advancingPersonIds(results)).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(
+      results
+        .filter(({ advancing }) => advancing)
+        .every(({ advancingQuestionable }) => advancingQuestionable),
+    ).toBe(true);
+    expect(
+      results
+        .slice(6)
+        .every(({ advancing, advancingQuestionable }) => !advancing && !advancingQuestionable),
+    ).toBe(true);
+
+    // Four people have group assignments, but only this stored result is a participant.
+    round.results = [round.results[0]];
+    results = linkedSourceResults(competition, []);
+    expect(results).toHaveLength(1);
+    expect(advancingPersonIds(results)).toEqual([]);
+  });
+
+  it('settles complete snapshots and marks partial snapshots provisional without changing values', () => {
+    const competition = singleSourceCompetition();
+    let results = linkedSourceResults(competition, []);
+    expect(advancingPersonIds(results)).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(results.every(({ advancingQuestionable }) => !advancingQuestionable)).toBe(true);
+    competition.events[0].rounds[0].results[0].attempts = [{ value: 1000, reconstruction: null }];
+    results = linkedSourceResults(competition, []);
+    expect(results[0]).toMatchObject({
+      best: 1000,
+      average: 1000,
+      attempts: [{ result: 1000 }],
+      advancing: true,
+      advancingQuestionable: true,
+    });
+    expect(results[1]).toMatchObject({ advancing: true, advancingQuestionable: true });
+  });
+
+  it('uses a populated next-round WCIF roster, including blank rows, instead of qualification', () => {
+    const competition = singleSourceCompetition();
+    competition.events[0].rounds[1].results = [blankResult(1), blankResult(8)];
+    const results = linkedSourceResults(competition, []);
+    expect(advancingPersonIds(results)).toEqual([1, 8]);
+    expect(results.every(({ advancingQuestionable }) => !advancingQuestionable)).toBe(true);
+  });
+
+  it('uses published next-round API participants when that WCIF roster is empty', () => {
+    const competition = singleSourceCompetition();
+    const api = [
+      apiResult({ name: 'Alice Solver', wca_id: '2010ALIC01', pos: 2 }),
+      apiResult({ name: 'Dana Solver', wca_id: '2010DANA01', pos: 1 }),
+    ];
+    const results = linkedSourceResults(competition, api);
+    expect(advancingPersonIds(results)).toEqual([1, 4]);
+    expect(results.every(({ advancingQuestionable }) => !advancingQuestionable)).toBe(true);
+  });
+
+  it('does not restore API-only target participants when WCIF provides a newer roster', () => {
+    const competition = singleSourceCompetition();
+    competition.events[0].rounds[1].results = [blankResult(1)];
+    const results = linkedSourceResults(competition, [apiResult()]);
+    expect(advancingPersonIds(results)).toEqual([1]);
+    expect(results.find(({ personId }) => personId === 2)?.advancing).toBe(false);
+  });
+
+  it('does not mistake a group assignment in the target round for an actual participant', () => {
+    const competition = singleSourceCompetition();
+    const group = competition.schedule.venues[0].rooms[0].activities[0].childActivities![0];
+    group.activityCode = '333-r2-g1';
+    const results = linkedSourceResults(competition, []);
+    expect(advancingPersonIds(results)).toEqual([1, 2, 3, 4, 5, 6]);
+  });
+
+  it('matches actual target API participants by stable WCA ID without creating WCIF identities', () => {
+    const competition = singleSourceCompetition();
+    const api = [
+      apiResult({
+        id: 9111,
+        round_type_id: '1',
+        name: 'External Person',
+        wca_id: '2010ELSE01',
+        pos: 9,
+      }),
+      apiResult({
+        id: 9222,
+        round_type_id: '2',
+        name: 'Different Published Name',
+        wca_id: '2010ELSE01',
+        pos: 1,
+      }),
+    ];
+    const results = linkedSourceResults(competition, api);
+    expect(results.filter(({ advancing }) => advancing)).toEqual([
+      expect.objectContaining({
+        id: 9111,
+        personId: null,
+        wcaId: '2010ELSE01',
+        advancing: true,
+        advancingQuestionable: false,
+      }),
+    ]);
+  });
+
+  it('does not treat an unresolved target identity as proof that known qualifiers were excluded', () => {
+    const competition = singleSourceCompetition();
+    const results = linkedSourceResults(competition, [
+      apiResult({ id: 9222, round_type_id: '2', wca_id: null, name: 'Unresolved Name' }),
+    ]);
+    expect(advancingPersonIds(results)).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(
+      results
+        .filter(({ advancing }) => advancing)
+        .every(({ advancingQuestionable }) => advancingQuestionable),
+    ).toBe(true);
+  });
+
+  it('settles known target matches while leaving other eligible rows provisional if target identity is incomplete', () => {
+    const competition = singleSourceCompetition();
+    const results = linkedSourceResults(competition, [
+      apiResult({ id: 9222, round_type_id: '2', wca_id: null, name: 'Unresolved Name' }),
+      apiResult({ id: 9333, round_type_id: '2', wca_id: '2010ALIC01', name: 'Alice Solver' }),
+    ]);
+    expect(advancingPersonIds(results)).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(results[0]).toMatchObject({ advancing: true, advancingQuestionable: false });
+    expect(results[1]).toMatchObject({ advancing: true, advancingQuestionable: true });
+  });
+
+  it('never treats a linked source row as evidence of target participation', () => {
+    const competition = singleSourceCompetition();
+    const rounds = competition.events[0].rounds;
+    rounds[1].linkedRounds = ['333-r1', '333-r2'];
+    rounds[1].results = [blankResult(8)];
+    expect(advancingPersonIds(linkedSourceResults(competition, []))).toEqual([8]);
+  });
+
+  it('uses known actual target participation even when linked source identity cannot be resolved', () => {
+    const competition = linkedCompetition();
+    competition.events[0].rounds[2].results = [blankResult(2)];
+    const results = linkedSourceResults(competition, [
+      apiResult({ name: 'Unresolved Person', wca_id: null }),
+    ]);
+    expect(advancingPersonIds(results)).toEqual([2]);
+    expect(results.find(({ personId }) => personId === 2)).toMatchObject({
+      advancingQuestionable: false,
+    });
+  });
+
+  it('keeps each component value while using the shared target participation set', () => {
+    const competition = linkedCompetition();
+    const rounds = competition.events[0].rounds;
+    rounds[1].results = [{ ...rounds[0].results[0], best: 800, average: 900 }];
+    rounds[2].results = [blankResult(1)];
+    expect(linkedSourceResults(competition, [])[0]).toMatchObject({
+      best: 1500,
+      average: 1500,
+      advancing: true,
+      advancingQuestionable: false,
+    });
+    expect(linkedSourceResults(competition, [], 1)[0]).toMatchObject({
+      best: 800,
+      average: 900,
+      advancing: true,
+      advancingQuestionable: false,
+    });
+  });
+
+  it('lets a blank selected Live row clear stale WCIF scores and qualifying flags', () => {
+    const competition = singleSourceCompetition();
+    const results = linkedSourceResults(
+      competition,
+      [],
+      0,
+      liveRound([
+        liveRoundResult({
+          person: { id: '1', registrantId: 1, name: 'Alice Solver' },
+          ranking: null,
+          best: 0,
+          average: 0,
+          attempts: [],
+          advancing: false,
+          advancingQuestionable: false,
+        }),
+      ]),
+    );
+    expect(results.find(({ personId }) => personId === 1)).toMatchObject({
+      ranking: null,
+      best: 0,
+      average: 0,
+      attempts: [],
+      advancing: false,
+      advancingQuestionable: false,
+    });
+  });
+
+  it('keeps selected Live flags authoritative over an actual stored target roster', () => {
+    const competition = singleSourceCompetition();
+    competition.events[0].rounds[1].results = [blankResult(1)];
+    const results = linkedSourceResults(
+      competition,
+      [],
+      0,
+      liveRound([
+        liveRoundResult({
+          person: { id: '1', registrantId: 1, name: 'Alice Solver' },
+          advancing: false,
+          advancingQuestionable: false,
+        }),
+        liveRoundResult({
+          person: { id: '2', registrantId: 2, name: 'Bob Solver' },
+          advancing: true,
+          advancingQuestionable: true,
+        }),
+      ]),
+    );
+    expect(results.find(({ personId }) => personId === 1)).toMatchObject({
+      advancing: false,
+      advancingQuestionable: false,
+    });
+    expect(results.find(({ personId }) => personId === 2)).toMatchObject({
+      advancing: true,
+      advancingQuestionable: true,
+    });
+  });
+});

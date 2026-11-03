@@ -7,7 +7,11 @@ import { getAdvancementConditionForRound } from '@/lib/wcif';
 import { PersonalRoundResult } from '../CompetitionPersonalResults/CompetitionPersonalResultsTable';
 import { CompetitionRoundResult } from './CompetitionResultsTable';
 import { normalizeResultRecordTag } from './ResultRecordBadge';
-import { getQualifyingResultKeys, getStoredRoundResults } from './advancement';
+import {
+  getAdvancementTargetRoundIds,
+  getFallbackAdvancement,
+  getStoredRoundResults,
+} from './advancement';
 import {
   findPersonForApiResult,
   findUniquePersonByName,
@@ -94,26 +98,25 @@ const findPersonForLiveRoundResult = (
 };
 
 const getLiveRoundResults = (wcif: Competition, wcaLiveRound: WcaLiveRound | null | undefined) =>
-  wcaLiveRound?.results
-    .filter((result) => result.attempts.length > 0)
-    .map<CompetitionRoundResult>((result) => {
-      const matchedPerson = findPersonForLiveRoundResult(wcif, result);
+  // Blank Live rows also supersede stale stored scores and advancement flags.
+  wcaLiveRound?.results.map<CompetitionRoundResult>((result) => {
+    const matchedPerson = findPersonForLiveRoundResult(wcif, result);
 
-      return {
-        id: result.id,
-        personId: matchedPerson?.registrantId ?? result.person.registrantId,
-        personName: result.person.name,
-        wcaId: result.person.wcaId,
-        ranking: result.ranking,
-        advancing: result.advancing,
-        advancingQuestionable: result.advancingQuestionable,
-        attempts: result.attempts,
-        best: result.best,
-        average: result.average,
-        singleRecordTag: normalizeResultRecordTag(result.singleRecordTag),
-        averageRecordTag: normalizeResultRecordTag(result.averageRecordTag),
-      };
-    }) ?? [];
+    return {
+      id: result.id,
+      personId: matchedPerson?.registrantId ?? result.person.registrantId,
+      personName: result.person.name,
+      wcaId: result.person.wcaId,
+      ranking: result.ranking,
+      advancing: result.advancing,
+      advancingQuestionable: result.advancingQuestionable,
+      attempts: result.attempts,
+      best: result.best,
+      average: result.average,
+      singleRecordTag: normalizeResultRecordTag(result.singleRecordTag),
+      averageRecordTag: normalizeResultRecordTag(result.averageRecordTag),
+    };
+  }) ?? [];
 
 export const getRoundResultsFromSources = ({
   wcif,
@@ -160,18 +163,51 @@ export const getRoundResultsFromSources = ({
   const hasUnresolvedLinkedIdentity =
     advancementCondition?.sourceType === 'linkedRounds' &&
     sourceResults.some((result) => result.personId == null && !result.wcaId);
-  const qualifyingKeys = getQualifyingResultKeys(
+  // A WCIF target roster is a complete membership snapshot, so do not resurrect
+  // an API-only participant that was removed from it. Use published API results
+  // only when WCIF has no target rows. Assignments are not actual participation.
+  const targetRoundIds = getAdvancementTargetRoundIds(
+    selectedRound.event.rounds,
+    advancementCondition,
+  );
+  const targetResults = selectedRound.event.rounds
+    .filter(({ id }) => targetRoundIds.includes(id))
+    .flatMap((round) =>
+      round.results.length > 0
+        ? getStoredRoundResults(round, null)
+        : (apiResultsByRound.get(round.id) ?? []).map((result) =>
+            toCompetitionRoundResult(wcif.persons, result),
+          ),
+    );
+  const { advancingKeys, questionableKeys } = getFallbackAdvancement(
     selectedRound.round,
-    hasUnresolvedLinkedIdentity ? null : advancementCondition,
-    sourceResults.map((result) => ({ ...result, key: getResultKey(result) })),
+    advancementCondition,
+    selectedRound.event.rounds
+      .filter(({ id }) => sourceRoundIds.includes(id))
+      .map((round) => ({
+        round,
+        results: (fallbackResultsByRound.get(round.id) ?? []).map((result) => ({
+          ...result,
+          key: getResultKey(result),
+        })),
+      })),
+    targetResults.map((result) => ({
+      key: getResultKey(result),
+      identityResolved: result.personId != null || Boolean(result.wcaId),
+    })),
+    !hasUnresolvedLinkedIdentity,
   );
   const fallbackResults = (fallbackResultsByRound.get(selectedRound.round.id) ?? []).map(
-    (result) => ({
-      ...result,
+    (result) => {
       // Keep empty component/roster rows visually empty, even if the competitor
       // qualifies through the other component. Live flags remain authoritative.
-      advancing: result.ranking != null && qualifyingKeys.has(getResultKey(result)),
-    }),
+      const advancing = result.ranking != null && advancingKeys.has(getResultKey(result));
+      return {
+        ...result,
+        advancing,
+        advancingQuestionable: advancing && questionableKeys.has(getResultKey(result)),
+      };
+    },
   );
   const liveRoundResults = getLiveRoundResults(wcif, wcaLiveRound);
 

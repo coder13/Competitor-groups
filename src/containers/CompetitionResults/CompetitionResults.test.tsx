@@ -44,7 +44,7 @@ jest.mock('react-i18next', () => ({
       if (key === 'competition.results.best') return 'Best';
       if (key === 'competition.results.attempts') return 'Attempts';
       if (key === 'competition.results.resultsSourceNote') {
-        return 'Results are merged from WCIF and WCA Live when available. WCA Live data may be delayed.';
+        return 'Results combine WCA Live, WCIF, and published WCA results. Yellow highlights are provisional. Without Live, advancement uses next-round participants when available, otherwise calculated eligibility; incomplete source rounds remain provisional. Stored data may lag behind organizer changes.';
       }
       if (key === 'competition.results.allResults') return 'All results';
       if (key === 'competition.results.unknownCompetitor') {
@@ -313,7 +313,7 @@ describe('CompetitionResultsContainer', () => {
     expect(screen.queryByRole('table', { name: 'Results' })).not.toBeInTheDocument();
     expect(
       screen.getByText(
-        'Results are merged from WCIF and WCA Live when available. WCA Live data may be delayed.',
+        'Results combine WCA Live, WCIF, and published WCA results. Yellow highlights are provisional. Without Live, advancement uses next-round participants when available, otherwise calculated eligibility; incomplete source rounds remain provisional. Stored data may lag behind organizer changes.',
       ),
     ).toBeInTheDocument();
   });
@@ -358,7 +358,7 @@ describe('CompetitionResultsContainer', () => {
     expect(screen.queryByLabelText('Attempts')).not.toBeInTheDocument();
     expect(
       screen.getByText(
-        'Results are merged from WCIF and WCA Live when available. WCA Live data may be delayed.',
+        'Results combine WCA Live, WCIF, and published WCA results. Yellow highlights are provisional. Without Live, advancement uses next-round participants when available, otherwise calculated eligibility; incomplete source rounds remain provisional. Stored data may lag behind organizer changes.',
       ),
     ).toBeInTheDocument();
     expect(
@@ -367,9 +367,10 @@ describe('CompetitionResultsContainer', () => {
         .slice(1)
         .map((row) => within(row).getAllByRole('cell')[0].textContent),
     ).toEqual(['1', '2']);
+    // The stored average-of-five fixture has only three attempts per result.
     expect(
       within(screen.getByRole('row', { name: /1 Blake Thompson/ })).getByText('1'),
-    ).toHaveClass('bg-green-300');
+    ).toHaveClass('bg-yellow-200');
     expect(
       within(screen.getByRole('row', { name: /2 Nick Silvestri/ })).getByText('2'),
     ).not.toHaveClass('bg-green-300');
@@ -555,7 +556,7 @@ describe('CompetitionResultsContainer', () => {
     ).toHaveLength(2);
     expect(
       screen.getByText(
-        'Results are merged from WCIF and WCA Live when available. WCA Live data may be delayed.',
+        'Results combine WCA Live, WCIF, and published WCA results. Yellow highlights are provisional. Without Live, advancement uses next-round participants when available, otherwise calculated eligibility; incomplete source rounds remain provisional. Stored data may lag behind organizer changes.',
       ),
     ).toBeInTheDocument();
   });

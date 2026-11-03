@@ -32,17 +32,17 @@ export function CompetitionRoundContainer({
   const { wcif, setTitle } = useWCIF();
   const { roundActivies } = useWcifUtils();
 
-  useEffect(() => {
-    setTitle(activityCodeToName(roundId));
-  }, [roundId, setTitle]);
-
   const round = useMemo(() => {
     const events = wcif && getAllEvents(wcif);
     return events?.flatMap((e) => e.rounds).find((r) => r.id === roundId);
   }, [roundId, wcif]);
+  useEffect(() => {
+    setTitle(round ? activityCodeToName(roundId) : t('competition.results.roundNotFound'));
+  }, [round, roundId, setTitle, t]);
+
   const eventRounds = useMemo(
-    () => getEventRoundsForRound(wcif?.events, roundId),
-    [roundId, wcif?.events],
+    () => (round ? getEventRoundsForRound(wcif?.events, roundId) : []),
+    [round, roundId, wcif?.events],
   );
   const linkedRoundNames = useMemo(
     () =>
@@ -60,6 +60,21 @@ export function CompetitionRoundContainer({
   const groups = rounds.flatMap((r) => r.childActivities);
   const uniqueGroupCodes = [...new Set(groups.map((g) => g.activityCode))];
   const hasResults = (round?.results.length ?? 0) > 0;
+
+  if (!wcif) return null;
+
+  if (!round) {
+    return (
+      <Container className="p-4 space-y-4">
+        <p role="status">{t('competition.results.roundNotFound')}</p>
+        <LinkButton
+          to={`/competitions/${competitionId}/events/`}
+          title={t('competition.groups.backToEvents')}
+          LinkComponent={LinkComponent}
+        />
+      </Container>
+    );
+  }
 
   return (
     <Container>

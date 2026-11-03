@@ -116,3 +116,29 @@ it('replaces an initial error with content after a successful retry', () => {
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   expect(screen.getByText('Competition content')).toBeInTheDocument();
 });
+
+it('announces initial loading and retry loading even when the query clears its previous error', () => {
+  const { rerender } = render(view());
+  expect(screen.getByRole('status')).toHaveTextContent('common.loading');
+  mockUseWcif.mockReturnValue({
+    error: new Error('Missing'),
+    dataUpdatedAt: 0,
+    isFetching: false,
+    refetch,
+  });
+  rerender(view());
+  fireEvent.click(screen.getByRole('button', { name: 'common.retry' }));
+  mockUseWcif.mockReturnValue({ error: null, dataUpdatedAt: 0, isFetching: true, refetch });
+  rerender(view());
+  expect(screen.getByRole('status')).toHaveTextContent('common.loading');
+  expect(screen.queryByText('Competition content')).not.toBeInTheDocument();
+  mockUseWcif.mockReturnValue({
+    error: new Error('Missing'),
+    dataUpdatedAt: 0,
+    isFetching: false,
+    refetch,
+  });
+  rerender(view());
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'common.retry' })).toBeEnabled();
+});

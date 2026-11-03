@@ -322,3 +322,19 @@ describe('CompetitionRoundContainer', () => {
     }
   });
 });
+
+it.each(['333-r99', 'not-a-round', '999-r1'])(
+  'explains missing round %s without implying that it has a schedule or results',
+  (roundId) => {
+    const { rerender } = renderRound(roundId);
+    expect(screen.getByRole('status')).toHaveTextContent('competition.results.roundNotFound');
+    expect(screen.queryByText('See Results')).not.toBeInTheDocument();
+    expect(screen.getByText('Back To Events')).toHaveAttribute(
+      'href',
+      '/competitions/TestComp2026/events/',
+    );
+    rerender(<CompetitionRoundContainer competitionId="TestComp2026" roundId="333-r2" />);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    expect(screen.getByText('Group 1')).toBeInTheDocument();
+  },
+);

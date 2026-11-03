@@ -95,14 +95,20 @@ export function Assignments({ wcif, person, showStationNumber }: AssignmentsProp
               return (
                 <Fragment key={date}>
                   {!isSingleDay && (
-                    <tr onClick={() => toggleDate(date)} className="table-row-hover-bg">
-                      <td colSpan={6} className="table-row-group-header cursor-pointer select-none">
-                        <div className="flex justify-between">
+                    <tr className="table-row-hover-bg">
+                      <td colSpan={6} className="table-row-group-header select-none">
+                        <button
+                          type="button"
+                          aria-expanded={!collapsed}
+                          onClick={() => toggleDate(date)}
+                          className="flex w-full justify-between focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500">
                           <span className="w-full p-2 text-center">
                             {dateParts.find((i) => i.type === 'weekday')?.value || date}
                           </span>
-                          <span className="p-2 flex-end">{collapsed ? ' ▼' : ' ▲'}</span>
-                        </div>
+                          <span className="p-2 flex-end" aria-hidden="true">
+                            {collapsed ? ' ▼' : ' ▲'}
+                          </span>
+                        </button>
                       </td>
                     </tr>
                   )}

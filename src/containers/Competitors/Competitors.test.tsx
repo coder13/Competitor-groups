@@ -1,10 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Competition, Person } from '@wca/helpers';
 import { Link, MemoryRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { usePinnedPersons } from '@/hooks/UsePinnedPersons';
 import { Competitors } from './Competitors';
 
 jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
-jest.mock('@/hooks/UsePinnedPersons', () => ({ usePinnedPersons: () => ({ pinnedPersons: [] }) }));
+jest.mock('@/hooks/UsePinnedPersons', () => ({
+  usePinnedPersons: jest.fn(() => ({ pinnedPersons: [] })),
+}));
 jest.mock('@/hooks/useOngoingActivities', () => ({
   useOngoingActivities: () => ({ ongoingActivities: [] }),
 }));
@@ -95,4 +98,21 @@ it('reads direct-link search, preserves other params and removes search when cle
 it('renders no unpinned competitors for a search with no match', () => {
   renderCompetition('/competitions/Test2026?search=unknown');
   expect(screen.queryAllByRole('link')).toHaveLength(0);
+});
+
+it('announces no matches and removes the message when the search is cleared', () => {
+  renderCompetition('/competitions/Test2026?search=unknown');
+  expect(screen.getByText('competition.competitors.noMatches')).toHaveAttribute('role', 'status');
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: '' } });
+  expect(screen.queryByText('competition.competitors.noMatches')).not.toBeInTheDocument();
+  expect(screen.getAllByRole('link')).toHaveLength(2);
+});
+
+it('does not claim there are no matches when a matching competitor is pinned above the search', () => {
+  jest
+    .mocked(usePinnedPersons)
+    .mockReturnValueOnce({ pinnedPersons: [2] } as ReturnType<typeof usePinnedPersons>);
+  renderCompetition('/competitions/Test2026?search=Tin');
+  expect(screen.getByRole('link', { name: 'Tin Huang' })).toBeInTheDocument();
+  expect(screen.queryByText('competition.competitors.noMatches')).not.toBeInTheDocument();
 });
