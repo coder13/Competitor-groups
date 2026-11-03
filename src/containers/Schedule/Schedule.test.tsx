@@ -15,7 +15,15 @@ jest.mock('./ScheduleActivityRow', () => ({
   ScheduleActivityRow: () => <div>Day activities</div>,
 }));
 const wcif = { id: 'One2026' } as Competition;
-beforeEach(() => localStorage.clear());
+beforeEach(() => {
+  localStorage.clear();
+  jest
+    .mocked(getScheduledDays)
+    .mockReset()
+    .mockReturnValue([
+      { date: 'Saturday, 1/1/2030', activities: [{ id: 1, endTime: '2030-01-01T12:00:00Z' }] },
+    ] as ReturnType<typeof getScheduledDays>);
+});
 
 it('toggles with Enter and Space, preserves focus, and exposes the controlled day', async () => {
   render(<ScheduleContainer wcif={wcif} />);
@@ -90,3 +98,78 @@ it('automatically collapses past days, lets the user reopen them, and keeps late
     jest.restoreAllMocks();
   }
 });
+
+const historicalDays = ['Saturday', 'Sunday'].map((date, index) => ({
+  date,
+  activities: [{ id: index + 1, endTime: '2020-01-01T12:00:00Z' }],
+})) as ReturnType<typeof getScheduledDays>;
+
+it.each([[[]], [['Saturday']], [['Sunday']]])(
+  'gives saved historical day choices %j precedence over automatic collapse',
+  (collapsed) => {
+    jest.mocked(getScheduledDays).mockReturnValue(historicalDays);
+    localStorage.setItem(
+      'collapse',
+      JSON.stringify({ 'One2026-schedule': collapsed, other: ['Unrelated'] }),
+    );
+    render(<ScheduleContainer wcif={wcif} />);
+    for (const { date } of historicalDays) {
+      expect(screen.getByRole('button', { name: date })).toHaveAttribute(
+        'aria-expanded',
+        String(!collapsed.includes(date)),
+      );
+    }
+    expect(JSON.parse(localStorage.getItem('collapse')!)).toEqual({
+      'One2026-schedule': collapsed,
+      other: ['Unrelated'],
+    });
+  },
+);
+
+it.each([false, true])(
+  'retains historical keyboard choices across reload (mixed: %s)',
+  async (mixed) => {
+    jest.mocked(getScheduledDays).mockReturnValue(historicalDays);
+    localStorage.setItem('collapse', JSON.stringify({ other: ['Unrelated'] }));
+    const { unmount } = render(<ScheduleContainer wcif={wcif} />);
+    const saturday = screen.getByRole('button', { name: 'Saturday' });
+    const sunday = screen.getByRole('button', { name: 'Sunday' });
+    expect(saturday).toHaveAttribute('aria-expanded', 'false');
+    expect(sunday).toHaveAttribute('aria-expanded', 'false');
+    await act(() => userEvent.tab());
+    await act(() => userEvent.keyboard('{Enter}'));
+    await act(() => userEvent.tab());
+    await act(() => userEvent.keyboard(' '));
+    if (mixed) {
+      await act(() => userEvent.tab({ shift: true }));
+      await act(() => userEvent.keyboard('{Enter}'));
+    }
+    expect(saturday).toHaveAttribute('aria-expanded', String(!mixed));
+    expect(sunday).toHaveAttribute('aria-expanded', 'true');
+    unmount();
+    const { rerender } = render(<ScheduleContainer wcif={wcif} />);
+    expect(screen.getByRole('button', { name: 'Saturday' })).toHaveAttribute(
+      'aria-expanded',
+      String(!mixed),
+    );
+    expect(screen.getByRole('button', { name: 'Sunday' })).toHaveAttribute('aria-expanded', 'true');
+    // Receiving refreshed schedule data must not reset an explicit choice either.
+    rerender(<ScheduleContainer wcif={{ ...wcif }} />);
+    expect(screen.getByRole('button', { name: 'Sunday' })).toHaveAttribute('aria-expanded', 'true');
+    rerender(<ScheduleContainer wcif={{ ...wcif, id: 'Other2026' }} />);
+    expect(screen.getByRole('button', { name: 'Sunday' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
+    rerender(<ScheduleContainer wcif={wcif} />);
+    expect(screen.getByRole('button', { name: 'Saturday' })).toHaveAttribute(
+      'aria-expanded',
+      String(!mixed),
+    );
+    expect(screen.getByRole('button', { name: 'Sunday' })).toHaveAttribute('aria-expanded', 'true');
+    expect(JSON.parse(localStorage.getItem('collapse')!)).toEqual({
+      other: ['Unrelated'],
+      'One2026-schedule': mixed ? ['Saturday'] : [],
+    });
+  },
+);

@@ -1,5 +1,5 @@
 import { Competition } from '@wca/helpers';
-import { useEffect, useId, useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import { useCollapse } from '@/hooks/UseCollapse';
 import { getScheduledDays, hasMultipleScheduleLocations } from '@/lib/activities';
 import { LinkRenderer } from '@/lib/linkRenderer';
@@ -72,14 +72,12 @@ export const ScheduleContainer = (props: ScheduleContainerProps) => (
 );
 
 const CompetitionSchedule = ({ wcif, LinkComponent }: ScheduleContainerProps) => {
-  const { collapsedDates, setCollapsedDates, toggleDate } = useCollapse(key(wcif.id));
-
   const scheduleDays = useMemo(() => getScheduledDays(wcif), [wcif]);
 
-  useEffect(() => {
-    const now = new Date().getTime();
+  const { collapsedDates, toggleDate } = useCollapse(key(wcif.id), () => {
+    const now = Date.now();
 
-    const pastDates = scheduleDays
+    return scheduleDays
       .filter(({ activities }) => {
         const lastActivityEndTime = Math.max(
           ...activities.map((i) => new Date(i.endTime).getTime()),
@@ -88,9 +86,7 @@ const CompetitionSchedule = ({ wcif, LinkComponent }: ScheduleContainerProps) =>
         return now - lastActivityEndTime > 1000 * 60 * 60 * 4;
       })
       .map(({ date }) => date);
-
-    setCollapsedDates((previous) => [...new Set([...previous, ...pastDates])]);
-  }, [scheduleDays, setCollapsedDates]);
+  });
 
   const showRoom = useMemo(() => hasMultipleScheduleLocations(wcif), [wcif]);
 

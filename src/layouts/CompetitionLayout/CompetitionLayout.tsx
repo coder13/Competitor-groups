@@ -1,8 +1,7 @@
 import classNames from 'classnames';
-import { useEffect, useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useTranslation } from 'react-i18next';
-import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
+import { Link, Outlet, useParams } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import { ErrorFallback, LastFetchedAt, NoteBox, NotifyCompRemoteBar } from '@/components';
 import { Button } from '@/components/Button';
@@ -18,11 +17,12 @@ export function CompetitionLayout() {
   const { t } = useTranslation();
   const { online } = useApp();
   const { competitionId } = useParams();
-  const { pathname } = useLocation();
 
-  const ref = useRef<HTMLDivElement>(null);
-
-  const { data: wcif, dataUpdatedAt, isFetching, error, refetch } = useWcif(competitionId!);
+  const { data, dataUpdatedAt, isFetching, isPlaceholderData, error, refetch } = useWcif(
+    competitionId!,
+  );
+  // List placeholders contain competition metadata, but no activities or people yet.
+  const wcif = isPlaceholderData ? undefined : data;
 
   useCompetitionAnalytics(competitionId);
 
@@ -30,10 +30,6 @@ export function CompetitionLayout() {
     competitionId: competitionId!,
     wcif: wcif,
   });
-
-  useEffect(() => {
-    ref.current?.scrollTo(0, 0);
-  }, [pathname]);
 
   const Header = (
     <nav className="z-10 flex justify-center w-full shadow-md shadow-tertiary-dark print:hidden bg-panel">
@@ -73,8 +69,8 @@ export function CompetitionLayout() {
         {isFetching ? <BarLoader width="100%" /> : <div style={{ height: '4px' }} />}
         <div
           className="safe-area-scroll-bottom flex flex-1 flex-col w-full items-center overflow-y-auto [scrollbar-gutter:stable;]"
-          ref={ref}>
-          {!wcif && isFetching && (
+          data-scroll-restoration="competition">
+          {!wcif && (isFetching || isPlaceholderData) && (
             <Container className="p-4">
               <p role="status">{t('common.loading')}</p>
             </Container>

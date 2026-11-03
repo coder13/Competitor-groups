@@ -60,6 +60,10 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
             <Button
               variant="blue"
               className="min-h-10"
+              aria-label={t(
+                isPinned ? 'common.removeCompetitorBookmark' : 'common.bookmarkCompetitor',
+              )}
+              aria-pressed={isPinned}
               disabled={person.registrantId == null}
               onClick={() => {
                 if (person.registrantId == null) return;
@@ -99,5 +103,8 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
 };
 
 const PinIcon = ({ pinned }: { pinned: boolean }) => (
-  <span className={pinned ? 'fa fa-bookmark text-yellow-500' : 'fa-regular fa-bookmark'} />
+  <span
+    className={pinned ? 'fa fa-bookmark text-yellow-500' : 'fa-regular fa-bookmark'}
+    aria-hidden="true"
+  />
 );

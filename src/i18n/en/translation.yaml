@@ -4,6 +4,8 @@ common:
   retry: 'Try again'
   home: 'Back to home'
   bookmarkCompetition: 'Bookmark competition'
+  bookmarkCompetitor: 'Bookmark competitor'
+  removeCompetitorBookmark: 'Remove competitor bookmark'
   wca:
     event: 'Event'
     round: 'Round'

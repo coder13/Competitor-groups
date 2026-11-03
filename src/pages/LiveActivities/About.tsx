@@ -26,7 +26,9 @@ export default function LiveActivitiesAbout() {
   }, []);
 
   return (
-    <Container className="safe-area-scroll-bottom min-h-0 flex-1 overflow-y-auto px-4 pt-8">
+    <Container
+      scrollRestorationId="page"
+      className="safe-area-scroll-bottom min-h-0 flex-1 overflow-y-auto px-4 pt-8">
       <div className="space-y-8">
         <section className="space-y-4">
           <div className="space-y-2">

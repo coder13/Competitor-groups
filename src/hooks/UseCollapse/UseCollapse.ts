@@ -1,23 +1,17 @@
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { useCallback, useRef, useState } from 'react';
 
-export const useCollapse = (key: string) => {
+export const useCollapse = (key: string, getDefaultCollapsedDates: () => string[] = () => []) => {
   const [initialCollapsed, saveCollapsed] = useLocalStorage<Record<string, string[]>>(
     `collapse`,
     {},
   );
 
   const [collapsedDates, setCollapsedDates] = useState<string[]>(() => {
-    if (!initialCollapsed) {
-      return [];
-    }
-
-    const collapsed = initialCollapsed[key];
-    if (!collapsed || !Array.isArray(collapsed)) {
-      return [];
-    }
-
-    return collapsed;
+    const savedDates = initialCollapsed?.[key];
+    // An empty saved array is an explicit choice to expand every day. Defaults
+    // apply only on initialization when this schedule has no saved preference.
+    return Array.isArray(savedDates) ? savedDates : getDefaultCollapsedDates();
   });
 
   const collapsedDatesRef = useRef(collapsedDates);
