@@ -10,7 +10,7 @@ export interface IWCIFContextType {
 export const WCIFContext = createContext<IWCIFContextType>({
   competitionId: '',
   wcif: {
-    formatVersion: '1.0',
+    formatVersion: '2.2',
     id: '',
     name: '',
     shortName: '',
@@ -20,6 +20,15 @@ export const WCIFContext = createContext<IWCIFContextType>({
       numberOfDays: 0,
       startDate: '',
       venues: [],
+    },
+    series: null,
+    registrationInfo: {
+      openTime: '',
+      closeTime: '',
+      baseEntryFee: 0,
+      currencyCode: '',
+      onTheSpotRegistration: false,
+      useWcaRegistration: false,
     },
     competitorLimit: 0,
     extensions: [],

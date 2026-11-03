@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
 import { renderCentiseconds, renderCutoff } from '@/lib/results';
 import { getEventRoundsForRound, joinLabels } from '@/lib/roundLabels';
-import { CompatibleRound, getAdvancementConditionForRound, ResultCondition } from '@/lib/wcif';
+import { getAdvancementConditionForRound } from '@/lib/wcif';
 import { useWCIF } from '@/providers/WCIFProvider';
 
 export function CutoffTimeLimitPanel({
@@ -28,7 +28,7 @@ export function CutoffTimeLimitPanel({
     [round.id, wcif?.events],
   );
   const advancement = useMemo(
-    () => getAdvancementConditionForRound(eventRounds, round as CompatibleRound),
+    () => getAdvancementConditionForRound(eventRounds, round),
     [eventRounds, round],
   );
 
@@ -110,7 +110,7 @@ function getCumulativeRoundIds(timeLimit: Round['timeLimit'], roundId: string) {
 
 function renderAdvancementText(
   t: ReturnType<typeof useTranslation>['t'],
-  eventRounds: CompatibleRound[],
+  eventRounds: Round[],
   sourceType: 'registrations' | 'round' | 'linkedRounds',
   advancement: NonNullable<ReturnType<typeof getAdvancementConditionForRound>>,
 ) {
@@ -123,7 +123,7 @@ function renderAdvancementText(
 
 function renderLinkedRoundsAdvancementText(
   t: ReturnType<typeof useTranslation>['t'],
-  eventRounds: CompatibleRound[],
+  eventRounds: Round[],
   advancement: NonNullable<ReturnType<typeof getAdvancementConditionForRound>>,
 ) {
   const { resultCondition } = advancement;
@@ -162,7 +162,7 @@ function renderLinkedRoundsAdvancementText(
 
 function renderSingleRoundAdvancementText(
   t: ReturnType<typeof useTranslation>['t'],
-  eventRounds: CompatibleRound[],
+  eventRounds: Round[],
   advancement: NonNullable<ReturnType<typeof getAdvancementConditionForRound>>,
 ) {
   const { resultCondition } = advancement;
@@ -193,7 +193,7 @@ function renderSingleRoundAdvancementText(
 
 function getAdvancementTargetLabel(
   t: ReturnType<typeof useTranslation>['t'],
-  eventRounds: CompatibleRound[],
+  eventRounds: Round[],
   targetRoundId: string | null | undefined,
 ) {
   if (!targetRoundId) {
@@ -250,6 +250,7 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
       <button
         className="px-1 mr-2"
         aria-label={t('common.help')}
+        aria-expanded={open}
         // className="p-2 px-3 text-sm rounded-full shadow-sm fa-solid fa-question bg-slate-300 hover:opacity-70"
         onClick={() => setOpen((prev) => !prev)}>
         <svg

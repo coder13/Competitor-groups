@@ -1,4 +1,4 @@
-import { AttemptResult, EventId, Person } from '@wca/helpers';
+import { ResultValue, EventId, Person } from '@wca/helpers';
 import classNames from 'classnames';
 import { KeyboardEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,10 +16,10 @@ interface PersonalRoundResult {
   advancing: boolean;
   advancingQuestionable: boolean;
   attempts: {
-    result: AttemptResult;
+    result: ResultValue;
   }[];
-  best: AttemptResult;
-  average: AttemptResult;
+  best: ResultValue;
+  average: ResultValue;
 }
 
 interface CompetitionPersonalResultsTableProps {
@@ -31,7 +31,7 @@ interface CompetitionPersonalResultsTableProps {
   LinkComponent: LinkRenderer;
 }
 
-const renderSingleResult = (eventId: string, value: AttemptResult) => {
+const renderSingleResult = (eventId: string, value: ResultValue) => {
   if (value === 0) {
     return '-';
   }
@@ -39,7 +39,7 @@ const renderSingleResult = (eventId: string, value: AttemptResult) => {
   return renderResultByEventId(eventId as EventId, 'single', value);
 };
 
-const renderAverageResult = (eventId: string, value: AttemptResult) => {
+const renderAverageResult = (eventId: string, value: ResultValue) => {
   if (value === 0) {
     return '-';
   }

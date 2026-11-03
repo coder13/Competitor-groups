@@ -41,8 +41,17 @@ const persons: Person[] = [
   },
 ];
 
-const wcif = {
-  formatVersion: '1.0',
+const wcif: Competition = {
+  series: null,
+  registrationInfo: {
+    openTime: '2026-01-01T00:00:00Z',
+    closeTime: '2026-04-01T00:00:00Z',
+    baseEntryFee: 0,
+    currencyCode: 'USD',
+    onTheSpotRegistration: false,
+    useWcaRegistration: true,
+  },
+  formatVersion: '2.0',
   id: 'ProviderTest2026',
   name: 'Provider Test 2026',
   shortName: 'Provider Test',
@@ -59,16 +68,17 @@ const wcif = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           extensions: [],
           results: [
             {
               personId: 1,
               ranking: 1,
               attempts: [
-                { result: 1200, reconstruction: null },
-                { result: 1300, reconstruction: null },
-                { result: 1400, reconstruction: null },
+                { value: 1200, reconstruction: null },
+                { value: 1300, reconstruction: null },
+                { value: 1400, reconstruction: null },
               ],
               best: 1200,
               average: 1300,
@@ -80,7 +90,8 @@ const wcif = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           extensions: [],
           results: [],
         },
@@ -89,7 +100,8 @@ const wcif = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           extensions: [],
           results: [],
         },
@@ -140,7 +152,7 @@ const wcif = {
       },
     ],
   },
-} as Competition;
+};
 
 const selectedRound = (roundIndex: number) => ({
   event: wcif.events[0],
@@ -689,5 +701,43 @@ describe('resultsProvider', () => {
         { roundId: '333-r2', roundNumber: 2 },
       ]);
     });
+  });
+  it('keeps published dual-round IDs when a competitor skipped the first component', () => {
+    // Published Cube Against Cancer Hong Kong 2026 uses 1, 2 and f.
+    const competition: Competition = {
+      ...wcif,
+      events: wcif.events.map((event) => ({
+        ...event,
+        rounds: event.rounds.map((round, index) => ({
+          ...round,
+          results: [],
+          linkedRounds: index < 2 ? ['333-r1', '333-r2'] : null,
+        })),
+      })),
+    };
+    const results = getPersonalResultsFromSources({
+      wcif: competition,
+      person: persons[0],
+      wcaLiveResults: [],
+      wcaApiResults: [
+        apiResult({ round_type_id: '1', wca_id: persons[1].wcaId, name: persons[1].name }),
+        apiResult({
+          round_type_id: '2',
+          wca_id: persons[0].wcaId,
+          name: persons[0].name,
+          average: 900,
+        }),
+        apiResult({
+          round_type_id: 'f',
+          wca_id: persons[0].wcaId,
+          name: persons[0].name,
+          average: 850,
+        }),
+      ],
+    });
+    expect(results[0].rounds).toMatchObject([
+      { roundId: '333-r2', average: 900 },
+      { roundId: '333-r3', average: 850 },
+    ]);
   });
 });

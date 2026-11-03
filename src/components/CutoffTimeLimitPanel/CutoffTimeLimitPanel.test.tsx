@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { Round } from '@wca/helpers';
+import { Competition, Round } from '@wca/helpers';
 import { MemoryRouter } from 'react-router-dom';
 import { CutoffTimeLimitPanel } from './CutoffTimeLimitPanel';
 
@@ -110,35 +110,54 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-const wcifMock = {
+const wcifMock: Competition = {
+  formatVersion: '2.0',
+  name: 'Test Competition',
+  shortName: 'Test Competition',
+  persons: [],
+  series: null,
+  competitorLimit: null,
+  extensions: [],
+  registrationInfo: {
+    openTime: '2026-01-01T00:00:00Z',
+    closeTime: '2026-04-01T00:00:00Z',
+    baseEntryFee: 0,
+    currencyCode: 'USD',
+    onTheSpotRegistration: false,
+    useWcaRegistration: true,
+  },
   id: 'TestComp2026',
-  schedule: { venues: [] },
+  schedule: { startDate: '2026-05-03', numberOfDays: 1, venues: [] },
   events: [
     {
       id: '333',
+      extensions: [],
       rounds: [
         {
           id: '333-r1',
+          extensions: [],
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: {
-            type: 'ranking',
-            level: 16,
-          },
+          linkedRounds: null,
+          participationRuleset: null,
           results: [],
         },
         {
           id: '333-r2',
+          extensions: [],
           format: 'a',
           cutoff: null,
           timeLimit: null,
+          linkedRounds: null,
           participationRuleset: {
+            reservedPlaces: null,
             participationSource: {
               type: 'round',
               roundId: '333-r1',
               resultCondition: {
                 type: 'percent',
+                scope: 'average',
                 value: 75,
               },
             },
@@ -147,15 +166,19 @@ const wcifMock = {
         },
         {
           id: '333-r3',
+          extensions: [],
           format: 'a',
           cutoff: null,
           timeLimit: null,
+          linkedRounds: null,
           participationRuleset: {
+            reservedPlaces: null,
             participationSource: {
               type: 'linkedRounds',
               roundIds: ['333-r1', '333-r2'],
               resultCondition: {
                 type: 'ranking',
+                scope: 'average',
                 value: 12,
               },
             },
@@ -166,32 +189,43 @@ const wcifMock = {
     },
     {
       id: '222',
+      extensions: [],
       rounds: [
         {
           id: '222-r1',
+          extensions: [],
           format: 'a',
           cutoff: null,
           timeLimit: null,
+          linkedRounds: null,
+          participationRuleset: null,
           results: [],
         },
         {
           id: '222-r2',
+          extensions: [],
           format: 'a',
           cutoff: null,
           timeLimit: null,
+          linkedRounds: null,
+          participationRuleset: null,
           results: [],
         },
         {
           id: '222-r3',
+          extensions: [],
           format: 'a',
           cutoff: null,
           timeLimit: null,
+          linkedRounds: null,
           participationRuleset: {
+            reservedPlaces: null,
             participationSource: {
               type: 'linkedRounds',
               roundIds: ['222-r1', '222-r2'],
               resultCondition: {
                 type: 'ranking',
+                scope: 'average',
                 value: 8,
               },
             },
@@ -211,15 +245,19 @@ jest.mock('@/providers/WCIFProvider', () => ({
   }),
 }));
 
-const cutoffOnlyRound = {
+const cutoffOnlyRound: Round = {
+  format: 'a',
+  extensions: [],
+  results: [],
   id: '333-r1',
   cutoff: {
     numberOfAttempts: 2,
-    attemptResult: 1200,
+    resultValue: 1200,
   },
   timeLimit: null,
-  advancementCondition: null,
-} as unknown as Round;
+  linkedRounds: null,
+  participationRuleset: null,
+};
 
 function renderPanel(round: Round) {
   return render(
@@ -233,7 +271,9 @@ describe('CutoffTimeLimitPanel', () => {
   it('uses theme-aware popover classes for help content', () => {
     renderPanel(cutoffOnlyRound);
 
-    fireEvent.click(screen.getByRole('button', { name: /help/i }));
+    const helpButton = screen.getByRole('button', { name: /^help$/i, expanded: false });
+    fireEvent.click(helpButton);
+    expect(helpButton).toHaveAttribute('aria-expanded', 'true');
 
     const popoverContent = screen
       .getByText(/common\.cutoffTimeLimitPopover\.timeLimits/i)
@@ -242,31 +282,46 @@ describe('CutoffTimeLimitPanel', () => {
     expect(popoverContent).toHaveClass('bg-panel');
     expect(popoverContent).toHaveClass('text-default');
     expect(popoverContent).not.toHaveClass('bg-white');
+
+    fireEvent.click(helpButton);
+    expect(helpButton).toHaveAttribute('aria-expanded', 'false');
+    expect(popoverContent).not.toBeInTheDocument();
   });
 
-  it('shows the legacy advancement text for stable wcif rounds', () => {
-    renderPanel(wcifMock.events[0].rounds[0] as unknown as Round);
+  it('shows ranking advancement from the target round', () => {
+    const nextRound = wcifMock.events[0].rounds[1];
+    const originalRuleset = nextRound.participationRuleset;
+    nextRound.participationRuleset = {
+      reservedPlaces: null,
+      participationSource: {
+        type: 'round',
+        roundId: '333-r1',
+        resultCondition: { type: 'ranking', scope: 'average', value: 16 },
+      },
+    };
 
-    expect(screen.getByText('Top 16 advance to next round')).toBeInTheDocument();
+    try {
+      renderPanel(wcifMock.events[0].rounds[0]);
+      expect(screen.getByText('Top 16 advance to next round')).toBeInTheDocument();
+    } finally {
+      nextRound.participationRuleset = originalRuleset;
+    }
   });
 
   it('shows advancement text derived from the next round participation ruleset', () => {
-    renderPanel({
-      ...(wcifMock.events[0].rounds[0] as object),
-      advancementCondition: null,
-    } as Round);
+    renderPanel(wcifMock.events[0].rounds[0]);
 
     expect(screen.getByText('Top 75% advance to next round')).toBeInTheDocument();
   });
 
   it('shows linked-round advancement text when a later round depends on combined results', () => {
-    renderPanel(wcifMock.events[0].rounds[1] as unknown as Round);
+    renderPanel(wcifMock.events[0].rounds[1]);
 
     expect(screen.getByText('Top 12 in dual rounds 1 & 2 advance to final')).toBeInTheDocument();
   });
 
   it('shows the same dual-round advancement text for the first round in a linked-round set', () => {
-    renderPanel(wcifMock.events[1].rounds[0] as unknown as Round);
+    renderPanel(wcifMock.events[1].rounds[0]);
 
     expect(screen.getByText('Top 8 in dual rounds 1 & 2 advance to final')).toBeInTheDocument();
   });

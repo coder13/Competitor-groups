@@ -1,15 +1,10 @@
 import { Competition, parseActivityCode } from '@wca/helpers';
 import { TFunction } from 'i18next';
-import { CompatibleRound } from './wcif';
 
 export function getEventRoundsForRound(events: Competition['events'] | undefined, roundId: string) {
   const { eventId } = parseActivityCode(roundId);
 
-  return (
-    events
-      ?.find((event) => event.id === eventId)
-      ?.rounds?.map((candidate) => candidate as CompatibleRound) || []
-  );
+  return events?.find((event) => event.id === eventId)?.rounds || [];
 }
 
 export function activityCodeToRoundName(t: TFunction, roundId: string) {

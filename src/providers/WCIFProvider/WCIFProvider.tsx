@@ -12,7 +12,7 @@ export interface WCIFProviderProps {
 
 export function WCIFProvider({ competitionId, children }: WCIFProviderProps) {
   const [title, setTitle] = useState('');
-  const { data: wcif, error } = useWcif(competitionId);
+  const { data: wcif } = useWcif(competitionId);
 
   useEffect(() => {
     if (!competitionId) {
@@ -54,15 +54,5 @@ export function WCIFProvider({ competitionId, children }: WCIFProviderProps) {
     };
   }, [competitionId, wcif]);
 
-  return (
-    <WCIFContext.Provider value={value}>
-      {error && (
-        <div className="flex">
-          <p>Error loading competition: </p>
-          <p>{error?.toString()}</p>
-        </div>
-      )}
-      {children}
-    </WCIFContext.Provider>
-  );
+  return <WCIFContext.Provider value={value}>{children}</WCIFContext.Provider>;
 }

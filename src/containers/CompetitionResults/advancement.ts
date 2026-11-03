@@ -3,7 +3,7 @@ import { RoundAdvancementCondition } from '@/lib/wcif';
 import { CompetitionRoundResult } from './CompetitionResultsTable';
 import { normalizeResultRecordTag } from './ResultRecordBadge';
 
-const averagedFormats = new Set(['a', 'm', '5', 'h']);
+const averagedFormats = new Set(['a', 'm']);
 
 const getPrimaryRankingType = (round: Pick<Round, 'format'>): RankingType =>
   averagedFormats.has(round.format) ? 'average' : 'single';
@@ -30,15 +30,27 @@ const isAdvancingFromStoredResult = (
   round: Round,
   result: Round['results'][number],
   advancementCondition: RoundAdvancementCondition | null,
+  eventRounds: Round[],
 ) => {
   if (!advancementCondition) {
     return false;
   }
 
   const { resultCondition } = advancementCondition;
-  const rankedResultCount = round.results.filter(
-    (roundResult) => roundResult.ranking != null,
-  ).length;
+  // A dual-round percentage uses distinct competitors across both components,
+  // including people who only competed in one. WCIF already supplies shared ranks.
+  const sourceRounds =
+    advancementCondition.sourceType === 'linkedRounds'
+      ? eventRounds.filter((sourceRound) =>
+          advancementCondition.sourceRoundIds.includes(sourceRound.id),
+        )
+      : [round];
+  const sourceResults = sourceRounds.flatMap((sourceRound) => sourceRound.results);
+  const rankedResultCount = new Set(
+    sourceResults
+      .filter((roundResult) => roundResult.ranking != null)
+      .map((roundResult) => roundResult.personId),
+  ).size;
   const rankLimit = getRankLimit(resultCondition, rankedResultCount);
 
   if (rankLimit != null) {
@@ -54,14 +66,20 @@ const isAdvancingFromStoredResult = (
   }
 
   const scope = resultCondition.scope ?? getPrimaryRankingType(round);
-  const resultValue = getResultValue(result, scope);
-
-  return resultValue > 0 && resultValue < resultCondition.value;
+  return sourceResults.some((sourceResult) => {
+    const resultValue = getResultValue(sourceResult, scope);
+    return (
+      sourceResult.personId === result.personId &&
+      resultValue > 0 &&
+      resultValue < resultCondition.value!
+    );
+  });
 };
 
 export const getStoredRoundResults = (
   round: Round,
   advancementCondition: RoundAdvancementCondition | null,
+  eventRounds: Round[] = [round],
 ): CompetitionRoundResult[] =>
   round.results.map((result) => {
     const resultWithRecords = result as typeof result & {
@@ -75,9 +93,9 @@ export const getStoredRoundResults = (
       id: result.personId,
       personId: result.personId,
       ranking: result.ranking,
-      advancing: isAdvancingFromStoredResult(round, result, advancementCondition),
+      advancing: isAdvancingFromStoredResult(round, result, advancementCondition, eventRounds),
       advancingQuestionable: false,
-      attempts: result.attempts.map((attempt) => ({ result: attempt.result })),
+      attempts: result.attempts.map((attempt) => ({ result: attempt.value })),
       best: result.best,
       average: result.average,
       singleRecordTag: normalizeResultRecordTag(
