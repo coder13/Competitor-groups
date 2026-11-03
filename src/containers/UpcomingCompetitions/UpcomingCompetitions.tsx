@@ -67,7 +67,7 @@ export default function UpcomingCompetitions() {
         <div className="flex space-x-2">
           <div className="type-meta">{__GIT_COMMIT__}</div>
           <div className="flex flex-grow" />
-          {<LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
+          {!!dataUpdatedAt && <LastFetchedAt lastFetchedAt={new Date(dataUpdatedAt)} />}
         </div>
       </Container>
     </div>

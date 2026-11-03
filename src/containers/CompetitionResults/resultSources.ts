@@ -104,6 +104,7 @@ export const toCompetitionRoundResult = (
     id: result.id,
     personId: person?.registrantId ?? null,
     personName: result.name,
+    wcaId: result.wca_id,
     ranking: result.pos,
     advancing: false,
     advancingQuestionable: false,

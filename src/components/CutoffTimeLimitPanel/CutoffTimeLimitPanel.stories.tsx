@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { EventId } from '@wca/helpers';
 import {
   getStorybookRoundFixture,
   makeStorybookCompetitionFixtureWithRoundUpdates,
@@ -105,3 +106,72 @@ export const FinalRoundWithoutAdvancement: Story = {
     round: finalRoundCompetitionFixture.events[0].rounds[2],
   },
 };
+
+// Synthetic edge cases for browser UAT, not a captured real competition.
+const makeThresholdFixture = (
+  eventId: EventId,
+  scope: 'single' | 'average',
+  value: number | null,
+  linked = false,
+) => {
+  const competition = makeStorybookCompetitionFixtureWithRoundUpdates({});
+  const rounds = competition.events[0].rounds.slice(0, linked ? 3 : 2).map((round, index) => ({
+    ...round,
+    id: `${eventId}-r${index + 1}`,
+    cutoff: null,
+    timeLimit: null,
+    linkedRounds: null,
+    participationRuleset: null,
+    results: [],
+  }));
+  const target = rounds.at(-1)!;
+  const participationRuleset = {
+    reservedPlaces: null,
+    participationSource: linked
+      ? {
+          type: 'linkedRounds' as const,
+          roundIds: rounds.slice(0, -1).map(({ id }) => id),
+          resultCondition: { type: 'resultAchieved' as const, scope, value },
+        }
+      : {
+          type: 'round' as const,
+          roundId: rounds[0].id,
+          resultCondition: { type: 'resultAchieved' as const, scope, value },
+        },
+  };
+  competition.events = [
+    {
+      id: eventId,
+      rounds: [...rounds.slice(0, -1), { ...target, participationRuleset }],
+      extensions: [],
+    },
+  ];
+  return competition;
+};
+const thresholdStory = (
+  eventId: EventId,
+  scope: 'single' | 'average',
+  value: number | null,
+  linked = false,
+): Story => {
+  const fixture = makeThresholdFixture(eventId, scope, value, linked);
+  return {
+    parameters: { competitionFixture: fixture },
+    args: { round: fixture.events[0].rounds[0] },
+    decorators: [
+      (Story) => (
+        <div className="space-y-4">
+          <p>Synthetic advancement-caption fixture</p>
+          <Story />
+        </div>
+      ),
+    ],
+  };
+};
+
+export const SyntheticNullSingleThreshold = thresholdStory('333', 'single', null);
+export const SyntheticNullAverageThreshold = thresholdStory('333', 'average', null);
+export const SyntheticLinkedNullAverageThreshold = thresholdStory('333', 'average', null, true);
+export const SyntheticFmcSingleThreshold = thresholdStory('333fm', 'single', 30);
+export const SyntheticFmcAverageThreshold = thresholdStory('333fm', 'average', 3050);
+export const SyntheticMultiBlindThreshold = thresholdStory('333mbf', 'single', 970036000);

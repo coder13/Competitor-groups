@@ -1,46 +1,35 @@
 import { useLocalStorage } from '@uidotdev/usehooks';
-import { startTransition, useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-export const useCollapse = (key: string) => {
+export const useCollapse = (key: string, getDefaultCollapsedDates: () => string[] = () => []) => {
   const [initialCollapsed, saveCollapsed] = useLocalStorage<Record<string, string[]>>(
     `collapse`,
     {},
   );
 
   const [collapsedDates, setCollapsedDates] = useState<string[]>(() => {
-    if (!initialCollapsed) {
-      return [];
-    }
-
-    const collapsed = initialCollapsed[key];
-    if (!collapsed || !Array.isArray(collapsed)) {
-      return [];
-    }
-
-    return collapsed;
+    const savedDates = initialCollapsed?.[key];
+    // An empty saved array is an explicit choice to expand every day. Defaults
+    // apply only on initialization when this schedule has no saved preference.
+    return Array.isArray(savedDates) ? savedDates : getDefaultCollapsedDates();
   });
+
+  const collapsedDatesRef = useRef(collapsedDates);
+  collapsedDatesRef.current = collapsedDates;
 
   const toggleDate = useCallback(
     (date: string) => {
-      startTransition(() => {
-        setCollapsedDates((prev) => {
-          let newState = prev;
-          if (prev.includes(date)) {
-            newState = prev.filter((d) => d !== date);
-          } else {
-            newState = [...prev, date];
-          }
-
-          saveCollapsed({
-            ...initialCollapsed,
-            [key]: newState,
-          });
-
-          return newState;
-        });
-      });
+      // Keep rapid toggles in order without writing to the external storage store
+      // from a React state updater, which may run during rendering or be replayed.
+      const previous = collapsedDatesRef.current;
+      const next = previous.includes(date)
+        ? previous.filter((collapsedDate) => collapsedDate !== date)
+        : [...previous, date];
+      collapsedDatesRef.current = next;
+      setCollapsedDates(next);
+      saveCollapsed((saved) => ({ ...saved, [key]: next }));
     },
-    [initialCollapsed, key, saveCollapsed],
+    [key, saveCollapsed],
   );
 
   return {

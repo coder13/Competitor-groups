@@ -1,8 +1,12 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { ClassNamesConfig, StylesConfig } from 'react-select';
+import {
+  components,
+  type ClassNamesConfig,
+  type OptionProps,
+  type StylesConfig,
+} from 'react-select';
 import AsyncSelect from 'react-select/async';
-import { OptionProps } from 'react-select/dist/declarations/src';
 import { fetchSearchCompetition } from '@/lib/api';
 import { useUserSettings } from '@/providers/UserSettingsProvider';
 import { CompetitionListItem } from '../CompetitionListItem';
@@ -139,6 +143,11 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
       className={className}
       classNamePrefix="cg-select"
       cacheOptions
+      aria-label={t('common.competitionSelect.placeholder')}
+      getOptionLabel={(option) => option.name}
+      getOptionValue={(option) => option.id}
+      blurInputOnSelect={false}
+      loadingMessage={() => t('common.loading')}
       loadOptions={loadOptions}
       placeholder={t('common.competitionSelect.placeholder')}
       noOptionsMessage={({ inputValue }) =>
@@ -154,15 +163,24 @@ export const CompetitionSelect = ({ onSelect, className }: CompetitionSelectProp
   );
 };
 
-export const CompetitionOption = ({ data }: OptionProps<ApiCompetition>) => {
-  return <CompetitionListItem {...data} isLive={false} variant="dropdown" />;
-};
+export const CompetitionOption = (props: OptionProps<ApiCompetition, false>) => (
+  <components.Option {...props}>
+    <CompetitionListItem {...props.data} isLive={false} variant="dropdown" />
+  </components.Option>
+);
 
 function useDebounced<Input, Output>(
   fn: (arg: Input) => Promise<Output>,
   delay: number,
 ): (arg: Input) => Promise<Output> {
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timeout.current) clearTimeout(timeout.current);
+    },
+    [],
+  );
 
   return useCallback(
     (arg: Input) => {

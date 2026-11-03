@@ -21,7 +21,7 @@ export default function Header() {
   const { data: comp } = useCompetition(competitionId);
   const { wcif } = useWCIF();
 
-  const competitioName = useMemo(() => {
+  const competitionName = useMemo(() => {
     if (comp?.name) {
       return comp.name;
     }
@@ -55,13 +55,15 @@ export default function Header() {
   return (
     <header className="z-20 flex items-center w-full h-12 p-2 shadow-md print:hidden bg-panel">
       <div className="flex items-center space-x-1">
-        <Link to="/" className="link-inline">
-          <i className="fa fa-home" />
+        <Link to="/" className="link-inline" aria-label={t('common.home')}>
+          <i className="fa fa-home" aria-hidden="true" />
         </Link>
         {competitionId && <span className="text-tertiary">{' / '}</span>}
-        <Link to={`/competitions/${comp?.id || competitionId}`} className="link-inline">
-          {competitioName}
-        </Link>
+        {competitionId && (
+          <Link to={`/competitions/${competitionId}`} className="link-inline">
+            {competitionName || competitionId}
+          </Link>
+        )}
       </div>
       <div className="flex flex-1" />
       {user ? (
@@ -83,7 +85,7 @@ export default function Header() {
                 </Link>
               )}
               <Link to="/settings" className="block w-32 px-3 py-2 link-inline hover-bg-tertiary">
-                Settings
+                {t('header.settings')}
               </Link>
               <button
                 onClick={signOut}
@@ -103,8 +105,8 @@ export default function Header() {
           <button onClick={signIn} className="link-inline type-label text-primary">
             {t('common.login')}
           </button>
-          <Link to="/settings" className="link-inline">
-            <i className="fa fa-gear" />
+          <Link to="/settings" className="link-inline" aria-label={t('header.settings')}>
+            <i className="fa fa-gear" aria-hidden="true" />
           </Link>
         </div>
       )}

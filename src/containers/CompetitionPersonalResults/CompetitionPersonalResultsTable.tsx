@@ -1,6 +1,6 @@
 import { ResultValue, EventId, Person } from '@wca/helpers';
 import classNames from 'classnames';
-import { KeyboardEvent, useState } from 'react';
+import { KeyboardEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CompetitionRoundResult } from '@/containers/CompetitionResults/CompetitionResultsTable';
 import { ResultDetailsDialog } from '@/containers/CompetitionResults/ResultDetailsDialog';
@@ -58,7 +58,16 @@ const toCompetitionRoundResult = (result: PersonalRoundResult): CompetitionRound
   average: result.average,
 });
 
-export function CompetitionPersonalResultsTable({
+export function CompetitionPersonalResultsTable(props: CompetitionPersonalResultsTableProps) {
+  return (
+    <PersonalEventResultsTable
+      key={`${props.competitionId}/${props.person.registrantId}/${props.eventId}`}
+      {...props}
+    />
+  );
+}
+
+function PersonalEventResultsTable({
   competitionId,
   eventId,
   eventName,
@@ -67,21 +76,30 @@ export function CompetitionPersonalResultsTable({
   LinkComponent,
 }: CompetitionPersonalResultsTableProps) {
   const { t } = useTranslation();
-  const [selectedResult, setSelectedResult] = useState<PersonalRoundResult | null>(null);
+  const [selection, setSelection] = useState<{
+    roundId: string;
+    trigger: HTMLTableRowElement;
+  } | null>(null);
+  const selectedResult = selection
+    ? roundResults.find((result) => result.roundId === selection.roundId)
+    : undefined;
+  useEffect(() => {
+    if (selection && !selectedResult) setSelection(null);
+  }, [selection, selectedResult]);
   const attemptColumnCount = Math.max(0, ...roundResults.map((result) => result.attempts.length));
   const getRoundName = (result: PersonalRoundResult) =>
     result.roundName ?? t('common.activityCodeToName.round', { roundNumber: result.roundNumber });
-  const openDetailsDialog = (result: PersonalRoundResult) => {
+  const openDetailsDialog = (result: PersonalRoundResult, trigger: HTMLTableRowElement) => {
     if (!shouldOpenResultDetailsDialog()) {
       return;
     }
 
-    setSelectedResult(result);
+    setSelection({ roundId: result.roundId, trigger });
   };
 
   const openDetailsDialogFromKeyboard =
     (result: PersonalRoundResult) => (event: KeyboardEvent<HTMLTableRowElement>) => {
-      if (event.key !== 'Enter' && event.key !== ' ') {
+      if (event.target !== event.currentTarget || (event.key !== 'Enter' && event.key !== ' ')) {
         return;
       }
 
@@ -90,7 +108,7 @@ export function CompetitionPersonalResultsTable({
       }
 
       event.preventDefault();
-      setSelectedResult(result);
+      setSelection({ roundId: result.roundId, trigger: event.currentTarget });
     };
 
   return (
@@ -137,7 +155,7 @@ export function CompetitionPersonalResultsTable({
               key={result.roundId}
               className="cursor-pointer border-b border-tertiary-weak hover-transition hover:bg-gray-50 last:border-b-0 dark:hover:bg-gray-800 md:cursor-default"
               tabIndex={0}
-              onClick={() => openDetailsDialog(result)}
+              onClick={(event) => openDetailsDialog(result, event.currentTarget)}
               onKeyDown={openDetailsDialogFromKeyboard(result)}>
               <td
                 className={classNames(
@@ -182,9 +200,7 @@ export function CompetitionPersonalResultsTable({
           competitionId={competitionId}
           eventId={eventId}
           name={person.name}
-          title={
-            selectedResult.ranking ? `#${selectedResult.ranking}` : getRoundName(selectedResult)
-          }
+          title={`${person.name} · ${eventName} · ${getRoundName(selectedResult)}${selectedResult.ranking ? ` #${selectedResult.ranking}` : ''}`}
           details={[
             {
               label: t('common.wca.event'),
@@ -202,7 +218,8 @@ export function CompetitionPersonalResultsTable({
           primaryRankingType="average"
           result={toCompetitionRoundResult(selectedResult)}
           LinkComponent={LinkComponent}
-          onClose={() => setSelectedResult(null)}
+          returnFocusTo={selection?.trigger}
+          onClose={() => setSelection(null)}
         />
       )}
     </div>

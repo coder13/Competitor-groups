@@ -4,6 +4,8 @@ common:
   retry: 'Try again'
   home: 'Back to home'
   bookmarkCompetition: 'Bookmark competition'
+  bookmarkCompetitor: 'Bookmark competitor'
+  removeCompetitorBookmark: 'Remove competitor bookmark'
   wca:
     event: 'Event'
     round: 'Round'
@@ -40,9 +42,14 @@ common:
       linkedRanking: 'Top {{level}} in dual rounds {{rounds}} advance to {{what}}'
       linkedPercent: 'Top {{level}}% in dual rounds {{rounds}} advance to {{what}}'
       attemptResult: Result better than <b>{level}</b> advances to next round. Minimum of 25% of competitors must be eliminated.
-      resultAchieved: '{{scope}} < {{result}} advance to {{what}}; minimum of 25% of competitors must be eliminated'
-      linkedResultAchieved: '{{scope}} < {{result}} in dual rounds {{rounds}} advance to {{what}}; minimum of 25% of competitors must be eliminated'
-      resultThresholdUnknown: an unknown result
+      resultAchieved: '{{scope}} better than {{result}} advance to {{what}}; minimum of 25% of competitors must be eliminated'
+      linkedResultAchieved: '{{scope}} better than {{result}} in dual rounds {{rounds}} advance to {{what}}; minimum of 25% of competitors must be eliminated'
+      anyResultAchieved: 'Any {{scope}} advances to {{what}}; minimum of 25% of competitors must be eliminated'
+      linkedAnyResultAchieved: 'Any {{scope}} in dual rounds {{rounds}} advances to {{what}}; minimum of 25% of competitors must be eliminated'
+      resultInMoves: '{{result}} moves'
+      successfulScope:
+        single: successful single
+        average: successful average
       nextRound: next round
       final: final
       unknown: unknown
@@ -152,6 +159,7 @@ appUpdate:
   description: 'Refresh to get the latest version of the app.'
   action: 'Refresh now'
 header:
+  settings: 'Settings'
   login: $t(common.login)
   logout: 'Logout'
   tabs:
@@ -186,6 +194,7 @@ competition:
     viewMyAssignments: 'View My Assignments'
     viewCompetitionInformation: 'View Competition Information'
     searchCompetitors: 'Search Competitors'
+    noMatches: 'No competitors match your search.'
   groups:
     backToEvents: 'Back to Events'
     nextGroup: 'Next Group'
@@ -219,7 +228,10 @@ competition:
     viewLiveResults: View live results
     dualPersonalNote: 'Dual-round ranks use the better result from either linked round. Each row shows that round’s own results.'
     dualRoundNote: 'Dual-round standings: rank is based on the better result from either linked round. Attempts, best and average below belong to the selected round. No competitors are eliminated between the linked rounds.'
-    resultsSourceNote: Results are merged from WCIF and WCA Live when available. WCA Live data may be delayed.
+    resultsSourceNote: Results combine WCA Live, WCIF, and published WCA results. Yellow highlights are provisional. Without Live, advancement uses next-round participants when available, otherwise calculated eligibility; incomplete source rounds remain provisional. Stored data may lag behind organizer changes.
+  person:
+    notFound: 'Competitor not found.'
+    backToCompetitors: 'Back to competitors'
   personalResults:
     eventResults: Event results
   round:

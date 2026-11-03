@@ -21,9 +21,10 @@ export const formatTime = (isoString: string, minutes: number = 5, timeZone?: st
     }),
   });
 
-export const formmatDate = (isoString: string, minutes: number = 5) =>
+export const formmatDate = (isoString: string, minutes: number = 5, timeZone?: string) =>
   roundTime(new Date(isoString), minutes).toLocaleDateString([...navigator.languages], {
     weekday: 'short',
+    timeZone,
   });
 
 export const formatDateTime = (isoString: string, minutes: number = 5, timeZone?: string) =>
@@ -48,11 +49,12 @@ export const formatDateTimeRange = (
   minutes: number = 5,
   timeZone?: string,
 ) => {
-  const startDate = new Date(start);
-  const endDate = new Date(end);
+  const startDate = roundTime(new Date(start), minutes);
+  const endDate = roundTime(new Date(end), minutes);
+  const dateFormatter = getNumericDateFormatter(timeZone);
 
-  if (startDate.toLocaleDateString() === endDate.toLocaleDateString()) {
-    return `${formmatDate(start)} ${formatTimeRange(start, end, minutes, timeZone)}`;
+  if (dateFormatter.format(startDate) === dateFormatter.format(endDate)) {
+    return `${formmatDate(start, minutes, timeZone)} ${formatTimeRange(start, end, minutes, timeZone)}`;
   }
 
   return `${formatDateTime(start, minutes, timeZone)} - ${formatDateTime(end, minutes, timeZone)}`;

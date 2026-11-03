@@ -24,6 +24,7 @@ export function PersonalScheduleContent({ person }: PersonalScheduleContainerPro
         <>
           {person.assignments && person.assignments.length > 0 ? (
             <Assignments
+              key={`${wcif.id}-${person.registrantId}`}
               wcif={wcif}
               person={person}
               showStationNumber={anyAssignmentsHasStationNumber}
