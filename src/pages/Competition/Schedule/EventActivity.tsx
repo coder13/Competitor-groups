@@ -111,7 +111,7 @@ export function EventActivity({
     }, {}) as Record<AssignmentCode, Person[]>;
 
   const seedResult = useCallback(
-    (person) => {
+    (person: (typeof personsWithPRs)[number]) => {
       if (!isOfficialEventId(eventId)) {
         return '';
       }
@@ -131,18 +131,15 @@ export function EventActivity({
         return renderResultByEventId(eventId, 'single', prevRoundResults.best);
       }
 
-      const averagePr = person.prAverage?.best;
-      const singlePr = person.prSingle?.best;
+      const averagePr = person.prAverage?.value;
+      const singlePr = person.prSingle?.value;
       const shouldShowAveragePr = !isRankedBySingle(eventId);
-      if ((shouldShowAveragePr && !averagePr) || !singlePr) {
+      const result = shouldShowAveragePr ? averagePr : singlePr;
+      if (!result || !singlePr) {
         return '';
       }
 
-      return renderResultByEventId(
-        eventId,
-        shouldShowAveragePr ? 'average' : 'single',
-        shouldShowAveragePr ? averagePr : singlePr,
-      );
+      return renderResultByEventId(eventId, shouldShowAveragePr ? 'average' : 'single', result);
     },
     [eventId, prevRound],
   );
