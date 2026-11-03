@@ -7,12 +7,12 @@ import { getAdvancementConditionForRound } from '@/lib/wcif';
 import { PersonalRoundResult } from '../CompetitionPersonalResults/CompetitionPersonalResultsTable';
 import { CompetitionRoundResult } from './CompetitionResultsTable';
 import { normalizeResultRecordTag } from './ResultRecordBadge';
-import { getStoredRoundResults } from './advancement';
+import { getQualifyingResultKeys, getStoredRoundResults } from './advancement';
 import {
   findPersonForApiResult,
   findUniquePersonByName,
-  getApiRoundResults,
   getWcaApiResultsByRoundId,
+  toCompetitionRoundResult,
 } from './resultSources';
 import { getRoundRosterResults } from './roundRoster';
 
@@ -26,7 +26,11 @@ export interface EventResults {
 }
 
 const getResultKey = (result: CompetitionRoundResult) =>
-  result.personId == null ? `result-${result.id}` : `person-${result.personId}`;
+  result.personId != null
+    ? `person-${result.personId}`
+    : result.wcaId
+      ? `wca-${result.wcaId}`
+      : `result-${result.id}`;
 
 const mergeRoundResultSources = (
   ...sources: CompetitionRoundResult[][]
@@ -99,6 +103,7 @@ const getLiveRoundResults = (wcif: Competition, wcaLiveRound: WcaLiveRound | nul
         id: result.id,
         personId: matchedPerson?.registrantId ?? result.person.registrantId,
         personName: result.person.name,
+        wcaId: result.person.wcaId,
         ranking: result.ranking,
         advancing: result.advancing,
         advancingQuestionable: result.advancingQuestionable,
@@ -125,22 +130,56 @@ export const getRoundResultsFromSources = ({
     return [];
   }
 
-  const liveRoundResults = getLiveRoundResults(wcif, wcaLiveRound);
-  const storedRoundResults = getStoredRoundResults(
-    selectedRound.round,
-    getAdvancementConditionForRound(selectedRound.event.rounds, selectedRound.round),
+  const advancementCondition = getAdvancementConditionForRound(
     selectedRound.event.rounds,
+    selectedRound.round,
   );
-  const apiRoundResults = getApiRoundResults(wcif, selectedRound.round.id, wcaApiResults);
+  const sourceRoundIds =
+    advancementCondition?.sourceType === 'linkedRounds'
+      ? advancementCondition.sourceRoundIds
+      : [selectedRound.round.id];
+  const apiResultsByRound = getWcaApiResultsByRoundId(wcif, wcaApiResults ?? []);
+  // Apply the existing API < WCIF priority in each component before evaluating
+  // linked qualification. The selected table still shows only that component.
+  const fallbackResultsByRound = new Map(
+    selectedRound.event.rounds
+      .filter(({ id }) => id === selectedRound.round.id || sourceRoundIds.includes(id))
+      .map((round) => [
+        round.id,
+        mergeRoundResultSources(
+          (apiResultsByRound.get(round.id) ?? []).map((result) =>
+            toCompetitionRoundResult(wcif.persons, result),
+          ),
+          getStoredRoundResults(round, null),
+        ),
+      ]),
+  );
+  const sourceResults = sourceRoundIds.flatMap((id) => fallbackResultsByRound.get(id) ?? []);
+  // Without either identifier an API row cannot be deduplicated across linked
+  // components. Do not invent a person or overstate qualification in that case.
+  const hasUnresolvedLinkedIdentity =
+    advancementCondition?.sourceType === 'linkedRounds' &&
+    sourceResults.some((result) => result.personId == null && !result.wcaId);
+  const qualifyingKeys = getQualifyingResultKeys(
+    selectedRound.round,
+    hasUnresolvedLinkedIdentity ? null : advancementCondition,
+    sourceResults.map((result) => ({ ...result, key: getResultKey(result) })),
+  );
+  const fallbackResults = (fallbackResultsByRound.get(selectedRound.round.id) ?? []).map(
+    (result) => ({
+      ...result,
+      // Keep empty component/roster rows visually empty, even if the competitor
+      // qualifies through the other component. Live flags remain authoritative.
+      advancing: result.ranking != null && qualifyingKeys.has(getResultKey(result)),
+    }),
+  );
+  const liveRoundResults = getLiveRoundResults(wcif, wcaLiveRound);
 
-  if (liveRoundResults.length === 0) {
-    return mergeRoundResultSources(apiRoundResults, storedRoundResults);
-  }
+  if (liveRoundResults.length === 0) return fallbackResults;
 
   return mergeRoundResultSources(
     getRoundRosterResults(wcif, selectedRound.round.id),
-    apiRoundResults,
-    storedRoundResults,
+    fallbackResults,
     liveRoundResults,
   );
 };

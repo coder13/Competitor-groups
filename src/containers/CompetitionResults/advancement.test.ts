@@ -116,7 +116,7 @@ describe('dual-round stored results', () => {
       ).size;
       const limit =
         condition.resultCondition.type === 'percent'
-          ? Math.ceil((entrants * condition.resultCondition.value) / 100)
+          ? Math.floor((entrants * condition.resultCondition.value) / 100)
           : condition.resultCondition.value!;
       expect(
         results.every(
@@ -124,5 +124,147 @@ describe('dual-round stored results', () => {
         ),
       ).toBe(true);
     }
+  });
+});
+
+const qualifiers = (
+  results: Round['results'],
+  condition: ResultCondition,
+  format: Round['format'] = 'a',
+) => {
+  const round = { ...makeRound('333-r1', results), format };
+  return getStoredRoundResults(round, {
+    sourceType: 'round',
+    sourceRoundIds: [round.id],
+    resultCondition: condition,
+  }).filter(({ advancing }) => advancing);
+};
+const rankedResults = (count: number) =>
+  Array.from({ length: count }, (_, i) => result(i + 1, i + 1, 800 + i * 100));
+
+describe('stored qualification rules', () => {
+  it.each([
+    [11, 8],
+    [15, 11],
+    [17, 12],
+  ])('rounds 75%% of %i scored entrants down to %i', (count, expected) => {
+    expect(
+      qualifiers(rankedResults(count), { type: 'percent', scope: 'average', value: 75 }),
+    ).toHaveLength(expected);
+  });
+
+  it('caps a configured top 10 at six of eight entrants', () => {
+    expect(
+      qualifiers(rankedResults(8), { type: 'ranking', scope: 'average', value: 10 }),
+    ).toHaveLength(6);
+  });
+
+  it('keeps a top-N tie together when it stays below the elimination cap', () => {
+    const results = rankedResults(20);
+    results[6].ranking = 6;
+    expect(
+      qualifiers(results, { type: 'ranking', scope: 'average', value: 6 }).map(
+        ({ personId }) => personId,
+      ),
+    ).toEqual([1, 2, 3, 4, 5, 6, 7]);
+  });
+
+  it.each<ResultCondition>([
+    { type: 'ranking', scope: 'average', value: 15 },
+    { type: 'percent', scope: 'average', value: 75 },
+    { type: 'resultAchieved', scope: 'average', value: 10000 },
+    { type: 'resultAchieved', scope: 'average', value: null },
+  ])('excludes a whole tied group crossing the cap for %j', (condition) => {
+    const results = rankedResults(20);
+    results[15].ranking = 15;
+    results[16].ranking = 15;
+    expect(qualifiers([...results].reverse(), condition)).toHaveLength(14);
+  });
+
+  it('counts failed results in the population but never qualifies all-DNF or DNS entrants', () => {
+    const results = rankedResults(16);
+    results[6].average = -1; // A successful single still makes this competitor eligible.
+    results.slice(7).forEach((entry, i) => {
+      entry.best = i % 2 ? -1 : -2;
+      entry.average = -1;
+      entry.ranking = 8;
+    });
+    expect(
+      qualifiers(results, { type: 'percent', scope: 'average', value: 50 }).map(
+        ({ personId }) => personId,
+      ),
+    ).toEqual([1, 2, 3, 4, 5, 6, 7]);
+  });
+
+  it('does not count empty, unranked roster placeholders as scored entrants', () => {
+    const results: Round['results'] = [
+      ...rankedResults(11),
+      { ...result(12, 12, 0), ranking: null, attempts: [] },
+      { ...result(13, 13, 0), ranking: null, attempts: [] },
+    ];
+    expect(qualifiers(results, { type: 'percent', scope: 'average', value: 75 })).toHaveLength(8);
+  });
+
+  it('treats a null threshold as any successful value in the requested scope', () => {
+    const results = rankedResults(8);
+    results[1].average = -1;
+    results[2].average = -2;
+    results[3].average = 0;
+    expect(
+      qualifiers(results, { type: 'resultAchieved', scope: 'average', value: null }).map(
+        ({ personId }) => personId,
+      ),
+    ).toEqual([1, 5, 6]);
+    expect(
+      qualifiers(results, { type: 'resultAchieved', scope: 'single', value: null }),
+    ).toHaveLength(6);
+  });
+
+  it('requires a value strictly better than a non-null threshold', () => {
+    expect(
+      qualifiers(rankedResults(8), {
+        type: 'resultAchieved',
+        scope: 'average',
+        value: 1000,
+      }).map(({ personId }) => personId),
+    ).toEqual([1, 2]);
+  });
+
+  it('allows success in either linked component without replacing displayed DNF values', () => {
+    const rounds = linkedRounds({ type: 'ranking', scope: 'average', value: 3 });
+    rounds[0].results[0] = { ...result(1, 2, -1), best: -1 };
+    rounds[1].results[0] = { ...result(1, 2, -1), best: 900 };
+    expect(
+      getStoredRoundResults(
+        rounds[0],
+        getAdvancementConditionForRound(rounds, rounds[0]),
+        rounds,
+      )[0],
+    ).toMatchObject({ ranking: 2, best: -1, average: -1, advancing: true });
+  });
+
+  it('keeps an empty component row unhighlighted without losing sibling eligibility', () => {
+    const rounds = linkedRounds({ type: 'ranking', scope: 'average', value: 3 });
+    rounds[0].results[0] = {
+      ...result(1, 2, 0),
+      ranking: null,
+      attempts: [],
+    };
+    const condition = getAdvancementConditionForRound(rounds, rounds[0]);
+    expect(getStoredRoundResults(rounds[0], condition, rounds)[0]).toMatchObject({
+      ranking: null,
+      best: 0,
+      average: 0,
+      attempts: [],
+      advancing: false,
+    });
+    expect(getStoredRoundResults(rounds[1], condition, rounds)[0].advancing).toBe(true);
+  });
+
+  it('does not qualify a final or an entirely empty round', () => {
+    expect(getStoredRoundResults(makeRound('333-r1', rankedResults(8)), null)).toEqual(
+      expect.arrayContaining([expect.objectContaining({ advancing: false })]),
+    );
+    expect(qualifiers([], { type: 'ranking', scope: 'average', value: 10 })).toEqual([]);
   });
 });

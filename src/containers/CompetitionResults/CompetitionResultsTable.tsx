@@ -19,6 +19,7 @@ export interface CompetitionRoundResult {
   id: string | number;
   personId: number | null;
   personName?: string;
+  wcaId?: string | null;
   ranking: number | null;
   advancing: boolean;
   advancingQuestionable: boolean;

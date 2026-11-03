@@ -741,3 +741,222 @@ describe('resultsProvider', () => {
     ]);
   });
 });
+
+const linkedCompetition = (): Competition => {
+  const competition = JSON.parse(JSON.stringify(wcif)) as Competition;
+  competition.persons.push({
+    ...persons[0],
+    registrantId: 4,
+    name: 'Dana Solver',
+    wcaId: '2010DANA01',
+  });
+  const rounds = competition.events[0].rounds;
+  rounds[0].results = competition.persons.map(({ registrantId }, index) => ({
+    personId: registrantId!,
+    ranking: index + 1,
+    best: 1500 + index * 100,
+    average: 1500 + index * 100,
+    attempts: [{ value: 1500 + index * 100, reconstruction: null }],
+  }));
+  rounds[0].linkedRounds = ['333-r1', '333-r2'];
+  rounds[1].linkedRounds = ['333-r1', '333-r2'];
+  rounds[2].participationRuleset = {
+    participationSource: {
+      type: 'linkedRounds',
+      roundIds: ['333-r1', '333-r2'],
+      resultCondition: { type: 'resultAchieved', scope: 'average', value: 1000 },
+    },
+    reservedPlaces: null,
+  };
+  return competition;
+};
+
+const linkedSourceResults = (
+  competition: Competition,
+  apiResults: WcaCompetitionResult[],
+  roundIndex = 0,
+  live: WcaLiveRound | null = null,
+) =>
+  getRoundResultsFromSources({
+    wcif: competition,
+    selectedRound: {
+      event: competition.events[0],
+      round: competition.events[0].rounds[roundIndex],
+      roundNumber: roundIndex + 1,
+    },
+    wcaApiResults: apiResults,
+    wcaLiveRound: live,
+  });
+
+const aliceSecondComponent = () =>
+  apiResult({
+    id: 9010,
+    pos: 1,
+    best: 800,
+    average: 900,
+    attempts: [800, 900, 1000],
+    name: 'Alice Solver',
+    wca_id: '2010ALIC01',
+  });
+
+describe('mixed-source linked qualification', () => {
+  it('uses a sibling API result to qualify a WCIF row without replacing component values', () => {
+    const competition = linkedCompetition();
+    const api = aliceSecondComponent();
+    expect(linkedSourceResults(competition, [api])[0]).toMatchObject({
+      personId: 1,
+      ranking: 1,
+      best: 1500,
+      average: 1500,
+      attempts: [{ result: 1500 }],
+      advancing: true,
+    });
+    expect(linkedSourceResults(competition, [api], 1)).toEqual([
+      expect.objectContaining({ id: 9010, average: 900, advancing: true }),
+    ]);
+  });
+
+  it('does not highlight an empty selected component when the sibling qualifies', () => {
+    const competition = linkedCompetition();
+    const round = competition.events[0].rounds[0];
+    round.results[0] = {
+      ...round.results[0],
+      ranking: null,
+      best: 0,
+      average: 0,
+      attempts: [],
+    };
+    expect(linkedSourceResults(competition, [aliceSecondComponent()])[0]).toMatchObject({
+      ranking: null,
+      best: 0,
+      average: 0,
+      advancing: false,
+    });
+    expect(linkedSourceResults(competition, [aliceSecondComponent()], 1)[0].advancing).toBe(true);
+  });
+
+  it('keeps WCIF priority over a conflicting API result in a sibling component', () => {
+    const competition = linkedCompetition();
+    competition.events[0].rounds[1].results = [
+      { ...competition.events[0].rounds[0].results[0], best: 1100, average: 1200 },
+    ];
+    expect(linkedSourceResults(competition, [aliceSecondComponent()])[0].advancing).toBe(false);
+  });
+
+  it('allows a DNF component when the sibling API component has a successful single', () => {
+    const competition = linkedCompetition();
+    const rounds = competition.events[0].rounds;
+    rounds[0].results[0] = {
+      ...rounds[0].results[0],
+      best: -1,
+      average: -1,
+      attempts: [{ value: -1, reconstruction: null }],
+    };
+    rounds[2].participationRuleset!.participationSource = {
+      type: 'linkedRounds',
+      roundIds: ['333-r1', '333-r2'],
+      resultCondition: { type: 'ranking', scope: 'average', value: 2 },
+    };
+    expect(
+      linkedSourceResults(competition, [{ ...aliceSecondComponent(), average: -1 }])[0],
+    ).toMatchObject({ best: -1, average: -1, advancing: true });
+  });
+
+  it('counts API-only entrants in the distinct linked union for percentages', () => {
+    const competition = linkedCompetition();
+    const rounds = competition.events[0].rounds;
+    rounds[0].results = [rounds[0].results[0], { ...rounds[0].results[1], ranking: 3 }];
+    rounds[2].participationRuleset!.participationSource = {
+      type: 'linkedRounds',
+      roundIds: ['333-r1', '333-r2'],
+      resultCondition: { type: 'percent', scope: 'average', value: 50 },
+    };
+    const api = [
+      aliceSecondComponent(),
+      apiResult({ id: 9011, pos: 2, name: 'Casey Solver', wca_id: null }),
+      apiResult({ id: 9012, pos: 4, name: 'Dana Solver', wca_id: '2010DANA01' }),
+    ];
+    expect(linkedSourceResults(competition, api).map(({ advancing }) => advancing)).toEqual([
+      true,
+      false,
+    ]);
+    expect(
+      linkedSourceResults(competition, api, 1).map(({ personId, advancing }) => ({
+        personId,
+        advancing,
+      })),
+    ).toEqual([
+      { personId: 1, advancing: true },
+      { personId: 3, advancing: true },
+      { personId: 4, advancing: false },
+    ]);
+  });
+
+  it('deduplicates an API-only competitor by WCA ID without inventing a WCIF identity', () => {
+    const competition = linkedCompetition();
+    const rounds = competition.events[0].rounds;
+    rounds[0].results = [rounds[0].results[0], { ...rounds[0].results[1], ranking: 3 }];
+    rounds[2].participationRuleset!.participationSource = {
+      type: 'linkedRounds',
+      roundIds: ['333-r1', '333-r2'],
+      resultCondition: { type: 'ranking', scope: 'average', value: 10 },
+    };
+    const api = [
+      apiResult({ id: 9011, pos: 2, wca_id: '2010ELSE01', round_type_id: '1' }),
+      apiResult({ id: 9012, pos: 2, wca_id: '2010ELSE01', round_type_id: '2' }),
+    ];
+    const results = linkedSourceResults(competition, api);
+    expect(results.find(({ id }) => id === 9011)).toMatchObject({
+      personId: null,
+      wcaId: '2010ELSE01',
+      advancing: true,
+    });
+    expect(results.find(({ personId }) => personId === 2)?.advancing).toBe(false);
+  });
+
+  it('does not invent a linked union when an API row has no resolvable identity', () => {
+    const competition = linkedCompetition();
+    const results = linkedSourceResults(competition, [
+      aliceSecondComponent(),
+      apiResult({ id: 9011, name: 'Unmatched Competitor', wca_id: null }),
+    ]);
+    expect(results.every(({ advancing }) => !advancing)).toBe(true);
+  });
+
+  it('allows authoritative live advancement even when unresolved linked identity suppresses fallback', () => {
+    const competition = linkedCompetition();
+    const live = liveRound([
+      liveRoundResult({
+        id: 'live-alice',
+        person: { id: '1', registrantId: 1, name: 'Alice Solver' },
+        advancing: true,
+        advancingQuestionable: false,
+      }),
+    ]);
+    expect(
+      linkedSourceResults(
+        competition,
+        [apiResult({ id: 9011, name: 'Unmatched Competitor', wca_id: null })],
+        0,
+        live,
+      ).find(({ personId }) => personId === 1),
+    ).toMatchObject({ advancing: true, advancingQuestionable: false });
+  });
+
+  it('keeps live advancement and questionable flags authoritative over computed qualification', () => {
+    const competition = linkedCompetition();
+    const live = liveRound([
+      liveRoundResult({
+        id: 'live-alice',
+        person: { id: '1', registrantId: 1, name: 'Alice Solver' },
+        advancing: false,
+        advancingQuestionable: true,
+      }),
+    ]);
+    expect(
+      linkedSourceResults(competition, [aliceSecondComponent()], 0, live).find(
+        ({ personId }) => personId === 1,
+      ),
+    ).toMatchObject({ advancing: false, advancingQuestionable: true });
+  });
+});

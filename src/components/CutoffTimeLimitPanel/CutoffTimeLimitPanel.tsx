@@ -1,6 +1,6 @@
 import { Cutoff, Round, parseActivityCode } from '@wca/helpers';
 import classNames from 'classnames';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
@@ -212,6 +212,15 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    if (!open) return;
+    const dismissOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', dismissOnEscape);
+    return () => document.removeEventListener('keydown', dismissOnEscape);
+  }, [open]);
+
   return (
     <Popover
       isOpen={open}
@@ -229,12 +238,15 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
           <p>
             <Trans
               i18nKey="common.cutoffTimeLimitPopover.timeLimits"
-              components={{ b: <strong /> }}
+              components={{ b: <strong />, bold: <strong /> }}
             />
           </p>
 
           <p>
-            <Trans i18nKey="common.cutoffTimeLimitPopover.cutoffs" components={{ b: <strong /> }} />
+            <Trans
+              i18nKey="common.cutoffTimeLimitPopover.cutoffs"
+              components={{ b: <strong />, bold: <strong /> }}
+            />
             <br />
             <i>
               {cutoff &&

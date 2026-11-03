@@ -4,6 +4,7 @@ import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
 import { Container } from '@/components/Container';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { LinkButton } from '@/components/LinkButton';
+import { getVenueForActivity } from '@/lib/activities';
 import {
   activityCodeToName,
   parseActivityCodeFlexible,
@@ -53,6 +54,8 @@ export function CompetitionRoundContainer({
     [eventRounds, round, roundId, t],
   );
 
+  const findVenue = useMemo(() => (wcif ? getVenueForActivity(wcif) : undefined), [wcif]);
+
   const rounds = roundActivies.filter((ra) => toRoundAttemptId(ra.activityCode) === roundId);
   const groups = rounds.flatMap((r) => r.childActivities);
   const uniqueGroupCodes = [...new Set(groups.map((g) => g.activityCode))];
@@ -82,8 +85,16 @@ export function CompetitionRoundContainer({
         {uniqueGroupCodes.map((value) => {
           const { groupNumber } = parseActivityCodeFlexible(value);
           const activities = groups.filter((g) => g.activityCode === value);
-          const minStartTime = activities.map((a) => a.startTime).sort()[0];
-          const maxEndTime = activities.map((a) => a.endTime).sort()[activities.length - 1];
+          const timeZones = [...new Set(activities.map((a) => findVenue?.(a)?.timezone))];
+          const timeRanges = timeZones.map((timeZone) => {
+            const venueActivities = activities.filter((a) => findVenue?.(a)?.timezone === timeZone);
+            const minStartTime = venueActivities.map((a) => a.startTime).sort()[0];
+            const maxEndTime = venueActivities
+              .map((a) => a.endTime)
+              .sort()
+              .at(-1)!;
+            return { timeZone, label: formatDateTimeRange(minStartTime, maxEndTime, 5, timeZone) };
+          });
 
           return (
             <LinkComponent
@@ -94,7 +105,12 @@ export function CompetitionRoundContainer({
                 <span className="type-heading">
                   {t('common.activityCodeToName.group', { groupNumber })}
                 </span>
-                <span className="type-meta">{formatDateTimeRange(minStartTime, maxEndTime)}</span>
+                {timeRanges.map(({ timeZone, label }) => (
+                  <span key={timeZone ?? 'local'} className="type-meta">
+                    {label}
+                    {timeRanges.length > 1 && timeZone && ` (${timeZone})`}
+                  </span>
+                ))}
               </li>
             </LinkComponent>
           );
