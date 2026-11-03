@@ -62,8 +62,17 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-const wcifMock = {
-  formatVersion: '1.0',
+const wcifMock: Competition = {
+  series: null,
+  registrationInfo: {
+    openTime: '2026-01-01T00:00:00Z',
+    closeTime: '2026-04-01T00:00:00Z',
+    baseEntryFee: 0,
+    currencyCode: 'USD',
+    onTheSpotRegistration: false,
+    useWcaRegistration: true,
+  },
+  formatVersion: '2.0',
   id: 'TestComp2026',
   name: 'Test Competition 2026',
   shortName: 'Test Comp 2026',
@@ -111,18 +120,16 @@ const wcifMock = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: {
-            type: 'ranking',
-            level: 1,
-          },
+          linkedRounds: null,
+          participationRuleset: null,
           results: [
             {
               personId: 2,
               ranking: 2,
               attempts: [
-                { result: 1400, reconstruction: null },
-                { result: 1500, reconstruction: null },
-                { result: 1600, reconstruction: null },
+                { value: 1400, reconstruction: null },
+                { value: 1500, reconstruction: null },
+                { value: 1600, reconstruction: null },
               ],
               best: 1400,
               average: 1500,
@@ -131,9 +138,9 @@ const wcifMock = {
               personId: 1,
               ranking: 1,
               attempts: [
-                { result: 1200, reconstruction: null },
-                { result: 1300, reconstruction: null },
-                { result: 1400, reconstruction: null },
+                { value: 1200, reconstruction: null },
+                { value: 1300, reconstruction: null },
+                { value: 1400, reconstruction: null },
               ],
               best: 1200,
               average: 1300,
@@ -146,7 +153,15 @@ const wcifMock = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: {
+            reservedPlaces: null,
+            participationSource: {
+              type: 'round',
+              roundId: '333-r1',
+              resultCondition: { type: 'ranking', scope: 'average', value: 1 },
+            },
+          },
           results: [],
           extensions: [],
         },
@@ -161,7 +176,8 @@ const wcifMock = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           results: [],
           extensions: [],
         },
@@ -170,7 +186,8 @@ const wcifMock = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           results: [],
           extensions: [],
         },
@@ -188,11 +205,13 @@ const wcifMock = {
         longitudeMicrodegrees: 0,
         countryIso2: 'US',
         timezone: 'America/Los_Angeles',
+        extensions: [],
         rooms: [
           {
             id: 1,
             name: 'Main Room',
             color: '#ffffff',
+            extensions: [],
             activities: [
               {
                 id: 100,
@@ -219,7 +238,7 @@ const wcifMock = {
       },
     ],
   },
-} as unknown as Competition;
+};
 
 jest.mock('@/providers/WCIFProvider', () => ({
   useWCIF: () => ({
@@ -256,6 +275,26 @@ describe('CompetitionResultsContainer', () => {
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  it('renders WCIF v2 attempt values including DNF and DNS', () => {
+    const result = wcifMock.events[0].rounds[0].results[0];
+    const originalAttempts = result.attempts;
+    result.attempts = [
+      { value: 1234, reconstruction: null },
+      { value: -1, reconstruction: null },
+      { value: -2, reconstruction: null },
+    ];
+
+    try {
+      renderResults('333-r1');
+
+      expect(screen.getByText('12.34')).toBeInTheDocument();
+      expect(screen.getByText('DNF')).toBeInTheDocument();
+      expect(screen.getByText('DNS')).toBeInTheDocument();
+    } finally {
+      result.attempts = originalAttempts;
+    }
   });
 
   it('shows the round chooser without selected round content by default', () => {

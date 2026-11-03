@@ -16,7 +16,7 @@ export function CompetitionPersonContainer({ registrantId }: CompetitionPersonCo
   const { competitionId, wcif, setTitle } = useWCIF();
   const { pathname } = useLocation();
 
-  const person = wcif?.persons?.find((p) => p.registrantId.toString() === registrantId) as
+  const person = wcif?.persons?.find((p) => p.registrantId?.toString() === registrantId) as
     | (Person & {
         extensions: Extension[];
       })

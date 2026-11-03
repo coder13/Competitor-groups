@@ -66,8 +66,17 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-const linkedRoundsCompetition = {
-  formatVersion: '1.0',
+const linkedRoundsCompetition: Competition = {
+  series: null,
+  registrationInfo: {
+    openTime: '2026-01-01T00:00:00Z',
+    closeTime: '2026-04-01T00:00:00Z',
+    baseEntryFee: 0,
+    currencyCode: 'USD',
+    onTheSpotRegistration: false,
+    useWcaRegistration: true,
+  },
+  formatVersion: '2.0',
   id: 'TestComp2026',
   name: 'Test Competition 2026',
   shortName: 'Test Comp 2026',
@@ -81,18 +90,22 @@ const linkedRoundsCompetition = {
       rounds: [
         {
           id: '333-r1',
+          extensions: [],
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           results: [],
         },
         {
           id: '333-r2',
+          extensions: [],
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           results: [
             {
               personId: 1,
@@ -105,15 +118,19 @@ const linkedRoundsCompetition = {
         },
         {
           id: '333-r3',
+          extensions: [],
           format: 'a',
           cutoff: null,
           timeLimit: null,
+          linkedRounds: null,
           participationRuleset: {
+            reservedPlaces: null,
             participationSource: {
               type: 'linkedRounds',
               roundIds: ['333-r1', '333-r2'],
               resultCondition: {
                 type: 'ranking',
+                scope: 'average',
                 value: 12,
               },
             },
@@ -134,6 +151,7 @@ const linkedRoundsCompetition = {
         longitudeMicrodegrees: 0,
         countryIso2: 'US',
         timezone: 'America/Los_Angeles',
+        extensions: [],
         rooms: [
           {
             id: 1,
@@ -168,7 +186,7 @@ const linkedRoundsCompetition = {
       },
     ],
   },
-} as unknown as Competition;
+};
 
 jest.mock('@/providers/WCIFProvider', () => ({
   useWCIF: () => ({

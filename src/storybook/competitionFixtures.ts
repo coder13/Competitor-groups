@@ -1,4 +1,4 @@
-import { Competition, Round } from '@wca/helpers';
+import { Activity, Competition, Person, Round } from '@wca/helpers';
 
 const cloneCompetition = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 
@@ -8,8 +8,8 @@ const makeChildActivity = (
   name: string,
   startTime: string,
   endTime: string,
-  extensions: { id: string; data: Record<string, unknown> }[] = [],
-) => ({
+  extensions: Activity['extensions'] = [],
+): Activity => ({
   id,
   activityCode,
   name,
@@ -20,7 +20,7 @@ const makeChildActivity = (
   scrambleSetId: null,
 });
 
-const mainRoomActivities = [
+const mainRoomActivities: Activity[] = [
   {
     id: 100,
     activityCode: '333-r1',
@@ -34,7 +34,7 @@ const mainRoomActivities = [
         '3x3x3 Cube, Round 1, Group 1',
         '2026-05-03T16:00:00Z',
         '2026-05-03T16:45:00Z',
-        [{ id: 'org.cubingusa.natshelper.v1.Group', data: { stageId: 1 } }],
+        [{ id: 'org.cubingusa.natshelper.v1.Group', specUrl: '', data: { stageId: 1 } }],
       ),
       makeChildActivity(
         102,
@@ -42,7 +42,7 @@ const mainRoomActivities = [
         '3x3x3 Cube, Round 1, Group 2',
         '2026-05-03T16:45:00Z',
         '2026-05-03T17:30:00Z',
-        [{ id: 'org.cubingusa.natshelper.v1.Group', data: { stageId: 1 } }],
+        [{ id: 'org.cubingusa.natshelper.v1.Group', specUrl: '', data: { stageId: 1 } }],
       ),
     ],
     extensions: [],
@@ -62,9 +62,10 @@ const mainRoomActivities = [
         '2026-05-04T17:00:00Z',
         '2026-05-04T17:30:00Z',
         [
-          { id: 'org.cubingusa.natshelper.v1.Group', data: { stageId: 1 } },
+          { id: 'org.cubingusa.natshelper.v1.Group', specUrl: '', data: { stageId: 1 } },
           {
             id: 'groupifier.ActivityConfig',
+            specUrl: '',
             data: {
               featuredCompetitorWcaUserIds: [1001, 1003],
             },
@@ -77,7 +78,7 @@ const mainRoomActivities = [
         '3x3x3 Cube, Round 2, Group 2',
         '2026-05-04T17:30:00Z',
         '2026-05-04T18:00:00Z',
-        [{ id: 'org.cubingusa.natshelper.v1.Group', data: { stageId: 1 } }],
+        [{ id: 'org.cubingusa.natshelper.v1.Group', specUrl: '', data: { stageId: 1 } }],
       ),
     ],
     extensions: [],
@@ -96,7 +97,7 @@ const mainRoomActivities = [
         '3x3x3 Cube, Round 3, Group 1',
         '2026-05-04T19:00:00Z',
         '2026-05-04T19:30:00Z',
-        [{ id: 'org.cubingusa.natshelper.v1.Group', data: { stageId: 1 } }],
+        [{ id: 'org.cubingusa.natshelper.v1.Group', specUrl: '', data: { stageId: 1 } }],
       ),
       makeChildActivity(
         122,
@@ -104,7 +105,7 @@ const mainRoomActivities = [
         '3x3x3 Cube, Round 3, Group 2',
         '2026-05-04T19:30:00Z',
         '2026-05-04T20:00:00Z',
-        [{ id: 'org.cubingusa.natshelper.v1.Group', data: { stageId: 1 } }],
+        [{ id: 'org.cubingusa.natshelper.v1.Group', specUrl: '', data: { stageId: 1 } }],
       ),
     ],
     extensions: [],
@@ -123,7 +124,7 @@ const mainRoomActivities = [
         '2x2x2 Cube, Round 1, Group 1',
         '2026-05-03T18:00:00Z',
         '2026-05-03T18:30:00Z',
-        [{ id: 'org.cubingusa.natshelper.v1.Group', data: { stageId: 1 } }],
+        [{ id: 'org.cubingusa.natshelper.v1.Group', specUrl: '', data: { stageId: 1 } }],
       ),
       makeChildActivity(
         132,
@@ -131,7 +132,7 @@ const mainRoomActivities = [
         '2x2x2 Cube, Round 1, Group 2',
         '2026-05-03T18:30:00Z',
         '2026-05-03T19:00:00Z',
-        [{ id: 'org.cubingusa.natshelper.v1.Group', data: { stageId: 1 } }],
+        [{ id: 'org.cubingusa.natshelper.v1.Group', specUrl: '', data: { stageId: 1 } }],
       ),
     ],
     extensions: [],
@@ -139,7 +140,7 @@ const mainRoomActivities = [
   },
 ];
 
-const sideRoomActivities = [
+const sideRoomActivities: Activity[] = [
   {
     id: 200,
     activityCode: '333-r1',
@@ -153,7 +154,7 @@ const sideRoomActivities = [
         '3x3x3 Cube, Round 1, Group 1',
         '2026-05-03T16:00:00Z',
         '2026-05-03T16:45:00Z',
-        [{ id: 'org.cubingusa.natshelper.v1.Group', data: { stageId: 2 } }],
+        [{ id: 'org.cubingusa.natshelper.v1.Group', specUrl: '', data: { stageId: 2 } }],
       ),
       makeChildActivity(
         202,
@@ -161,7 +162,7 @@ const sideRoomActivities = [
         '3x3x3 Cube, Round 1, Group 2',
         '2026-05-03T16:45:00Z',
         '2026-05-03T17:30:00Z',
-        [{ id: 'org.cubingusa.natshelper.v1.Group', data: { stageId: 2 } }],
+        [{ id: 'org.cubingusa.natshelper.v1.Group', specUrl: '', data: { stageId: 2 } }],
       ),
     ],
     extensions: [],
@@ -179,7 +180,7 @@ const sideRoomActivities = [
   },
 ];
 
-const storybookPersons = [
+const storybookPersons: Person[] = [
   {
     registrantId: 1,
     name: 'Blake Thompson',
@@ -199,7 +200,7 @@ const storybookPersons = [
       {
         eventId: '333',
         type: 'single',
-        best: 652,
+        value: 652,
         worldRanking: 1820,
         continentalRanking: 710,
         nationalRanking: 215,
@@ -207,7 +208,7 @@ const storybookPersons = [
       {
         eventId: '333',
         type: 'average',
-        best: 841,
+        value: 841,
         worldRanking: 2410,
         continentalRanking: 980,
         nationalRanking: 301,
@@ -215,7 +216,7 @@ const storybookPersons = [
       {
         eventId: '222',
         type: 'single',
-        best: 187,
+        value: 187,
         worldRanking: 930,
         continentalRanking: 302,
         nationalRanking: 88,
@@ -223,7 +224,7 @@ const storybookPersons = [
       {
         eventId: '222',
         type: 'average',
-        best: 259,
+        value: 259,
         worldRanking: 1180,
         continentalRanking: 415,
         nationalRanking: 120,
@@ -236,6 +237,7 @@ const storybookPersons = [
         'https://avatars.worldcubeassociation.org/uploads/user/avatar/2010THOM03/1526357179_thumb.jpeg',
     },
     registration: {
+      wcaRegistrationId: 1,
       status: 'accepted',
       isCompeting: true,
       eventIds: ['333', '222'],
@@ -259,7 +261,7 @@ const storybookPersons = [
       {
         eventId: '333',
         type: 'single',
-        best: 701,
+        value: 701,
         worldRanking: 2140,
         continentalRanking: 880,
         nationalRanking: 142,
@@ -267,7 +269,7 @@ const storybookPersons = [
       {
         eventId: '333',
         type: 'average',
-        best: 910,
+        value: 910,
         worldRanking: 2890,
         continentalRanking: 1240,
         nationalRanking: 201,
@@ -275,7 +277,7 @@ const storybookPersons = [
       {
         eventId: '222',
         type: 'single',
-        best: 244,
+        value: 244,
         worldRanking: 1520,
         continentalRanking: 611,
         nationalRanking: 102,
@@ -287,6 +289,7 @@ const storybookPersons = [
       thumbUrl: 'https://avatars.worldcubeassociation.org/uge6fzvlpmz6c8ztn8ey5wi4i8uf',
     },
     registration: {
+      wcaRegistrationId: 2,
       status: 'accepted',
       isCompeting: true,
       eventIds: ['333', '222'],
@@ -310,7 +313,7 @@ const storybookPersons = [
       {
         eventId: '333',
         type: 'single',
-        best: 598,
+        value: 598,
         worldRanking: 1210,
         continentalRanking: 420,
         nationalRanking: 58,
@@ -318,7 +321,7 @@ const storybookPersons = [
       {
         eventId: '333',
         type: 'average',
-        best: 801,
+        value: 801,
         worldRanking: 2010,
         continentalRanking: 740,
         nationalRanking: 102,
@@ -331,6 +334,7 @@ const storybookPersons = [
         'https://avatars.worldcubeassociation.org/uploads/user/avatar/2014GULA02/1649125122_thumb.jpg',
     },
     registration: {
+      wcaRegistrationId: 3,
       status: 'accepted',
       isCompeting: true,
       eventIds: ['333'],
@@ -354,7 +358,7 @@ const storybookPersons = [
       {
         eventId: '333',
         type: 'single',
-        best: 845,
+        value: 845,
         worldRanking: 3880,
         continentalRanking: 1640,
         nationalRanking: 244,
@@ -362,6 +366,7 @@ const storybookPersons = [
     ],
     extensions: [],
     registration: {
+      wcaRegistrationId: 4,
       status: 'accepted',
       isCompeting: true,
       eventIds: ['333', '222'],
@@ -385,7 +390,7 @@ const storybookPersons = [
       {
         eventId: '333',
         type: 'single',
-        best: 630,
+        value: 630,
         worldRanking: 1490,
         continentalRanking: 88,
         nationalRanking: 21,
@@ -393,7 +398,7 @@ const storybookPersons = [
       {
         eventId: '333',
         type: 'average',
-        best: 830,
+        value: 830,
         worldRanking: 2280,
         continentalRanking: 131,
         nationalRanking: 34,
@@ -401,6 +406,7 @@ const storybookPersons = [
     ],
     extensions: [],
     registration: {
+      wcaRegistrationId: 5,
       status: 'accepted',
       isCompeting: true,
       eventIds: ['333'],
@@ -424,6 +430,7 @@ const storybookPersons = [
       thumbUrl: 'https://avatars.worldcubeassociation.org/uge6fzvlpmz6c8ztn8ey5wi4i8uf',
     },
     registration: {
+      wcaRegistrationId: 6,
       status: 'accepted',
       isCompeting: false,
       eventIds: [],
@@ -431,6 +438,7 @@ const storybookPersons = [
     extensions: [
       {
         id: 'com.competitiongroups.worldsassignments',
+        specUrl: '',
         data: {
           assignments: [
             {
@@ -445,8 +453,9 @@ const storybookPersons = [
   },
 ];
 
-export const storybookCompetitionFixture = {
-  formatVersion: '1.1',
+export const storybookCompetitionFixture: Competition = {
+  formatVersion: '2.0',
+  series: null,
   id: 'SeattleSummerOpen2026',
   name: 'Seattle Summer Open 2026',
   shortName: 'Seattle Summer Open 2026',
@@ -470,10 +479,8 @@ export const storybookCompetitionFixture = {
           format: 'a',
           timeLimit: null,
           cutoff: null,
-          advancementCondition: {
-            type: 'ranking',
-            level: 24,
-          },
+          linkedRounds: null,
+          participationRuleset: null,
           results: [
             { personId: 3, ranking: 1, best: 598, average: 801, attempts: [] },
             { personId: 1, ranking: 2, best: 652, average: 841, attempts: [] },
@@ -489,9 +496,14 @@ export const storybookCompetitionFixture = {
           format: 'a',
           timeLimit: null,
           cutoff: null,
-          advancementCondition: {
-            type: 'ranking',
-            level: 12,
+          linkedRounds: null,
+          participationRuleset: {
+            reservedPlaces: null,
+            participationSource: {
+              type: 'round',
+              roundId: '333-r1',
+              resultCondition: { type: 'ranking', scope: 'average', value: 24 },
+            },
           },
           results: [
             { personId: 1, ranking: 1, best: 640, average: 820, attempts: [] },
@@ -507,9 +519,14 @@ export const storybookCompetitionFixture = {
           format: 'a',
           timeLimit: null,
           cutoff: null,
-          advancementCondition: {
-            type: 'percent',
-            level: 50,
+          linkedRounds: null,
+          participationRuleset: {
+            reservedPlaces: null,
+            participationSource: {
+              type: 'round',
+              roundId: '333-r2',
+              resultCondition: { type: 'ranking', scope: 'average', value: 12 },
+            },
           },
           results: [],
           scrambleSetCount: 1,
@@ -533,12 +550,10 @@ export const storybookCompetitionFixture = {
           },
           cutoff: {
             numberOfAttempts: 2,
-            attemptResult: 1200,
+            resultValue: 1200,
           },
-          advancementCondition: {
-            type: 'ranking',
-            level: 16,
-          },
+          linkedRounds: null,
+          participationRuleset: null,
           results: [
             { personId: 1, ranking: 1, best: 187, average: 259, attempts: [] },
             { personId: 2, ranking: 2, best: 244, average: 0, attempts: [] },
@@ -573,6 +588,7 @@ export const storybookCompetitionFixture = {
             extensions: [
               {
                 id: 'org.cubingusa.natshelper.v1.Room',
+                specUrl: '',
                 data: {
                   stages: [
                     { id: 1, name: 'Blue Stage', color: '#3b82f6' },
@@ -590,6 +606,7 @@ export const storybookCompetitionFixture = {
             extensions: [
               {
                 id: 'org.cubingusa.natshelper.v1.Room',
+                specUrl: '',
                 data: {
                   stages: [
                     { id: 1, name: 'Blue Stage', color: '#3b82f6' },
@@ -604,7 +621,7 @@ export const storybookCompetitionFixture = {
       },
     ],
   },
-} as unknown as Competition;
+};
 
 export const storybookCompetitionApiFixture: ApiCompetition = {
   id: 'SeattleSummerOpen2026',
@@ -748,17 +765,20 @@ export const storybookParticipationConditionPercentFixture =
   makeStorybookCompetitionFixtureWithRoundUpdates({
     '333-r1': (round) => ({
       ...round,
-      advancementCondition: null,
+      linkedRounds: null,
+      participationRuleset: null,
     }),
     '333-r2': (round) => ({
       ...round,
-      advancementCondition: null,
+      linkedRounds: null,
       participationRuleset: {
+        reservedPlaces: null,
         participationSource: {
           type: 'round',
           roundId: '333-r1',
           resultCondition: {
             type: 'percent',
+            scope: 'average',
             value: 75,
           },
         },
@@ -770,21 +790,25 @@ export const storybookParticipationConditionLinkedRoundsFixture =
   makeStorybookCompetitionFixtureWithRoundUpdates({
     '333-r1': (round) => ({
       ...round,
-      advancementCondition: null,
+      linkedRounds: null,
+      participationRuleset: null,
     }),
     '333-r2': (round) => ({
       ...round,
-      advancementCondition: null,
+      linkedRounds: null,
+      participationRuleset: null,
     }),
     '333-r3': (round) => ({
       ...round,
-      advancementCondition: null,
+      linkedRounds: null,
       participationRuleset: {
+        reservedPlaces: null,
         participationSource: {
           type: 'linkedRounds',
           roundIds: ['333-r1', '333-r2'],
           resultCondition: {
             type: 'ranking',
+            scope: 'average',
             value: 12,
           },
         },

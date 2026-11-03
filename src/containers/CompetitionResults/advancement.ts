@@ -77,7 +77,7 @@ export const getStoredRoundResults = (
       ranking: result.ranking,
       advancing: isAdvancingFromStoredResult(round, result, advancementCondition),
       advancingQuestionable: false,
-      attempts: result.attempts.map((attempt) => ({ result: attempt.result })),
+      attempts: result.attempts.map((attempt) => ({ result: attempt.value })),
       best: result.best,
       average: result.average,
       singleRecordTag: normalizeResultRecordTag(

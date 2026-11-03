@@ -53,7 +53,7 @@ export const fetchUserWithCompetitions = async (userId: string) =>
   wcaApiFetch<UserCompsResponse>(`/users/${userId}?${fetchUserWithCompetitionsParams.toString()}`);
 
 export const fetchWcif = async (competitionId: string) =>
-  wcaApiFetch<Competition>(`/competitions/${competitionId}/wcif/public`);
+  wcaApiFetch<Competition>(`/competitions/${competitionId}/wcif/version/2`);
 
 export interface WcaCompetitionResult {
   id: number;

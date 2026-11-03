@@ -1,4 +1,11 @@
-import { AttemptResult, EventId, Person, RankingType, Round, RoundFormat } from '@wca/helpers';
+import {
+  ResultValue as WcaResultValue,
+  EventId,
+  Person,
+  RankingType,
+  Round,
+  RoundFormat,
+} from '@wca/helpers';
 import classNames from 'classnames';
 import { KeyboardEvent, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,10 +23,10 @@ export interface CompetitionRoundResult {
   advancing: boolean;
   advancingQuestionable: boolean;
   attempts: {
-    result: AttemptResult;
+    result: WcaResultValue;
   }[];
-  best: AttemptResult;
-  average: AttemptResult;
+  best: WcaResultValue;
+  average: WcaResultValue;
   bestAttemptIndex?: number | null;
   worstAttemptIndex?: number | null;
   singleRecordTag?: ResultRecordTag;
@@ -62,7 +69,7 @@ const renderResultValue = (
   return renderResultByEventId(eventId as EventId, rankingType, value);
 };
 
-const renderAttemptValue = (eventId: string, value: AttemptResult) => {
+const renderAttemptValue = (eventId: string, value: WcaResultValue) => {
   if (value === 0) {
     return '-';
   }
@@ -72,7 +79,7 @@ const renderAttemptValue = (eventId: string, value: AttemptResult) => {
 
 const isAverageOfFiveRound = (format: RoundFormat) => format === 'a';
 
-const isValidAttemptResult = (value: AttemptResult) => Number(value) > 0;
+const isValidAttemptResult = (value: WcaResultValue) => Number(value) > 0;
 
 const getCalculatedDroppedAttemptIndexes = (
   attempts: CompetitionRoundResult['attempts'],
@@ -129,7 +136,7 @@ const getDroppedAttemptIndexes = (
 
 const renderAttemptDisplayValue = (
   eventId: string,
-  value: AttemptResult,
+  value: WcaResultValue,
   isDroppedAttempt: boolean,
 ) => {
   const renderedValue = renderAttemptValue(eventId, value);
@@ -187,7 +194,7 @@ const toCompetitionRoundResult = (result: Round['results'][number]): Competition
     ranking: result.ranking,
     advancing: false,
     advancingQuestionable: false,
-    attempts: result.attempts.map((attempt) => ({ result: attempt.result })),
+    attempts: result.attempts.map((attempt) => ({ result: attempt.value })),
     best: result.best,
     average: result.average,
     singleRecordTag: normalizeResultRecordTag(

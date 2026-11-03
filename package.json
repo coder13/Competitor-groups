@@ -23,7 +23,7 @@
     "@tanstack/react-query-persist-client": "^5.48.0",
     "@total-typescript/ts-reset": "^0.3.7",
     "@uidotdev/usehooks": "^2.4.1",
-    "@wca/helpers": "^1.1.5",
+    "@wca/helpers": "^2.0.0",
     "classnames": "^2.3.2",
     "country-flag-icons": "^1.5.4",
     "date-fns": "^2.30.0",

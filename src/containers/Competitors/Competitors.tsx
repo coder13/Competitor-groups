@@ -31,7 +31,7 @@ export const Competitors = ({ wcif }: { wcif: Competition }) => {
           return {
             ...person,
             highlight: person.wcaUserId === user?.id,
-            pinned: pinnedPersons.includes(person.registrantId),
+            pinned: person.registrantId != null && pinnedPersons.includes(person.registrantId),
             currentAssignmentCode: assignedActivity?.assignmentCode,
           };
         })

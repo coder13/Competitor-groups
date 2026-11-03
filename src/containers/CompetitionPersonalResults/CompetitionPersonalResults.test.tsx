@@ -79,7 +79,21 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-const wcifMock = {
+const wcifMock: Competition = {
+  formatVersion: '2.0',
+  name: 'Test Competition',
+  shortName: 'Test Competition',
+  competitorLimit: null,
+  extensions: [],
+  series: null,
+  registrationInfo: {
+    openTime: '2026-01-01T00:00:00Z',
+    closeTime: '2026-04-01T00:00:00Z',
+    baseEntryFee: 0,
+    currencyCode: 'USD',
+    onTheSpotRegistration: false,
+    useWcaRegistration: true,
+  },
   id: 'TestComp2026',
   schedule: {
     startDate: '2026-05-03',
@@ -107,17 +121,18 @@ const wcifMock = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           results: [
             {
               personId: 1,
               ranking: 2,
               attempts: [
-                { result: 690, reconstruction: null },
-                { result: 732, reconstruction: null },
-                { result: 786, reconstruction: null },
-                { result: 1034, reconstruction: null },
-                { result: 705, reconstruction: null },
+                { value: 690, reconstruction: null },
+                { value: 732, reconstruction: null },
+                { value: 786, reconstruction: null },
+                { value: 1034, reconstruction: null },
+                { value: 705, reconstruction: null },
               ],
               best: 690,
               average: 741,
@@ -136,14 +151,15 @@ const wcifMock = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           results: [],
           extensions: [],
         },
       ],
     },
   ],
-} as unknown as Competition;
+};
 
 jest.mock('@/providers/WCIFProvider', () => ({
   useWCIF: () => ({
@@ -174,6 +190,45 @@ describe('CompetitionPersonalResultsContainer', () => {
     mockWcaLiveResults = [];
     mockWcaCompetitionResults = [];
     mockWcaCompetitionResultsStatus = 'success';
+  });
+
+  it('finds the competitor after a person without a registrant ID', () => {
+    wcifMock.persons.unshift({
+      registrantId: null,
+      name: 'Non-competing organizer',
+      wcaUserId: 1002,
+      countryIso2: 'US',
+      extensions: [],
+    });
+
+    try {
+      renderPersonalResults();
+
+      expect(screen.getByText('Vikram Haldar')).toBeInTheDocument();
+      expect(screen.getByText('7.41')).toBeInTheDocument();
+    } finally {
+      wcifMock.persons.shift();
+    }
+  });
+
+  it('renders WCIF v2 attempt values including DNF and DNS', () => {
+    const result = wcifMock.events[0].rounds[0].results[0];
+    const originalAttempts = result.attempts;
+    result.attempts = [
+      { value: 1234, reconstruction: null },
+      { value: -1, reconstruction: null },
+      { value: -2, reconstruction: null },
+    ];
+
+    try {
+      renderPersonalResults();
+
+      expect(screen.getByText('12.34')).toBeInTheDocument();
+      expect(screen.getByText('DNF')).toBeInTheDocument();
+      expect(screen.getByText('DNS')).toBeInTheDocument();
+    } finally {
+      result.attempts = originalAttempts;
+    }
   });
 
   it('shows event tables for the selected competitor results', () => {

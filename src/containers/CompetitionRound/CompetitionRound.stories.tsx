@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import {
-  makeStorybookCompetitionFixtureWithRound,
+  makeStorybookCompetitionFixtureWithRoundUpdates,
   makeStorybookEventCompetitionFixture,
   storybookParticipationConditionLinkedRoundsFixture,
   storybookParticipationConditionPercentFixture,
@@ -75,10 +75,7 @@ export const DualRoundWithNextRound: Story = {
 
 export const FinalRound: Story = {
   parameters: {
-    competitionFixture: makeStorybookCompetitionFixtureWithRound('333-r3', (round) => ({
-      ...round,
-      advancementCondition: null,
-    })),
+    competitionFixture: makeStorybookCompetitionFixtureWithRoundUpdates({}),
   },
   args: {
     competitionId: 'SeattleSummerOpen2026',
@@ -98,17 +95,26 @@ export const CutoffAndTimeLimit: Story = {
 
 export const CumulativeTimeLimit: Story = {
   parameters: {
-    competitionFixture: makeStorybookCompetitionFixtureWithRound('333-r2', (round) => ({
-      ...round,
-      timeLimit: {
-        centiseconds: 15000,
-        cumulativeRoundIds: ['333-r2', '333-r3'],
-      },
-      advancementCondition: {
-        type: 'attemptResult',
-        level: 950,
-      },
-    })),
+    competitionFixture: makeStorybookCompetitionFixtureWithRoundUpdates({
+      '333-r2': (round) => ({
+        ...round,
+        timeLimit: {
+          centiseconds: 15000,
+          cumulativeRoundIds: ['333-r2', '333-r3'],
+        },
+      }),
+      '333-r3': (round) => ({
+        ...round,
+        participationRuleset: {
+          reservedPlaces: null,
+          participationSource: {
+            type: 'round',
+            roundId: '333-r2',
+            resultCondition: { type: 'resultAchieved', scope: 'single', value: 950 },
+          },
+        },
+      }),
+    }),
   },
   args: {
     competitionId: 'SeattleSummerOpen2026',

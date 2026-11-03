@@ -50,8 +50,17 @@ const persons: Person[] = [
   },
 ];
 
-const wcif = {
-  formatVersion: '1.0',
+const wcif: Competition = {
+  series: null,
+  registrationInfo: {
+    openTime: '2026-01-01T00:00:00Z',
+    closeTime: '2026-04-01T00:00:00Z',
+    baseEntryFee: 0,
+    currencyCode: 'USD',
+    onTheSpotRegistration: false,
+    useWcaRegistration: true,
+  },
+  formatVersion: '2.0',
   id: 'SumRanksTest2026',
   name: 'Sum Ranks Test 2026',
   shortName: 'Sum Ranks Test',
@@ -68,20 +77,21 @@ const wcif = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           extensions: [],
           results: [
             {
               personId: 1,
               ranking: 1,
-              attempts: [{ result: 1200, reconstruction: null }],
+              attempts: [{ value: 1200, reconstruction: null }],
               best: 1200,
               average: 1200,
             },
             {
               personId: 2,
               ranking: 2,
-              attempts: [{ result: 1300, reconstruction: null }],
+              attempts: [{ value: 1300, reconstruction: null }],
               best: 1300,
               average: 1300,
             },
@@ -92,13 +102,14 @@ const wcif = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           extensions: [],
           results: [
             {
               personId: 2,
               ranking: 1,
-              attempts: [{ result: 1100, reconstruction: null }],
+              attempts: [{ value: 1100, reconstruction: null }],
               best: 1100,
               average: 1100,
             },
@@ -109,7 +120,8 @@ const wcif = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           extensions: [],
           results: [],
         },
@@ -117,7 +129,7 @@ const wcif = {
     },
   ],
   schedule: { numberOfDays: 1, startDate: '2026-05-03', venues: [] },
-} as Competition;
+};
 
 const apiResult = (overrides: Partial<WcaCompetitionResult> = {}): WcaCompetitionResult => ({
   id: 9000,

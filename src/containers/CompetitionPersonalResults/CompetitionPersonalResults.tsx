@@ -30,8 +30,8 @@ export function CompetitionPersonalResultsContent({
   const isTodayCompetitionDay = wcif ? isCompetitionDay(wcif) : false;
   const { data: wcaLiveLink, status: wcaLiveFetchStatus } = useWcaLiveCompetitorLink(
     competitionId,
-    person.registrantId.toString(),
-    { enabled: isTodayCompetitionDay },
+    person.registrantId?.toString() ?? '',
+    { enabled: isTodayCompetitionDay && person.registrantId != null },
   );
   const { data: wcaLiveResults } = useWcaLiveCompetitorResults(wcaLiveLink, {
     enabled: isTodayCompetitionDay && wcaLiveFetchStatus === 'success',
@@ -106,7 +106,7 @@ export function CompetitionPersonalResultsContainer({
   const { t } = useTranslation();
   const { wcif, competitionId, setTitle } = useWCIF();
 
-  const person = wcif?.persons.find((p) => p.registrantId.toString() === registrantId);
+  const person = wcif?.persons.find((p) => p.registrantId?.toString() === registrantId);
 
   useEffect(() => {
     if (person) {

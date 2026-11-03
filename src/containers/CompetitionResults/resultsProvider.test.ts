@@ -41,8 +41,17 @@ const persons: Person[] = [
   },
 ];
 
-const wcif = {
-  formatVersion: '1.0',
+const wcif: Competition = {
+  series: null,
+  registrationInfo: {
+    openTime: '2026-01-01T00:00:00Z',
+    closeTime: '2026-04-01T00:00:00Z',
+    baseEntryFee: 0,
+    currencyCode: 'USD',
+    onTheSpotRegistration: false,
+    useWcaRegistration: true,
+  },
+  formatVersion: '2.0',
   id: 'ProviderTest2026',
   name: 'Provider Test 2026',
   shortName: 'Provider Test',
@@ -59,16 +68,17 @@ const wcif = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           extensions: [],
           results: [
             {
               personId: 1,
               ranking: 1,
               attempts: [
-                { result: 1200, reconstruction: null },
-                { result: 1300, reconstruction: null },
-                { result: 1400, reconstruction: null },
+                { value: 1200, reconstruction: null },
+                { value: 1300, reconstruction: null },
+                { value: 1400, reconstruction: null },
               ],
               best: 1200,
               average: 1300,
@@ -80,7 +90,8 @@ const wcif = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           extensions: [],
           results: [],
         },
@@ -89,7 +100,8 @@ const wcif = {
           format: 'a',
           cutoff: null,
           timeLimit: null,
-          advancementCondition: null,
+          linkedRounds: null,
+          participationRuleset: null,
           extensions: [],
           results: [],
         },
@@ -140,7 +152,7 @@ const wcif = {
       },
     ],
   },
-} as Competition;
+};
 
 const selectedRound = (roundIndex: number) => ({
   event: wcif.events[0],

@@ -193,7 +193,10 @@ export const getSumOfRanks = (
 
   return wcif.persons
     .filter(
-      (person) => hasAcceptedRegistration(person) && personIdsWithResults.has(person.registrantId),
+      (person) =>
+        hasAcceptedRegistration(person) &&
+        person.registrantId != null &&
+        personIdsWithResults.has(person.registrantId),
     )
     .map<SumOfRanksPersonRanking>((person) => {
       const scores = roundsWithRankings.map((roundWithRankings) =>

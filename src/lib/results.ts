@@ -1,7 +1,7 @@
 import {
   EventId,
   RankingType,
-  AttemptResult,
+  ResultValue,
   formatMultiResult,
   decodeMultiResult,
   formatCentiseconds,
@@ -11,7 +11,7 @@ import {
 export const renderResultByEventId = (
   eventId: EventId,
   rankingType: RankingType,
-  result: AttemptResult,
+  result: ResultValue,
 ) => {
   if (eventId === '333fm') {
     return rankingType === 'average' ? ((result as number) / 100).toFixed(2).toString() : result;
@@ -29,7 +29,7 @@ export const renderCutoff = (cutoff: Cutoff) => {
     return '-';
   }
 
-  return `${formatCentiseconds(cutoff.attemptResult)}`;
+  return `${formatCentiseconds(cutoff.resultValue)}`;
 };
 
 export const renderCentiseconds = (centiseconds: number) => {

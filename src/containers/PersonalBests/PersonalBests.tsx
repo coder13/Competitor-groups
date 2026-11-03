@@ -57,7 +57,7 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
                     <tr>
                       <td className="px-3 py-2">{t('common.wca.resultType.single')}</td>
                       <td className="px-3 py-2 text-center">
-                        {renderResultByEventId(eventId, 'single', singlePb.best)}
+                        {renderResultByEventId(eventId, 'single', singlePb.value)}
                       </td>
                       <td className="px-3 py-2 text-center">
                         <Ranking ranking={singlePb?.worldRanking} />
@@ -74,7 +74,7 @@ export function PersonalBestsContainer({ wcif, person }: PersonalBestsContainerP
                     <tr>
                       <td className="px-3 py-2">{t('common.wca.resultType.average')}</td>
                       <td className="px-3 py-2 text-center">
-                        {renderResultByEventId(eventId, 'average', averagePb.best)}
+                        {renderResultByEventId(eventId, 'average', averagePb.value)}
                       </td>
                       <td className="px-3 py-2 text-center">
                         <Ranking ranking={averagePb?.worldRanking} />
