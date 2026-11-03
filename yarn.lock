@@ -3956,10 +3956,10 @@
     loupe "^3.1.2"
     tinyrainbow "^1.2.0"
 
-"@wca/helpers@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@wca/helpers/-/helpers-1.1.5.tgz#cbf0c3da6ce9a15e6e69eaf413a0cf9cb4775db0"
-  integrity sha512-Sr/XxkEXctrRKFJuqyAy9KH7q//YevEo+zSCESpVQqieB4Y3KjHYOl54kPaocwAHkWniGMOwZWD6O1Q9MR1d3w==
+"@wca/helpers@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@wca/helpers/-/helpers-2.0.0.tgz#ace1af3446b552ef54f3a83cc35cc05a74c04ea9"
+  integrity sha512-VYcby20Y9Uf7FWSxvzHbJRp6eOW7Gb4z7Nvy+8ggjxIKqfndAewxysiYop2LZ6VXnJavtV4SPy2AFhAH+OT4Bg==
 
 "@wry/context@^0.7.0", "@wry/context@^0.7.3":
   version "0.7.4"

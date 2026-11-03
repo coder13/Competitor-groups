@@ -18,8 +18,10 @@ import { isCompetitionDay } from '@/lib/competitionDates';
 import { getEventName } from '@/lib/events';
 import { AnchorLink, LinkRenderer } from '@/lib/linkRenderer';
 import { findRoundWithEvent, getAllRoundsWithEvents } from '@/lib/rounds';
+import { getLinkedRoundIds } from '@/lib/wcif';
 import { useWCIF } from '@/providers/WCIFProvider';
 import { CompetitionResultsTable } from './CompetitionResultsTable';
+import { LinkedRoundsNotice } from './LinkedRoundsNotice';
 import { ResultsEventRoundSelector } from './ResultsEventRoundSelector';
 import { getWcaApiResultsByRoundId } from './resultSources';
 import { getRoundResultsFromSources } from './resultsProvider';
@@ -156,8 +158,10 @@ export function CompetitionResultsContainer({
     () =>
       wcif
         ? getAllRoundsWithEvents(wcif).filter(
-            ({ round, roundNumber }) =>
+            ({ event, round, roundNumber }) =>
               roundNumber === 1 ||
+              getLinkedRoundIds(event.rounds, round).length > 1 ||
+              round.participationRuleset?.participationSource?.type === 'registrations' ||
               round.results.length > 0 ||
               (apiResultsByRoundId.get(round.id)?.length ?? 0) > 0,
           )
@@ -209,6 +213,8 @@ export function CompetitionResultsContainer({
     const round = findRoundWithEvent(wcif, selectedRoundId);
     return round &&
       (round.roundNumber === 1 ||
+        getLinkedRoundIds(round.event.rounds, round.round).length > 1 ||
+        round.round.participationRuleset?.participationSource?.type === 'registrations' ||
         round.round.results.length > 0 ||
         (apiResultsByRoundId.get(round.round.id)?.length ?? 0) > 0 ||
         isTodayCompetitionDay)
@@ -275,6 +281,12 @@ export function CompetitionResultsContainer({
                   })}
                 </h2>
                 <NoteBox text={t('competition.results.resultsSourceNote')} />
+                <LinkedRoundsNotice
+                  competitionId={competitionId}
+                  round={selectedRound.round}
+                  eventRounds={selectedRound.event.rounds}
+                  LinkComponent={LinkComponent}
+                />
                 <ResultsEventRoundSelector
                   selectedRoundId={selectedRound.round.id}
                   rounds={selectedEventRoundLinks}

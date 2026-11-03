@@ -129,6 +129,7 @@ export const getRoundResultsFromSources = ({
   const storedRoundResults = getStoredRoundResults(
     selectedRound.round,
     getAdvancementConditionForRound(selectedRound.event.rounds, selectedRound.round),
+    selectedRound.event.rounds,
   );
   const apiRoundResults = getApiRoundResults(wcif, selectedRound.round.id, wcaApiResults);
 
@@ -160,7 +161,7 @@ const getStoredPersonalResults = (wcif: Competition, person: Person): EventResul
                 ranking: result.ranking,
                 advancing: false,
                 advancingQuestionable: false,
-                attempts: result.attempts.map((attempt) => ({ result: attempt.result })),
+                attempts: result.attempts.map((attempt) => ({ result: attempt.value })),
                 best: result.best,
                 average: result.average,
               }

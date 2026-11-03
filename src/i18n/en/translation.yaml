@@ -1,5 +1,9 @@
 common:
   appName: 'Competition Groups'
+  help: 'Help'
+  retry: 'Try again'
+  home: 'Back to home'
+  bookmarkCompetition: 'Bookmark competition'
   wca:
     event: 'Event'
     round: 'Round'
@@ -175,6 +179,9 @@ home:
   upcomingCompetitions: 'Upcoming Competitions'
   yourCompetitions: 'Your Competitions'
 competition:
+  loadError: 'Unable to load this competition.'
+  loadErrorHint: 'The competition may not exist, or its data may be temporarily unavailable. Check the address or try again.'
+  refreshError: 'Unable to refresh competition data. Showing the last available data.'
   competitors:
     viewMyAssignments: 'View My Assignments'
     viewCompetitionInformation: 'View Competition Information'
@@ -210,6 +217,8 @@ competition:
     unknownCompetitor: 'Competitor #{{personId}}'
     allResults: All results
     viewLiveResults: View live results
+    dualPersonalNote: 'Dual-round ranks use the better result from either linked round. Each row shows that round’s own results.'
+    dualRoundNote: 'Dual-round standings: rank is based on the better result from either linked round. Attempts, best and average below belong to the selected round. No competitors are eliminated between the linked rounds.'
     resultsSourceNote: Results are merged from WCIF and WCA Live when available. WCA Live data may be delayed.
   personalResults:
     eventResults: Event results

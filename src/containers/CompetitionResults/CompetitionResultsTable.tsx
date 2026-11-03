@@ -1,4 +1,11 @@
-import { AttemptResult, EventId, Person, RankingType, Round, RoundFormat } from '@wca/helpers';
+import {
+  ResultValue as WcaResultValue,
+  EventId,
+  Person,
+  RankingType,
+  Round,
+  RoundFormat,
+} from '@wca/helpers';
 import classNames from 'classnames';
 import { KeyboardEvent, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,10 +23,10 @@ export interface CompetitionRoundResult {
   advancing: boolean;
   advancingQuestionable: boolean;
   attempts: {
-    result: AttemptResult;
+    result: WcaResultValue;
   }[];
-  best: AttemptResult;
-  average: AttemptResult;
+  best: WcaResultValue;
+  average: WcaResultValue;
   bestAttemptIndex?: number | null;
   worstAttemptIndex?: number | null;
   singleRecordTag?: ResultRecordTag;
@@ -62,7 +69,7 @@ const renderResultValue = (
   return renderResultByEventId(eventId as EventId, rankingType, value);
 };
 
-const renderAttemptValue = (eventId: string, value: AttemptResult) => {
+const renderAttemptValue = (eventId: string, value: WcaResultValue) => {
   if (value === 0) {
     return '-';
   }
@@ -72,7 +79,7 @@ const renderAttemptValue = (eventId: string, value: AttemptResult) => {
 
 const isAverageOfFiveRound = (format: RoundFormat) => format === 'a';
 
-const isValidAttemptResult = (value: AttemptResult) => Number(value) > 0;
+const isValidAttemptResult = (value: WcaResultValue) => Number(value) > 0;
 
 const getCalculatedDroppedAttemptIndexes = (
   attempts: CompetitionRoundResult['attempts'],
@@ -129,7 +136,7 @@ const getDroppedAttemptIndexes = (
 
 const renderAttemptDisplayValue = (
   eventId: string,
-  value: AttemptResult,
+  value: WcaResultValue,
   isDroppedAttempt: boolean,
 ) => {
   const renderedValue = renderAttemptValue(eventId, value);
@@ -187,7 +194,7 @@ const toCompetitionRoundResult = (result: Round['results'][number]): Competition
     ranking: result.ranking,
     advancing: false,
     advancingQuestionable: false,
-    attempts: result.attempts.map((attempt) => ({ result: attempt.result })),
+    attempts: result.attempts.map((attempt) => ({ result: attempt.value })),
     best: result.best,
     average: result.average,
     singleRecordTag: normalizeResultRecordTag(
@@ -210,6 +217,7 @@ export function CompetitionResultsTable({
   const { t } = useTranslation();
   const [selectedResult, setSelectedResult] = useState<CompetitionRoundResult | null>(null);
   const primaryRankingType = getPrimaryRankingType(round.format);
+  const showSecondaryBest = primaryRankingType === 'average';
   const attemptColumnCount = Math.max(0, ...results.map((result) => result.attempts.length));
   const sortedResults = sortResultsByRanking(results);
 
@@ -255,7 +263,7 @@ export function CompetitionResultsTable({
             <col key={attemptIndex} className="hidden w-24 md:table-column" />
           ))}
           <col className="w-20 sm:w-24" />
-          <col className="w-20 sm:w-24" />
+          {showSecondaryBest && <col className="w-20 sm:w-24" />}
         </colgroup>
         <thead>
           <tr className="border-b border-tertiary-weak bg-gray-100 type-body-xs font-semibold text-gray-800 dark:bg-gray-900 dark:text-gray-100">
@@ -280,9 +288,11 @@ export function CompetitionResultsTable({
                 ? t('competition.results.average')
                 : t('competition.results.best')}
             </th>
-            <th scope="col" className="px-2 py-2 text-right sm:px-3 md:px-2">
-              {t('competition.results.best')}
-            </th>
+            {showSecondaryBest && (
+              <th scope="col" className="px-2 py-2 text-right sm:px-3 md:px-2">
+                {t('competition.results.best')}
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -351,18 +361,17 @@ export function CompetitionResultsTable({
                     </ResultValue>
                   )}
                 </td>
-                <td className="bg-gray-50 px-2 py-2 text-right tabular-nums dark:bg-gray-900/50 sm:px-3 md:px-2">
-                  {isRosterOnly ? (
-                    ''
-                  ) : (
-                    <ResultValue
-                      recordTag={
-                        primaryRankingType === 'average' ? result.singleRecordTag : undefined
-                      }>
-                      {renderResultValue(eventId, 'single', result)}
-                    </ResultValue>
-                  )}
-                </td>
+                {showSecondaryBest && (
+                  <td className="bg-gray-50 px-2 py-2 text-right tabular-nums dark:bg-gray-900/50 sm:px-3 md:px-2">
+                    {isRosterOnly ? (
+                      ''
+                    ) : (
+                      <ResultValue recordTag={result.singleRecordTag}>
+                        {renderResultValue(eventId, 'single', result)}
+                      </ResultValue>
+                    )}
+                  </td>
+                )}
               </tr>
             );
           })}

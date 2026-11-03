@@ -60,7 +60,9 @@ export const PersonHeader: React.FC<PersonHeaderProps> = ({ person }) => {
             <Button
               variant="blue"
               className="min-h-10"
+              disabled={person.registrantId == null}
               onClick={() => {
+                if (person.registrantId == null) return;
                 if (isPinned) {
                   unpinPerson(person.registrantId);
                 } else {

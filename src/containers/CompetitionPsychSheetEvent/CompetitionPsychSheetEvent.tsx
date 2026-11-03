@@ -141,7 +141,7 @@ export function CompetitionPsychSheetEventContainer({
                   </span>
                   <span className="table-cell-sm truncate text-left">{person.name}</span>
                   <span className="table-cell-sm text-right [font-variant-numeric:tabular-nums]">
-                    {prAverage ? renderResultByEventId(eventId, resultType, prAverage.best) : ''}
+                    {prAverage ? renderResultByEventId(eventId, resultType, prAverage.value) : ''}
                   </span>
                   <span className="table-cell-sm text-right [font-variant-numeric:tabular-nums]">
                     {prAverage

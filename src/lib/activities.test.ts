@@ -2,7 +2,7 @@ import { Competition } from '@wca/helpers';
 import { hasMultipleScheduleLocations } from './activities';
 
 const baseCompetition = {
-  formatVersion: '1.0',
+  formatVersion: '2.0',
   id: 'TestComp2026',
   name: 'Test Comp 2026',
   shortName: 'Test Comp',

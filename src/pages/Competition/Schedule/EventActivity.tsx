@@ -50,9 +50,35 @@ export function EventActivity({
     return event.rounds?.find((r) => r.id === `${eventId}-r${roundNumber}`);
   }, [event, eventId, roundNumber]);
 
-  const prevRound = useMemo(
-    () => roundNumber && event?.rounds?.find((r) => r.id === `${eventId}-r${roundNumber - 1}`),
-    [event?.rounds, eventId, roundNumber],
+  const seedRounds = useMemo(() => {
+    const source = round?.participationRuleset?.participationSource;
+    if (source?.type === 'registrations') return [];
+
+    const sourceRoundIds =
+      source?.type === 'linkedRounds'
+        ? source.roundIds
+        : [source?.type === 'round' ? source.roundId : `${eventId}-r${(roundNumber || 1) - 1}`];
+    return event?.rounds?.filter((candidate) => sourceRoundIds.includes(candidate.id)) ?? [];
+  }, [event?.rounds, eventId, round, roundNumber]);
+
+  const previousSeed = useCallback(
+    (person: Person) =>
+      seedRounds
+        .flatMap((sourceRound) =>
+          sourceRound.results
+            .filter((result) => result.personId?.toString() === person.registrantId?.toString())
+            .map((result) => {
+              const source = round?.participationRuleset?.participationSource;
+              const type =
+                (source?.type !== 'registrations' && source?.resultCondition?.scope) ||
+                (['a', 'm'].includes(sourceRound.format) ? 'average' : 'single');
+              return { result, type, value: type === 'average' ? result.average : result.best };
+            }),
+        )
+        // Linked rounds are ranked by the best result from either component.
+        // A missing/failed result must not displace a successful result.
+        .sort((a, b) => (a.value > 0 ? a.value : Infinity) - (b.value > 0 ? b.value : Infinity))[0],
+    [round, seedRounds],
   );
 
   useEffect(() => {
@@ -111,40 +137,27 @@ export function EventActivity({
     }, {}) as Record<AssignmentCode, Person[]>;
 
   const seedResult = useCallback(
-    (person) => {
+    (person: (typeof personsWithPRs)[number]) => {
       if (!isOfficialEventId(eventId)) {
         return '';
       }
 
-      if (prevRound) {
-        const prevRoundResults = prevRound.results?.find(
-          (r) => r.personId?.toString() === person.registrantId?.toString(),
-        );
-        if (!prevRoundResults) {
-          return '';
-        }
-
-        if (['a', 'm'].includes(prevRound.format)) {
-          return renderResultByEventId(eventId, 'average', prevRoundResults.average);
-        }
-
-        return renderResultByEventId(eventId, 'single', prevRoundResults.best);
+      if (seedRounds.length) {
+        const seed = previousSeed(person);
+        return seed ? renderResultByEventId(eventId, seed.type, seed.value) : '';
       }
 
-      const averagePr = person.prAverage?.best;
-      const singlePr = person.prSingle?.best;
+      const averagePr = person.prAverage?.value;
+      const singlePr = person.prSingle?.value;
       const shouldShowAveragePr = !isRankedBySingle(eventId);
-      if ((shouldShowAveragePr && !averagePr) || !singlePr) {
+      const result = shouldShowAveragePr ? averagePr : singlePr;
+      if (!result || !singlePr) {
         return '';
       }
 
-      return renderResultByEventId(
-        eventId,
-        shouldShowAveragePr ? 'average' : 'single',
-        shouldShowAveragePr ? averagePr : singlePr,
-      );
+      return renderResultByEventId(eventId, shouldShowAveragePr ? 'average' : 'single', result);
     },
-    [eventId, prevRound],
+    [eventId, previousSeed, seedRounds],
   );
 
   const seedRank = useCallback(
@@ -153,15 +166,8 @@ export function EventActivity({
         return '';
       }
 
-      if (prevRound) {
-        const prevRoundResults = prevRound.results?.find(
-          (r) => r.personId?.toString() === person.registrantId?.toString(),
-        );
-        if (!prevRoundResults) {
-          return '';
-        }
-
-        return prevRoundResults.ranking;
+      if (seedRounds.length) {
+        return previousSeed(person)?.result.ranking ?? '';
       }
 
       const averagePr = person.prAverage;
@@ -171,13 +177,9 @@ export function EventActivity({
         return '';
       }
 
-      if (averagePr) {
-        return averagePr.worldRanking;
-      }
-
-      return singlePr.worldRanking;
+      return shouldShowAveragePr ? averagePr?.worldRanking : singlePr.worldRanking;
     },
-    [eventId, prevRound],
+    [eventId, previousSeed, seedRounds],
   );
 
   const stationNumber = (assignmentCode) => (person) => {

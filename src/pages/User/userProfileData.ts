@@ -1,4 +1,4 @@
-import { EventId, RankingType, AttemptResult } from '@wca/helpers';
+import { EventId, RankingType, ResultValue } from '@wca/helpers';
 import { WcaCompetitionResult } from '@/lib/api';
 import { getEventName, isOfficialEventId, isRankedBySingle } from '@/lib/events';
 import { renderCentiseconds, renderResultByEventId } from '@/lib/results';
@@ -101,7 +101,7 @@ export const formatUserResult = (
   }
 
   if (isOfficialEventId(eventId)) {
-    return renderResultByEventId(eventId, rankingType, value as AttemptResult);
+    return renderResultByEventId(eventId, rankingType, value as ResultValue);
   }
 
   return eventId === '333fm' && rankingType === 'average'

@@ -24,7 +24,7 @@ export function QueryProvider(props: PropsWithChildren) {
   return (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister: localStoragePersister }}>
+      persistOptions={{ persister: localStoragePersister, buster: 'wcif-v2' }}>
       {props.children}
     </PersistQueryClientProvider>
   );

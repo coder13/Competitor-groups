@@ -1,35 +1,35 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   getStorybookRoundFixture,
-  makeStorybookCompetitionFixtureWithRound,
+  makeStorybookCompetitionFixtureWithRoundUpdates,
   storybookParticipationConditionLinkedRoundsFixture,
   storybookParticipationConditionPercentFixture,
 } from '@/storybook/competitionFixtures';
 import { makeCompetitionContainerDecorator } from '@/storybook/competitionStorybook';
 import { CutoffTimeLimitPanel } from './CutoffTimeLimitPanel';
 
-const cumulativeTimeLimitCompetitionFixture = makeStorybookCompetitionFixtureWithRound(
-  '333-r2',
-  (round) => ({
+const cumulativeTimeLimitCompetitionFixture = makeStorybookCompetitionFixtureWithRoundUpdates({
+  '333-r2': (round) => ({
     ...round,
     timeLimit: {
       centiseconds: 15000,
       cumulativeRoundIds: ['333-r2', '333-r3'],
     },
-    advancementCondition: {
-      type: 'attemptResult',
-      level: 950,
+  }),
+  '333-r3': (round) => ({
+    ...round,
+    participationRuleset: {
+      reservedPlaces: null,
+      participationSource: {
+        type: 'round',
+        roundId: '333-r2',
+        resultCondition: { type: 'resultAchieved', scope: 'single', value: 950 },
+      },
     },
   }),
-);
+});
 
-const finalRoundCompetitionFixture = makeStorybookCompetitionFixtureWithRound(
-  '333-r3',
-  (round) => ({
-    ...round,
-    advancementCondition: null,
-  }),
-);
+const finalRoundCompetitionFixture = makeStorybookCompetitionFixtureWithRoundUpdates({});
 
 const meta = {
   title: 'Components/Competition/CutoffTimeLimitPanel',

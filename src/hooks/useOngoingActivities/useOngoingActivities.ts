@@ -5,22 +5,26 @@ import { ActivitiesSubscriptionDocument, NotifyCompActivity, useActivitiesQuery 
 
 export const useOngoingActivities = (competitionId: string) => {
   const { wcif } = useWCIF();
-  const activities = wcif ? getAllActivities(wcif) : [];
+  const loadedCompetitionId = wcif?.id === competitionId ? competitionId : undefined;
+  const activities = wcif && loadedCompetitionId ? getAllActivities(wcif) : [];
 
-  const { data, subscribeToMore } = useActivitiesQuery(competitionId!);
-  // const { data: data2 } = useActivitiesSubscription(competitionId!);
-  const liveActivities = data?.activities.filter((a) => !a.endTime && a.startTime); // TODO: use subscription
+  const { data, subscribeToMore } = useActivitiesQuery(loadedCompetitionId || '');
+  const liveActivities = data?.activities.filter((a) => !a.endTime && a.startTime);
   // these are the activities that are currently ongoing
   const ongoingActivities = activities.filter((a) =>
     liveActivities?.some((b) => b.activityId === a.id),
   );
 
   useEffect(() => {
+    if (!loadedCompetitionId) {
+      return;
+    }
+
     const unsub = subscribeToMore<{
       activity: NotifyCompActivity;
     }>({
       document: ActivitiesSubscriptionDocument,
-      variables: { competitionIds: [wcif?.id] },
+      variables: { competitionIds: [loadedCompetitionId] },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData?.data?.activity) {
           return prev;
@@ -39,7 +43,7 @@ export const useOngoingActivities = (competitionId: string) => {
     });
 
     return () => unsub();
-  }, [subscribeToMore, wcif]);
+  }, [loadedCompetitionId, subscribeToMore]);
 
   return {
     data,
