@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CompetitionSelect } from '@/components/CompetitionSelect';
 import { Container } from '@/components/Container';
 import { LoggedOutPromptCard } from '@/components/LoggedOutPromptCard';
@@ -10,6 +10,7 @@ import { useAuth } from '@/providers/AuthProvider';
 
 export default function Home() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { user, signIn } = useAuth();
 
   useEffect(() => {
@@ -17,7 +18,9 @@ export default function Home() {
   }, [t]);
 
   return (
-    <div className="safe-area-scroll-bottom flex flex-col items-center w-full overflow-auto">
+    <div
+      data-scroll-restoration="page"
+      className="safe-area-scroll-bottom flex flex-col items-center w-full overflow-auto">
       <Container className="mt-2 space-y-2">
         <div className="flex flex-col w-full px-6 md:px-6 type-body">
           <p className="type-body-sm">{t('home.subtitle')}</p>
@@ -32,7 +35,7 @@ export default function Home() {
         {!user && <LoggedOutPromptCard onLogin={signIn} />}
         <MyCompetitions />
         <div className="px-2">
-          <CompetitionSelect onSelect={(e) => console.log(e)} />
+          <CompetitionSelect onSelect={(id) => navigate(`/competitions/${id}`)} />
         </div>
         <UpcomingCompetitions />
       </Container>

@@ -26,3 +26,11 @@ yarn test
 yarn storybook
 yarn build-storybook
 ```
+
+During `yarn dev`, NotifyComp token requests are proxied to
+`https://www.competitiongroups.com`, so production WCA sign-in and NotifyComp
+authorization work without running Netlify Functions locally. The deployed
+function checks the WCA access token and competition permissions. Set
+`NOTIFY_COMP_TOKEN_ORIGIN` in `.env.local` to use another deployed token issuer
+or a local Netlify Dev server. Use a token issuer connected to the same WCA and
+NotifyComp environments as the frontend, and restart Vite after changing it.

@@ -1,10 +1,10 @@
 import { Cutoff, Round, parseActivityCode } from '@wca/helpers';
 import classNames from 'classnames';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Popover } from 'react-tiny-popover';
-import { renderCentiseconds, renderCutoff } from '@/lib/results';
+import { renderCentiseconds, renderCutoff, renderResultByEventId } from '@/lib/results';
 import { getEventRoundsForRound, joinLabels } from '@/lib/roundLabels';
 import { getAdvancementConditionForRound } from '@/lib/wcif';
 import { useWCIF } from '@/providers/WCIFProvider';
@@ -148,15 +148,16 @@ function renderLinkedRoundsAdvancementText(
         what: targetLabel,
       });
     case 'resultAchieved':
-      return t('common.wca.advancement.linkedResultAchieved', {
-        scope: t(`common.wca.advancement.scope.${resultCondition.scope}`),
-        result:
-          resultCondition.value === null
-            ? t('common.wca.advancement.resultThresholdUnknown')
-            : renderCentiseconds(resultCondition.value),
-        rounds: sourceRoundsLabel,
-        what: targetLabel,
-      });
+      return t(
+        resultCondition.value === null
+          ? 'common.wca.advancement.linkedAnyResultAchieved'
+          : 'common.wca.advancement.linkedResultAchieved',
+        {
+          ...getAdvancementResultText(t, advancement),
+          rounds: sourceRoundsLabel,
+          what: targetLabel,
+        },
+      );
   }
 }
 
@@ -180,15 +181,30 @@ function renderSingleRoundAdvancementText(
         what: targetLabel,
       });
     case 'resultAchieved':
-      return t('common.wca.advancement.resultAchieved', {
-        scope: t(`common.wca.advancement.scope.${resultCondition.scope}`),
-        result:
-          resultCondition.value === null
-            ? t('common.wca.advancement.resultThresholdUnknown')
-            : renderCentiseconds(resultCondition.value),
-        what: targetLabel,
-      });
+      return t(
+        resultCondition.value === null
+          ? 'common.wca.advancement.anyResultAchieved'
+          : 'common.wca.advancement.resultAchieved',
+        { ...getAdvancementResultText(t, advancement), what: targetLabel },
+      );
   }
+}
+
+function getAdvancementResultText(
+  t: ReturnType<typeof useTranslation>['t'],
+  advancement: NonNullable<ReturnType<typeof getAdvancementConditionForRound>>,
+) {
+  const { scope, value } = advancement.resultCondition;
+  if (value === null) {
+    return { scope: t(`common.wca.advancement.successfulScope.${scope}`) };
+  }
+
+  const { eventId } = parseActivityCode(advancement.sourceRoundIds[0]);
+  const result = renderResultByEventId(eventId, scope, value);
+  return {
+    scope: t(`common.wca.advancement.scope.${scope}`),
+    result: eventId === '333fm' ? t('common.wca.advancement.resultInMoves', { result }) : result,
+  };
 }
 
 function getAdvancementTargetLabel(
@@ -212,6 +228,15 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    if (!open) return;
+    const dismissOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', dismissOnEscape);
+    return () => document.removeEventListener('keydown', dismissOnEscape);
+  }, [open]);
+
   return (
     <Popover
       isOpen={open}
@@ -229,12 +254,15 @@ function CutoffTimeLimitPopover({ cutoff }: { cutoff: Cutoff | null }) {
           <p>
             <Trans
               i18nKey="common.cutoffTimeLimitPopover.timeLimits"
-              components={{ b: <strong /> }}
+              components={{ b: <strong />, bold: <strong /> }}
             />
           </p>
 
           <p>
-            <Trans i18nKey="common.cutoffTimeLimitPopover.cutoffs" components={{ b: <strong /> }} />
+            <Trans
+              i18nKey="common.cutoffTimeLimitPopover.cutoffs"
+              components={{ b: <strong />, bold: <strong /> }}
+            />
             <br />
             <i>
               {cutoff &&

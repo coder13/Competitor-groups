@@ -4,6 +4,7 @@ import { Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
 import { Container } from '@/components/Container';
 import { CutoffTimeLimitPanel } from '@/components/CutoffTimeLimitPanel';
 import { LinkButton } from '@/components/LinkButton';
+import { getVenueForActivity } from '@/lib/activities';
 import {
   activityCodeToName,
   parseActivityCodeFlexible,
@@ -31,17 +32,17 @@ export function CompetitionRoundContainer({
   const { wcif, setTitle } = useWCIF();
   const { roundActivies } = useWcifUtils();
 
-  useEffect(() => {
-    setTitle(activityCodeToName(roundId));
-  }, [roundId, setTitle]);
-
   const round = useMemo(() => {
     const events = wcif && getAllEvents(wcif);
     return events?.flatMap((e) => e.rounds).find((r) => r.id === roundId);
   }, [roundId, wcif]);
+  useEffect(() => {
+    setTitle(round ? activityCodeToName(roundId) : t('competition.results.roundNotFound'));
+  }, [round, roundId, setTitle, t]);
+
   const eventRounds = useMemo(
-    () => getEventRoundsForRound(wcif?.events, roundId),
-    [roundId, wcif?.events],
+    () => (round ? getEventRoundsForRound(wcif?.events, roundId) : []),
+    [round, roundId, wcif?.events],
   );
   const linkedRoundNames = useMemo(
     () =>
@@ -53,10 +54,27 @@ export function CompetitionRoundContainer({
     [eventRounds, round, roundId, t],
   );
 
+  const findVenue = useMemo(() => (wcif ? getVenueForActivity(wcif) : undefined), [wcif]);
+
   const rounds = roundActivies.filter((ra) => toRoundAttemptId(ra.activityCode) === roundId);
   const groups = rounds.flatMap((r) => r.childActivities);
   const uniqueGroupCodes = [...new Set(groups.map((g) => g.activityCode))];
   const hasResults = (round?.results.length ?? 0) > 0;
+
+  if (!wcif) return null;
+
+  if (!round) {
+    return (
+      <Container className="p-4 space-y-4">
+        <p role="status">{t('competition.results.roundNotFound')}</p>
+        <LinkButton
+          to={`/competitions/${competitionId}/events/`}
+          title={t('competition.groups.backToEvents')}
+          LinkComponent={LinkComponent}
+        />
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -82,8 +100,16 @@ export function CompetitionRoundContainer({
         {uniqueGroupCodes.map((value) => {
           const { groupNumber } = parseActivityCodeFlexible(value);
           const activities = groups.filter((g) => g.activityCode === value);
-          const minStartTime = activities.map((a) => a.startTime).sort()[0];
-          const maxEndTime = activities.map((a) => a.endTime).sort()[activities.length - 1];
+          const timeZones = [...new Set(activities.map((a) => findVenue?.(a)?.timezone))];
+          const timeRanges = timeZones.map((timeZone) => {
+            const venueActivities = activities.filter((a) => findVenue?.(a)?.timezone === timeZone);
+            const minStartTime = venueActivities.map((a) => a.startTime).sort()[0];
+            const maxEndTime = venueActivities
+              .map((a) => a.endTime)
+              .sort()
+              .at(-1)!;
+            return { timeZone, label: formatDateTimeRange(minStartTime, maxEndTime, 5, timeZone) };
+          });
 
           return (
             <LinkComponent
@@ -94,7 +120,12 @@ export function CompetitionRoundContainer({
                 <span className="type-heading">
                   {t('common.activityCodeToName.group', { groupNumber })}
                 </span>
-                <span className="type-meta">{formatDateTimeRange(minStartTime, maxEndTime)}</span>
+                {timeRanges.map(({ timeZone, label }) => (
+                  <span key={timeZone ?? 'local'} className="type-meta">
+                    {label}
+                    {timeRanges.length > 1 && timeZone && ` (${timeZone})`}
+                  </span>
+                ))}
               </li>
             </LinkComponent>
           );

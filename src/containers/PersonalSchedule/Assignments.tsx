@@ -1,5 +1,5 @@
 import { Competition, Person } from '@wca/helpers';
-import { Fragment, useEffect, useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCollapse } from '@/hooks/UseCollapse';
 import { useNow } from '@/hooks/useNow/useNow';
@@ -24,37 +24,23 @@ export function Assignments({ wcif, person, showStationNumber }: AssignmentsProp
 
   const showRoom = useMemo(() => hasMultipleScheduleLocations(wcif), [wcif]);
 
-  const { collapsedDates, setCollapsedDates, toggleDate } = useCollapse(
-    key(wcif.id, person.registrantId),
-  );
-
   const now = useNow(15 * 1000);
 
   const scheduleDays = useMemo(() => getGroupedAssignmentsByDate(wcif, person), [person, wcif]);
 
-  useEffect(() => {
-    const today = new Date().getTime();
+  const { collapsedDates, toggleDate } = useCollapse(key(wcif.id, person.registrantId), () => {
+    const today = Date.now();
 
-    const collapse: string[] = [];
-    scheduleDays.forEach(({ date, assignments }) => {
-      const lastActivity = [...assignments].reverse().find((a) => a.activity)?.activity;
-      if (!lastActivity) {
-        return;
-      }
+    return scheduleDays
+      .filter(({ assignments }) => {
+        const lastActivity = [...assignments].reverse().find((a) => a.activity)?.activity;
+        if (!lastActivity) return false;
 
-      const lastActivityEndTime = new Date(lastActivity.endTime);
-      // Collapse days that are more than 4 hours old.
-      if (
-        today - lastActivityEndTime.getTime() > 1000 * 60 * 60 * 4 &&
-        !collapsedDates.includes(date)
-      ) {
-        collapse.push(date);
-      }
-    });
-
-    setCollapsedDates((prev) => [...prev, ...collapse]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scheduleDays]);
+        // Collapse days that are more than 4 hours old only as an initial default.
+        return today - new Date(lastActivity.endTime).getTime() > 1000 * 60 * 60 * 4;
+      })
+      .map(({ date }) => date);
+  });
 
   const isSingleDay = scheduleDays.length === 1;
 
@@ -95,14 +81,20 @@ export function Assignments({ wcif, person, showStationNumber }: AssignmentsProp
               return (
                 <Fragment key={date}>
                   {!isSingleDay && (
-                    <tr onClick={() => toggleDate(date)} className="table-row-hover-bg">
-                      <td colSpan={6} className="table-row-group-header cursor-pointer select-none">
-                        <div className="flex justify-between">
+                    <tr className="table-row-hover-bg">
+                      <td colSpan={6} className="table-row-group-header select-none">
+                        <button
+                          type="button"
+                          aria-expanded={!collapsed}
+                          onClick={() => toggleDate(date)}
+                          className="flex w-full justify-between focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500">
                           <span className="w-full p-2 text-center">
                             {dateParts.find((i) => i.type === 'weekday')?.value || date}
                           </span>
-                          <span className="p-2 flex-end">{collapsed ? ' ▼' : ' ▲'}</span>
-                        </div>
+                          <span className="p-2 flex-end" aria-hidden="true">
+                            {collapsed ? ' ▼' : ' ▲'}
+                          </span>
+                        </button>
                       </td>
                     </tr>
                   )}

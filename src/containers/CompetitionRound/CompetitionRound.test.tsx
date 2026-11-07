@@ -195,7 +195,9 @@ jest.mock('@/providers/WCIFProvider', () => ({
     setTitle: () => {},
   }),
   useWcifUtils: () => ({
-    roundActivies: linkedRoundsCompetition.schedule.venues[0].rooms[0].activities,
+    roundActivies: linkedRoundsCompetition.schedule.venues.flatMap((venue) =>
+      venue.rooms.flatMap((room) => room.activities),
+    ),
   }),
 }));
 
@@ -210,6 +212,61 @@ function renderRound(roundId: string) {
 }
 
 describe('CompetitionRoundContainer', () => {
+  it.each([
+    ['Europe/Bucharest', '2026-10-31T07:00:00Z', '2026-10-31T07:22:30Z', 'Sat 09:00 AM - 09:25 AM'],
+    ['Asia/Calcutta', '2026-10-31T03:15:00Z', '2026-10-31T03:55:00Z', 'Sat 08:45 AM - 09:25 AM'],
+  ])('shows group times in the %s venue timezone', (timezone, startTime, endTime, expected) => {
+    const venue = linkedRoundsCompetition.schedule.venues[0];
+    const group = venue.rooms[0].activities[0].childActivities[0];
+    const original = {
+      timezone: venue.timezone,
+      startTime: group.startTime,
+      endTime: group.endTime,
+    };
+    const languages = jest.spyOn(navigator, 'languages', 'get').mockReturnValue(['en-US']);
+    try {
+      venue.timezone = timezone;
+      group.startTime = startTime;
+      group.endTime = endTime;
+      renderRound('333-r2');
+      expect(screen.getByText(expected)).toBeInTheDocument();
+    } finally {
+      venue.timezone = original.timezone;
+      group.startTime = original.startTime;
+      group.endTime = original.endTime;
+      languages.mockRestore();
+    }
+  });
+
+  it('keeps separate local ranges when the same group runs in different venue timezones', () => {
+    const originalVenue = linkedRoundsCompetition.schedule.venues[0];
+    const secondVenue = {
+      ...originalVenue,
+      id: 2,
+      timezone: 'Asia/Calcutta',
+      rooms: originalVenue.rooms.map((room) => ({
+        ...room,
+        id: 2,
+        activities: room.activities.map((activity) => ({
+          ...activity,
+          id: 20,
+          childActivities: activity.childActivities.map((child) => ({ ...child, id: 21 })),
+        })),
+      })),
+    };
+    const languages = jest.spyOn(navigator, 'languages', 'get').mockReturnValue(['en-US']);
+    linkedRoundsCompetition.schedule.venues.push(secondVenue);
+    try {
+      renderRound('333-r2');
+      expect(screen.getByText('Sun 09:00 AM - 09:30 AM (America/Los_Angeles)')).toBeInTheDocument();
+      expect(screen.getByText('Sun 09:30 PM - 10:00 PM (Asia/Calcutta)')).toBeInTheDocument();
+      expect(screen.getAllByText('Group 1')).toHaveLength(1);
+    } finally {
+      linkedRoundsCompetition.schedule.venues.pop();
+      languages.mockRestore();
+    }
+  });
+
   it('shows linked-round context for rounds in a dual-round advancement set', () => {
     renderRound('333-r2');
 
@@ -265,3 +322,19 @@ describe('CompetitionRoundContainer', () => {
     }
   });
 });
+
+it.each(['333-r99', 'not-a-round', '999-r1'])(
+  'explains missing round %s without implying that it has a schedule or results',
+  (roundId) => {
+    const { rerender } = renderRound(roundId);
+    expect(screen.getByRole('status')).toHaveTextContent('competition.results.roundNotFound');
+    expect(screen.queryByText('See Results')).not.toBeInTheDocument();
+    expect(screen.getByText('Back To Events')).toHaveAttribute(
+      'href',
+      '/competitions/TestComp2026/events/',
+    );
+    rerender(<CompetitionRoundContainer competitionId="TestComp2026" roundId="333-r2" />);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    expect(screen.getByText('Group 1')).toBeInTheDocument();
+  },
+);

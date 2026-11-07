@@ -31,42 +31,40 @@ export const CompetitionListItem = ({
     new Date(end_date).getTime() + 1000 * 60 * new Date().getTimezoneOffset(),
   );
 
-  return (
-    <Link to={`/competitions/${id}`}>
-      <li
-        className={classNames(
-          variant === 'card'
-            ? 'link-card list-none flex flex-row cursor-pointer group hover-transition my-1 type-body'
-            : 'list-none flex flex-row cursor-pointer group hover-transition type-body w-full px-2 py-2 bg-panel hover:bg-gray-100 dark:hover:bg-gray-700',
-          {
-            'opacity-50': endDate < new Date(Date.now() - 1000 * 60 * 60 * 24),
-          },
-        )}>
-        {hasFlag(country_iso2) && (
-          <div className="flex flex-shrink mr-2 type-title">
-            {' '}
-            {getUnicodeFlagIcon(country_iso2)}{' '}
-          </div>
-        )}
-        <div className="flex-1">
-          <p className="type-heading leading-1 dark:text-white"> {name} </p>{' '}
-          <p className="type-body-sm text-muted leading-1">
-            {formatDateRange(start_date, end_date)}
-            {'  '}&#8211;{'  '}
-            {city}
-          </p>
+  const Item = variant === 'dropdown' ? 'div' : 'li';
+  const content = (
+    <Item
+      className={classNames(
+        variant === 'card'
+          ? 'link-card list-none flex flex-row cursor-pointer group hover-transition my-1 type-body'
+          : 'list-none flex flex-row cursor-pointer group hover-transition type-body w-full px-2 py-2',
+        {
+          'opacity-50': endDate < new Date(Date.now() - 1000 * 60 * 60 * 24),
+        },
+      )}>
+      {hasFlag(country_iso2) && (
+        <div className="flex flex-shrink mr-2 type-title"> {getUnicodeFlagIcon(country_iso2)} </div>
+      )}
+      <div className="flex-1">
+        <p className="type-heading leading-1 dark:text-white"> {name} </p>{' '}
+        <p className="type-body-sm text-muted leading-1">
+          {formatDateRange(start_date, end_date)}
+          {'  '}&#8211;{'  '}
+          {city}
+        </p>
+      </div>
+      {isLive && (
+        <div className="flex items-center flex-shrink px-2 type-title">
+          <span className="text-green-500 fa fa-tower-broadcast" />
         </div>
-        {isLive && (
-          <div className="flex items-center flex-shrink px-2 type-title">
-            <span className="text-green-500 fa fa-tower-broadcast" />
-          </div>
-        )}
-        {isBookmarked && !isLive && (
-          <div className="flex items-center flex-shrink px-2 type-title">
-            <span className="text-yellow-500 fa fa-bookmark" />
-          </div>
-        )}
-      </li>
-    </Link>
+      )}
+      {isBookmarked && !isLive && (
+        <div className="flex items-center flex-shrink px-2 type-title">
+          <span className="text-yellow-500 fa fa-bookmark" />
+        </div>
+      )}
+    </Item>
   );
+
+  return variant === 'dropdown' ? content : <Link to={`/competitions/${id}`}>{content}</Link>;
 };

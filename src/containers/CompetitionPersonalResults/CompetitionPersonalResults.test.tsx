@@ -340,7 +340,9 @@ describe('CompetitionPersonalResultsContainer', () => {
     fireEvent.click(screen.getByRole('row', { name: /2 Round 1/ }));
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: '#2' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('dialog', { name: 'Vikram Haldar · 3x3x3 Cube · Round 1 #2' }),
+    ).toBeInTheDocument();
     expect(within(screen.getByRole('dialog')).getByText('Event')).toBeInTheDocument();
     expect(within(screen.getByRole('dialog')).getByText('3x3x3 Cube')).toBeInTheDocument();
     expect(within(screen.getByRole('dialog')).getByText('Round')).toBeInTheDocument();

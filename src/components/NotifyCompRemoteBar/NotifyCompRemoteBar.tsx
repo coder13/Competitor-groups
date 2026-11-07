@@ -5,6 +5,8 @@ import { RemoteActivitySummaryList } from '@/components/RemoteActivitySummaryLis
 import { useCompetitionRemoteControl } from '@/hooks/useCompetitionRemoteControl';
 import { useNotifyCompWebSocketStatus } from '@/hooks/useNotifyCompWebSocketStatus';
 import { useNow } from '@/hooks/useNow';
+import { parseActivityCodeFlexible } from '@/lib/activityCodes';
+import { isOfficialEventId, shortEventNameById } from '@/lib/events';
 import { RemoteActivityGroup } from '@/lib/notifyCompRemoteActivities';
 import { canUseNotifyCompRemoteControls } from '@/lib/notifyCompWebSocketStatus';
 import { useConfirm } from '@/providers/ConfirmProvider';
@@ -22,6 +24,25 @@ const iconButtonClassName =
   'flex h-10 w-10 items-center justify-center rounded-full border border-tertiary-weak bg-panel text-lg leading-none text-default shadow-sm hover-transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:hover:bg-gray-700';
 const primaryButtonClassName =
   'flex h-10 w-10 items-center justify-center rounded-full border border-blue-300 bg-blue-200 text-lg leading-none text-gray-900 shadow-sm hover-transition hover:bg-blue-300 disabled:cursor-not-allowed disabled:opacity-40 dark:border-blue-600 dark:bg-blue-700 dark:text-white dark:hover:bg-blue-600';
+
+const shortGroupName = (group: RemoteActivityGroup) => {
+  const activityCode = group.scheduledActivities[0]?.activityCode;
+  if (!activityCode || !isOfficialEventId(activityCode.split('-')[0])) {
+    return group.name;
+  }
+
+  const { eventId, roundNumber, groupNumber, attemptNumber } =
+    parseActivityCodeFlexible(activityCode);
+
+  return [
+    shortEventNameById(eventId),
+    roundNumber && `R${roundNumber}`,
+    groupNumber && `G${groupNumber}`,
+    attemptNumber && `A${attemptNumber}`,
+  ]
+    .filter(Boolean)
+    .join(' ');
+};
 
 export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps) {
   const confirm = useConfirm();
@@ -41,6 +62,10 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
   const hasActiveGroups = activeNames.length > 0;
   const currentTitle = activeNames.length > 0 ? activeNames.join(', ') : 'No active activity';
   const nextTitle = remote.nextGroup?.name || 'No next activity';
+  const currentShortTitle = hasActiveGroups
+    ? remote.activeGroups.map(shortGroupName).join(', ')
+    : currentTitle;
+  const nextShortTitle = remote.nextGroup ? shortGroupName(remote.nextGroup) : nextTitle;
   const elapsed = formatElapsedDuration(remote.activeGroups, now);
   const nextOffset = formatNextActivityOffset(remote.nextGroup, now);
   const progress = getRemoteBarProgress({
@@ -148,7 +173,10 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
           )}>
           <div className="min-w-0 space-y-0.5 text-left">
             <div className="text-xs font-medium uppercase leading-none text-muted">Current</div>
-            <div className="truncate text-sm font-medium text-default">{currentTitle}</div>
+            <div className="text-sm font-medium text-default" title={currentTitle}>
+              <span className="block break-words sm:hidden">{currentShortTitle}</span>
+              <span className="hidden truncate sm:block">{currentTitle}</span>
+            </div>
             {hasActiveGroups && <div className="text-sm tabular-nums text-muted">{elapsed}</div>}
           </div>
 
@@ -203,7 +231,10 @@ export function NotifyCompRemoteBar({ competitionId }: NotifyCompRemoteBarProps)
 
           <div className="min-w-0 space-y-0.5 text-right">
             <div className="text-xs font-medium uppercase leading-none text-muted">Next</div>
-            <div className="truncate text-sm font-medium text-default">{nextTitle}</div>
+            <div className="text-sm font-medium text-default" title={nextTitle}>
+              <span className="block break-words sm:hidden">{nextShortTitle}</span>
+              <span className="hidden truncate sm:block">{nextTitle}</span>
+            </div>
             <div className="truncate text-sm text-muted">{nextOffset}</div>
           </div>
           <NotifyCompConnectionStatus compact className="col-span-3 -mt-1" />

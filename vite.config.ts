@@ -1,7 +1,7 @@
 import ViteYaml from '@modyfi/vite-plugin-yaml';
 import react from '@vitejs/plugin-react';
 import { execSync } from 'child_process';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 
@@ -51,6 +51,17 @@ export default defineConfig(({ mode }) => ({
       },
     }),
   ],
+  server: {
+    proxy: {
+      // Use the deployed token issuer when running without Netlify Dev.
+      '^/\\.netlify/functions/notify-comp-token(?:\\?|$)': {
+        target:
+          loadEnv(mode, process.cwd(), 'NOTIFY_COMP_').NOTIFY_COMP_TOKEN_ORIGIN ||
+          'https://www.competitiongroups.com',
+        changeOrigin: true,
+      },
+    },
+  },
   build: {
     rollupOptions: {
       output: {

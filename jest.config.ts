@@ -7,8 +7,9 @@ const config: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
+  transformIgnorePatterns: ['/node_modules/(?!@uidotdev/usehooks/)'],
   transform: {
-    '^.+\\.(ts|tsx)?$': 'ts-jest',
+    '^.+\\.[jt]sx?$': 'ts-jest',
   },
 };
 
