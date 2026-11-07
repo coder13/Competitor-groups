@@ -1,7 +1,8 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { renderHook, waitFor } from '@testing-library/react';
+import { dehydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { PropsWithChildren } from 'react';
-import { fetchUserWithCompetitions } from '@/lib/api';
+import { fetchUserWithCompetitions, UserCompsResponse } from '@/lib/api';
+import { QueryProvider, queryClient } from '@/providers/QueryProvider';
 import { useMyCompetitionsQuery } from './MyCompetitions.query';
 
 jest.mock('@/hooks/UsePinnedCompetitions', () => ({
@@ -15,12 +16,10 @@ jest.mock('@/lib/api', () => ({
 }));
 
 jest.mock('@/lib/localStorage', () => {
-  const storage = new Map<string, string>();
-
   return {
-    getLocalStorage: jest.fn((key: string) => storage.get(key) ?? null),
+    getLocalStorage: jest.fn((key: string) => window.localStorage.getItem(key)),
     setLocalStorage: jest.fn((key: string, value: string) => {
-      storage.set(key, value);
+      window.localStorage.setItem(key, value);
     }),
   };
 });
@@ -59,6 +58,12 @@ const createWrapper = () => {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  window.localStorage.clear();
+});
+
+afterEach(() => {
+  queryClient.clear();
+  window.localStorage.clear();
 });
 
 it('loads my competitions from the public user competitions endpoint', async () => {
@@ -101,4 +106,93 @@ it('uses cached competitions as stale startup data and still refetches', async (
 
   await waitFor(() => expect(result.current.competitions).toEqual([ongoingCompetition]));
   expect(fetchUserWithCompetitions).toHaveBeenCalledWith(String(user.id));
+});
+
+it.each([
+  { name: 'empty', cachedCompetitions: [] },
+  { name: 'populated', cachedCompetitions: [upcomingCompetition] },
+])(
+  'refreshes a fresh $name persisted cache while keeping its data visible',
+  async ({ cachedCompetitions }) => {
+    const reloadedUser = { ...user, id: 8184 };
+    const previousClient = new QueryClient();
+    previousClient.setQueryData(['userCompetitions', reloadedUser.id], {
+      user: reloadedUser,
+      upcoming_competitions: cachedCompetitions,
+      ongoing_competitions: [],
+    });
+    window.localStorage.setItem('user', JSON.stringify(reloadedUser));
+    window.localStorage.setItem(
+      'REACT_QUERY_OFFLINE_CACHE',
+      JSON.stringify({
+        timestamp: Date.now(),
+        buster: 'wcif-v2',
+        clientState: dehydrate(previousClient),
+      }),
+    );
+    previousClient.clear();
+    let resolveResponse!: (response: UserCompsResponse) => void;
+    jest.mocked(fetchUserWithCompetitions).mockReturnValue(
+      new Promise((resolve) => {
+        resolveResponse = resolve;
+      }),
+    );
+
+    const { result } = renderHook(() => useMyCompetitionsQuery(reloadedUser.id), {
+      wrapper: QueryProvider,
+    });
+
+    await waitFor(() => expect(fetchUserWithCompetitions).toHaveBeenCalledWith('8184'));
+    expect(result.current.competitions).toEqual(cachedCompetitions);
+    expect(result.current.isFetching).toBe(true);
+    expect(result.current.isLoading).toBe(false);
+
+    await act(async () => {
+      resolveResponse({
+        user: reloadedUser,
+        upcoming_competitions: [],
+        ongoing_competitions: [ongoingCompetition],
+      });
+    });
+
+    await waitFor(() => expect(result.current.competitions).toEqual([ongoingCompetition]));
+  },
+);
+
+it('refreshes again on a return visit even when the previous request is still fresh', async () => {
+  const wrapper = createWrapper();
+  jest.mocked(fetchUserWithCompetitions).mockResolvedValueOnce({
+    user,
+    upcoming_competitions: [upcomingCompetition],
+    ongoing_competitions: [],
+  });
+
+  const firstVisit = renderHook(() => useMyCompetitionsQuery(user.id), { wrapper });
+  await waitFor(() =>
+    expect(firstVisit.result.current.competitions).toEqual([upcomingCompetition]),
+  );
+  firstVisit.unmount();
+
+  let resolveResponse!: (response: UserCompsResponse) => void;
+  jest.mocked(fetchUserWithCompetitions).mockReturnValueOnce(
+    new Promise((resolve) => {
+      resolveResponse = resolve;
+    }),
+  );
+  const returnVisit = renderHook(() => useMyCompetitionsQuery(user.id), { wrapper });
+
+  await waitFor(() => expect(fetchUserWithCompetitions).toHaveBeenCalledTimes(2));
+  expect(returnVisit.result.current.competitions).toEqual([upcomingCompetition]);
+  expect(returnVisit.result.current.isFetching).toBe(true);
+
+  await act(async () => {
+    resolveResponse({
+      user,
+      upcoming_competitions: [],
+      ongoing_competitions: [ongoingCompetition],
+    });
+  });
+  await waitFor(() =>
+    expect(returnVisit.result.current.competitions).toEqual([ongoingCompetition]),
+  );
 });

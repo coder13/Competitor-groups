@@ -1,3 +1,4 @@
+import { useIsRestoring } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { CompetitionListFragment } from '@/components';
 import { useAuth } from '@/providers/AuthProvider';
@@ -7,7 +8,8 @@ import { useMyCompetitionsQuery } from './MyCompetitions.query';
 export function MyCompetitions() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { error, status, isLoading, competitions, pinnedCompetitions } = useMyCompetitionsQuery(
+  const isRestoring = useIsRestoring();
+  const { error, status, isFetching, competitions, pinnedCompetitions } = useMyCompetitionsQuery(
     user?.id,
   );
 
@@ -20,7 +22,7 @@ export function MyCompetitions() {
       <CompetitionListFragment
         title={t('home.myCompetitions')}
         competitions={[...pinnedCompetitions, ...competitions]}
-        loading={isLoading && !pinnedCompetitions.length}
+        loading={Boolean(user) && (isRestoring || isFetching)}
         liveCompetitionIds={NotifyCompetitions?.competitions?.map((c) => c.id) || []}
         showWhenEmpty={Boolean(user)}
       />
