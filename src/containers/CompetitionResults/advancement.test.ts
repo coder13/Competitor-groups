@@ -168,6 +168,17 @@ describe('stored qualification rules', () => {
     ).toHaveLength(expected);
   });
 
+  it('advances exactly the top 31 of 42 competitors at a 75% cutoff', () => {
+    const advancing = qualifiers(rankedResults(42), {
+      type: 'percent',
+      scope: 'average',
+      value: 75,
+    });
+
+    expect(advancing).toHaveLength(31);
+    expect(advancing.at(-1)?.ranking).toBe(31);
+  });
+
   it('caps a configured top 10 at six of eight entrants', () => {
     expect(
       qualifiers(rankedResults(8), { type: 'ranking', scope: 'average', value: 10 }),
