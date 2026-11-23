@@ -1,4 +1,9 @@
 [[redirects]]
+  from = "/api/notify-comp-token"
+  to = "/.netlify/functions/notify-comp-token"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

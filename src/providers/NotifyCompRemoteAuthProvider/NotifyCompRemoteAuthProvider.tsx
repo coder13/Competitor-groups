@@ -11,7 +11,7 @@ import { getStoredWcaAccessToken } from '@/lib/wcaAccessToken';
 import { useAuth } from '../AuthProvider';
 import { NotifyCompRemoteAuthContext } from './NotifyCompRemoteAuthContext';
 
-const NOTIFY_COMP_TOKEN_URL = '/.netlify/functions/notify-comp-token';
+const NOTIFY_COMP_TOKEN_URL = '/api/notify-comp-token';
 const PENDING_REMOTE_COMPETITION_ID_KEY = 'notifyComp.pendingRemoteCompetitionId';
 const REMOTE_SCOPE = 'notifycomp.remote';
 

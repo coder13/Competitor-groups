@@ -27,6 +27,20 @@ yarn storybook
 yarn build-storybook
 ```
 
+## Cloudflare beta deployment
+
+The beta Worker serves the Vite build and handles the NotifyComp token endpoint. Its custom domain is
+`beta.competitiongroups.com`; production remains on Netlify until the main-domain cutover.
+
+```bash
+yarn build
+yarn cf:dev
+yarn cf:deploy
+```
+
+Set `COMPETITION_GROUPS_JWT_SECRET` as a Cloudflare Worker secret before testing NotifyComp login,
+remote access, or assignment notifications. Do not commit it or put it in Vite environment variables.
+
 During `yarn dev`, NotifyComp token requests are proxied to
 `https://www.competitiongroups.com`, so production WCA sign-in and NotifyComp
 authorization work without running Netlify Functions locally. The deployed

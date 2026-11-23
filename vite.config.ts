@@ -54,7 +54,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     proxy: {
       // Use the deployed token issuer when running without Netlify Dev.
-      '^/\\.netlify/functions/notify-comp-token(?:\\?|$)': {
+      '^/api/notify-comp-token(?:\\?|$)': {
         target:
           loadEnv(mode, process.cwd(), 'NOTIFY_COMP_').NOTIFY_COMP_TOKEN_ORIGIN ||
           'https://www.competitiongroups.com',
