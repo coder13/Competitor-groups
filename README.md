@@ -27,13 +27,13 @@ yarn storybook
 yarn build-storybook
 ```
 
-## Cloudflare beta deployment
+## Cloudflare deployment
 
-The beta Worker serves the Vite build and handles the NotifyComp token endpoint. Its custom domain is
-`beta.competitiongroups.com`; production remains on Netlify until the main-domain cutover.
+The Cloudflare Worker serves the Vite build and handles the NotifyComp token endpoint. Its custom domain is
+`main.competitiongroups.com`; production remains on Netlify until the main-domain cutover.
 
-Cloudflare Workers Builds deploys commits pushed to the `beta` branch to the beta Worker. Pull
-requests targeting `beta` create preview deployments. The build uses `yarn run build` followed
+Cloudflare Workers Builds deploys commits pushed to the `main` branch to this Worker. Pull
+requests targeting `main` create preview deployments. The build uses `yarn run build` followed
 by `npx wrangler deploy`; set the public `VITE_WCA_CLIENT_ID` build variable in Cloudflare for
 WCA sign-in. Runtime secrets belong in Worker secrets, not build variables.
 
