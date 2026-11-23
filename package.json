@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "cf:dev": "wrangler dev",
+    "cf:preview": "wrangler preview",
+    "cf:deploy": "wrangler deploy",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "jest",
@@ -95,7 +98,8 @@
     "surge": "^0.23.1",
     "ts-jest": "^29.3.4",
     "ts-node": "^10.9.2",
-    "typescript-eslint": "^8.32.1"
+    "typescript-eslint": "^8.32.1",
+    "wrangler": "4.166.0"
   },
   "browserslist": {
     "production": [

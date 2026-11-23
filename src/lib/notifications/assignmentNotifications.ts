@@ -8,7 +8,7 @@ import {
 
 const NOTIFY_COMP_ORIGIN =
   import.meta.env.VITE_NOTIFY_COMP_ORIGIN ?? 'https://api.notifycomp.com/api';
-const NOTIFY_COMP_TOKEN_URL = '/.netlify/functions/notify-comp-token';
+const NOTIFY_COMP_TOKEN_URL = '/api/notify-comp-token';
 const ENABLED_STORAGE_KEY = 'assignmentNotifications.enabled';
 const SERVICE_WORKER_TIMEOUT_MS = 10000;
 
