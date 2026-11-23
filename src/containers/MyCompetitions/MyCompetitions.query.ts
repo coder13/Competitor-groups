@@ -46,6 +46,8 @@ export const useMyCompetitionsQuery = (userId?: number, options: { enabled?: boo
     },
     staleTime: FIVE_MINUTES,
     gcTime: FIVE_MINUTES,
+    // Recheck persisted results on each visit, even when a cached empty list is fresh.
+    refetchOnMount: 'always',
     enabled: Boolean(userId && (options.enabled ?? true)),
     initialData: () => getCachedUserCompetitions(userId),
     initialDataUpdatedAt: 0,
