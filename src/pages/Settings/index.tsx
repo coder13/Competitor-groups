@@ -14,6 +14,7 @@ export default function Settings() {
     competitions,
     user,
   });
+  const notificationsBusy = notifications.isSaving || notifications.isTesting;
 
   const themeOptions: { value: Theme; label: string; description: string }[] = [
     { value: 'light', label: 'Light', description: 'Always use light theme' },
@@ -95,15 +96,29 @@ export default function Settings() {
           )}
 
           {user && notifications.canDisable && (
-            <Button
-              type="button"
-              variant="gray"
-              disabled={notifications.isSaving}
-              onClick={() => {
-                void notifications.disable();
-              }}>
-              {notifications.isSaving ? 'Disabling...' : 'Disable assignment notifications'}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                variant="gray"
+                disabled={notificationsBusy}
+                onClick={() => {
+                  void notifications.disable();
+                }}>
+                {notifications.isSaving ? 'Disabling...' : 'Disable assignment notifications'}
+              </Button>
+
+              {notifications.canTest && (
+                <Button
+                  type="button"
+                  variant="light"
+                  disabled={notificationsBusy}
+                  onClick={() => {
+                    void notifications.test();
+                  }}>
+                  {notifications.isTesting ? 'Sending...' : 'Test notifications'}
+                </Button>
+              )}
+            </div>
           )}
 
           {user && notifications.status === 'denied' && (
@@ -111,6 +126,9 @@ export default function Settings() {
           )}
 
           {notifications.error && <p className="type-meta text-red-500">{notifications.error}</p>}
+          {notifications.successMessage && (
+            <p className="type-meta text-green-600">{notifications.successMessage}</p>
+          )}
         </div>
 
         <div className="space-y-4 p-6 bg-panel rounded-lg shadow-md shadow-tertiary-dark">
