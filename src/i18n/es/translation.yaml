@@ -23,3 +23,280 @@ common:
       444bf: 4x4x4 Ciega
       555bf: 5x5x5 Ciega
       333mbf: 3x3x3 Multi Ciega
+      other-mbld: Envío de multi a ciegas
+    attempt: Intento
+    cutoff: Corte
+    timeLimit: Límite de tiempo
+    cumulativeTimelimit: 'Límite de tiempo: <b>{{time}} acumulado</b>'
+    cumulativeTimelimitWithrounds: 'Límite de tiempo: <b>{{time}} total</b> para: '
+    advancement:
+      ranking: Los {{level}} primeros avanzan a {{what}}
+      percent: El {{level}} % superior avanza a {{what}}
+      linkedRanking: Los {{level}} primeros de las rondas dobles {{rounds}} avanzan a {{what}}
+      linkedPercent: El {{level}} % superior de las rondas dobles {{rounds}} avanza a {{what}}
+      attemptResult: "Un resultado mejor que <b>{{level}}</b> permite avanzar a la siguiente ronda. Se debe eliminar al menos al 25 % de los participantes."
+      resultAchieved: '{{scope}} mejores que {{result}} avanzan a {{what}}; se debe eliminar al menos al 25 % de los participantes'
+      linkedResultAchieved: '{{scope}} mejores que {{result}} en las rondas dobles {{rounds}} avanzan a {{what}}; se debe eliminar
+        al menos al 25 % de los participantes'
+      anyResultAchieved: Cualquier {{scope}} permite avanzar a {{what}}; se debe eliminar al menos al 25 % de los participantes
+      linkedAnyResultAchieved: Cualquier {{scope}} en las rondas dobles {{rounds}} permite avanzar a {{what}}; se debe eliminar
+        al menos al 25 % de los participantes
+      resultInMoves: '{{result}} movimientos'
+      successfulScope:
+        single: solución individual válida
+        average: media válida
+      nextRound: siguiente ronda
+      final: final
+      unknown: desconocido
+      scope:
+        single: Soluciones individuales
+        average: Medias
+    resultType:
+      single: individual
+      average: Media
+    recordType:
+      WR: WR
+      CR: CR
+      NR: NR
+  appName: Grupos de Competición
+  activityCodeToName:
+    round: $t(common.wca.round) {{roundNumber}}
+    group: $t(common.wca.group) {{groupNumber}}
+    attempt: $t(common.wca.attempt) {{attemptNumber}}
+  bookmarkCompetition: Guardar competición en favoritos
+  bookmarkCompetitor: Guardar participante en favoritos
+  removeCompetitorBookmark: Quitar participante de favoritos
+  close: Cerrar
+  competitionList:
+    noneFound: No se encontraron competiciones.
+  competitionSelect:
+    noOptions: No se encontraron competiciones
+    placeholder: Buscar competiciones
+  help: Ayuda
+  home: Volver al inicio
+  lastFetched: 'Última actualización: {{date}}'
+  loading: Cargando...
+  login: Iniciar sesión
+  name: Nombre
+  retry: Intentar de nuevo
+  search: Buscar
+  stage: Etapa
+  view: Ver
+  cutoffTimeLimitPopover:
+    timeLimits: Los <b>límites de tiempo</b> se aplican a cada intento de todas las rondas. Los intentos que superen el límite
+      se marcarán como "DNF" y no contarán.
+    cutoffs: Cada ronda puede tener <bold>cortes</bold> que determinan si un participante puede completar todos sus intentos.
+      Para clasificarse, debe lograr un tiempo dentro del corte en su primer intento o en uno de los dos primeros.
+    cutoff: En esta ronda, debes cumplir la condición en el primer intento
+    cutoff_other: En esta ronda, debes cumplir la condición en los primeros {{count}} intentos
+    advancement: Se debe eliminar al menos al 25 % de los participantes antes de avanzar a la siguiente ronda. El equipo organizador
+      define los criterios de avance, pero puede ser necesario ajustarlos para cumplir este mínimo.
+  assignments:
+    competitor:
+      noun: Participante
+      noun_other: Participantes
+      verb: Compitiendo
+    staff-announcer:
+      noun: Locutor
+      noun_other: Locutores
+      verb: Anunciando
+    staff-break:
+      noun: Descanso
+      noun_other: Descansos
+      verb: En descanso
+    staff-core:
+      noun: Personal principal
+      noun_other: Personal principal
+      verb: Personal principal
+    staff-dataentry:
+      noun: Entrada de datos
+      noun_other: Entrada de datos
+      verb: Ingresando datos
+    staff-delegate:
+      noun: Delegado
+      noun_other: Delegados
+      verb: Como delegado
+    staff-judge:
+      noun: Juez
+      noun_other: Jueces
+      verb: Juzgando
+    staff-lunch:
+      noun: Almuerzo
+      noun_other: Almuerzos
+      verb: En almuerzo
+    staff-other:
+      noun: Personal
+      noun_other: Personal
+      verb: Personal
+    staff-photo:
+      noun: Fotógrafo
+      noun_other: Fotógrafos
+      verb: Fotografiando
+    staff-runner:
+      noun: Corredor
+      noun_other: Corredores
+      verb: Corriendo
+    staff-scrambler:
+      noun: Mezclador
+      noun_other: Mezcladores
+      verb: Mezclando
+    staff-setupteardown:
+      noun: Montaje y desmontaje
+      noun_other: Montajes y desmontajes
+      verb: Montando y desmontando
+    staff-showrunner:
+      noun: Coordinador de producción
+      noun_other: Coordinadores de producción
+      verb: Coordinando la producción
+    staff-stagelead:
+      noun: Responsable de sala
+      noun_other: Responsables de sala
+      verb: A cargo
+    staff-stream:
+      noun: Transmisión en directo
+      noun_other: Transmisiones en directo
+      verb: Transmitiendo en directo
+about:
+  title: Acerca de
+  welcome: ¡Te damos la bienvenida a CompetitionGroups.com!
+  purpose: El propósito de este sitio es mostrar las asignaciones de las competiciones de la WCA. Muestra las asignaciones
+    de competidores y del personal en competiciones de uno o varios días, con una o más salas. También actualiza las asignaciones
+    de las rondas siguientes. El sitio presenta las asignaciones tal como aparecen en el sitio web de la WCA.
+  startTimes: Las horas de inicio y fin se toman de los datos WCIF generados, se redondean a los cinco minutos más cercanos
+    y se convierten a la zona horaria del lugar.
+  competitionAssignments: Para que aquí aparezcan las asignaciones de tu competición, genéralas con una herramienta como <3
+    to="https://groupifier.jonatanklosko.com/">Groupifier</3>, <6 to="https://delegate-dashboard.netlify.app/">DelegateDashboard</6>
+    o <9 to="https://goosly.github.io/AGE/">AGE</9>.
+  developer: Si eres desarrollador y quieres saber más sobre los datos que se muestran aquí, consulta la <2 to="https://github.com/thewca/wcif/blob/master/specification.md">especificación
+    WCIF</2>.
+  peopleCanBe: Las personas pueden tener asignaciones en grupos, rondas o cualquier actividad. Si quieres proponer ideas para
+    el sitio, puedes <2 to="https://github.com/coder13">contactarme</2>.
+appUpdate:
+  title: ¡Hay una actualización disponible!
+  description: Actualiza la página para obtener la versión más reciente de la aplicación.
+  action: Actualizar ahora
+header:
+  settings: Configuración
+  login: $t(common.login)
+  logout: Cerrar sesión
+  tabs:
+    groups: Grupos
+    events: Pruebas
+    schedule: Horario
+    rankings: Clasificación
+    results: Resultados
+    scramblers: Mezcladores
+    stream: Transmisión
+    admin: Administración
+    sumOfRanks: Suma de clasificaciones
+    stats: Estadísticas
+home:
+  subtitle: Consulta todo lo que necesitas saber sobre tus asignaciones en competiciones de la WCA.
+  explanation: 'Nota: Este sitio es una herramienta práctica para organizadores, delegados y participantes. Usa datos programados;
+    consulta con los organizadores la información más reciente. Las horas de inicio y fin pueden cambiar.'
+  learnMore: ¿Cómo funciona este sitio?
+  support: Ayuda a mantener el sitio en funcionamiento
+  loggedOutCard:
+    eyebrow: Vista personalizada
+    title: Inicia sesión para ver tus competiciones
+    description: Inicia sesión con tu cuenta de la WCA para cargar tu lista de competiciones y tu horario personalizado
+  loadingMore: Cargando más...
+  myCompetitions: Mis competiciones
+  upcomingCompetitions: Próximas competiciones
+  yourCompetitions: Tus competiciones
+competition:
+  loadError: No se pudo cargar esta competición.
+  loadErrorHint: Es posible que la competición no exista o que sus datos no estén disponibles temporalmente. Comprueba la
+    dirección o inténtalo de nuevo.
+  refreshError: No se pudieron actualizar los datos de la competición. Se muestran los últimos datos disponibles.
+  competitors:
+    viewMyAssignments: Ver mis asignaciones
+    viewCompetitionInformation: Ver información de la competición
+    searchCompetitors: Buscar participantes
+    noMatches: Ningún participante coincide con tu búsqueda.
+  groups:
+    backToEvents: Volver a las pruebas
+    nextGroup: Siguiente grupo
+    previousGroup: Grupo anterior
+  rooms:
+    title: Salas
+  room:
+    back: Volver a la lista de salas
+  schedule:
+    title: Horario
+    selectRoom: Seleccionar sala
+  eventActivity:
+    seedResult: Resultado de clasificación
+    stationNumber: Número de estación
+  rankings:
+    title: Clasificaciones
+    name: Nombre
+  results:
+    title: Resultados
+    seeResults: Ver resultados
+    back: Volver
+    roundNotFound: No se encontró la ronda.
+    noResults: Aún no hay resultados.
+    rank: '#'
+    competitor: Participante
+    average: Prom.
+    best: Mejor
+    attempts: Intentos
+    unknownCompetitor: Participante n.º {{personId}}
+    allResults: Todos los resultados
+    viewLiveResults: Ver resultados en directo
+    dualPersonalNote: La clasificación de las rondas vinculadas usa el mejor resultado de cualquiera de ellas. Cada fila muestra
+      los resultados de esa ronda.
+    dualRoundNote: 'Clasificación de rondas vinculadas: se basa en el mejor resultado de cualquiera de las dos rondas. Los
+      intentos, el mejor resultado y la media corresponden a la ronda seleccionada. No se elimina a participantes entre las
+      rondas vinculadas.'
+    resultsSourceNote: Los resultados combinan WCA Live, WCIF y resultados publicados por la WCA. Los resaltados en amarillo
+      son provisionales. Sin WCA Live, el avance se basa en los participantes de la siguiente ronda, si están disponibles;
+      de lo contrario, se calcula quién cumple los requisitos. Las rondas con datos incompletos siguen siendo provisionales.
+      Los datos guardados pueden no reflejar los cambios recientes de los organizadores.
+  person:
+    notFound: No se encontró al participante.
+    backToCompetitors: Volver a los participantes
+  personalResults:
+    eventResults: Resultados de la prueba
+  round:
+    linkedWith: Ronda vinculada con {{rounds}}
+  personalSchedule:
+    schedule: Horario
+    results: Resultados
+    records: Récords
+    registeredEvents: Pruebas inscritas
+    viewPersonalRecords: Ver récords personales
+    viewResults: Ver resultados
+    viewWcaLiveResults: Ver resultados de WCA Live
+    noAssignments:
+      line1: No hay asignaciones
+      line2: ¡Vuelve más tarde para ver las novedades!
+    activity: Actividad
+    time: Hora
+    assignment: Asignación
+    group: Grupo
+    stage: $t(common.stage)
+    station: Estación
+    submitMultiCubes: Enviar multi a ciegas
+  personalRecords:
+    viewSchedule: Ver mis asignaciones
+    type: Tipo
+    best: Mejor
+  scramblers:
+    title: Horario de mezcladores
+    rooms: Salas
+    stage: $t(common.stage)
+    event: Prueba
+    scramblers: Mezcladores
+  streamSchedule:
+    title: Horario de retransmisiones
+    subtitle: Retransmisión en directo
+    time: Hora
+    event: $t(common.wca.event)
+    round: $t(common.wca.round)
+    group: $t(common.wca.group)
+    stage: $t(common.stage)
+    featuredCompetitors: Participantes destacados
+disclaimerText: Las horas de inicio pueden cambiar y adelantarse o retrasarse respecto al horario. Consulta con los organizadores
+  de la competición para obtener novedades.

@@ -25,12 +25,31 @@ common:
       '444bf': '4x4x4 Bez patrzenia'
       '555bf': '5x5x5 Bez patrzenia'
       '333mbf': '3x3x3 Wiele kostek bez patrzenia'
+      other-mbld: Zgłoszenie wyniku multi-blind
     timeLimit: 'Limit czasowy'
     cutoff: 'Cutoff'
     advancement:
-      ranking: 'Najlepsze <b>{{level}}</b> osób awansuje do następnej rundy'
-      percent: 'Najlepsze <b>{{level}}%</b> osób awansuje do następnej rundy'
-      attemptResult: 'Wynik lepszy niż <b>{{level}}</b> awansuje do następnej rundy. Minimum 25% zawodników musi zostać wyeliminowanych.'
+      ranking: "Najlepszych {{level}} zawodników awansuje do: {{what}}"
+      percent: "Najlepsze {{level}}% awansuje do: {{what}}"
+      attemptResult: "Wynik lepszy niż <b>{{level}}</b> zapewnia awans do następnej rundy. Co najmniej 25% zawodników musi odpaść."
+      anyResultAchieved: 'Dowolny wynik {{scope}} zapewnia awans do: {{what}}; co najmniej 25% zawodników musi odpaść'
+      final: finał
+      linkedAnyResultAchieved: 'Dowolny wynik {{scope}} w połączonych rundach {{rounds}} zapewnia awans do: {{what}}; co najmniej
+        25% zawodników musi odpaść'
+      linkedPercent: 'Najlepsze {{level}}% w połączonych rundach {{rounds}} awansuje do: {{what}}'
+      linkedRanking: 'Najlepszych {{level}} zawodników w połączonych rundach {{rounds}} awansuje do: {{what}}'
+      linkedResultAchieved: 'Wynik {{scope}} lepszy niż {{result}} w połączonych rundach {{rounds}} zapewnia awans do: {{what}};
+        co najmniej 25% zawodników musi odpaść'
+      nextRound: następna runda
+      resultAchieved: 'Wynik {{scope}} lepszy niż {{result}} zapewnia awans do: {{what}}; co najmniej 25% zawodników musi odpaść'
+      resultInMoves: '{{result}} ruchów'
+      scope:
+        average: Średnie
+        single: Pojedyncze wyniki
+      successfulScope:
+        average: zaliczona średnia
+        single: zaliczony wynik pojedynczy
+      unknown: nieznany
     resultType:
       single: 'Najlepsze'
       average: 'Średnia'
@@ -38,10 +57,12 @@ common:
       WR: WR
       CR: CR
       NR: NR
+    cumulativeTimelimit: 'Limit czasu: <b>łącznie {{time}}</b>'
+    cumulativeTimelimitWithrounds: 'Limit czasu: <b>łącznie {{time}}</b> dla: '
   cutoffTimeLimitPopover:
     timeLimits: <b>Limity czasowe</b> są ustalane dla wszystkich rund, są stosowane do każdego pojedynczego ułożenia. Ułożenia, które przekraczają limit, będą oznaczone jako "DNF", a czas nie będzie liczony.
     cutoffs: Każda runda może mieć <bold>cutoff</bold>, który określa, czy zawodnik jest uprawniony do ukończenia wszystkich prób w celu zakończenia średniej. Aby zakwalifikować się, musi osiągnąć czas poniżej cutoffa podczas swojego pierwszego lub drugiego ułożenia.
-    cutoff: Ta runda wymaga zrobienia cutoffa w {{count}} ułożeniu.
+    cutoff: "W tej rundzie warunek trzeba spełnić w pierwszej próbie"
     cutoff_other: Ta runda wymaga zrobienia cutoffa w pierwszych {{count}} ułożeniach.
     advancement:
       Co najmniej 25% zawodników musi zostać eliinowanych przed przejściem do następnej rundy. Zespół
@@ -128,6 +149,13 @@ common:
   name: Name
   stage: Scena
   login: 'Zaloguj się'
+  bookmarkCompetition: Dodaj zawody do zakładek
+  bookmarkCompetitor: Dodaj zawodnika do zakładek
+  removeCompetitorBookmark: Usuń zawodnika z zakładek
+  close: Zamknij
+  help: Pomoc
+  home: Wróć do strony głównej
+  retry: Spróbuj ponownie
 header:
   logout: 'Wyloguj się'
   tabs:
@@ -137,21 +165,33 @@ header:
     rankings: 'Rankingi'
     scramblers: 'Mieszacze'
     stream: 'Stream'
+    admin: Administracja
+    results: Wyniki
+    stats: Statystyki
+    sumOfRanks: Suma miejsc
+  login: $t(common.login)
+  settings: Ustawienia
 home:
   subtitle: 'Naucz się wszystkiego, co potrzebne o zadaniach na zawodach WCA!'
   explanation: 'Informacja: Ta strona jest narzędziem pomocniczym dla organizatorów, delegatów i zawodników. Informacje są oparte na danych z harmonogramu. Zwróć uwagę na komunikaty na miejscu zawodów, aby uzyskać najbardziej aktualne informacje. Godziny rozpoczęcia i zakończenia mogą się zmieniać.'
   learnMore: 'Jak działa ta strona?'
-  ktlo: 'Keep the lights on'
   loadingMore: 'Ładowanie...'
   myCompetitions: 'Moje zawody'
   upcomingCompetitions: 'Nadchodzące zawody'
   yourCompetitions: 'Twoje zawody'
+  loggedOutCard:
+    eyebrow: Widok spersonalizowany
+    title: Zaloguj się, aby zobaczyć swoje zawody
+    description: Zaloguj się na konto WCA, aby wczytać listę zawodów i spersonalizowany harmonogram
+  support: Wesprzyj działanie strony
 competition:
   competitors:
     viewCompetitionInformation: 'Wyświetl informacje o zawodach'
     searchCompetitors: 'Wyszukaj zawodników'
+    noMatches: Nie znaleziono zawodników pasujących do wyszukiwania.
+    viewMyAssignments: Zobacz moje zadania
   groups:
-    backToEvents: 'Wróc do konkurencji'
+    backToEvents: 'Wróć do konkurencji'
     nextGroup: 'Następna grupa'
     previousGroup: 'Poprzednia grupa'
   rooms:
@@ -180,6 +220,11 @@ competition:
     group: Grupa
     stage: Scena
     station: Stanowisko
+    records: Rekordy
+    results: Wyniki
+    schedule: Harmonogram
+    submitMultiCubes: Oddawanie kostek do konkurencji Multi-Blind
+    viewWcaLiveResults: Zobacz wyniki w WCA Live
   personalRecords:
     viewSchedule: Sprawdź swoje zadania
     type: Typ
@@ -199,6 +244,37 @@ competition:
     group: $t(common.wca.group)
     stage: $t(common.stage)
     featuredCompetitors: Wybrani zawodnicy
+  loadError: Nie można wczytać tych zawodów.
+  loadErrorHint: Zawody mogą nie istnieć albo ich dane są chwilowo niedostępne. Sprawdź adres lub spróbuj ponownie.
+  person:
+    backToCompetitors: Wróć do zawodników
+    notFound: Nie znaleziono zawodnika.
+  personalResults:
+    eventResults: Wyniki konkurencji
+  refreshError: Nie można odświeżyć danych zawodów. Wyświetlamy ostatnie dostępne dane.
+  results:
+    allResults: Wszystkie wyniki
+    attempts: Próby
+    average: Śr.
+    back: Wstecz
+    best: Najlepszy
+    competitor: Zawodnik
+    dualPersonalNote: Ranking podwójnych rund wykorzystuje lepszy wynik z dowolnej z nich. Każdy wiersz pokazuje wyniki tej
+      rundy.
+    dualRoundNote: Klasyfikacja podwójnych rund opiera się na lepszym wyniku z jednej z nich. Liczba prób, najlepszy wynik
+      i średnia poniżej dotyczą wybranej rundy. Między podwójnymi rundami nikt nie odpada.
+    noResults: Nie ma jeszcze wyników.
+    rank: Miejsce
+    resultsSourceNote: Wyświetlone wyniki to połączone dane z WCA Live, WCIF i opublikowanych wyników WCA. Żółte wiersze oznaczają wyniki tymczasowe.
+      Bez WCA Live awans opiera się na uczestnikach kolejnej rundy, jeśli są dostępni; w przeciwnym razie na obliczonych kryteriach.
+      Rundy z niepełnymi danymi źródłowymi pozostają tymczasowe. Zapisane dane mogą nie uwzględniać najnowszych zmian wprowadzonych przez organizatorów.
+    roundNotFound: Nie znaleziono rundy.
+    seeResults: Zobacz wyniki
+    title: Wyniki
+    unknownCompetitor: 'Zawodnik #{{personId}}'
+    viewLiveResults: Zobacz wyniki na żywo
+  round:
+    linkedWith: Runda podwójna z {{rounds}}
 about:
   title: O nas
   welcome: Witaj na CompetitionGroups.com!
@@ -219,3 +295,7 @@ about:
   peopleCanBe: Zawodnicy mogą być przypisywani do grup, rund albo innych aktywności. Jeśli chcesz być kreatywny i zrobić coś ciekawego, nie bój się do <2 to="https://github.com/coder13">mnie napisać</2>!
 disclaimerText: Godziny rozpoczęcia są orientacyjne i mogą się zmieniać. Zapytaj organizatorów
   zawodów, aby uzyskać aktualne informacje.
+appUpdate:
+  title: Dostępna jest nowa aktualizacja!
+  description: Odśwież stronę, aby pobrać najnowszą wersję aplikacji.
+  action: Odśwież teraz

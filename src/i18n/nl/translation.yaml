@@ -25,12 +25,31 @@ common:
       '444bf': '4x4x4 Blindfolded'
       '555bf': '5x5x5 Blindfolded'
       '333mbf': '3x3x3 Multi-Blind'
+      other-mbld: Multi-blind-resultaat indienen
     timeLimit: 'Tijdslimiet'
     cutoff: 'Cutoff'
     advancement:
-      ranking: 'Top <b>{{level}}</b> naar de volgende ronde'
-      percent: 'Top <b>{{level}}%</b> naar de volgende ronde'
-      attemptResult: Resultaat beter dan <b>{level}</b> gaat door naar de volgende ronde. Minimaal 25% van de deelnemers moeten worden geëlimineerd.
+      ranking: "De beste {{level}} gaan door naar {{what}}"
+      percent: "De beste {{level}}% gaan door naar {{what}}"
+      attemptResult: "Een resultaat beter dan <b>{{level}}</b> gaat door naar de volgende ronde. Minimaal 25% van de deelnemers moet worden uitgeschakeld."
+      anyResultAchieved: Elke {{scope}} geeft recht op {{what}}; minimaal 25% van de deelnemers moet worden uitgeschakeld
+      final: finale
+      linkedAnyResultAchieved: Elke {{scope}} in gekoppelde rondes {{rounds}} geeft recht op {{what}}; minimaal 25% van de deelnemers
+        moet worden uitgeschakeld
+      linkedPercent: De beste {{level}}% in gekoppelde rondes {{rounds}} gaat door naar {{what}}
+      linkedRanking: De beste {{level}} in gekoppelde rondes {{rounds}} gaat door naar {{what}}
+      linkedResultAchieved: Een {{scope}} beter dan {{result}} in gekoppelde rondes {{rounds}} geeft recht op {{what}}; minimaal
+        25% van de deelnemers moet worden uitgeschakeld
+      nextRound: volgende ronde
+      resultAchieved: Een {{scope}} beter dan {{result}} geeft recht op {{what}}; minimaal 25% van de deelnemers moet worden uitgeschakeld
+      resultInMoves: '{{result}} zetten'
+      scope:
+        average: Gemiddelden
+        single: Enkele resultaten
+      successfulScope:
+        average: geslaagd gemiddelde
+        single: geslaagd enkel resultaat
+      unknown: onbekend
     resultType:
       single: single
       average: gemiddelde
@@ -38,6 +57,8 @@ common:
       WR: WR
       CR: CR
       NR: NR
+    cumulativeTimelimit: 'Tijdslimiet: <b>{{time}} cumulatief</b>'
+    cumulativeTimelimitWithrounds: 'Tijdslimiet: <b>{{time}} totaal</b> voor: '
   cutoffTimeLimitPopover:
     timeLimits: <b>Tijdslimieten</b> zijn gecreerd voor alle rondes en worden toegepast tot ieder individueel resultaat. Resultaten die de tijdslimiet overschrijden zullen worden gemarkeerd als "DNF" en de tijd zal niet gelden.
     cutoffs: Iedere ronde kan een <bold>cutoffs</bold> bevatten, deze bepaalt of een deelnemer verder mag met zijn al pogingen om zijn gemiddelde af te maken. Om hiervoor te kwalificeren, moet je de cutoff tijd behalen in de eerste poging of in een van de twee eerste pogingen.
@@ -105,6 +126,14 @@ common:
       noun: Core Staff
       noun_other: Core Staff
       verb: Core Staff
+    staff-photo:
+      noun: Fotograaf
+      noun_other: Fotografen
+      verb: Fotograferen
+    staff-stream:
+      noun: Livestream
+      noun_other: Livestreams
+      verb: Streamen
   lastFetched: 'Last fetched: {{date}}'
   competitionSelect:
     placeholder: 'Zoek Competities'
@@ -117,6 +146,13 @@ common:
   name: Naam
   stage: Stage
   login: 'Login'
+  bookmarkCompetition: Wedstrijd toevoegen aan bladwijzers
+  bookmarkCompetitor: Deelnemer toevoegen aan bladwijzers
+  removeCompetitorBookmark: Deelnemer uit bladwijzers verwijderen
+  close: Sluiten
+  help: Help
+  home: Terug naar de startpagina
+  retry: Opnieuw proberen
 header:
   logout: 'Logout'
   tabs:
@@ -126,6 +162,12 @@ header:
     rankings: 'Ranglijsten'
     scramblers: 'Scramblers'
     stream: 'Stream'
+    admin: Beheer
+    results: Resultaten
+    stats: Statistieken
+    sumOfRanks: Som van rangschikkingen
+  login: $t(common.login)
+  settings: Instellingen
 home:
   subtitle: 'Leer alles over je taken op je aankomende WCA competitie weten!'
   explanation: 'Note: This website exists as a convenience tool for organizers, delegates, and competitors. The information provided is based on scheduled data. Pay close attention to the competition for the most up-to-date information. Start and end times can fluctuate.'
@@ -135,10 +177,16 @@ home:
   myCompetitions: 'Mijn Competities'
   upcomingCompetitions: 'Aankomende Competities'
   yourCompetitions: 'Jouw Competities'
+  loggedOutCard:
+    eyebrow: Persoonlijk overzicht
+    title: Log in om je wedstrijden te bekijken
+    description: Log in met je WCA-account om je wedstrijdlijst en persoonlijke schema te laden
 competition:
   competitors:
     viewCompetitionInformation: 'Bekijk de Competitie Informatie'
     searchCompetitors: 'Zoek deelnemers'
+    noMatches: Geen deelnemers gevonden voor deze zoekopdracht.
+    viewMyAssignments: Mijn toewijzingen bekijken
   groups:
     backToEvents: 'Terug naar onderdelen'
     nextGroup: 'Volgende Groep'
@@ -169,6 +217,11 @@ competition:
     group: Group
     stage: $t(common.stage)
     station: Station
+    records: Records
+    results: Resultaten
+    schedule: Schema
+    submitMultiCubes: Multi-blind-resultaten indienen
+    viewWcaLiveResults: WCA Live-resultaten bekijken
   personalRecords:
     viewSchedule: Zie persoonlijke taken
     type: Type
@@ -188,6 +241,40 @@ competition:
     group: $t(common.wca.group)
     stage: $t(common.stage)
     featuredCompetitors: Featured Competitors
+  loadError: Deze wedstrijd kan niet worden geladen.
+  loadErrorHint: De wedstrijd bestaat mogelijk niet of de gegevens zijn tijdelijk niet beschikbaar. Controleer het adres of
+    probeer het opnieuw.
+  person:
+    backToCompetitors: Terug naar deelnemers
+    notFound: Deelnemer niet gevonden.
+  personalResults:
+    eventResults: Resultaten per onderdeel
+  refreshError: De wedstrijdgegevens kunnen niet worden vernieuwd. De laatst beschikbare gegevens worden getoond.
+  results:
+    allResults: Alle resultaten
+    attempts: Pogingen
+    average: Gem.
+    back: Terug
+    best: Beste
+    competitor: Deelnemer
+    dualPersonalNote: De rangschikking van gekoppelde rondes gebruikt het beste resultaat uit een van beide rondes. Elke rij
+      toont de resultaten van die ronde.
+    dualRoundNote: 'Rangschikking van gekoppelde rondes: de rang is gebaseerd op het beste resultaat uit een van beide rondes.
+      De pogingen, beste tijd en het gemiddelde hieronder horen bij de geselecteerde ronde. Tussen gekoppelde rondes valt niemand
+      af.'
+    noResults: Er zijn nog geen resultaten.
+    rank: Rang
+    resultsSourceNote: De resultaten combineren WCA Live, WCIF en gepubliceerde WCA-resultaten. Gele markeringen zijn voorlopig.
+      Zonder WCA Live gebruikt de doorstroming deelnemers van de volgende ronde als die beschikbaar zijn; anders wordt de geschiktheid
+      berekend. Rondes met onvolledige brongegevens blijven voorlopig. Opgeslagen gegevens kunnen achterlopen op wijzigingen
+      van organisatoren.
+    roundNotFound: Ronde niet gevonden.
+    seeResults: Resultaten bekijken
+    title: Resultaten
+    unknownCompetitor: 'Deelnemer #{{personId}}'
+    viewLiveResults: Live resultaten bekijken
+  round:
+    linkedWith: Gekoppelde ronde met {{rounds}}
 about:
   title: Over
   welcome: Welkom op CompetitionGroups.com!
@@ -204,3 +291,7 @@ about:
   developer: Als je een software ontwikkelaar bent en je meer wilt leren over de informatie die je hier ziet, kijk dan op <2 to="https://github.com/thewca/wcif/blob/master/specification.md">WCIF specification</2>.
   peopleCanBe: Mensen kunnen worden aangewezen tot groepen, rondes, of een andere willekeurige activiteit. Als je creatief wilt worden met de website, voel je vrij contact op te nemen. <2 to="https://github.com/coder13"></2>!
 disclaimerText: Starttijden kunnen worden gewijzigd. De competitie kan voor of achter liggen op het schema. Check met de organisatie voor updates.
+appUpdate:
+  title: Nieuwe update beschikbaar!
+  description: Vernieuw de pagina om de nieuwste versie van de app te laden.
+  action: Nu vernieuwen
