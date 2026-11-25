@@ -23,3 +23,260 @@ common:
       444bf: 4x4x4 目隠し
       555bf: 5x5x5 目隠し
       333mbf: 3x3x3 複数目隠し
+      other-mbld: 複数目隠し提出
+    attempt: 試行
+    cutoff: カットオフ
+    timeLimit: 制限時間
+    cumulativeTimelimit: '制限時間: <b>{{time}} 累積</b>'
+    cumulativeTimelimitWithrounds: '制限時間: <b>合計 {{time}}</b> 対象: '
+    advancement:
+      ranking: 上位{{level}}名が{{what}}に進出
+      percent: 上位{{level}}%が{{what}}に進出
+      linkedRanking: リンクされたラウンド{{rounds}}の上位{{level}}名が{{what}}に進出
+      linkedPercent: リンクされたラウンド{{rounds}}の上位{{level}}%が{{what}}に進出
+      attemptResult: "<b>{{level}}</b>より良い結果を出すと次のラウンドに進出します。参加者の少なくとも25%を敗退させる必要があります。"
+      resultAchieved: '{{result}}より良い{{scope}}を記録した人が{{what}}に進出します。参加者の少なくとも25%を敗退させる必要があります。'
+      linkedResultAchieved: リンクされたラウンド{{rounds}}で{{result}}より良い{{scope}}を記録した人が{{what}}に進出します。参加者の少なくとも25%を敗退させる必要があります。
+      anyResultAchieved: '{{scope}}を記録した人は誰でも{{what}}に進出します。参加者の少なくとも25%を敗退させる必要があります。'
+      linkedAnyResultAchieved: リンクされたラウンド{{rounds}}で{{scope}}を記録した人は誰でも{{what}}に進出します。参加者の少なくとも25%を敗退させる必要があります。
+      resultInMoves: '{{result}}手'
+      successfulScope:
+        single: 有効な単発
+        average: 有効な平均
+      nextRound: 次のラウンド
+      final: 決勝
+      unknown: 不明
+      scope:
+        single: 単発
+        average: 平均
+    resultType:
+      single: 単発
+      average: 平均
+    recordType:
+      WR: WR
+      CR: CR
+      NR: NR
+  appName: 大会グループ
+  activityCodeToName:
+    round: '{{roundNumber}}$t(common.wca.round)'
+    group: '{{groupNumber}}$t(common.wca.group)'
+    attempt: '{{attemptNumber}}回目の$t(common.wca.attempt)'
+  bookmarkCompetition: 大会をブックマーク
+  bookmarkCompetitor: 競技者をブックマーク
+  removeCompetitorBookmark: 競技者のブックマークを削除
+  close: 閉じる
+  competitionList:
+    noneFound: 大会が見つかりません。
+  competitionSelect:
+    noOptions: 大会が見つかりません
+    placeholder: 大会を検索
+  help: ヘルプ
+  home: ホームに戻る
+  lastFetched: '最終取得日時: {{date}}'
+  loading: 読み込み中...
+  login: ログイン
+  name: 名前
+  retry: 再試行
+  search: 検索
+  stage: ステージ
+  view: 表示
+  cutoffTimeLimitPopover:
+    timeLimits: <b>制限時間</b>はすべてのラウンドに設定され、各試行に適用されます。制限時間を超えた試行は「DNF」となり、記録には含まれません。
+    cutoffs: 各ラウンドには、平均を完成させるために全試行を続けられるかを決める<bold>カットオフ</bold>を設定できます。最初の試行または最初の2試行でカットオフ以内のタイムを出すと通過できます。
+    cutoff: このラウンドでは、1回目の試行で条件を満たす必要があります
+    cutoff_other: このラウンドでは、最初の{{count}}回の試行で条件を満たす必要があります
+    advancement: 次のラウンドに進む前に、参加者の少なくとも25%を敗退させる必要があります。主催チームが各ラウンドの進出条件を設定しますが、この最低割合を満たすために調整が必要な場合があります。
+  assignments:
+    competitor:
+      noun: 競技者
+      noun_other: 競技者
+      verb: 参加中
+    staff-announcer:
+      noun: アナウンサー
+      noun_other: アナウンサー
+      verb: アナウンス
+    staff-break:
+      noun: 休憩
+      noun_other: 休憩
+      verb: 休憩中
+    staff-core:
+      noun: 運営スタッフ
+      noun_other: 運営スタッフ
+      verb: 運営スタッフ
+    staff-dataentry:
+      noun: データ入力
+      noun_other: データ入力
+      verb: データ入力中
+    staff-delegate:
+      noun: デリゲート
+      noun_other: デリゲート
+      verb: デリゲート業務中
+    staff-judge:
+      noun: ジャッジ
+      noun_other: ジャッジ
+      verb: ジャッジ業務中
+    staff-lunch:
+      noun: 昼食
+      noun_other: 昼食
+      verb: 昼食中
+    staff-other:
+      noun: スタッフ
+      noun_other: スタッフ
+      verb: スタッフ業務中
+    staff-photo:
+      noun: 写真撮影者
+      noun_other: 写真撮影者
+      verb: 写真撮影
+    staff-runner:
+      noun: ランナー
+      noun_other: ランナー
+      verb: ランナー業務中
+    staff-scrambler:
+      noun: スクランブラー
+      noun_other: スクランブラー
+      verb: スクランブル作成中
+    staff-setupteardown:
+      noun: 設営/撤収
+      noun_other: 設営/撤収
+      verb: 設営/撤収中
+    staff-showrunner:
+      noun: 進行担当
+      noun_other: 進行担当
+      verb: 進行管理中
+    staff-stagelead:
+      noun: ステージリーダー
+      noun_other: ステージリーダー
+      verb: ステージ管理中
+    staff-stream:
+      noun: ライブ配信
+      noun_other: ライブ配信
+      verb: 配信中
+about:
+  title: このサイトについて
+  welcome: CompetitionGroups.comへようこそ！
+  purpose: このサイトは、WCA大会での担当割り当てを表示します。1日または複数日にわたる大会の、競技者とスタッフの割り当てを表示できます。次のラウンドの割り当ても更新します。WCAのウェブサイトに保存された内容をそのまま表示します。
+  startTimes: 開始時刻と終了時刻は、生成されたWCIFデータから取得します。5分単位に丸め、会場のタイムゾーンに変換します。
+  competitionAssignments: 大会の割り当てをここに表示するには、<3 to="https://groupifier.jonatanklosko.com/">Groupifier</3>、<6 to="https://delegate-dashboard.netlify.app/">DelegateDashboard</6>、<9
+    to="https://goosly.github.io/AGE/">AGE</9>などのツールで割り当てを作成してください。
+  developer: 表示されるデータについて詳しく知りたい開発者は、<2 to="https://github.com/thewca/wcif/blob/master/specification.md">WCIFの仕様</2>を確認してください。
+  peopleCanBe: 人はグループ、ラウンド、その他の任意のアクティビティに割り当てられます。このサイトについてアイデアがあれば、<2 to="https://github.com/coder13">連絡してください</2>！
+appUpdate:
+  title: 新しいアップデートがあります！
+  description: 最新バージョンを使うには、ページを再読み込みしてください。
+  action: 今すぐ再読み込み
+header:
+  settings: 設定
+  login: $t(common.login)
+  logout: ログアウト
+  tabs:
+    groups: グループ
+    events: 種目
+    schedule: スケジュール
+    rankings: ランキング
+    results: 結果
+    scramblers: スクランブラー
+    stream: 配信
+    admin: 管理
+    sumOfRanks: 順位の合計
+    stats: 統計
+home:
+  subtitle: WCA大会の担当について、必要な情報を確認できます。
+  explanation: '注意: このサイトは主催者、デリゲート、競技者向けの便利なツールです。予定データを使います。最新情報は主催者に確認してください。開始時刻と終了時刻は変更される場合があります。'
+  learnMore: このサイトの使い方
+  support: サイトの運営を支援する
+  loggedOutCard:
+    eyebrow: 個人向け表示
+    title: ログインして大会を表示
+    description: WCAアカウントでログインすると、大会一覧と個人スケジュールを読み込みます
+  loadingMore: さらに読み込み中...
+  myCompetitions: 自分の大会
+  upcomingCompetitions: 今後の大会
+  yourCompetitions: あなたの大会
+competition:
+  loadError: 大会を読み込めませんでした。
+  loadErrorHint: 大会が存在しないか、データを一時的に利用できない可能性があります。アドレスを確認するか、もう一度お試しください。
+  refreshError: 大会データを更新できませんでした。最後に取得したデータを表示します。
+  competitors:
+    viewMyAssignments: 自分の担当を見る
+    viewCompetitionInformation: 大会情報を見る
+    searchCompetitors: 競技者を検索
+    noMatches: 検索に一致する競技者はいません。
+  groups:
+    backToEvents: 種目に戻る
+    nextGroup: 次のグループ
+    previousGroup: 前のグループ
+  rooms:
+    title: 部屋
+  room:
+    back: 部屋一覧に戻る
+  schedule:
+    title: スケジュール
+    selectRoom: 部屋を選択
+  eventActivity:
+    seedResult: シード結果
+    stationNumber: ステーション番号
+  rankings:
+    title: ランキング
+    name: 名前
+  results:
+    title: 結果
+    seeResults: 結果を見る
+    back: 戻る
+    roundNotFound: ラウンドが見つかりません。
+    noResults: 結果はまだありません。
+    rank: 順位
+    competitor: 競技者
+    average: 平均
+    best: ベスト
+    attempts: 試行
+    unknownCompetitor: '競技者 #{{personId}}'
+    allResults: すべての結果
+    viewLiveResults: ライブ結果を見る
+    dualPersonalNote: リンクされたラウンドのうち、良い方の結果を使って順位を決めます。各行には、そのラウンドの結果が表示されます。
+    dualRoundNote: リンクされたラウンドの順位は、どちらかのラウンドの良い方の結果で決まります。試行、ベスト、平均は選択したラウンドの値です。リンクされたラウンド間では敗退しません。
+    resultsSourceNote: 結果はWCA Live、WCIF、公開済みのWCA結果を組み合わせています。黄色の強調表示は暫定です。WCA Liveがない場合、次ラウンドの参加者があればそれを使い、なければ進出条件を計算します。元データが不完全なラウンドは暫定のままです。保存データの更新が主催者の変更に遅れることがあります。
+  person:
+    notFound: 競技者が見つかりません。
+    backToCompetitors: 競技者一覧に戻る
+  personalResults:
+    eventResults: 種目の結果
+  round:
+    linkedWith: '{{rounds}}とのリンクラウンド'
+  personalSchedule:
+    schedule: スケジュール
+    results: 結果
+    records: 記録
+    registeredEvents: 登録種目
+    viewPersonalRecords: 個人記録を見る
+    viewResults: 結果を見る
+    viewWcaLiveResults: WCA Liveの結果を見る
+    noAssignments:
+      line1: 担当はありません
+      line2: 更新を確認するため、後でもう一度お越しください。
+    activity: アクティビティ
+    time: 時間
+    assignment: 担当
+    group: グループ
+    stage: $t(common.stage)
+    station: ステーション
+    submitMultiCubes: 複数目隠しの結果を送信
+  personalRecords:
+    viewSchedule: 個人の担当を見る
+    type: 種類
+    best: ベスト
+  scramblers:
+    title: スクランブラースケジュール
+    rooms: 部屋
+    stage: $t(common.stage)
+    event: 種目
+    scramblers: スクランブラー
+  streamSchedule:
+    title: 配信スケジュール
+    subtitle: ライブ配信
+    time: 時間
+    event: $t(common.wca.event)
+    round: $t(common.wca.round)
+    group: $t(common.wca.group)
+    stage: $t(common.stage)
+    featuredCompetitors: 注目の競技者
+disclaimerText: 開始時刻は変更され、予定より早まったり遅れたりする場合があります。最新情報は大会主催者に確認してください。

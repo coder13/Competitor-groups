@@ -27,9 +27,28 @@ common:
     timeLimit: Limite de temps
     cutoff: Cutoff
     advancement:
-      ranking: Top <b>{{level}}</b> qualifiés pour le tour suivant
-      percent: Top <b>{{level}}%</b> qualifiés pour le tour suivant
+      ranking: "Les {{level}} premiers passent à {{what}}"
+      percent: "Les {{level}} % des compétiteurs passent à {{what}}"
       attemptResult: Un résultat meilleur que <b>{{level}}</b> avance au tour suivant. Un minimum de 25 % des compétiteurs doivent être éliminés.
+      anyResultAchieved: Tout résultat de {{scope}} permet de passer à {{what}} ; au moins 25 % des compétiteurs doivent être éliminés
+      linkedAnyResultAchieved: Tout résultat de {{scope}} dans les tours liés {{rounds}} permet de passer à {{what}} ; au moins
+        25 % des compétiteurs doivent être éliminés
+      linkedPercent: Les {{level}} % premiers des tours liés {{rounds}} passent à {{what}}
+      linkedRanking: Les {{level}} premiers des tours liés {{rounds}} passent à {{what}}
+      linkedResultAchieved: Les résultats de {{scope}} meilleurs que {{result}} dans les tours liés {{rounds}} permettent de passer
+        à {{what}} ; au moins 25 % des compétiteurs doivent être éliminés
+      nextRound: tour suivant
+      final: finale
+      resultAchieved: Les résultats de {{scope}} meilleurs que {{result}} permettent de passer à {{what}} ; au moins 25 % des compétiteurs
+        doivent être éliminés
+      resultInMoves: '{{result}} mouvements'
+      scope:
+        average: Moyennes
+        single: Simples
+      successfulScope:
+        average: moyenne valide
+        single: simple valide
+      unknown: inconnu
     resultType:
       single: Single
       average: Moyenne
@@ -37,12 +56,9 @@ common:
       WR: WR
       CR: CR
       NR: NR
-    cutoffTimeLimitPopover:
-      timeLimits: <bold>Les limites de temps</bold> sont établies pour tous les tours, s'appliquant à chaque essai individuel. Les essais qui dépassent la limite seront marqués comme "DNF" et le temps ne comptera pas.
-      cutoffs: Chaque tour peut inclure des <bold>cutoffs</bold>, qui dictent si un compétiteur est éligible pour compléter tous ses essais pour terminer sa moyenne. Pour se qualifier, il doit réaliser un temps strictement inférieur à la cutoff lors de son premier essai ou lors de l'un de ses deux premiers essais.
-      advancement: Au moins 25 % des compétiteurs doivent être éliminés avant de progresser au tour suivant. L'équipe d'organisation établira les critères de qualifications pour chaque tour, mais des ajustements peuvent être nécessaires pour garantir que le seuil d'élimination minimum soit re
-      cutoff: 'Cette manche exige que la condition soit remplie lors de la première tentative'
-      cutoff_other: 'Cette manche exige que la condition soit remplie lors des {{count}} premières tentatives'
+    attempt: Essai
+    cumulativeTimelimit: 'Limite de temps : <b>{{time}} cumulés</b>'
+    cumulativeTimelimitWithrounds: 'Limite de temps : <b>{{time}} au total</b> pour : '
   assignments:
     competitor:
       noun: Compétiteur
@@ -100,6 +116,14 @@ common:
       noun: Équipe principale
       noun_other: Équipes principales
       verb: Équipe principale
+    staff-photo:
+      noun: Photographe
+      noun_other: Photographes
+      verb: Photographier
+    staff-stream:
+      noun: Diffusion en direct
+      noun_other: Diffusions en direct
+      verb: Diffuser en direct
   lastFetched: 'Dernière mise à jour: {{date}}'
   competitionSelect:
     placeholder: 'Rechercher des compétitions'
@@ -109,6 +133,31 @@ common:
   view: 'Afficher'
   name: 'Nom'
   login: 'Connexion'
+  appName: Groupes de compétition
+  activityCodeToName:
+    round: $t(common.wca.round) {{roundNumber}}
+    group: $t(common.wca.group) {{groupNumber}}
+    attempt: $t(common.wca.attempt) {{attemptNumber}}
+  bookmarkCompetition: Ajouter la compétition aux favoris
+  bookmarkCompetitor: Ajouter le compétiteur aux favoris
+  removeCompetitorBookmark: Retirer le compétiteur des favoris
+  close: Fermer
+  competitionList:
+    noneFound: Aucune compétition trouvée.
+  cutoffTimeLimitPopover:
+    timeLimits: Les <b>limites de temps</b> s’appliquent à chaque résolution de tous les tours. Les résolutions qui dépassent
+      la limite sont marquées « DNF » et le temps n’est pas comptabilisé.
+    cutoffs: Chaque tour peut inclure des <bold>seuils de qualification</bold>, qui déterminent si un compétiteur peut effectuer
+      tous ses essais pour terminer sa moyenne. Pour continuer, il doit atteindre un temps sous le seuil lors de son premier
+      ou de ses deux premiers essais.
+    cutoff: Cette manche exige que la condition soit remplie lors du premier essai
+    cutoff_other: Cette manche exige que la condition soit remplie lors des {{count}} premiers essais
+    advancement: Au moins 25 % des compétiteurs doivent être éliminés avant le passage au tour suivant. L’équipe d’organisation
+      définit les critères de qualification, mais elle peut les ajuster pour respecter ce seuil minimum.
+  help: Aide
+  home: Retour à l’accueil
+  retry: Réessayer
+  stage: Scène
 header:
   logout: 'Déconnexion'
   tabs:
@@ -121,6 +170,9 @@ header:
     admin: 'Admin'
     sumOfRanks: 'Somme des classements'
     stats: 'Stats'
+    results: Résultats
+  login: $t(common.login)
+  settings: Paramètres
 home:
   subtitle: 'Apprenez tout ce que vous devez savoir sur les tâches qui vous ont été attribuées aux compétitions WCA !'
   explanation: 'Remarque : Ce site web est un outil pratique pour les organisateurs, délégués et compétiteurs. Les informations fournies sont basées sur le planning prévisionnel. Pensez à consulter régulièrement la page de la compétition pour obtenir les informations les plus récentes. Les horaires de début et de fin peuvent varier.'
@@ -130,11 +182,16 @@ home:
   myCompetitions: 'Mes compétitions'
   upcomingCompetitions: 'Compétitions à venir'
   yourCompetitions: 'Vos compétitions'
+  loggedOutCard:
+    eyebrow: Vue personnalisée
+    title: Connectez-vous pour voir vos compétitions
+    description: Connectez-vous avec votre compte WCA pour charger votre liste de compétitions et votre programme personnalisé
 competition:
   competitors:
     viewMyAssignments: 'Voir mes affectations'
     viewCompetitionInformation: 'Voir les informations sur la compétition'
     searchCompetitors: 'Rechercher des compétiteurs'
+    noMatches: Aucun compétiteur ne correspond à votre recherche.
   groups:
     backToEvents: 'Retour aux épreuves'
     nextGroup: 'Groupe suivant'
@@ -166,6 +223,10 @@ competition:
     stage: 'Scène'
     station: 'Station'
     submitMultiCubes: 'Soumettre cubes de multi'
+    records: Records
+    results: Résultats
+    schedule: Programme
+    viewWcaLiveResults: Voir les résultats sur WCA Live
   personalRecords:
     viewSchedule: 'Voir les affectations personnelles'
     type: 'Type'
@@ -181,6 +242,43 @@ competition:
     subtitle: 'Diffusion en direct'
     time: 'Heure'
     featuredCompetitors: 'Compétiteurs à l`honneur'
+    event: $t(common.wca.event)
+    group: $t(common.wca.group)
+    round: $t(common.wca.round)
+    stage: $t(common.stage)
+  loadError: Impossible de charger cette compétition.
+  loadErrorHint: La compétition n’existe peut-être pas ou ses données sont temporairement indisponibles. Vérifiez l’adresse
+    ou réessayez.
+  person:
+    backToCompetitors: Retour aux compétiteurs
+    notFound: Compétiteur introuvable.
+  personalResults:
+    eventResults: Résultats de l’épreuve
+  refreshError: Impossible d’actualiser les données de la compétition. Les dernières données disponibles sont affichées.
+  results:
+    allResults: Tous les résultats
+    attempts: Essais
+    average: Moy.
+    back: Retour
+    best: Meilleur
+    competitor: Compétiteur
+    dualPersonalNote: Le classement des tours liés utilise le meilleur résultat de l’un ou l’autre tour. Chaque ligne affiche
+      les résultats de ce tour.
+    dualRoundNote: 'Classement des tours liés : il repose sur le meilleur résultat des deux tours. Les essais, le meilleur temps
+      et la moyenne ci-dessous concernent le tour sélectionné. Aucun compétiteur n’est éliminé entre les tours liés.'
+    noResults: Aucun résultat pour le moment.
+    rank: Rang
+    resultsSourceNote: Les résultats combinent WCA Live, WCIF et les résultats publiés par la WCA. Les surlignages jaunes sont
+      provisoires. Sans WCA Live, la qualification utilise les participants du tour suivant s’ils sont disponibles, sinon elle
+      est calculée. Les tours dont la source est incomplète restent provisoires. Les données enregistrées peuvent ne pas refléter
+      les dernières modifications des organisateurs.
+    roundNotFound: Tour introuvable.
+    seeResults: Voir les résultats
+    title: Résultats
+    unknownCompetitor: Compétiteur n° {{personId}}
+    viewLiveResults: Voir les résultats en direct
+  round:
+    linkedWith: Tour lié à {{rounds}}
 about:
   title: À propos
   welcome: Bienvenue sur CompetitionGroups.com !
@@ -190,3 +288,7 @@ about:
   developer: Si vous êtes développeur et que vous souhaitez en savoir plus sur les données affichées ici, consultez la <2 to="https://github.com/thewca/wcif/blob/master/specification.md">spécification WCIF</2>.
   peopleCanBe: Les personnes peuvent être affectées à des groupes, à des tours ou à toute activité. Si vous souhaitez être créatif avec le site, n'hésitez pas à <2 to="https://github.com/coder13">me contacter</2> !
 disclaimerText: Les horaires de début sont susceptibles de changer et peuvent être en avance ou en retard par rapport au programme. Veuillez vérifier auprès des organisateurs de la compétition pour les mises à jour.
+appUpdate:
+  title: Nouvelle mise à jour disponible !
+  description: Rechargez la page pour utiliser la dernière version de l’application.
+  action: Recharger maintenant

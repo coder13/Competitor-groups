@@ -41,7 +41,7 @@ common:
       percent: 'Top {{level}}% advance to {{what}}'
       linkedRanking: 'Top {{level}} in dual rounds {{rounds}} advance to {{what}}'
       linkedPercent: 'Top {{level}}% in dual rounds {{rounds}} advance to {{what}}'
-      attemptResult: Result better than <b>{level}</b> advances to next round. Minimum of 25% of competitors must be eliminated.
+      attemptResult: "Result better than <b>{{level}}</b> advances to next round. Minimum of 25% of competitors must be eliminated."
       resultAchieved: '{{scope}} better than {{result}} advance to {{what}}; minimum of 25% of competitors must be eliminated'
       linkedResultAchieved: '{{scope}} better than {{result}} in dual rounds {{rounds}} advance to {{what}}; minimum of 25% of competitors must be eliminated'
       anyResultAchieved: 'Any {{scope}} advances to {{what}}; minimum of 25% of competitors must be eliminated'

@@ -24,3 +24,259 @@ common:
       444bf: 四盲
       555bf: 五盲
       333mbf: 多盲
+      other-mbld: 多盲成绩提交
+    cutoff: 截止线
+    timeLimit: 时限
+    cumulativeTimelimit: 时限：<b>累计 {{time}}</b>
+    cumulativeTimelimitWithrounds: 时限：<b>总计 {{time}}</b>，适用于：
+    advancement:
+      ranking: 前 {{level}} 名晋级至{{what}}
+      percent: 前 {{level}}% 晋级至{{what}}
+      linkedRanking: 双轮 {{rounds}} 中前 {{level}} 名晋级至{{what}}
+      linkedPercent: 双轮 {{rounds}} 中前 {{level}}% 晋级至{{what}}
+      attemptResult: "成绩优于 <b>{{level}}</b> 即可晋级下一轮。至少需要淘汰25%的选手。"
+      resultAchieved: '{{scope}}成绩优于{{result}}的选手晋级至{{what}}；至少需要淘汰25%的选手'
+      linkedResultAchieved: 双轮 {{rounds}} 中{{scope}}成绩优于{{result}}的选手晋级至{{what}}；至少需要淘汰25%的选手
+      anyResultAchieved: 任何{{scope}}成绩均可晋级至{{what}}；至少需要淘汰25%的选手
+      linkedAnyResultAchieved: 双轮 {{rounds}} 中任何{{scope}}成绩均可晋级至{{what}}；至少需要淘汰25%的选手
+      resultInMoves: '{{result}}步'
+      successfulScope:
+        single: 有效单次成绩
+        average: 有效平均成绩
+      nextRound: 下一轮
+      final: 决赛
+      unknown: 未知
+      scope:
+        single: 单次成绩
+        average: 平均成绩
+    resultType:
+      single: 单次成绩
+      average: 平均成绩
+    recordType:
+      WR: WR
+      CR: CR
+      NR: NR
+  appName: 比赛分组
+  activityCodeToName:
+    round: 第{{roundNumber}}$t(common.wca.round)
+    group: 第{{groupNumber}}$t(common.wca.group)
+    attempt: 第{{attemptNumber}}次$t(common.wca.attempt)
+  bookmarkCompetition: 收藏比赛
+  bookmarkCompetitor: 收藏选手
+  removeCompetitorBookmark: 取消收藏选手
+  close: 关闭
+  competitionList:
+    noneFound: 未找到比赛。
+  competitionSelect:
+    noOptions: 未找到比赛
+    placeholder: 搜索比赛
+  help: 帮助
+  home: 返回主页
+  lastFetched: 上次获取：{{date}}
+  loading: 正在加载...
+  login: 登录
+  name: 姓名
+  retry: 重试
+  search: 搜索
+  stage: 阶段
+  view: 查看
+  cutoffTimeLimitPopover:
+    timeLimits: 所有轮次都设有<b>时限</b>，并适用于每次尝试。超过时限的尝试会标记为“DNF”，且不计入成绩。
+    cutoffs: 每轮可以设有<bold>截止线</bold>，用于决定选手是否可以完成剩余尝试并取得平均成绩。选手必须在第一次或前两次尝试中达到截止线以内的成绩，才可继续。
+    cutoff: 本轮要求在第一次尝试中满足条件
+    cutoff_other: 本轮要求在前 {{count}} 次尝试中满足条件
+    advancement: 进入下一轮前，必须至少淘汰25%的选手。组织团队会设定每轮的晋级条件，但可能需要调整条件以满足最低淘汰比例。
+  assignments:
+    competitor:
+      noun: 选手
+      noun_other: 选手
+      verb: 参赛中
+    staff-announcer:
+      noun: 播报员
+      noun_other: 播报员
+      verb: 播报中
+    staff-break:
+      noun: 休息
+      noun_other: 休息
+      verb: 休息中
+    staff-core:
+      noun: 核心工作人员
+      noun_other: 核心工作人员
+      verb: 核心工作人员
+    staff-dataentry:
+      noun: 成绩录入员
+      noun_other: 成绩录入员
+      verb: 录入成绩中
+    staff-delegate:
+      noun: 代表
+      noun_other: 代表
+      verb: 代表工作中
+    staff-judge:
+      noun: 裁判
+      noun_other: 裁判
+      verb: 裁判工作中
+    staff-lunch:
+      noun: 午餐
+      noun_other: 午餐
+      verb: 午餐中
+    staff-other:
+      noun: 工作人员
+      noun_other: 工作人员
+      verb: 工作人员
+    staff-photo:
+      noun: 摄影师
+      noun_other: 摄影师
+      verb: 摄影中
+    staff-runner:
+      noun: 跑者
+      noun_other: 跑者
+      verb: 跑者工作中
+    staff-scrambler:
+      noun: 打乱员
+      noun_other: 打乱员
+      verb: 打乱中
+    staff-setupteardown:
+      noun: 布置/收场
+      noun_other: 布置/收场
+      verb: 布置/收场中
+    staff-showrunner:
+      noun: 现场统筹
+      noun_other: 现场统筹
+      verb: 现场统筹中
+    staff-stagelead:
+      noun: 舞台负责人
+      noun_other: 舞台负责人
+      verb: 负责舞台
+    staff-stream:
+      noun: 直播
+      noun_other: 直播
+      verb: 直播中
+about:
+  title: 关于
+  welcome: 欢迎使用 CompetitionGroups.com！
+  purpose: 本网站用于显示 WCA 比赛的分组和工作安排。它可以显示举办一天或多天、设有一个或多个场地的比赛中选手和工作人员的安排，并持续更新后续轮次的安排。本网站会原样显示 WCA 网站上保存的安排。
+  startTimes: 开始和结束时间直接来自生成的 WCIF 数据，四舍五入到最接近的 5 分钟，并转换为比赛场地所在时区。
+  competitionAssignments: 如需在此显示比赛安排，请使用 <3 to="https://groupifier.jonatanklosko.com/">Groupifier</3>、<6 to="https://delegate-dashboard.netlify.app/">DelegateDashboard</6>
+    或 <9 to="https://goosly.github.io/AGE/">AGE</9> 等工具生成安排。
+  developer: 如果你是开发者，想了解此处显示的数据，请查看 <2 to="https://github.com/thewca/wcif/blob/master/specification.md">WCIF 规范</2>。
+  peopleCanBe: 人员可以被分配到小组、轮次或任意活动。如果你对网站有新想法，欢迎<2 to="https://github.com/coder13">联系我</2>！
+appUpdate:
+  title: 有新版本可用！
+  description: 刷新页面以获取应用的最新版本。
+  action: 立即刷新
+header:
+  settings: 设置
+  login: $t(common.login)
+  logout: 退出登录
+  tabs:
+    groups: 分组
+    events: 项目
+    schedule: 日程
+    rankings: 排名
+    results: 成绩
+    scramblers: 打乱员
+    stream: 直播
+    admin: 管理
+    sumOfRanks: 排名总和
+    stats: 统计
+home:
+  subtitle: 了解 WCA 比赛中所有与你相关的安排。
+  explanation: 注意：本网站为组织者、代表和选手提供便利。网站使用预定数据；最新信息请向组织者确认。开始和结束时间可能会有变化。
+  learnMore: 本网站如何运作？
+  support: 支持网站持续运行
+  loggedOutCard:
+    eyebrow: 个性化视图
+    title: 登录以查看你的比赛
+    description: 使用 WCA 账号登录，以加载你的比赛列表和个人日程
+  loadingMore: 正在加载更多...
+  myCompetitions: 我的比赛
+  upcomingCompetitions: 即将举行的比赛
+  yourCompetitions: 你的比赛
+competition:
+  loadError: 无法加载此比赛。
+  loadErrorHint: 比赛可能不存在，或其数据暂时不可用。请检查地址或重试。
+  refreshError: 无法刷新比赛数据。当前显示的是最近一次可用数据。
+  competitors:
+    viewMyAssignments: 查看我的安排
+    viewCompetitionInformation: 查看比赛信息
+    searchCompetitors: 搜索选手
+    noMatches: 没有选手符合你的搜索条件。
+  groups:
+    backToEvents: 返回项目列表
+    nextGroup: 下一组
+    previousGroup: 上一组
+  rooms:
+    title: 场地
+  room:
+    back: 返回场地列表
+  schedule:
+    title: 日程
+    selectRoom: 选择场地
+  eventActivity:
+    seedResult: 种子成绩
+    stationNumber: 计时台编号
+  rankings:
+    title: 排名
+    name: 姓名
+  results:
+    title: 成绩
+    seeResults: 查看成绩
+    back: 返回
+    roundNotFound: 未找到轮次。
+    noResults: 暂无成绩。
+    rank: 排名
+    competitor: 选手
+    average: 平均
+    best: 最佳
+    attempts: 尝试次数
+    unknownCompetitor: '选手 #{{personId}}'
+    allResults: 所有成绩
+    viewLiveResults: 查看实时成绩
+    dualPersonalNote: 双轮排名采用两个关联轮次中的较好成绩。每行显示该轮次的成绩。
+    dualRoundNote: 双轮排名按两个关联轮次中的较好成绩计算。下方的尝试次数、最佳成绩和平均成绩属于所选轮次。关联轮次之间不会淘汰选手。
+    resultsSourceNote: 成绩来自 WCA Live、WCIF 和 WCA 已发布成绩。黄色标记表示暂定成绩。没有 WCA Live 时，系统优先使用下一轮参赛名单；若名单不可用，则计算晋级资格。数据不完整的轮次仍为暂定。保存的数据可能晚于组织者的最新更改。
+  person:
+    notFound: 未找到该选手。
+    backToCompetitors: 返回选手列表
+  personalResults:
+    eventResults: 项目成绩
+  round:
+    linkedWith: 与 {{rounds}} 关联的轮次
+  personalSchedule:
+    schedule: 日程
+    results: 成绩
+    records: 纪录
+    registeredEvents: 已报名项目
+    viewPersonalRecords: 查看个人纪录
+    viewResults: 查看成绩
+    viewWcaLiveResults: 查看 WCA Live 成绩
+    noAssignments:
+      line1: 暂无安排
+      line2: 请稍后再查看更新！
+    activity: 活动
+    time: 时间
+    assignment: 安排
+    group: 组
+    stage: $t(common.stage)
+    station: 计时台
+    submitMultiCubes: 提交多盲成绩
+  personalRecords:
+    viewSchedule: 查看个人安排
+    type: 类型
+    best: 最佳
+  scramblers:
+    title: 打乱员日程
+    rooms: 场地
+    stage: $t(common.stage)
+    event: 项目
+    scramblers: 打乱员
+  streamSchedule:
+    title: 直播日程
+    subtitle: 现场直播
+    time: 时间
+    event: $t(common.wca.event)
+    round: $t(common.wca.round)
+    group: $t(common.wca.group)
+    stage: $t(common.stage)
+    featuredCompetitors: 重点介绍的选手
+disclaimerText: 开始时间可能会变化，也可能早于或晚于日程。请向比赛组织者确认最新信息。
