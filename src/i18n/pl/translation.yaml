@@ -189,9 +189,9 @@ competition:
     viewCompetitionInformation: 'Wyświetl informacje o zawodach'
     searchCompetitors: 'Wyszukaj zawodników'
     noMatches: Nie znaleziono zawodników pasujących do wyszukiwania.
-    viewMyAssignments: Zobacz moje przydziały
+    viewMyAssignments: Zobacz moje zadania
   groups:
-    backToEvents: 'Wróc do konkurencji'
+    backToEvents: 'Wróć do konkurencji'
     nextGroup: 'Następna grupa'
     previousGroup: 'Poprzednia grupa'
   rooms:
@@ -223,7 +223,7 @@ competition:
     records: Rekordy
     results: Wyniki
     schedule: Harmonogram
-    submitMultiCubes: Zgłoś wynik multi-blind
+    submitMultiCubes: Oddawanie kostek do konkurencji Multi-Blind
     viewWcaLiveResults: Zobacz wyniki w WCA Live
   personalRecords:
     viewSchedule: Sprawdź swoje zadania
@@ -259,22 +259,22 @@ competition:
     back: Wstecz
     best: Najlepszy
     competitor: Zawodnik
-    dualPersonalNote: Ranking połączonych rund wykorzystuje lepszy wynik z dowolnej z nich. Każdy wiersz pokazuje wyniki tej
+    dualPersonalNote: Ranking podwójnych rund wykorzystuje lepszy wynik z dowolnej z nich. Każdy wiersz pokazuje wyniki tej
       rundy.
-    dualRoundNote: Klasyfikacja połączonych rund opiera się na lepszym wyniku z jednej z nich. Liczba prób, najlepszy wynik
-      i średnia poniżej dotyczą wybranej rundy. Między połączonymi rundami nikt nie odpada.
+    dualRoundNote: Klasyfikacja podwójnych rund opiera się na lepszym wyniku z jednej z nich. Liczba prób, najlepszy wynik
+      i średnia poniżej dotyczą wybranej rundy. Między podwójnymi rundami nikt nie odpada.
     noResults: Nie ma jeszcze wyników.
     rank: Miejsce
-    resultsSourceNote: Wyniki łączą dane z WCA Live, WCIF i opublikowane wyniki WCA. Żółte wyróżnienia oznaczają wyniki tymczasowe.
+    resultsSourceNote: Wyświetlone wyniki to połączone dane z WCA Live, WCIF i opublikowanych wyników WCA. Żółte wiersze oznaczają wyniki tymczasowe.
       Bez WCA Live awans opiera się na uczestnikach kolejnej rundy, jeśli są dostępni; w przeciwnym razie na obliczonych kryteriach.
-      Rundy z niepełnymi danymi źródłowymi pozostają tymczasowe. Zapisane dane mogą nie uwzględniać najnowszych zmian organizatorów.
+      Rundy z niepełnymi danymi źródłowymi pozostają tymczasowe. Zapisane dane mogą nie uwzględniać najnowszych zmian wprowadzonych przez organizatorów.
     roundNotFound: Nie znaleziono rundy.
     seeResults: Zobacz wyniki
     title: Wyniki
     unknownCompetitor: 'Zawodnik #{{personId}}'
     viewLiveResults: Zobacz wyniki na żywo
   round:
-    linkedWith: Runda połączona z {{rounds}}
+    linkedWith: Runda podwójna z {{rounds}}
 about:
   title: O nas
   welcome: Witaj na CompetitionGroups.com!
